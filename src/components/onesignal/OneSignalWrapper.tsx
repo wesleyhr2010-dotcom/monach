@@ -71,27 +71,20 @@ export default function OneSignalWrapper() {
                     supabase.auth.onAuthStateChange(async (_event: any, currentSession: any) => {
                         if (currentSession?.user?.id) {
                             await loginUser(currentSession.user.id);
-                            // Pedir push também quando o login acontece depois
-                            await OneSignal.Slidedown.promptPush();
                         }
                     });
                 }
 
-                // ─── Agora pedir permissão de push ───
-                showLog("[4] Pedindo push...");
-                await OneSignal.Slidedown.promptPush();
-                showLog("[4b] ✅ Prompt resolvido.");
-
-                // Checar permissão
-                const permission = await OneSignal.Notifications.permission;
-                showLog(`[5] Permissão: ${permission}`);
+                // ─── Pedir permissão de push (nativo do iOS, sem banner) ───
+                showLog("[4] Pedindo permissão nativa...");
+                const permission = await OneSignal.Notifications.requestPermission();
+                showLog(`[4b] ✅ Permissão: ${permission}`);
 
                 // Checar se está inscrito
                 const isPushEnabled = await OneSignal.User.PushSubscription.optedIn;
                 const pushId = await OneSignal.User.PushSubscription.id;
-                showLog(`[5b] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || 'null'}...`);
+                showLog(`[5] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || 'null'}...`);
 
-                // Se permissão foi negada, tentar optar novamente (caso o user habilitou nas Configurações do iOS)
                 if (!permission && !isPushEnabled) {
                     showLog("⚠️ Push negado. Vá em Ajustes → Notificações → Monarca e ative.");
                 }
