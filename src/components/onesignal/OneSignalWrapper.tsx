@@ -6,15 +6,16 @@ import { createBrowserClient } from "@supabase/ssr";
 
 export default function OneSignalWrapper() {
     const initialized = useRef(false);
+    const isDev = process.env.NODE_ENV === "development";
     const [debugMsg, setDebugMsg] = useState<string | null>(null);
 
     const showLog = (msg: string) => {
+        if (!isDev) return;
         setDebugMsg((prev) => (prev ? `${prev}\n${msg}` : msg));
     };
 
     useEffect(() => {
-        // ── DEBUG: ativar temporariamente ──
-        const DEBUG_UI = true;
+
 
         if (initialized.current) return;
 
@@ -104,7 +105,7 @@ export default function OneSignalWrapper() {
         initOneSignal();
     }, []);
 
-    if (debugMsg) {
+    if (isDev && debugMsg) {
         return (
             <div className="fixed bottom-24 left-4 right-4 bg-black/90 text-green-400 p-4 rounded-xl z-[9999] text-[10px] font-mono whitespace-pre-wrap pointer-events-none break-all max-h-[40vh] overflow-auto">
                 {debugMsg}
