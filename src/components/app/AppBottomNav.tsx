@@ -16,7 +16,7 @@ export function AppBottomNav() {
   const pathname = usePathname() ?? "";
 
   return (
-    <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] px-4"
+    <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4"
       style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
