@@ -1,0 +1,107 @@
+import { createServerClient } from "@supabase/ssr"
+import { NextResponse, type NextRequest } from "next/server"
+
+export async function updateSession(request: NextRequest) {
+    let supabaseResponse = NextResponse.next({
+        request,
+    })
+
+    // Create a supabase client to use the cookies
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+        {
+            cookies: {
+                getAll() {
+                    return request.cookies.getAll()
+                },
+                setAll(cookiesToSet) {
+                    cookiesToSet.forEach(({ name, value }) => request.cookies.set(name, value))
+                    supabaseResponse = NextResponse.next({
+                        request,
+                    })
+                    cookiesToSet.forEach(({ name, value, options }) =>
+                        supabaseResponse.cookies.set(name, value, options)
+                    )
+                },
+            },
+        }
+    )
+
+    // Request the user session from Supabase
+    const {
+        data: { user },
+    } = await supabase.auth.getUser()
+
+    const url = request.nextUrl.clone()
+    const isAdminRoute = url.pathname.startsWith("/admin")
+    const isAdminLoginPage = url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")
+    const isAppRoute = url.pathname.startsWith("/app")
+    const isAppLoginPage = url.pathname.startsWith("/app/login")
+
+    let userRole = null;
+
+    if (user) {
+        // Busca a role na tabela unificada 'resellers'
+        const { data: profile } = await supabase
+            .from('resellers')
+            .select('role')
+            .eq('auth_user_id', user.id)
+            .single()
+
+        if (profile) {
+            userRole = profile.role;
+        }
+    }
+
+    // ============================================
+    // Logic for /admin routes (ADMIN or COLABORADORA)
+    // ============================================
+    if (isAdminRoute) {
+        if (!user && !isAdminLoginPage) {
+            url.pathname = "/admin/login"
+            return NextResponse.redirect(url)
+        }
+
+        if (user) {
+            // Se for Revendedora tentando acessar /admin, expulse para o /app
+            if (userRole === 'REVENDEDORA') {
+                url.pathname = "/app"
+                return NextResponse.redirect(url)
+            }
+
+            // Se for Admin/Colaboradora tentando acessar o Login, mande pro painel
+            if (isAdminLoginPage && (userRole === 'ADMIN' || userRole === 'COLABORADORA')) {
+                url.pathname = "/admin"
+                return NextResponse.redirect(url)
+            }
+        }
+    }
+
+    // ============================================
+    // Logic for /app routes (REVENDEDORA)
+    // ============================================
+    if (isAppRoute) {
+        if (!user && !isAppLoginPage) {
+            url.pathname = "/app/login"
+            return NextResponse.redirect(url)
+        }
+
+        if (user) {
+            // Se for Admin/Colaboradora tentando acessar /app, expulse para o /admin
+            if (userRole === 'ADMIN' || userRole === 'COLABORADORA') {
+                url.pathname = "/admin"
+                return NextResponse.redirect(url)
+            }
+
+            // Se for Revendedora tentando acessar o Login, mande pro painel
+            if (isAppLoginPage && userRole === 'REVENDEDORA') {
+                url.pathname = "/app"
+                return NextResponse.redirect(url)
+            }
+        }
+    }
+
+    return supabaseResponse
+}
+

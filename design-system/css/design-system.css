@@ -1,0 +1,86 @@
+:root {
+  --ds-color-primary: #4F46E5;
+  --ds-color-primary-dark: #4338CA;
+  --ds-color-secondary: #10B981;
+  --ds-color-surface: #FFFFFF;
+  --ds-color-background: #F7F7FB;
+  --ds-color-text: #1F2937;
+  --ds-color-text-muted: #6B7280;
+  --ds-border: #E5E7EB;
+  --ds-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  --ds-radius-sm: 4px;
+  --ds-radius-md: 8px;
+  --ds-radius-lg: 12px;
+  --ds-font-family: "Raleway", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --ds-font-size-md: 16px;
+  --ds-spacing-0: 0px;
+  --ds-spacing-1: 4px;
+  --ds-spacing-2: 8px;
+  --ds-spacing-3: 12px;
+  --ds-spacing-4: 16px;
+  --ds-spacing-5: 20px;
+  --ds-spacing-6: 24px;
+  --ds-spacing-7: 28px;
+  --ds-spacing-8: 32px;
+  --ds-spacing-9: 40px;
+  --ds-spacing-10: 48px;
+}
+
+.ds-btn {
+  font-family: var(--ds-font-family);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: 8px 14px;
+  font-size: 14px;
+  background: #fff;
+  color: var(--ds-color-text);
+  cursor: pointer;
+  box-shadow: var(--ds-shadow);
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.ds-btn--primary {
+  background: var(--ds-color-primary);
+  color: #fff;
+  border: 0;
+}
+.ds-btn--secondary {
+  background: #fff;
+  color: var(--ds-color-primary);
+  border: 1px solid var(--ds-color-primary);
+}
+.ds-btn--ghost {
+  background: transparent;
+  border: 0;
+  color: var(--ds-color-primary);
+}
+.ds-btn--sm { padding: 6px 12px; font-size: 12px; border-radius: 6px; }
+.ds-btn--md { padding: 8px 14px; font-size: 14px; }
+.ds-btn--lg { padding: 12px 18px; font-size: 16px; }
+.ds-btn:focus { outline: 2px solid var(--ds-color-primary); outline-offset: 2px; }
+.ds-btn:disabled, .ds-btn[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+.ds-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-sm);
+  background: var(--ds-color-surface);
+  color: var(--ds-color-text);
+  font-family: var(--ds-font-family);
+}
+
+.ds-card {
+  background: var(--ds-color-surface);
+  border: 1px solid var(--ds-border);
+  border-radius: var(--ds-radius-md);
+  padding: 16px;
+  box-shadow: var(--ds-shadow);
+}
+
+/* Simple responsive container utility (optional) */
+.ds-container {
+  width: 100%;
+  padding-left: var(--ds-spacing-4);
+  padding-right: var(--ds-spacing-4);
+  box-sizing: border-box;
+}

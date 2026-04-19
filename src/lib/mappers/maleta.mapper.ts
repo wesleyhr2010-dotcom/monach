@@ -1,0 +1,94 @@
+// ============================================
+// Maleta Mappers — Single source of truth for Prisma → DTO
+// ============================================
+
+import type { Prisma } from "@/generated/prisma/client";
+import type { MaletaListItem, MaletaDetail, MaletaItemDetail } from "@/lib/types";
+
+/** Maleta with reseller + item count (for list views) */
+type MaletaWithResellerAndCount = Prisma.MaletaGetPayload<{
+    include: {
+        reseller: { select: { id: true; name: true; avatar_url: true } };
+        _count: { select: { itens: true } };
+    };
+}>;
+
+/** Maleta with full detail relations */
+type MaletaFull = Prisma.MaletaGetPayload<{
+    include: {
+        reseller: { select: { id: true; name: true; whatsapp: true; avatar_url: true; taxa_comissao: true } };
+        itens: {
+            include: {
+                product_variant: {
+                    include: {
+                        product: { select: { id: true; name: true; images: true } };
+                    };
+                };
+            };
+        };
+    };
+}>;
+
+/**
+ * Map a Prisma Maleta (list query) to a MaletaListItem DTO.
+ */
+export function mapMaletaToListItem(m: MaletaWithResellerAndCount): MaletaListItem {
+    return {
+        id: m.id,
+        status: m.status,
+        data_envio: m.data_envio.toISOString(),
+        data_limite: m.data_limite.toISOString(),
+        created_at: m.created_at.toISOString(),
+        reseller: m.reseller,
+        _count: m._count,
+        valor_total_vendido: m.valor_total_vendido ? Number(m.valor_total_vendido) : null,
+    };
+}
+
+/**
+ * Map a Prisma Maleta (full detail query) to a MaletaDetail DTO.
+ */
+export function mapMaletaToDetail(maleta: MaletaFull): MaletaDetail {
+    return {
+        id: maleta.id,
+        status: maleta.status,
+        data_envio: maleta.data_envio.toISOString(),
+        data_limite: maleta.data_limite.toISOString(),
+        comprovante_devolucao_url: maleta.comprovante_devolucao_url,
+        valor_total_vendido: maleta.valor_total_vendido ? Number(maleta.valor_total_vendido) : null,
+        valor_comissao_revendedora: maleta.valor_comissao_revendedora ? Number(maleta.valor_comissao_revendedora) : null,
+        valor_comissao_colaboradora: maleta.valor_comissao_colaboradora ? Number(maleta.valor_comissao_colaboradora) : null,
+        created_at: maleta.created_at.toISOString(),
+        updated_at: maleta.updated_at.toISOString(),
+        reseller: {
+            ...maleta.reseller,
+            taxa_comissao: Number(maleta.reseller.taxa_comissao),
+        },
+        itens: maleta.itens.map(mapMaletaItemToDetail),
+    };
+}
+
+/**
+ * Map a Prisma MaletaItem (with product variant) to a MaletaItemDetail DTO.
+ */
+function mapMaletaItemToDetail(item: MaletaFull["itens"][number]): MaletaItemDetail {
+    return {
+        id: item.id,
+        quantidade_enviada: item.quantidade_enviada,
+        quantidade_vendida: item.quantidade_vendida,
+        preco_fixado: item.preco_fixado ? Number(item.preco_fixado) : null,
+        product_variant: {
+            id: item.product_variant.id,
+            attribute_name: item.product_variant.attribute_name,
+            attribute_value: item.product_variant.attribute_value,
+            price: item.product_variant.price ? Number(item.product_variant.price) : null,
+            sku: item.product_variant.sku,
+            stock_quantity: item.product_variant.stock_quantity,
+            product: {
+                id: item.product_variant.product.id,
+                name: item.product_variant.product.name,
+                images: item.product_variant.product.images as string[],
+            },
+        },
+    };
+}
