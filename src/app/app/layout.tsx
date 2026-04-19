@@ -77,7 +77,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                 {/* Spacer so content clears the floating bottom nav */}
                 <div
                     className="md:hidden flex-shrink-0"
-                    style={{ height: "calc(67px + env(safe-area-inset-bottom))" }}
+                    style={{ height: "calc(59px + env(safe-area-inset-bottom))" }}
                 />
             </main>
 

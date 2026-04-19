@@ -17,7 +17,7 @@ export function AppBottomNav() {
 
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-[100] px-4"
-      style={{ paddingBottom: "calc(8px + env(safe-area-inset-bottom))" }}>
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}>
       <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = exact ? pathname === href : pathname.startsWith(href);
