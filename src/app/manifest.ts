@@ -8,8 +8,8 @@ export default function manifest(): MetadataRoute.Manifest {
             "Painel da Revendedora Monarca Semijoias. Acompanhe suas maletas, comissões e gamificação.",
         start_url: "/app",
         display: "standalone",
-        background_color: "#09090b",
-        theme_color: "#d4af37",
+        background_color: "#F5F2EF",
+        theme_color: "#F5F2EF",
         orientation: "portrait-primary",
         icons: [
             {

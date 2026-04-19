@@ -25,7 +25,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
     return (
         <div className="flex bg-[#F5F2EF] text-[#1A1A1A] font-sans"
-            style={{ position: "fixed", inset: 0, overflow: "hidden" }}>
+            style={{ position: "fixed", inset: 0, overflow: "hidden", paddingTop: "env(safe-area-inset-top)" }}>
             <OneSignalWrapper />
             {/* Sidebar (Desktop) */}
             <aside className="hidden md:flex w-[260px] bg-white border-r border-[#E8E2D6] flex-col fixed top-0 left-0 bottom-0 z-50">
