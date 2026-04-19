@@ -30,6 +30,9 @@ yarn-error.log*
 # claude
 .claude/worktrees/
 
+# local-only dev files
+src/pages/api/paper-mcp-call.ts
+
 # vercel
 .vercel
 
