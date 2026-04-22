@@ -1,4 +1,6 @@
 import { notFound } from "next/navigation";
+
+export const dynamic = "force-dynamic";
 import Image from "next/image";
 import Link from "next/link";
 import { getResellerBySlug, getResellerCatalogProducts } from "@/app/actions";

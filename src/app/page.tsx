@@ -1,4 +1,6 @@
 import Header from "@/components/Header";
+
+export const dynamic = "force-dynamic";
 import HeroBanner from "@/components/HeroBanner";
 import ValueProps from "@/components/ValueProps";
 import CategoryTabs from "@/components/CategoryTabs";

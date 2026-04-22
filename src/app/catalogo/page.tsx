@@ -1,4 +1,6 @@
 import { Suspense } from "react";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { getCatalogProducts, getAllCategories } from "@/app/actions";
 import ProductCard from "@/components/ProductCard";
