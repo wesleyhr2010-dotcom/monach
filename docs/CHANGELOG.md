@@ -1,5 +1,20 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Devolução de Consignación (PWA)
+
+### Criado
+- **API de Upload R2** — `POST /api/upload-r2` centraliza uploads autenticados para Cloudflare R2 com validação de path por role, tipo MIME, tamanho máximo (10 MB) e autorização de comprovante por ownership da maleta.
+- **Compressão de Imagem Client-Side** — `src/lib/compress-image.ts` usando Canvas API (redimensiona para max 1920px, JPEG 85% qualidade).
+- **Fluxo de Devolução Multi-Step** — página `/app/maleta/[id]/devolver` com 4 pasos:
+  1. Resumen — totais enviados/vendidos/a devolver, badge de atrasada, info de próximos passos.
+  2. Foto — captura via `<input capture="environment">`, preview, opção de retomar.
+  3. Revisión final — resumo financeiro + comissão estimada + preview do comprovante + confirmação.
+  4. Confirmación — splash de sucesso com status "Esperando Recepción" e link para Início.
+- **Server Action `submitDevolucao`** — em `src/app/app/actions-revendedora.ts`: verifica ownership, valida estado (`ativa`/`atrasada`), atualiza para `aguardando_revisao`, salva `comprovante_devolucao_url`, notifica consultora e admins via push (best-effort).
+
+### Modificado
+- **`src/app/app/actions-revendedora.ts`** — adicionadas `submitDevolucao` e `notificarDevolucaoPendente`.
+
 ## 2026-04-22 — Maleta: PWA da Revendedora
 
 ### Criado
@@ -11,6 +26,10 @@
 - **PWA Maletas (`src/app/app/actions-revendedora.ts`)** — adicionado *lock pessimista* (`SELECT FOR UPDATE`), validação Zod e integração da gamificação para pontos normais e bônus de maleta completa nas actions `registrarVenda` e `registrarVendaMultipla`.
 - **UI de Imagens** — `MaletaItemRow.tsx` agora utiliza `next/image` otimizado (`unoptimized={true}`).
 - **Loading UI** — Adicionados skeletons para carregamento assíncrono das páginas `/app/app/maleta/` e `/app/app/maleta/[id]/`.
+
+### Corrigido
+- **Build Error do Next.js** — Removida a dependência do componente inexistente `AppPageHeader` nas rotas de loading e substituída por layouts em HTML (`skeleton`) na funcionalidade `/app/maleta/`.
+
 
 ## 2026-04-20 — Maleta: backlog de flexibilização
 
