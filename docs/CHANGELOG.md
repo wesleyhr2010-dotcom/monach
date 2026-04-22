@@ -1,5 +1,12 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Hotfix: Build Error no Vercel
+
+### Corrigido
+- **Import inválido do Prisma em `gamificacao.ts`** — O módulo `@/generated/prisma` não existe como entry point; o Prisma gera os arquivos em sub-módulos (`client.ts`, `browser.ts`, etc.). Import corrigido de `@/generated/prisma` para `@/generated/prisma/client`. O erro bloqueava todo o deploy na `main` com `Type error: Cannot find module '@/generated/prisma'`.
+
+---
+
 ## 2026-04-22 — Devolução de Consignación (PWA)
 
 ### Criado
