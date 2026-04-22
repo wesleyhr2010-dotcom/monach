@@ -16,7 +16,8 @@
   - Pula validação de `comprovante_devolucao_url`.
   - Registra `nota_acerto` com prefixo `"Cierre manual sin comprobante"`.
 - **Schema Zod `conferirMaletaSchema`** — adicionado campo `cierre_manual_sin_comprobante: z.boolean().optional()`.
-- **Página `/admin/maleta/[id]/`** — botão "Cerrar sin Comprobante" visível quando a maleta está em `aguardando_revisao` sem comprovante. Abre diálogo com campo de justificativa opcional e confirmação.
+- **Página `/admin/maleta/[id]/conferir/`** — botão "Cerrar sin Comprobante" na barra inferior de ações, visível quando a maleta está em `aguardando_revisao` sem comprovante. Abre diálogo com campo de justificativa opcional e confirmação.
+- **Página `/admin/maleta/[id]/`** — removido botão "Cerrar sin Comprobante" daqui (movido para `/conferir` onde faz mais sentido no fluxo).
 
 ## 2026-04-22 — Devolução de Consignación (PWA)
 
