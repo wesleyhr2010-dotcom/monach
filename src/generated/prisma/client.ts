@@ -31,8 +31,8 @@ export * from "./enums"
  * const prisma = new PrismaClient({
  *   adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL })
  * })
- * // Fetch zero or more Products
- * const products = await prisma.product.findMany()
+ * // Fetch zero or more Resellers
+ * const resellers = await prisma.reseller.findMany()
  * ```
  * 
  * Read more in our [docs](https://pris.ly/d/client).
@@ -41,6 +41,26 @@ export const PrismaClient = $Class.getPrismaClientClass()
 export type PrismaClient<LogOpts extends Prisma.LogLevel = never, OmitOpts extends Prisma.PrismaClientOptions["omit"] = Prisma.PrismaClientOptions["omit"], ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = $Class.PrismaClient<LogOpts, OmitOpts, ExtArgs>
 export { Prisma }
 
+/**
+ * Model Reseller
+ * 
+ */
+export type Reseller = Prisma.ResellerModel
+/**
+ * Model ResellerDocumento
+ * 
+ */
+export type ResellerDocumento = Prisma.ResellerDocumentoModel
+/**
+ * Model Contrato
+ * 
+ */
+export type Contrato = Prisma.ContratoModel
+/**
+ * Model DadosBancarios
+ * 
+ */
+export type DadosBancarios = Prisma.DadosBancariosModel
 /**
  * Model Product
  * 
@@ -62,11 +82,6 @@ export type Category = Prisma.CategoryModel
  */
 export type ProductCategory = Prisma.ProductCategoryModel
 /**
- * Model Reseller
- * 
- */
-export type Reseller = Prisma.ResellerModel
-/**
  * Model ResellerProduct
  * 
  */
@@ -87,6 +102,11 @@ export type MaletaItem = Prisma.MaletaItemModel
  */
 export type VendaMaleta = Prisma.VendaMaletaModel
 /**
+ * Model EstoqueMovimento
+ * 
+ */
+export type EstoqueMovimento = Prisma.EstoqueMovimentoModel
+/**
  * Model GamificacaoRegra
  * 
  */
@@ -97,10 +117,35 @@ export type GamificacaoRegra = Prisma.GamificacaoRegraModel
  */
 export type PontosExtrato = Prisma.PontosExtratoModel
 /**
+ * Model NivelRegra
+ * 
+ */
+export type NivelRegra = Prisma.NivelRegraModel
+/**
+ * Model CommissionTier
+ * 
+ */
+export type CommissionTier = Prisma.CommissionTierModel
+/**
  * Model Resgate
  * 
  */
 export type Resgate = Prisma.ResgateModel
+/**
+ * Model Brinde
+ * 
+ */
+export type Brinde = Prisma.BrindeModel
+/**
+ * Model SolicitacaoBrinde
+ * 
+ */
+export type SolicitacaoBrinde = Prisma.SolicitacaoBrindeModel
+/**
+ * Model NotificacaoPreferencia
+ * 
+ */
+export type NotificacaoPreferencia = Prisma.NotificacaoPreferenciaModel
 /**
  * Model AnalyticsAcesso
  * 
@@ -111,3 +156,8 @@ export type AnalyticsAcesso = Prisma.AnalyticsAcessoModel
  * 
  */
 export type AnalyticsDiario = Prisma.AnalyticsDiarioModel
+/**
+ * Model RevendedoraLead
+ * 
+ */
+export type RevendedoraLead = Prisma.RevendedoraLeadModel

@@ -29,6 +29,7 @@ export type AnalyticsAcessoMinAggregateOutputType = {
   reseller_id: string | null
   visitor_id: string | null
   tipo_evento: string | null
+  produto_id: string | null
   page_url: string | null
   user_agent: string | null
   referrer: string | null
@@ -41,6 +42,7 @@ export type AnalyticsAcessoMaxAggregateOutputType = {
   reseller_id: string | null
   visitor_id: string | null
   tipo_evento: string | null
+  produto_id: string | null
   page_url: string | null
   user_agent: string | null
   referrer: string | null
@@ -53,6 +55,7 @@ export type AnalyticsAcessoCountAggregateOutputType = {
   reseller_id: number
   visitor_id: number
   tipo_evento: number
+  produto_id: number
   page_url: number
   user_agent: number
   referrer: number
@@ -67,6 +70,7 @@ export type AnalyticsAcessoMinAggregateInputType = {
   reseller_id?: true
   visitor_id?: true
   tipo_evento?: true
+  produto_id?: true
   page_url?: true
   user_agent?: true
   referrer?: true
@@ -79,6 +83,7 @@ export type AnalyticsAcessoMaxAggregateInputType = {
   reseller_id?: true
   visitor_id?: true
   tipo_evento?: true
+  produto_id?: true
   page_url?: true
   user_agent?: true
   referrer?: true
@@ -91,6 +96,7 @@ export type AnalyticsAcessoCountAggregateInputType = {
   reseller_id?: true
   visitor_id?: true
   tipo_evento?: true
+  produto_id?: true
   page_url?: true
   user_agent?: true
   referrer?: true
@@ -176,6 +182,7 @@ export type AnalyticsAcessoGroupByOutputType = {
   reseller_id: string | null
   visitor_id: string | null
   tipo_evento: string
+  produto_id: string | null
   page_url: string
   user_agent: string
   referrer: string
@@ -209,6 +216,7 @@ export type AnalyticsAcessoWhereInput = {
   reseller_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   visitor_id?: Prisma.StringNullableFilter<"AnalyticsAcesso"> | string | null
   tipo_evento?: Prisma.StringFilter<"AnalyticsAcesso"> | string
+  produto_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   page_url?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   user_agent?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   referrer?: Prisma.StringFilter<"AnalyticsAcesso"> | string
@@ -222,6 +230,7 @@ export type AnalyticsAcessoOrderByWithRelationInput = {
   reseller_id?: Prisma.SortOrderInput | Prisma.SortOrder
   visitor_id?: Prisma.SortOrderInput | Prisma.SortOrder
   tipo_evento?: Prisma.SortOrder
+  produto_id?: Prisma.SortOrderInput | Prisma.SortOrder
   page_url?: Prisma.SortOrder
   user_agent?: Prisma.SortOrder
   referrer?: Prisma.SortOrder
@@ -238,6 +247,7 @@ export type AnalyticsAcessoWhereUniqueInput = Prisma.AtLeast<{
   reseller_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   visitor_id?: Prisma.StringNullableFilter<"AnalyticsAcesso"> | string | null
   tipo_evento?: Prisma.StringFilter<"AnalyticsAcesso"> | string
+  produto_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   page_url?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   user_agent?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   referrer?: Prisma.StringFilter<"AnalyticsAcesso"> | string
@@ -251,6 +261,7 @@ export type AnalyticsAcessoOrderByWithAggregationInput = {
   reseller_id?: Prisma.SortOrderInput | Prisma.SortOrder
   visitor_id?: Prisma.SortOrderInput | Prisma.SortOrder
   tipo_evento?: Prisma.SortOrder
+  produto_id?: Prisma.SortOrderInput | Prisma.SortOrder
   page_url?: Prisma.SortOrder
   user_agent?: Prisma.SortOrder
   referrer?: Prisma.SortOrder
@@ -269,6 +280,7 @@ export type AnalyticsAcessoScalarWhereWithAggregatesInput = {
   reseller_id?: Prisma.UuidNullableWithAggregatesFilter<"AnalyticsAcesso"> | string | null
   visitor_id?: Prisma.StringNullableWithAggregatesFilter<"AnalyticsAcesso"> | string | null
   tipo_evento?: Prisma.StringWithAggregatesFilter<"AnalyticsAcesso"> | string
+  produto_id?: Prisma.UuidNullableWithAggregatesFilter<"AnalyticsAcesso"> | string | null
   page_url?: Prisma.StringWithAggregatesFilter<"AnalyticsAcesso"> | string
   user_agent?: Prisma.StringWithAggregatesFilter<"AnalyticsAcesso"> | string
   referrer?: Prisma.StringWithAggregatesFilter<"AnalyticsAcesso"> | string
@@ -280,7 +292,8 @@ export type AnalyticsAcessoCreateInput = {
   id?: string
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -293,7 +306,8 @@ export type AnalyticsAcessoUncheckedCreateInput = {
   reseller_id?: string | null
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -304,6 +318,7 @@ export type AnalyticsAcessoUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -317,6 +332,7 @@ export type AnalyticsAcessoUncheckedUpdateInput = {
   reseller_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -329,7 +345,8 @@ export type AnalyticsAcessoCreateManyInput = {
   reseller_id?: string | null
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -340,6 +357,7 @@ export type AnalyticsAcessoUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -352,6 +370,7 @@ export type AnalyticsAcessoUncheckedUpdateManyInput = {
   reseller_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -374,6 +393,7 @@ export type AnalyticsAcessoCountOrderByAggregateInput = {
   reseller_id?: Prisma.SortOrder
   visitor_id?: Prisma.SortOrder
   tipo_evento?: Prisma.SortOrder
+  produto_id?: Prisma.SortOrder
   page_url?: Prisma.SortOrder
   user_agent?: Prisma.SortOrder
   referrer?: Prisma.SortOrder
@@ -386,6 +406,7 @@ export type AnalyticsAcessoMaxOrderByAggregateInput = {
   reseller_id?: Prisma.SortOrder
   visitor_id?: Prisma.SortOrder
   tipo_evento?: Prisma.SortOrder
+  produto_id?: Prisma.SortOrder
   page_url?: Prisma.SortOrder
   user_agent?: Prisma.SortOrder
   referrer?: Prisma.SortOrder
@@ -398,6 +419,7 @@ export type AnalyticsAcessoMinOrderByAggregateInput = {
   reseller_id?: Prisma.SortOrder
   visitor_id?: Prisma.SortOrder
   tipo_evento?: Prisma.SortOrder
+  produto_id?: Prisma.SortOrder
   page_url?: Prisma.SortOrder
   user_agent?: Prisma.SortOrder
   referrer?: Prisma.SortOrder
@@ -451,7 +473,8 @@ export type AnalyticsAcessoCreateWithoutResellerInput = {
   id?: string
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -462,7 +485,8 @@ export type AnalyticsAcessoUncheckedCreateWithoutResellerInput = {
   id?: string
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -503,6 +527,7 @@ export type AnalyticsAcessoScalarWhereInput = {
   reseller_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   visitor_id?: Prisma.StringNullableFilter<"AnalyticsAcesso"> | string | null
   tipo_evento?: Prisma.StringFilter<"AnalyticsAcesso"> | string
+  produto_id?: Prisma.UuidNullableFilter<"AnalyticsAcesso"> | string | null
   page_url?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   user_agent?: Prisma.StringFilter<"AnalyticsAcesso"> | string
   referrer?: Prisma.StringFilter<"AnalyticsAcesso"> | string
@@ -514,7 +539,8 @@ export type AnalyticsAcessoCreateManyResellerInput = {
   id?: string
   visitor_id?: string | null
   tipo_evento: string
-  page_url: string
+  produto_id?: string | null
+  page_url?: string
   user_agent?: string
   referrer?: string
   is_bot?: boolean
@@ -525,6 +551,7 @@ export type AnalyticsAcessoUpdateWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -536,6 +563,7 @@ export type AnalyticsAcessoUncheckedUpdateWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -547,6 +575,7 @@ export type AnalyticsAcessoUncheckedUpdateManyWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   visitor_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   tipo_evento?: Prisma.StringFieldUpdateOperationsInput | string
+  produto_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   page_url?: Prisma.StringFieldUpdateOperationsInput | string
   user_agent?: Prisma.StringFieldUpdateOperationsInput | string
   referrer?: Prisma.StringFieldUpdateOperationsInput | string
@@ -561,6 +590,7 @@ export type AnalyticsAcessoSelect<ExtArgs extends runtime.Types.Extensions.Inter
   reseller_id?: boolean
   visitor_id?: boolean
   tipo_evento?: boolean
+  produto_id?: boolean
   page_url?: boolean
   user_agent?: boolean
   referrer?: boolean
@@ -574,6 +604,7 @@ export type AnalyticsAcessoSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   reseller_id?: boolean
   visitor_id?: boolean
   tipo_evento?: boolean
+  produto_id?: boolean
   page_url?: boolean
   user_agent?: boolean
   referrer?: boolean
@@ -587,6 +618,7 @@ export type AnalyticsAcessoSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   reseller_id?: boolean
   visitor_id?: boolean
   tipo_evento?: boolean
+  produto_id?: boolean
   page_url?: boolean
   user_agent?: boolean
   referrer?: boolean
@@ -600,6 +632,7 @@ export type AnalyticsAcessoSelectScalar = {
   reseller_id?: boolean
   visitor_id?: boolean
   tipo_evento?: boolean
+  produto_id?: boolean
   page_url?: boolean
   user_agent?: boolean
   referrer?: boolean
@@ -607,7 +640,7 @@ export type AnalyticsAcessoSelectScalar = {
   data_acesso?: boolean
 }
 
-export type AnalyticsAcessoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reseller_id" | "visitor_id" | "tipo_evento" | "page_url" | "user_agent" | "referrer" | "is_bot" | "data_acesso", ExtArgs["result"]["analyticsAcesso"]>
+export type AnalyticsAcessoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reseller_id" | "visitor_id" | "tipo_evento" | "produto_id" | "page_url" | "user_agent" | "referrer" | "is_bot" | "data_acesso", ExtArgs["result"]["analyticsAcesso"]>
 export type AnalyticsAcessoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.AnalyticsAcesso$resellerArgs<ExtArgs>
 }
@@ -628,6 +661,7 @@ export type $AnalyticsAcessoPayload<ExtArgs extends runtime.Types.Extensions.Int
     reseller_id: string | null
     visitor_id: string | null
     tipo_evento: string
+    produto_id: string | null
     page_url: string
     user_agent: string
     referrer: string
@@ -1061,6 +1095,7 @@ export interface AnalyticsAcessoFieldRefs {
   readonly reseller_id: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
   readonly visitor_id: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
   readonly tipo_evento: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
+  readonly produto_id: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
   readonly page_url: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
   readonly user_agent: Prisma.FieldRef<"AnalyticsAcesso", 'String'>
   readonly referrer: Prisma.FieldRef<"AnalyticsAcesso", 'String'>

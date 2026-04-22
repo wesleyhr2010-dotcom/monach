@@ -51,20 +51,30 @@ export const AnyNull = runtime.AnyNull
 
 
 export const ModelName = {
+  Reseller: 'Reseller',
+  ResellerDocumento: 'ResellerDocumento',
+  Contrato: 'Contrato',
+  DadosBancarios: 'DadosBancarios',
   Product: 'Product',
   ProductVariant: 'ProductVariant',
   Category: 'Category',
   ProductCategory: 'ProductCategory',
-  Reseller: 'Reseller',
   ResellerProduct: 'ResellerProduct',
   Maleta: 'Maleta',
   MaletaItem: 'MaletaItem',
   VendaMaleta: 'VendaMaleta',
+  EstoqueMovimento: 'EstoqueMovimento',
   GamificacaoRegra: 'GamificacaoRegra',
   PontosExtrato: 'PontosExtrato',
+  NivelRegra: 'NivelRegra',
+  CommissionTier: 'CommissionTier',
   Resgate: 'Resgate',
+  Brinde: 'Brinde',
+  SolicitacaoBrinde: 'SolicitacaoBrinde',
+  NotificacaoPreferencia: 'NotificacaoPreferencia',
   AnalyticsAcesso: 'AnalyticsAcesso',
-  AnalyticsDiario: 'AnalyticsDiario'
+  AnalyticsDiario: 'AnalyticsDiario',
+  RevendedoraLead: 'RevendedoraLead'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -83,6 +93,88 @@ export const TransactionIsolationLevel = runtime.makeStrictEnum({
 export type TransactionIsolationLevel = (typeof TransactionIsolationLevel)[keyof typeof TransactionIsolationLevel]
 
 
+export const ResellerScalarFieldEnum = {
+  id: 'id',
+  auth_user_id: 'auth_user_id',
+  colaboradora_id: 'colaboradora_id',
+  name: 'name',
+  email: 'email',
+  whatsapp: 'whatsapp',
+  avatar_url: 'avatar_url',
+  bio: 'bio',
+  slug: 'slug',
+  role: 'role',
+  taxa_comissao: 'taxa_comissao',
+  endereco_cep: 'endereco_cep',
+  endereco_logradouro: 'endereco_logradouro',
+  endereco_numero: 'endereco_numero',
+  endereco_complemento: 'endereco_complemento',
+  endereco_cidade: 'endereco_cidade',
+  endereco_estado: 'endereco_estado',
+  cedula: 'cedula',
+  instagram: 'instagram',
+  edad: 'edad',
+  estado_civil: 'estado_civil',
+  hijos: 'hijos',
+  empresa: 'empresa',
+  informconf: 'informconf',
+  is_active: 'is_active',
+  perfil_completo: 'perfil_completo',
+  documentos_url: 'documentos_url',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ResellerScalarFieldEnum = (typeof ResellerScalarFieldEnum)[keyof typeof ResellerScalarFieldEnum]
+
+
+export const ResellerDocumentoScalarFieldEnum = {
+  id: 'id',
+  reseller_id: 'reseller_id',
+  tipo: 'tipo',
+  url: 'url',
+  status: 'status',
+  observacao: 'observacao',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ResellerDocumentoScalarFieldEnum = (typeof ResellerDocumentoScalarFieldEnum)[keyof typeof ResellerDocumentoScalarFieldEnum]
+
+
+export const ContratoScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  url: 'url',
+  obrigatorio: 'obrigatorio',
+  ativo: 'ativo',
+  created_at: 'created_at'
+} as const
+
+export type ContratoScalarFieldEnum = (typeof ContratoScalarFieldEnum)[keyof typeof ContratoScalarFieldEnum]
+
+
+export const DadosBancariosScalarFieldEnum = {
+  id: 'id',
+  reseller_id: 'reseller_id',
+  tipo: 'tipo',
+  alias_tipo: 'alias_tipo',
+  alias_valor: 'alias_valor',
+  alias_titular: 'alias_titular',
+  alias_ci_ruc: 'alias_ci_ruc',
+  banco: 'banco',
+  agencia: 'agencia',
+  cuenta: 'cuenta',
+  tipo_cuenta: 'tipo_cuenta',
+  titular: 'titular',
+  ci_ruc: 'ci_ruc',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type DadosBancariosScalarFieldEnum = (typeof DadosBancariosScalarFieldEnum)[keyof typeof DadosBancariosScalarFieldEnum]
+
+
 export const ProductScalarFieldEnum = {
   id: 'id',
   sku: 'sku',
@@ -92,6 +184,7 @@ export const ProductScalarFieldEnum = {
   price: 'price',
   images: 'images',
   product_type: 'product_type',
+  ativo: 'ativo',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -107,8 +200,10 @@ export const ProductVariantScalarFieldEnum = {
   price: 'price',
   sku: 'sku',
   in_stock: 'in_stock',
-  created_at: 'created_at',
-  stock_quantity: 'stock_quantity'
+  stock_quantity: 'stock_quantity',
+  image_url: 'image_url',
+  ativo: 'ativo',
+  created_at: 'created_at'
 } as const
 
 export type ProductVariantScalarFieldEnum = (typeof ProductVariantScalarFieldEnum)[keyof typeof ProductVariantScalarFieldEnum]
@@ -120,6 +215,7 @@ export const CategoryScalarFieldEnum = {
   slug: 'slug',
   parent_id: 'parent_id',
   sort_order: 'sort_order',
+  ativo: 'ativo',
   created_at: 'created_at'
 } as const
 
@@ -132,28 +228,6 @@ export const ProductCategoryScalarFieldEnum = {
 } as const
 
 export type ProductCategoryScalarFieldEnum = (typeof ProductCategoryScalarFieldEnum)[keyof typeof ProductCategoryScalarFieldEnum]
-
-
-export const ResellerScalarFieldEnum = {
-  id: 'id',
-  name: 'name',
-  slug: 'slug',
-  whatsapp: 'whatsapp',
-  email: 'email',
-  avatar_url: 'avatar_url',
-  bio: 'bio',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  role: 'role',
-  colaboradora_id: 'colaboradora_id',
-  taxa_comissao: 'taxa_comissao',
-  documentos_url: 'documentos_url',
-  perfil_completo: 'perfil_completo',
-  auth_user_id: 'auth_user_id'
-} as const
-
-export type ResellerScalarFieldEnum = (typeof ResellerScalarFieldEnum)[keyof typeof ResellerScalarFieldEnum]
 
 
 export const ResellerProductScalarFieldEnum = {
@@ -170,14 +244,19 @@ export type ResellerProductScalarFieldEnum = (typeof ResellerProductScalarFieldE
 
 export const MaletaScalarFieldEnum = {
   id: 'id',
+  numero: 'numero',
   reseller_id: 'reseller_id',
+  criada_por: 'criada_por',
   status: 'status',
   data_envio: 'data_envio',
   data_limite: 'data_limite',
-  comprovante_devolucao_url: 'comprovante_devolucao_url',
+  valor_total_enviado: 'valor_total_enviado',
   valor_total_vendido: 'valor_total_vendido',
   valor_comissao_revendedora: 'valor_comissao_revendedora',
   valor_comissao_colaboradora: 'valor_comissao_colaboradora',
+  pct_comissao_aplicado: 'pct_comissao_aplicado',
+  nota_acerto: 'nota_acerto',
+  comprovante_devolucao_url: 'comprovante_devolucao_url',
   created_at: 'created_at',
   updated_at: 'updated_at'
 } as const
@@ -189,9 +268,10 @@ export const MaletaItemScalarFieldEnum = {
   id: 'id',
   maleta_id: 'maleta_id',
   product_variant_id: 'product_variant_id',
+  preco_fixado: 'preco_fixado',
   quantidade_enviada: 'quantidade_enviada',
   quantidade_vendida: 'quantidade_vendida',
-  preco_fixado: 'preco_fixado'
+  quantidade_recebida: 'quantidade_recebida'
 } as const
 
 export type MaletaItemScalarFieldEnum = (typeof MaletaItemScalarFieldEnum)[keyof typeof MaletaItemScalarFieldEnum]
@@ -199,7 +279,9 @@ export type MaletaItemScalarFieldEnum = (typeof MaletaItemScalarFieldEnum)[keyof
 
 export const VendaMaletaScalarFieldEnum = {
   id: 'id',
+  maleta_id: 'maleta_id',
   maleta_item_id: 'maleta_item_id',
+  reseller_id: 'reseller_id',
   cliente_nome: 'cliente_nome',
   cliente_telefone: 'cliente_telefone',
   quantidade: 'quantidade',
@@ -210,6 +292,19 @@ export const VendaMaletaScalarFieldEnum = {
 export type VendaMaletaScalarFieldEnum = (typeof VendaMaletaScalarFieldEnum)[keyof typeof VendaMaletaScalarFieldEnum]
 
 
+export const EstoqueMovimentoScalarFieldEnum = {
+  id: 'id',
+  product_variant_id: 'product_variant_id',
+  quantidade: 'quantidade',
+  tipo: 'tipo',
+  motivo: 'motivo',
+  maleta_id: 'maleta_id',
+  created_at: 'created_at'
+} as const
+
+export type EstoqueMovimentoScalarFieldEnum = (typeof EstoqueMovimentoScalarFieldEnum)[keyof typeof EstoqueMovimentoScalarFieldEnum]
+
+
 export const GamificacaoRegraScalarFieldEnum = {
   id: 'id',
   nome: 'nome',
@@ -217,6 +312,11 @@ export const GamificacaoRegraScalarFieldEnum = {
   acao: 'acao',
   pontos: 'pontos',
   ativo: 'ativo',
+  icone: 'icone',
+  tipo: 'tipo',
+  limite_diario: 'limite_diario',
+  meta_valor: 'meta_valor',
+  ordem: 'ordem',
   created_at: 'created_at'
 } as const
 
@@ -235,6 +335,28 @@ export const PontosExtratoScalarFieldEnum = {
 export type PontosExtratoScalarFieldEnum = (typeof PontosExtratoScalarFieldEnum)[keyof typeof PontosExtratoScalarFieldEnum]
 
 
+export const NivelRegraScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  pontos_minimos: 'pontos_minimos',
+  cor: 'cor',
+  ordem: 'ordem',
+  ativo: 'ativo'
+} as const
+
+export type NivelRegraScalarFieldEnum = (typeof NivelRegraScalarFieldEnum)[keyof typeof NivelRegraScalarFieldEnum]
+
+
+export const CommissionTierScalarFieldEnum = {
+  id: 'id',
+  min_sales_value: 'min_sales_value',
+  pct: 'pct',
+  ativo: 'ativo'
+} as const
+
+export type CommissionTierScalarFieldEnum = (typeof CommissionTierScalarFieldEnum)[keyof typeof CommissionTierScalarFieldEnum]
+
+
 export const ResgateScalarFieldEnum = {
   id: 'id',
   reseller_id: 'reseller_id',
@@ -247,11 +369,53 @@ export const ResgateScalarFieldEnum = {
 export type ResgateScalarFieldEnum = (typeof ResgateScalarFieldEnum)[keyof typeof ResgateScalarFieldEnum]
 
 
+export const BrindeScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  descricao: 'descricao',
+  imagem_url: 'imagem_url',
+  custo_pontos: 'custo_pontos',
+  estoque: 'estoque',
+  ativo: 'ativo',
+  created_at: 'created_at'
+} as const
+
+export type BrindeScalarFieldEnum = (typeof BrindeScalarFieldEnum)[keyof typeof BrindeScalarFieldEnum]
+
+
+export const SolicitacaoBrindeScalarFieldEnum = {
+  id: 'id',
+  reseller_id: 'reseller_id',
+  brinde_id: 'brinde_id',
+  pontos_debitados: 'pontos_debitados',
+  status: 'status',
+  created_at: 'created_at'
+} as const
+
+export type SolicitacaoBrindeScalarFieldEnum = (typeof SolicitacaoBrindeScalarFieldEnum)[keyof typeof SolicitacaoBrindeScalarFieldEnum]
+
+
+export const NotificacaoPreferenciaScalarFieldEnum = {
+  id: 'id',
+  reseller_id: 'reseller_id',
+  nova_maleta: 'nova_maleta',
+  prazo_proximo: 'prazo_proximo',
+  maleta_atrasada: 'maleta_atrasada',
+  acerto_confirmado: 'acerto_confirmado',
+  brinde_entregue: 'brinde_entregue',
+  pontos_ganhos: 'pontos_ganhos',
+  updated_at: 'updated_at'
+} as const
+
+export type NotificacaoPreferenciaScalarFieldEnum = (typeof NotificacaoPreferenciaScalarFieldEnum)[keyof typeof NotificacaoPreferenciaScalarFieldEnum]
+
+
 export const AnalyticsAcessoScalarFieldEnum = {
   id: 'id',
   reseller_id: 'reseller_id',
   visitor_id: 'visitor_id',
   tipo_evento: 'tipo_evento',
+  produto_id: 'produto_id',
   page_url: 'page_url',
   user_agent: 'user_agent',
   referrer: 'referrer',
@@ -268,10 +432,34 @@ export const AnalyticsDiarioScalarFieldEnum = {
   reseller_id: 'reseller_id',
   tipo: 'tipo',
   total_visitas: 'total_visitas',
-  visitantes_unicos: 'visitantes_unicos'
+  visitantes_unicos: 'visitantes_unicos',
+  cliques_whatsapp: 'cliques_whatsapp'
 } as const
 
 export type AnalyticsDiarioScalarFieldEnum = (typeof AnalyticsDiarioScalarFieldEnum)[keyof typeof AnalyticsDiarioScalarFieldEnum]
+
+
+export const RevendedoraLeadScalarFieldEnum = {
+  id: 'id',
+  nome: 'nome',
+  cedula: 'cedula',
+  edad: 'edad',
+  direccion: 'direccion',
+  estado_civil: 'estado_civil',
+  hijos: 'hijos',
+  instagram: 'instagram',
+  whatsapp: 'whatsapp',
+  empresa: 'empresa',
+  informconf: 'informconf',
+  status: 'status',
+  taxa_comissao: 'taxa_comissao',
+  colaboradora_id: 'colaboradora_id',
+  observacao_admin: 'observacao_admin',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type RevendedoraLeadScalarFieldEnum = (typeof RevendedoraLeadScalarFieldEnum)[keyof typeof RevendedoraLeadScalarFieldEnum]
 
 
 export const SortOrder = {
@@ -297,14 +485,6 @@ export const QueryMode = {
 export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
 
 
-export const NullsOrder = {
-  first: 'first',
-  last: 'last'
-} as const
-
-export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
-
-
 export const JsonNullValueFilter = {
   DbNull: DbNull,
   JsonNull: JsonNull,
@@ -312,4 +492,12 @@ export const JsonNullValueFilter = {
 } as const
 
 export type JsonNullValueFilter = (typeof JsonNullValueFilter)[keyof typeof JsonNullValueFilter]
+
+
+export const NullsOrder = {
+  first: 'first',
+  last: 'last'
+} as const
+
+export type NullsOrder = (typeof NullsOrder)[keyof typeof NullsOrder]
 

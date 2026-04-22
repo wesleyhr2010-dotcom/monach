@@ -26,3 +26,22 @@ export const MaletaStatus = {
 } as const
 
 export type MaletaStatus = (typeof MaletaStatus)[keyof typeof MaletaStatus]
+
+
+export const LeadStatus = {
+  pendente: 'pendente',
+  aprovado: 'aprovado',
+  rejeitado: 'rejeitado'
+} as const
+
+export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
+
+
+export const EstoqueMovimentoTipo = {
+  reserva_maleta: 'reserva_maleta',
+  devolucao_maleta: 'devolucao_maleta',
+  ajuste_manual: 'ajuste_manual',
+  venda_direta: 'venda_direta'
+} as const
+
+export type EstoqueMovimentoTipo = (typeof EstoqueMovimentoTipo)[keyof typeof EstoqueMovimentoTipo]

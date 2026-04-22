@@ -110,6 +110,7 @@ export type { MaletaStatus } from "@/generated/prisma/client";
 
 export interface MaletaListItem {
     id: string;
+    numero: number;
     status: string;
     data_envio: string;
     data_limite: string;
@@ -121,16 +122,30 @@ export interface MaletaListItem {
 
 export interface MaletaDetail {
     id: string;
+    numero: number;
     status: string;
     data_envio: string;
     data_limite: string;
     comprovante_devolucao_url: string | null;
+    valor_total_enviado: number | null;
     valor_total_vendido: number | null;
     valor_comissao_revendedora: number | null;
     valor_comissao_colaboradora: number | null;
+    pct_comissao_aplicado: number | null;
+    nota_acerto: string | null;
     created_at: string;
     updated_at: string;
-    reseller: { id: string; name: string; whatsapp: string; avatar_url: string; taxa_comissao: number };
+    reseller: {
+        id: string;
+        name: string;
+        whatsapp: string;
+        avatar_url: string;
+        taxa_comissao: number;
+        colaboradora: { id: string; name: string; taxa_comissao: number } | null;
+        nivel: string | null;
+        nivel_cor: string | null;
+        pontos: number;
+    };
     itens: MaletaItemDetail[];
 }
 
@@ -138,6 +153,7 @@ export interface MaletaItemDetail {
     id: string;
     quantidade_enviada: number;
     quantidade_vendida: number;
+    quantidade_recebida: number | null;
     preco_fixado: number | null;
     product_variant: {
         id: string;
@@ -150,6 +166,7 @@ export interface MaletaItemDetail {
             id: string;
             name: string;
             images: string[];
+            category_name: string | null;
         };
     };
 }

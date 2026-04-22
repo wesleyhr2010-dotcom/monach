@@ -27,55 +27,76 @@ export type AggregateMaleta = {
 }
 
 export type MaletaAvgAggregateOutputType = {
+  numero: number | null
+  valor_total_enviado: runtime.Decimal | null
   valor_total_vendido: runtime.Decimal | null
   valor_comissao_revendedora: runtime.Decimal | null
   valor_comissao_colaboradora: runtime.Decimal | null
+  pct_comissao_aplicado: runtime.Decimal | null
 }
 
 export type MaletaSumAggregateOutputType = {
+  numero: number | null
+  valor_total_enviado: runtime.Decimal | null
   valor_total_vendido: runtime.Decimal | null
   valor_comissao_revendedora: runtime.Decimal | null
   valor_comissao_colaboradora: runtime.Decimal | null
+  pct_comissao_aplicado: runtime.Decimal | null
 }
 
 export type MaletaMinAggregateOutputType = {
   id: string | null
+  numero: number | null
   reseller_id: string | null
+  criada_por: string | null
   status: $Enums.MaletaStatus | null
   data_envio: Date | null
   data_limite: Date | null
-  comprovante_devolucao_url: string | null
+  valor_total_enviado: runtime.Decimal | null
   valor_total_vendido: runtime.Decimal | null
   valor_comissao_revendedora: runtime.Decimal | null
   valor_comissao_colaboradora: runtime.Decimal | null
+  pct_comissao_aplicado: runtime.Decimal | null
+  nota_acerto: string | null
+  comprovante_devolucao_url: string | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type MaletaMaxAggregateOutputType = {
   id: string | null
+  numero: number | null
   reseller_id: string | null
+  criada_por: string | null
   status: $Enums.MaletaStatus | null
   data_envio: Date | null
   data_limite: Date | null
-  comprovante_devolucao_url: string | null
+  valor_total_enviado: runtime.Decimal | null
   valor_total_vendido: runtime.Decimal | null
   valor_comissao_revendedora: runtime.Decimal | null
   valor_comissao_colaboradora: runtime.Decimal | null
+  pct_comissao_aplicado: runtime.Decimal | null
+  nota_acerto: string | null
+  comprovante_devolucao_url: string | null
   created_at: Date | null
   updated_at: Date | null
 }
 
 export type MaletaCountAggregateOutputType = {
   id: number
+  numero: number
   reseller_id: number
+  criada_por: number
   status: number
   data_envio: number
   data_limite: number
-  comprovante_devolucao_url: number
+  valor_total_enviado: number
   valor_total_vendido: number
   valor_comissao_revendedora: number
   valor_comissao_colaboradora: number
+  pct_comissao_aplicado: number
+  nota_acerto: number
+  comprovante_devolucao_url: number
   created_at: number
   updated_at: number
   _all: number
@@ -83,55 +104,76 @@ export type MaletaCountAggregateOutputType = {
 
 
 export type MaletaAvgAggregateInputType = {
+  numero?: true
+  valor_total_enviado?: true
   valor_total_vendido?: true
   valor_comissao_revendedora?: true
   valor_comissao_colaboradora?: true
+  pct_comissao_aplicado?: true
 }
 
 export type MaletaSumAggregateInputType = {
+  numero?: true
+  valor_total_enviado?: true
   valor_total_vendido?: true
   valor_comissao_revendedora?: true
   valor_comissao_colaboradora?: true
+  pct_comissao_aplicado?: true
 }
 
 export type MaletaMinAggregateInputType = {
   id?: true
+  numero?: true
   reseller_id?: true
+  criada_por?: true
   status?: true
   data_envio?: true
   data_limite?: true
-  comprovante_devolucao_url?: true
+  valor_total_enviado?: true
   valor_total_vendido?: true
   valor_comissao_revendedora?: true
   valor_comissao_colaboradora?: true
+  pct_comissao_aplicado?: true
+  nota_acerto?: true
+  comprovante_devolucao_url?: true
   created_at?: true
   updated_at?: true
 }
 
 export type MaletaMaxAggregateInputType = {
   id?: true
+  numero?: true
   reseller_id?: true
+  criada_por?: true
   status?: true
   data_envio?: true
   data_limite?: true
-  comprovante_devolucao_url?: true
+  valor_total_enviado?: true
   valor_total_vendido?: true
   valor_comissao_revendedora?: true
   valor_comissao_colaboradora?: true
+  pct_comissao_aplicado?: true
+  nota_acerto?: true
+  comprovante_devolucao_url?: true
   created_at?: true
   updated_at?: true
 }
 
 export type MaletaCountAggregateInputType = {
   id?: true
+  numero?: true
   reseller_id?: true
+  criada_por?: true
   status?: true
   data_envio?: true
   data_limite?: true
-  comprovante_devolucao_url?: true
+  valor_total_enviado?: true
   valor_total_vendido?: true
   valor_comissao_revendedora?: true
   valor_comissao_colaboradora?: true
+  pct_comissao_aplicado?: true
+  nota_acerto?: true
+  comprovante_devolucao_url?: true
   created_at?: true
   updated_at?: true
   _all?: true
@@ -225,14 +267,19 @@ export type MaletaGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalA
 
 export type MaletaGroupByOutputType = {
   id: string
+  numero: number
   reseller_id: string
+  criada_por: string | null
   status: $Enums.MaletaStatus
   data_envio: Date
   data_limite: Date
-  comprovante_devolucao_url: string | null
+  valor_total_enviado: runtime.Decimal | null
   valor_total_vendido: runtime.Decimal | null
   valor_comissao_revendedora: runtime.Decimal | null
   valor_comissao_colaboradora: runtime.Decimal | null
+  pct_comissao_aplicado: runtime.Decimal | null
+  nota_acerto: string | null
+  comprovante_devolucao_url: string | null
   created_at: Date
   updated_at: Date
   _count: MaletaCountAggregateOutputType | null
@@ -262,34 +309,48 @@ export type MaletaWhereInput = {
   OR?: Prisma.MaletaWhereInput[]
   NOT?: Prisma.MaletaWhereInput | Prisma.MaletaWhereInput[]
   id?: Prisma.UuidFilter<"Maleta"> | string
+  numero?: Prisma.IntFilter<"Maleta"> | number
   reseller_id?: Prisma.UuidFilter<"Maleta"> | string
+  criada_por?: Prisma.UuidNullableFilter<"Maleta"> | string | null
   status?: Prisma.EnumMaletaStatusFilter<"Maleta"> | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   data_limite?: Prisma.DateTimeFilter<"Maleta"> | Date | string
-  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  valor_total_enviado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
   created_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
   itens?: Prisma.MaletaItemListRelationFilter
+  vendas?: Prisma.VendaMaletaListRelationFilter
+  estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
 }
 
 export type MaletaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  numero?: Prisma.SortOrder
   reseller_id?: Prisma.SortOrder
+  criada_por?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   data_limite?: Prisma.SortOrder
-  comprovante_devolucao_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrderInput | Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrderInput | Prisma.SortOrder
+  nota_acerto?: Prisma.SortOrderInput | Prisma.SortOrder
+  comprovante_devolucao_url?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   reseller?: Prisma.ResellerOrderByWithRelationInput
   itens?: Prisma.MaletaItemOrderByRelationAggregateInput
+  vendas?: Prisma.VendaMaletaOrderByRelationAggregateInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoOrderByRelationAggregateInput
 }
 
 export type MaletaWhereUniqueInput = Prisma.AtLeast<{
@@ -297,30 +358,42 @@ export type MaletaWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.MaletaWhereInput | Prisma.MaletaWhereInput[]
   OR?: Prisma.MaletaWhereInput[]
   NOT?: Prisma.MaletaWhereInput | Prisma.MaletaWhereInput[]
+  numero?: Prisma.IntFilter<"Maleta"> | number
   reseller_id?: Prisma.UuidFilter<"Maleta"> | string
+  criada_por?: Prisma.UuidNullableFilter<"Maleta"> | string | null
   status?: Prisma.EnumMaletaStatusFilter<"Maleta"> | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   data_limite?: Prisma.DateTimeFilter<"Maleta"> | Date | string
-  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  valor_total_enviado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
   created_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
   itens?: Prisma.MaletaItemListRelationFilter
+  vendas?: Prisma.VendaMaletaListRelationFilter
+  estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
 }, "id">
 
 export type MaletaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  numero?: Prisma.SortOrder
   reseller_id?: Prisma.SortOrder
+  criada_por?: Prisma.SortOrderInput | Prisma.SortOrder
   status?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   data_limite?: Prisma.SortOrder
-  comprovante_devolucao_url?: Prisma.SortOrderInput | Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrderInput | Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrderInput | Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrderInput | Prisma.SortOrder
+  nota_acerto?: Prisma.SortOrderInput | Prisma.SortOrder
+  comprovante_devolucao_url?: Prisma.SortOrderInput | Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
   _count?: Prisma.MaletaCountOrderByAggregateInput
@@ -335,115 +408,163 @@ export type MaletaScalarWhereWithAggregatesInput = {
   OR?: Prisma.MaletaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.MaletaScalarWhereWithAggregatesInput | Prisma.MaletaScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Maleta"> | string
+  numero?: Prisma.IntWithAggregatesFilter<"Maleta"> | number
   reseller_id?: Prisma.UuidWithAggregatesFilter<"Maleta"> | string
+  criada_por?: Prisma.UuidNullableWithAggregatesFilter<"Maleta"> | string | null
   status?: Prisma.EnumMaletaStatusWithAggregatesFilter<"Maleta"> | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeWithAggregatesFilter<"Maleta"> | Date | string
   data_limite?: Prisma.DateTimeWithAggregatesFilter<"Maleta"> | Date | string
-  comprovante_devolucao_url?: Prisma.StringNullableWithAggregatesFilter<"Maleta"> | string | null
+  valor_total_enviado?: Prisma.DecimalNullableWithAggregatesFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.DecimalNullableWithAggregatesFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.DecimalNullableWithAggregatesFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.DecimalNullableWithAggregatesFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.DecimalNullableWithAggregatesFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.StringNullableWithAggregatesFilter<"Maleta"> | string | null
+  comprovante_devolucao_url?: Prisma.StringNullableWithAggregatesFilter<"Maleta"> | string | null
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Maleta"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Maleta"> | Date | string
 }
 
 export type MaletaCreateInput = {
   id?: string
+  numero?: number
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   reseller: Prisma.ResellerCreateNestedOneWithoutMaletasInput
   itens?: Prisma.MaletaItemCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaUncheckedCreateInput = {
   id?: string
+  numero?: number
   reseller_id: string
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reseller?: Prisma.ResellerUpdateOneRequiredWithoutMaletasNestedInput
   itens?: Prisma.MaletaItemUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
   reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaCreateManyInput = {
   id?: string
+  numero?: number
   reseller_id: string
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type MaletaUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type MaletaUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
   reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -460,61 +581,87 @@ export type MaletaOrderByRelationAggregateInput = {
 
 export type MaletaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  numero?: Prisma.SortOrder
   reseller_id?: Prisma.SortOrder
+  criada_por?: Prisma.SortOrder
   status?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   data_limite?: Prisma.SortOrder
-  comprovante_devolucao_url?: Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrder
+  nota_acerto?: Prisma.SortOrder
+  comprovante_devolucao_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type MaletaAvgOrderByAggregateInput = {
+  numero?: Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrder
 }
 
 export type MaletaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  numero?: Prisma.SortOrder
   reseller_id?: Prisma.SortOrder
+  criada_por?: Prisma.SortOrder
   status?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   data_limite?: Prisma.SortOrder
-  comprovante_devolucao_url?: Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrder
+  nota_acerto?: Prisma.SortOrder
+  comprovante_devolucao_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type MaletaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  numero?: Prisma.SortOrder
   reseller_id?: Prisma.SortOrder
+  criada_por?: Prisma.SortOrder
   status?: Prisma.SortOrder
   data_envio?: Prisma.SortOrder
   data_limite?: Prisma.SortOrder
-  comprovante_devolucao_url?: Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrder
+  nota_acerto?: Prisma.SortOrder
+  comprovante_devolucao_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
 
 export type MaletaSumOrderByAggregateInput = {
+  numero?: Prisma.SortOrder
+  valor_total_enviado?: Prisma.SortOrder
   valor_total_vendido?: Prisma.SortOrder
   valor_comissao_revendedora?: Prisma.SortOrder
   valor_comissao_colaboradora?: Prisma.SortOrder
+  pct_comissao_aplicado?: Prisma.SortOrder
 }
 
 export type MaletaScalarRelationFilter = {
   is?: Prisma.MaletaWhereInput
   isNot?: Prisma.MaletaWhereInput
+}
+
+export type MaletaNullableScalarRelationFilter = {
+  is?: Prisma.MaletaWhereInput | null
+  isNot?: Prisma.MaletaWhereInput | null
 }
 
 export type MaletaCreateNestedManyWithoutResellerInput = {
@@ -577,32 +724,76 @@ export type MaletaUpdateOneRequiredWithoutItensNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.MaletaUpdateToOneWithWhereWithoutItensInput, Prisma.MaletaUpdateWithoutItensInput>, Prisma.MaletaUncheckedUpdateWithoutItensInput>
 }
 
+export type MaletaCreateNestedOneWithoutVendasInput = {
+  create?: Prisma.XOR<Prisma.MaletaCreateWithoutVendasInput, Prisma.MaletaUncheckedCreateWithoutVendasInput>
+  connectOrCreate?: Prisma.MaletaCreateOrConnectWithoutVendasInput
+  connect?: Prisma.MaletaWhereUniqueInput
+}
+
+export type MaletaUpdateOneRequiredWithoutVendasNestedInput = {
+  create?: Prisma.XOR<Prisma.MaletaCreateWithoutVendasInput, Prisma.MaletaUncheckedCreateWithoutVendasInput>
+  connectOrCreate?: Prisma.MaletaCreateOrConnectWithoutVendasInput
+  upsert?: Prisma.MaletaUpsertWithoutVendasInput
+  connect?: Prisma.MaletaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaletaUpdateToOneWithWhereWithoutVendasInput, Prisma.MaletaUpdateWithoutVendasInput>, Prisma.MaletaUncheckedUpdateWithoutVendasInput>
+}
+
+export type MaletaCreateNestedOneWithoutEstoque_movimentosInput = {
+  create?: Prisma.XOR<Prisma.MaletaCreateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedCreateWithoutEstoque_movimentosInput>
+  connectOrCreate?: Prisma.MaletaCreateOrConnectWithoutEstoque_movimentosInput
+  connect?: Prisma.MaletaWhereUniqueInput
+}
+
+export type MaletaUpdateOneWithoutEstoque_movimentosNestedInput = {
+  create?: Prisma.XOR<Prisma.MaletaCreateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedCreateWithoutEstoque_movimentosInput>
+  connectOrCreate?: Prisma.MaletaCreateOrConnectWithoutEstoque_movimentosInput
+  upsert?: Prisma.MaletaUpsertWithoutEstoque_movimentosInput
+  disconnect?: Prisma.MaletaWhereInput | boolean
+  delete?: Prisma.MaletaWhereInput | boolean
+  connect?: Prisma.MaletaWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.MaletaUpdateToOneWithWhereWithoutEstoque_movimentosInput, Prisma.MaletaUpdateWithoutEstoque_movimentosInput>, Prisma.MaletaUncheckedUpdateWithoutEstoque_movimentosInput>
+}
+
 export type MaletaCreateWithoutResellerInput = {
   id?: string
+  numero?: number
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   itens?: Prisma.MaletaItemCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaUncheckedCreateWithoutResellerInput = {
   id?: string
+  numero?: number
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaCreateOrConnectWithoutResellerInput = {
@@ -636,44 +827,63 @@ export type MaletaScalarWhereInput = {
   OR?: Prisma.MaletaScalarWhereInput[]
   NOT?: Prisma.MaletaScalarWhereInput | Prisma.MaletaScalarWhereInput[]
   id?: Prisma.UuidFilter<"Maleta"> | string
+  numero?: Prisma.IntFilter<"Maleta"> | number
   reseller_id?: Prisma.UuidFilter<"Maleta"> | string
+  criada_por?: Prisma.UuidNullableFilter<"Maleta"> | string | null
   status?: Prisma.EnumMaletaStatusFilter<"Maleta"> | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   data_limite?: Prisma.DateTimeFilter<"Maleta"> | Date | string
-  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  valor_total_enviado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.DecimalNullableFilter<"Maleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.StringNullableFilter<"Maleta"> | string | null
+  comprovante_devolucao_url?: Prisma.StringNullableFilter<"Maleta"> | string | null
   created_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Maleta"> | Date | string
 }
 
 export type MaletaCreateWithoutItensInput = {
   id?: string
+  numero?: number
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
   reseller: Prisma.ResellerCreateNestedOneWithoutMaletasInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaUncheckedCreateWithoutItensInput = {
   id?: string
+  numero?: number
   reseller_id: string
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutMaletaInput
 }
 
 export type MaletaCreateOrConnectWithoutItensInput = {
@@ -694,82 +904,320 @@ export type MaletaUpdateToOneWithWhereWithoutItensInput = {
 
 export type MaletaUpdateWithoutItensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reseller?: Prisma.ResellerUpdateOneRequiredWithoutMaletasNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaUncheckedUpdateWithoutItensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
   reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutMaletaNestedInput
+}
+
+export type MaletaCreateWithoutVendasInput = {
+  id?: string
+  numero?: number
+  criada_por?: string | null
+  status?: $Enums.MaletaStatus
+  data_envio?: Date | string
+  data_limite: Date | string
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  reseller: Prisma.ResellerCreateNestedOneWithoutMaletasInput
+  itens?: Prisma.MaletaItemCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutMaletaInput
+}
+
+export type MaletaUncheckedCreateWithoutVendasInput = {
+  id?: string
+  numero?: number
+  reseller_id: string
+  criada_por?: string | null
+  status?: $Enums.MaletaStatus
+  data_envio?: Date | string
+  data_limite: Date | string
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutMaletaInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutMaletaInput
+}
+
+export type MaletaCreateOrConnectWithoutVendasInput = {
+  where: Prisma.MaletaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaletaCreateWithoutVendasInput, Prisma.MaletaUncheckedCreateWithoutVendasInput>
+}
+
+export type MaletaUpsertWithoutVendasInput = {
+  update: Prisma.XOR<Prisma.MaletaUpdateWithoutVendasInput, Prisma.MaletaUncheckedUpdateWithoutVendasInput>
+  create: Prisma.XOR<Prisma.MaletaCreateWithoutVendasInput, Prisma.MaletaUncheckedCreateWithoutVendasInput>
+  where?: Prisma.MaletaWhereInput
+}
+
+export type MaletaUpdateToOneWithWhereWithoutVendasInput = {
+  where?: Prisma.MaletaWhereInput
+  data: Prisma.XOR<Prisma.MaletaUpdateWithoutVendasInput, Prisma.MaletaUncheckedUpdateWithoutVendasInput>
+}
+
+export type MaletaUpdateWithoutVendasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
+  data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutMaletasNestedInput
+  itens?: Prisma.MaletaItemUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutMaletaNestedInput
+}
+
+export type MaletaUncheckedUpdateWithoutVendasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
+  data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutMaletaNestedInput
+}
+
+export type MaletaCreateWithoutEstoque_movimentosInput = {
+  id?: string
+  numero?: number
+  criada_por?: string | null
+  status?: $Enums.MaletaStatus
+  data_envio?: Date | string
+  data_limite: Date | string
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  reseller: Prisma.ResellerCreateNestedOneWithoutMaletasInput
+  itens?: Prisma.MaletaItemCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaletaInput
+}
+
+export type MaletaUncheckedCreateWithoutEstoque_movimentosInput = {
+  id?: string
+  numero?: number
+  reseller_id: string
+  criada_por?: string | null
+  status?: $Enums.MaletaStatus
+  data_envio?: Date | string
+  data_limite: Date | string
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
+  created_at?: Date | string
+  updated_at?: Date | string
+  itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutMaletaInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaletaInput
+}
+
+export type MaletaCreateOrConnectWithoutEstoque_movimentosInput = {
+  where: Prisma.MaletaWhereUniqueInput
+  create: Prisma.XOR<Prisma.MaletaCreateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedCreateWithoutEstoque_movimentosInput>
+}
+
+export type MaletaUpsertWithoutEstoque_movimentosInput = {
+  update: Prisma.XOR<Prisma.MaletaUpdateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedUpdateWithoutEstoque_movimentosInput>
+  create: Prisma.XOR<Prisma.MaletaCreateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedCreateWithoutEstoque_movimentosInput>
+  where?: Prisma.MaletaWhereInput
+}
+
+export type MaletaUpdateToOneWithWhereWithoutEstoque_movimentosInput = {
+  where?: Prisma.MaletaWhereInput
+  data: Prisma.XOR<Prisma.MaletaUpdateWithoutEstoque_movimentosInput, Prisma.MaletaUncheckedUpdateWithoutEstoque_movimentosInput>
+}
+
+export type MaletaUpdateWithoutEstoque_movimentosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
+  data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutMaletasNestedInput
+  itens?: Prisma.MaletaItemUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutMaletaNestedInput
+}
+
+export type MaletaUncheckedUpdateWithoutEstoque_movimentosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
+  data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaCreateManyResellerInput = {
   id?: string
+  numero?: number
+  criada_por?: string | null
   status?: $Enums.MaletaStatus
   data_envio?: Date | string
   data_limite: Date | string
-  comprovante_devolucao_url?: string | null
+  valor_total_enviado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: string | null
+  comprovante_devolucao_url?: string | null
   created_at?: Date | string
   updated_at?: Date | string
 }
 
 export type MaletaUpdateWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   itens?: Prisma.MaletaItemUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaUncheckedUpdateWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutMaletaNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaletaNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutMaletaNestedInput
 }
 
 export type MaletaUncheckedUpdateManyWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  numero?: Prisma.IntFieldUpdateOperationsInput | number
+  criada_por?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   status?: Prisma.EnumMaletaStatusFieldUpdateOperationsInput | $Enums.MaletaStatus
   data_envio?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   data_limite?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  valor_total_enviado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_total_vendido?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_revendedora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   valor_comissao_colaboradora?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pct_comissao_aplicado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  nota_acerto?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  comprovante_devolucao_url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -781,10 +1229,14 @@ export type MaletaUncheckedUpdateManyWithoutResellerInput = {
 
 export type MaletaCountOutputType = {
   itens: number
+  vendas: number
+  estoque_movimentos: number
 }
 
 export type MaletaCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   itens?: boolean | MaletaCountOutputTypeCountItensArgs
+  vendas?: boolean | MaletaCountOutputTypeCountVendasArgs
+  estoque_movimentos?: boolean | MaletaCountOutputTypeCountEstoque_movimentosArgs
 }
 
 /**
@@ -804,34 +1256,60 @@ export type MaletaCountOutputTypeCountItensArgs<ExtArgs extends runtime.Types.Ex
   where?: Prisma.MaletaItemWhereInput
 }
 
+/**
+ * MaletaCountOutputType without action
+ */
+export type MaletaCountOutputTypeCountVendasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendaMaletaWhereInput
+}
+
+/**
+ * MaletaCountOutputType without action
+ */
+export type MaletaCountOutputTypeCountEstoque_movimentosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.EstoqueMovimentoWhereInput
+}
+
 
 export type MaletaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  numero?: boolean
   reseller_id?: boolean
+  criada_por?: boolean
   status?: boolean
   data_envio?: boolean
   data_limite?: boolean
-  comprovante_devolucao_url?: boolean
+  valor_total_enviado?: boolean
   valor_total_vendido?: boolean
   valor_comissao_revendedora?: boolean
   valor_comissao_colaboradora?: boolean
+  pct_comissao_aplicado?: boolean
+  nota_acerto?: boolean
+  comprovante_devolucao_url?: boolean
   created_at?: boolean
   updated_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
   itens?: boolean | Prisma.Maleta$itensArgs<ExtArgs>
+  vendas?: boolean | Prisma.Maleta$vendasArgs<ExtArgs>
+  estoque_movimentos?: boolean | Prisma.Maleta$estoque_movimentosArgs<ExtArgs>
   _count?: boolean | Prisma.MaletaCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maleta"]>
 
 export type MaletaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  numero?: boolean
   reseller_id?: boolean
+  criada_por?: boolean
   status?: boolean
   data_envio?: boolean
   data_limite?: boolean
-  comprovante_devolucao_url?: boolean
+  valor_total_enviado?: boolean
   valor_total_vendido?: boolean
   valor_comissao_revendedora?: boolean
   valor_comissao_colaboradora?: boolean
+  pct_comissao_aplicado?: boolean
+  nota_acerto?: boolean
+  comprovante_devolucao_url?: boolean
   created_at?: boolean
   updated_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
@@ -839,14 +1317,19 @@ export type MaletaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extens
 
 export type MaletaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  numero?: boolean
   reseller_id?: boolean
+  criada_por?: boolean
   status?: boolean
   data_envio?: boolean
   data_limite?: boolean
-  comprovante_devolucao_url?: boolean
+  valor_total_enviado?: boolean
   valor_total_vendido?: boolean
   valor_comissao_revendedora?: boolean
   valor_comissao_colaboradora?: boolean
+  pct_comissao_aplicado?: boolean
+  nota_acerto?: boolean
+  comprovante_devolucao_url?: boolean
   created_at?: boolean
   updated_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
@@ -854,22 +1337,29 @@ export type MaletaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extens
 
 export type MaletaSelectScalar = {
   id?: boolean
+  numero?: boolean
   reseller_id?: boolean
+  criada_por?: boolean
   status?: boolean
   data_envio?: boolean
   data_limite?: boolean
-  comprovante_devolucao_url?: boolean
+  valor_total_enviado?: boolean
   valor_total_vendido?: boolean
   valor_comissao_revendedora?: boolean
   valor_comissao_colaboradora?: boolean
+  pct_comissao_aplicado?: boolean
+  nota_acerto?: boolean
+  comprovante_devolucao_url?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type MaletaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reseller_id" | "status" | "data_envio" | "data_limite" | "comprovante_devolucao_url" | "valor_total_vendido" | "valor_comissao_revendedora" | "valor_comissao_colaboradora" | "created_at" | "updated_at", ExtArgs["result"]["maleta"]>
+export type MaletaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "numero" | "reseller_id" | "criada_por" | "status" | "data_envio" | "data_limite" | "valor_total_enviado" | "valor_total_vendido" | "valor_comissao_revendedora" | "valor_comissao_colaboradora" | "pct_comissao_aplicado" | "nota_acerto" | "comprovante_devolucao_url" | "created_at" | "updated_at", ExtArgs["result"]["maleta"]>
 export type MaletaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
   itens?: boolean | Prisma.Maleta$itensArgs<ExtArgs>
+  vendas?: boolean | Prisma.Maleta$vendasArgs<ExtArgs>
+  estoque_movimentos?: boolean | Prisma.Maleta$estoque_movimentosArgs<ExtArgs>
   _count?: boolean | Prisma.MaletaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type MaletaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -884,17 +1374,24 @@ export type $MaletaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs
   objects: {
     reseller: Prisma.$ResellerPayload<ExtArgs>
     itens: Prisma.$MaletaItemPayload<ExtArgs>[]
+    vendas: Prisma.$VendaMaletaPayload<ExtArgs>[]
+    estoque_movimentos: Prisma.$EstoqueMovimentoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    numero: number
     reseller_id: string
+    criada_por: string | null
     status: $Enums.MaletaStatus
     data_envio: Date
     data_limite: Date
-    comprovante_devolucao_url: string | null
+    valor_total_enviado: runtime.Decimal | null
     valor_total_vendido: runtime.Decimal | null
     valor_comissao_revendedora: runtime.Decimal | null
     valor_comissao_colaboradora: runtime.Decimal | null
+    pct_comissao_aplicado: runtime.Decimal | null
+    nota_acerto: string | null
+    comprovante_devolucao_url: string | null
     created_at: Date
     updated_at: Date
   }, ExtArgs["result"]["maleta"]>
@@ -1293,6 +1790,8 @@ export interface Prisma__MaletaClient<T, Null = never, ExtArgs extends runtime.T
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reseller<T extends Prisma.ResellerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResellerDefaultArgs<ExtArgs>>): Prisma.Prisma__ResellerClient<runtime.Types.Result.GetResult<Prisma.$ResellerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   itens<T extends Prisma.Maleta$itensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maleta$itensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaletaItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendas<T extends Prisma.Maleta$vendasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maleta$vendasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendaMaletaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  estoque_movimentos<T extends Prisma.Maleta$estoque_movimentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Maleta$estoque_movimentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EstoqueMovimentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1323,14 +1822,19 @@ export interface Prisma__MaletaClient<T, Null = never, ExtArgs extends runtime.T
  */
 export interface MaletaFieldRefs {
   readonly id: Prisma.FieldRef<"Maleta", 'String'>
+  readonly numero: Prisma.FieldRef<"Maleta", 'Int'>
   readonly reseller_id: Prisma.FieldRef<"Maleta", 'String'>
+  readonly criada_por: Prisma.FieldRef<"Maleta", 'String'>
   readonly status: Prisma.FieldRef<"Maleta", 'MaletaStatus'>
   readonly data_envio: Prisma.FieldRef<"Maleta", 'DateTime'>
   readonly data_limite: Prisma.FieldRef<"Maleta", 'DateTime'>
-  readonly comprovante_devolucao_url: Prisma.FieldRef<"Maleta", 'String'>
+  readonly valor_total_enviado: Prisma.FieldRef<"Maleta", 'Decimal'>
   readonly valor_total_vendido: Prisma.FieldRef<"Maleta", 'Decimal'>
   readonly valor_comissao_revendedora: Prisma.FieldRef<"Maleta", 'Decimal'>
   readonly valor_comissao_colaboradora: Prisma.FieldRef<"Maleta", 'Decimal'>
+  readonly pct_comissao_aplicado: Prisma.FieldRef<"Maleta", 'Decimal'>
+  readonly nota_acerto: Prisma.FieldRef<"Maleta", 'String'>
+  readonly comprovante_devolucao_url: Prisma.FieldRef<"Maleta", 'String'>
   readonly created_at: Prisma.FieldRef<"Maleta", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Maleta", 'DateTime'>
 }
@@ -1750,6 +2254,54 @@ export type Maleta$itensArgs<ExtArgs extends runtime.Types.Extensions.InternalAr
   take?: number
   skip?: number
   distinct?: Prisma.MaletaItemScalarFieldEnum | Prisma.MaletaItemScalarFieldEnum[]
+}
+
+/**
+ * Maleta.vendas
+ */
+export type Maleta$vendasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendaMaleta
+   */
+  select?: Prisma.VendaMaletaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendaMaleta
+   */
+  omit?: Prisma.VendaMaletaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendaMaletaInclude<ExtArgs> | null
+  where?: Prisma.VendaMaletaWhereInput
+  orderBy?: Prisma.VendaMaletaOrderByWithRelationInput | Prisma.VendaMaletaOrderByWithRelationInput[]
+  cursor?: Prisma.VendaMaletaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendaMaletaScalarFieldEnum | Prisma.VendaMaletaScalarFieldEnum[]
+}
+
+/**
+ * Maleta.estoque_movimentos
+ */
+export type Maleta$estoque_movimentosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the EstoqueMovimento
+   */
+  select?: Prisma.EstoqueMovimentoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the EstoqueMovimento
+   */
+  omit?: Prisma.EstoqueMovimentoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.EstoqueMovimentoInclude<ExtArgs> | null
+  where?: Prisma.EstoqueMovimentoWhereInput
+  orderBy?: Prisma.EstoqueMovimentoOrderByWithRelationInput | Prisma.EstoqueMovimentoOrderByWithRelationInput[]
+  cursor?: Prisma.EstoqueMovimentoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.EstoqueMovimentoScalarFieldEnum | Prisma.EstoqueMovimentoScalarFieldEnum[]
 }
 
 /**

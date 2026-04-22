@@ -2,6 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { Prisma } from "@/generated/prisma";
+import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
+import { awardPoints } from "@/lib/gamificacao";
 
 export async function getDashboardCompleto() {
     const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
@@ -86,46 +89,55 @@ export async function getMinhasMaletas(resellerId: string) {
 // ============================================
 // Register a sale with multiple items
 // ============================================
-export async function registrarVendaMultipla(data: {
+export async function registrarVendaMultipla(inputData: {
     cliente_nome: string;
     cliente_telefone: string;
     itens: Array<{ maleta_item_id: string; quantidade: number }>;
 }) {
-    // Validate all items first
-    const items = await prisma.maletaItem.findMany({
-        where: { id: { in: data.itens.map((i) => i.maleta_item_id) } },
-    });
+    const user = await requireAuth(["REVENDEDORA"]);
+    if (!user?.profileId) throw new Error("No autorizado.");
+    const resellerId = user.profileId;
 
-    for (const cartItem of data.itens) {
-        const dbItem = items.find((i) => i.id === cartItem.maleta_item_id);
-        if (!dbItem) throw new Error("Item não encontrado");
-        const disponivel = dbItem.quantidade_enviada - dbItem.quantidade_vendida;
-        if (cartItem.quantidade > disponivel) {
-            throw new Error(`Apenas ${disponivel} peça(s) disponível(is) para um dos itens`);
-        }
-    }
+    const data = registrarVendaMultiplaSchema.parse(inputData);
 
-    // Create all sales + update stock in a single transaction
-    const operations = data.itens.flatMap((cartItem) => {
-        const dbItem = items.find((i) => i.id === cartItem.maleta_item_id)!;
-        return [
-            prisma.vendaMaleta.create({
+    await prisma.$transaction(async (tx) => {
+        for (const cartItem of data.itens) {
+            const maletaItem = await tx.maletaItem.findFirstOrThrow({
+                where: {
+                    id: cartItem.maleta_item_id,
+                    maleta: { reseller_id: resellerId },
+                },
+            });
+
+            // Pessimistic Lock for concurrency
+            await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${maletaItem.id}::uuid FOR UPDATE`;
+
+            const disponivel = maletaItem.quantidade_enviada - maletaItem.quantidade_vendida;
+            if (cartItem.quantidade > disponivel) {
+                throw new Error(`Apenas ${disponivel} peça(s) disponível(is) para o item (SKU limit).`);
+            }
+
+            await tx.vendaMaleta.create({
                 data: {
-                    maleta_item_id: cartItem.maleta_item_id,
+                    maleta_id: maletaItem.maleta_id,
+                    maleta_item_id: maletaItem.id,
+                    reseller_id: resellerId,
                     cliente_nome: data.cliente_nome,
                     cliente_telefone: data.cliente_telefone,
                     quantidade: cartItem.quantidade,
-                    preco_unitario: dbItem.preco_fixado || 0,
+                    preco_unitario: maletaItem.preco_fixado ?? 0,
                 },
-            }),
-            prisma.maletaItem.update({
-                where: { id: cartItem.maleta_item_id },
+            });
+
+            await tx.maletaItem.update({
+                where: { id: maletaItem.id },
                 data: { quantidade_vendida: { increment: cartItem.quantidade } },
-            }),
-        ];
+            });
+        }
+        
+        await awardPoints(resellerId, 'venda_multipla_maleta', tx);
     });
 
-    await prisma.$transaction(operations);
     return { success: true };
 }
 
@@ -189,4 +201,68 @@ export async function getResumoFinanceiro(resellerId: string) {
         aDevolver,
         totalVendas: vendas.length,
     };
+}
+
+// ============================================
+// Register single sale (SPEC_MALETA)
+// ============================================
+export async function registrarVenda(rawInput: {
+    maleta_item_id: string;
+    cliente_nome: string;
+    cliente_telefone: string;
+    preco_unitario: number;
+}) {
+    const user = await requireAuth(["REVENDEDORA"]);
+    if (!user?.profileId) throw new Error("No autorizado.");
+    const resellerId = user.profileId;
+
+    const input = registrarVendaSchema.parse(rawInput);
+
+    await prisma.$transaction(async (tx) => {
+        const item = await tx.maletaItem.findFirstOrThrow({
+            where: {
+                id: input.maleta_item_id,
+                maleta: { reseller_id: resellerId },
+            },
+        });
+
+        // Pessimistic Lock
+        await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${item.id}::uuid FOR UPDATE`;
+
+        if (item.quantidade_vendida >= item.quantidade_enviada) {
+            throw new Error("Este artículo ya no está disponible.");
+        }
+
+        await tx.vendaMaleta.create({
+            data: {
+                maleta_id: item.maleta_id,
+                maleta_item_id: item.id,
+                reseller_id: resellerId,
+                cliente_nome: input.cliente_nome,
+                cliente_telefone: input.cliente_telefone,
+                preco_unitario: input.preco_unitario,
+                quantidade: 1,
+            },
+        });
+
+        await tx.maletaItem.update({
+            where: { id: item.id },
+            data: { quantidade_vendida: { increment: 1 } },
+        });
+
+        // Recompensas da gamificação
+        await awardPoints(resellerId, 'venda_maleta', tx);
+
+        // Verifica bônus de maleta completa
+        const allItems = await tx.maletaItem.findMany({
+            where: { maleta_id: item.maleta_id },
+        });
+        
+        const todosVendidos = allItems.every(i => i.quantidade_vendida >= i.quantidade_enviada);
+        if (todosVendidos) {
+            await awardPoints(resellerId, 'maleta_completa', tx);
+        }
+    });
+
+    return { success: true };
 }

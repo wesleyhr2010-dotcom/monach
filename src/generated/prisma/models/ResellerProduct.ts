@@ -391,48 +391,6 @@ export type ResellerProductSumOrderByAggregateInput = {
   custom_price?: Prisma.SortOrder
 }
 
-export type ResellerProductCreateNestedManyWithoutProductInput = {
-  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
-  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
-  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
-  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-}
-
-export type ResellerProductUncheckedCreateNestedManyWithoutProductInput = {
-  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
-  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
-  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
-  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-}
-
-export type ResellerProductUpdateManyWithoutProductNestedInput = {
-  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
-  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
-  upsert?: Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput[]
-  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
-  set?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  disconnect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  delete?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  update?: Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput[]
-  updateMany?: Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput | Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput[]
-  deleteMany?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
-}
-
-export type ResellerProductUncheckedUpdateManyWithoutProductNestedInput = {
-  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
-  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
-  upsert?: Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput[]
-  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
-  set?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  disconnect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  delete?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
-  update?: Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput[]
-  updateMany?: Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput | Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput[]
-  deleteMany?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
-}
-
 export type ResellerProductCreateNestedManyWithoutResellerInput = {
   create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutResellerInput, Prisma.ResellerProductUncheckedCreateWithoutResellerInput> | Prisma.ResellerProductCreateWithoutResellerInput[] | Prisma.ResellerProductUncheckedCreateWithoutResellerInput[]
   connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutResellerInput | Prisma.ResellerProductCreateOrConnectWithoutResellerInput[]
@@ -475,58 +433,46 @@ export type ResellerProductUncheckedUpdateManyWithoutResellerNestedInput = {
   deleteMany?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
 }
 
-export type ResellerProductCreateWithoutProductInput = {
-  id?: string
-  custom_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: boolean
-  added_at?: Date | string
-  reseller: Prisma.ResellerCreateNestedOneWithoutReseller_productsInput
+export type ResellerProductCreateNestedManyWithoutProductInput = {
+  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
+  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
+  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
 }
 
-export type ResellerProductUncheckedCreateWithoutProductInput = {
-  id?: string
-  reseller_id: string
-  custom_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: boolean
-  added_at?: Date | string
+export type ResellerProductUncheckedCreateNestedManyWithoutProductInput = {
+  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
+  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
+  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
 }
 
-export type ResellerProductCreateOrConnectWithoutProductInput = {
-  where: Prisma.ResellerProductWhereUniqueInput
-  create: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput>
+export type ResellerProductUpdateManyWithoutProductNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
+  upsert?: Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput[]
+  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
+  set?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  disconnect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  delete?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  update?: Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput[]
+  updateMany?: Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput | Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput[]
+  deleteMany?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
 }
 
-export type ResellerProductCreateManyProductInputEnvelope = {
-  data: Prisma.ResellerProductCreateManyProductInput | Prisma.ResellerProductCreateManyProductInput[]
-  skipDuplicates?: boolean
-}
-
-export type ResellerProductUpsertWithWhereUniqueWithoutProductInput = {
-  where: Prisma.ResellerProductWhereUniqueInput
-  update: Prisma.XOR<Prisma.ResellerProductUpdateWithoutProductInput, Prisma.ResellerProductUncheckedUpdateWithoutProductInput>
-  create: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput>
-}
-
-export type ResellerProductUpdateWithWhereUniqueWithoutProductInput = {
-  where: Prisma.ResellerProductWhereUniqueInput
-  data: Prisma.XOR<Prisma.ResellerProductUpdateWithoutProductInput, Prisma.ResellerProductUncheckedUpdateWithoutProductInput>
-}
-
-export type ResellerProductUpdateManyWithWhereWithoutProductInput = {
-  where: Prisma.ResellerProductScalarWhereInput
-  data: Prisma.XOR<Prisma.ResellerProductUpdateManyMutationInput, Prisma.ResellerProductUncheckedUpdateManyWithoutProductInput>
-}
-
-export type ResellerProductScalarWhereInput = {
-  AND?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
-  OR?: Prisma.ResellerProductScalarWhereInput[]
-  NOT?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
-  id?: Prisma.UuidFilter<"ResellerProduct"> | string
-  reseller_id?: Prisma.UuidFilter<"ResellerProduct"> | string
-  product_id?: Prisma.UuidFilter<"ResellerProduct"> | string
-  custom_price?: Prisma.DecimalNullableFilter<"ResellerProduct"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: Prisma.BoolFilter<"ResellerProduct"> | boolean
-  added_at?: Prisma.DateTimeFilter<"ResellerProduct"> | Date | string
+export type ResellerProductUncheckedUpdateManyWithoutProductNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput> | Prisma.ResellerProductCreateWithoutProductInput[] | Prisma.ResellerProductUncheckedCreateWithoutProductInput[]
+  connectOrCreate?: Prisma.ResellerProductCreateOrConnectWithoutProductInput | Prisma.ResellerProductCreateOrConnectWithoutProductInput[]
+  upsert?: Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpsertWithWhereUniqueWithoutProductInput[]
+  createMany?: Prisma.ResellerProductCreateManyProductInputEnvelope
+  set?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  disconnect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  delete?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  connect?: Prisma.ResellerProductWhereUniqueInput | Prisma.ResellerProductWhereUniqueInput[]
+  update?: Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput | Prisma.ResellerProductUpdateWithWhereUniqueWithoutProductInput[]
+  updateMany?: Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput | Prisma.ResellerProductUpdateManyWithWhereWithoutProductInput[]
+  deleteMany?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
 }
 
 export type ResellerProductCreateWithoutResellerInput = {
@@ -571,7 +517,27 @@ export type ResellerProductUpdateManyWithWhereWithoutResellerInput = {
   data: Prisma.XOR<Prisma.ResellerProductUpdateManyMutationInput, Prisma.ResellerProductUncheckedUpdateManyWithoutResellerInput>
 }
 
-export type ResellerProductCreateManyProductInput = {
+export type ResellerProductScalarWhereInput = {
+  AND?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
+  OR?: Prisma.ResellerProductScalarWhereInput[]
+  NOT?: Prisma.ResellerProductScalarWhereInput | Prisma.ResellerProductScalarWhereInput[]
+  id?: Prisma.UuidFilter<"ResellerProduct"> | string
+  reseller_id?: Prisma.UuidFilter<"ResellerProduct"> | string
+  product_id?: Prisma.UuidFilter<"ResellerProduct"> | string
+  custom_price?: Prisma.DecimalNullableFilter<"ResellerProduct"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: Prisma.BoolFilter<"ResellerProduct"> | boolean
+  added_at?: Prisma.DateTimeFilter<"ResellerProduct"> | Date | string
+}
+
+export type ResellerProductCreateWithoutProductInput = {
+  id?: string
+  custom_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: boolean
+  added_at?: Date | string
+  reseller: Prisma.ResellerCreateNestedOneWithoutReseller_productsInput
+}
+
+export type ResellerProductUncheckedCreateWithoutProductInput = {
   id?: string
   reseller_id: string
   custom_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
@@ -579,28 +545,30 @@ export type ResellerProductCreateManyProductInput = {
   added_at?: Date | string
 }
 
-export type ResellerProductUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  reseller?: Prisma.ResellerUpdateOneRequiredWithoutReseller_productsNestedInput
+export type ResellerProductCreateOrConnectWithoutProductInput = {
+  where: Prisma.ResellerProductWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput>
 }
 
-export type ResellerProductUncheckedUpdateWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
-  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type ResellerProductCreateManyProductInputEnvelope = {
+  data: Prisma.ResellerProductCreateManyProductInput | Prisma.ResellerProductCreateManyProductInput[]
+  skipDuplicates?: boolean
 }
 
-export type ResellerProductUncheckedUpdateManyWithoutProductInput = {
-  id?: Prisma.StringFieldUpdateOperationsInput | string
-  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
-  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
-  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+export type ResellerProductUpsertWithWhereUniqueWithoutProductInput = {
+  where: Prisma.ResellerProductWhereUniqueInput
+  update: Prisma.XOR<Prisma.ResellerProductUpdateWithoutProductInput, Prisma.ResellerProductUncheckedUpdateWithoutProductInput>
+  create: Prisma.XOR<Prisma.ResellerProductCreateWithoutProductInput, Prisma.ResellerProductUncheckedCreateWithoutProductInput>
+}
+
+export type ResellerProductUpdateWithWhereUniqueWithoutProductInput = {
+  where: Prisma.ResellerProductWhereUniqueInput
+  data: Prisma.XOR<Prisma.ResellerProductUpdateWithoutProductInput, Prisma.ResellerProductUncheckedUpdateWithoutProductInput>
+}
+
+export type ResellerProductUpdateManyWithWhereWithoutProductInput = {
+  where: Prisma.ResellerProductScalarWhereInput
+  data: Prisma.XOR<Prisma.ResellerProductUpdateManyMutationInput, Prisma.ResellerProductUncheckedUpdateManyWithoutProductInput>
 }
 
 export type ResellerProductCreateManyResellerInput = {
@@ -630,6 +598,38 @@ export type ResellerProductUncheckedUpdateWithoutResellerInput = {
 export type ResellerProductUncheckedUpdateManyWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   product_id?: Prisma.StringFieldUpdateOperationsInput | string
+  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ResellerProductCreateManyProductInput = {
+  id?: string
+  reseller_id: string
+  custom_price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: boolean
+  added_at?: Date | string
+}
+
+export type ResellerProductUpdateWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutReseller_productsNestedInput
+}
+
+export type ResellerProductUncheckedUpdateWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type ResellerProductUncheckedUpdateManyWithoutProductInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
   custom_price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   is_featured?: Prisma.BoolFieldUpdateOperationsInput | boolean
   added_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string

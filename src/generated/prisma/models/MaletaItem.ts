@@ -27,83 +27,93 @@ export type AggregateMaletaItem = {
 }
 
 export type MaletaItemAvgAggregateOutputType = {
+  preco_fixado: runtime.Decimal | null
   quantidade_enviada: number | null
   quantidade_vendida: number | null
-  preco_fixado: runtime.Decimal | null
+  quantidade_recebida: number | null
 }
 
 export type MaletaItemSumAggregateOutputType = {
+  preco_fixado: runtime.Decimal | null
   quantidade_enviada: number | null
   quantidade_vendida: number | null
-  preco_fixado: runtime.Decimal | null
+  quantidade_recebida: number | null
 }
 
 export type MaletaItemMinAggregateOutputType = {
   id: string | null
   maleta_id: string | null
   product_variant_id: string | null
+  preco_fixado: runtime.Decimal | null
   quantidade_enviada: number | null
   quantidade_vendida: number | null
-  preco_fixado: runtime.Decimal | null
+  quantidade_recebida: number | null
 }
 
 export type MaletaItemMaxAggregateOutputType = {
   id: string | null
   maleta_id: string | null
   product_variant_id: string | null
+  preco_fixado: runtime.Decimal | null
   quantidade_enviada: number | null
   quantidade_vendida: number | null
-  preco_fixado: runtime.Decimal | null
+  quantidade_recebida: number | null
 }
 
 export type MaletaItemCountAggregateOutputType = {
   id: number
   maleta_id: number
   product_variant_id: number
+  preco_fixado: number
   quantidade_enviada: number
   quantidade_vendida: number
-  preco_fixado: number
+  quantidade_recebida: number
   _all: number
 }
 
 
 export type MaletaItemAvgAggregateInputType = {
+  preco_fixado?: true
   quantidade_enviada?: true
   quantidade_vendida?: true
-  preco_fixado?: true
+  quantidade_recebida?: true
 }
 
 export type MaletaItemSumAggregateInputType = {
+  preco_fixado?: true
   quantidade_enviada?: true
   quantidade_vendida?: true
-  preco_fixado?: true
+  quantidade_recebida?: true
 }
 
 export type MaletaItemMinAggregateInputType = {
   id?: true
   maleta_id?: true
   product_variant_id?: true
+  preco_fixado?: true
   quantidade_enviada?: true
   quantidade_vendida?: true
-  preco_fixado?: true
+  quantidade_recebida?: true
 }
 
 export type MaletaItemMaxAggregateInputType = {
   id?: true
   maleta_id?: true
   product_variant_id?: true
+  preco_fixado?: true
   quantidade_enviada?: true
   quantidade_vendida?: true
-  preco_fixado?: true
+  quantidade_recebida?: true
 }
 
 export type MaletaItemCountAggregateInputType = {
   id?: true
   maleta_id?: true
   product_variant_id?: true
+  preco_fixado?: true
   quantidade_enviada?: true
   quantidade_vendida?: true
-  preco_fixado?: true
+  quantidade_recebida?: true
   _all?: true
 }
 
@@ -197,9 +207,10 @@ export type MaletaItemGroupByOutputType = {
   id: string
   maleta_id: string
   product_variant_id: string
+  preco_fixado: runtime.Decimal | null
   quantidade_enviada: number
   quantidade_vendida: number
-  preco_fixado: runtime.Decimal | null
+  quantidade_recebida: number | null
   _count: MaletaItemCountAggregateOutputType | null
   _avg: MaletaItemAvgAggregateOutputType | null
   _sum: MaletaItemSumAggregateOutputType | null
@@ -229,9 +240,10 @@ export type MaletaItemWhereInput = {
   id?: Prisma.UuidFilter<"MaletaItem"> | string
   maleta_id?: Prisma.UuidFilter<"MaletaItem"> | string
   product_variant_id?: Prisma.UuidFilter<"MaletaItem"> | string
+  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFilter<"MaletaItem"> | number
   quantidade_vendida?: Prisma.IntFilter<"MaletaItem"> | number
-  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.IntNullableFilter<"MaletaItem"> | number | null
   maleta?: Prisma.XOR<Prisma.MaletaScalarRelationFilter, Prisma.MaletaWhereInput>
   product_variant?: Prisma.XOR<Prisma.ProductVariantScalarRelationFilter, Prisma.ProductVariantWhereInput>
   vendas?: Prisma.VendaMaletaListRelationFilter
@@ -241,9 +253,10 @@ export type MaletaItemOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   maleta_id?: Prisma.SortOrder
   product_variant_id?: Prisma.SortOrder
+  preco_fixado?: Prisma.SortOrderInput | Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrderInput | Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrderInput | Prisma.SortOrder
   maleta?: Prisma.MaletaOrderByWithRelationInput
   product_variant?: Prisma.ProductVariantOrderByWithRelationInput
   vendas?: Prisma.VendaMaletaOrderByRelationAggregateInput
@@ -256,9 +269,10 @@ export type MaletaItemWhereUniqueInput = Prisma.AtLeast<{
   NOT?: Prisma.MaletaItemWhereInput | Prisma.MaletaItemWhereInput[]
   maleta_id?: Prisma.UuidFilter<"MaletaItem"> | string
   product_variant_id?: Prisma.UuidFilter<"MaletaItem"> | string
+  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFilter<"MaletaItem"> | number
   quantidade_vendida?: Prisma.IntFilter<"MaletaItem"> | number
-  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.IntNullableFilter<"MaletaItem"> | number | null
   maleta?: Prisma.XOR<Prisma.MaletaScalarRelationFilter, Prisma.MaletaWhereInput>
   product_variant?: Prisma.XOR<Prisma.ProductVariantScalarRelationFilter, Prisma.ProductVariantWhereInput>
   vendas?: Prisma.VendaMaletaListRelationFilter
@@ -268,9 +282,10 @@ export type MaletaItemOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   maleta_id?: Prisma.SortOrder
   product_variant_id?: Prisma.SortOrder
+  preco_fixado?: Prisma.SortOrderInput | Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrderInput | Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.MaletaItemCountOrderByAggregateInput
   _avg?: Prisma.MaletaItemAvgOrderByAggregateInput
   _max?: Prisma.MaletaItemMaxOrderByAggregateInput
@@ -285,16 +300,18 @@ export type MaletaItemScalarWhereWithAggregatesInput = {
   id?: Prisma.UuidWithAggregatesFilter<"MaletaItem"> | string
   maleta_id?: Prisma.UuidWithAggregatesFilter<"MaletaItem"> | string
   product_variant_id?: Prisma.UuidWithAggregatesFilter<"MaletaItem"> | string
+  preco_fixado?: Prisma.DecimalNullableWithAggregatesFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntWithAggregatesFilter<"MaletaItem"> | number
   quantidade_vendida?: Prisma.IntWithAggregatesFilter<"MaletaItem"> | number
-  preco_fixado?: Prisma.DecimalNullableWithAggregatesFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.IntNullableWithAggregatesFilter<"MaletaItem"> | number | null
 }
 
 export type MaletaItemCreateInput = {
   id?: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   maleta: Prisma.MaletaCreateNestedOneWithoutItensInput
   product_variant: Prisma.ProductVariantCreateNestedOneWithoutMaleta_itensInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaleta_itemInput
@@ -304,17 +321,19 @@ export type MaletaItemUncheckedCreateInput = {
   id?: string
   maleta_id: string
   product_variant_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaleta_itemInput
 }
 
 export type MaletaItemUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maleta?: Prisma.MaletaUpdateOneRequiredWithoutItensNestedInput
   product_variant?: Prisma.ProductVariantUpdateOneRequiredWithoutMaleta_itensNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutMaleta_itemNestedInput
@@ -324,9 +343,10 @@ export type MaletaItemUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
   product_variant_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaleta_itemNestedInput
 }
 
@@ -334,25 +354,28 @@ export type MaletaItemCreateManyInput = {
   id?: string
   maleta_id: string
   product_variant_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
 }
 
 export type MaletaItemUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type MaletaItemUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
   product_variant_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type MaletaItemListRelationFilter = {
@@ -369,39 +392,44 @@ export type MaletaItemCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   maleta_id?: Prisma.SortOrder
   product_variant_id?: Prisma.SortOrder
+  preco_fixado?: Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrder
 }
 
 export type MaletaItemAvgOrderByAggregateInput = {
+  preco_fixado?: Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrder
 }
 
 export type MaletaItemMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   maleta_id?: Prisma.SortOrder
   product_variant_id?: Prisma.SortOrder
+  preco_fixado?: Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrder
 }
 
 export type MaletaItemMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   maleta_id?: Prisma.SortOrder
   product_variant_id?: Prisma.SortOrder
+  preco_fixado?: Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrder
 }
 
 export type MaletaItemSumOrderByAggregateInput = {
+  preco_fixado?: Prisma.SortOrder
   quantidade_enviada?: Prisma.SortOrder
   quantidade_vendida?: Prisma.SortOrder
-  preco_fixado?: Prisma.SortOrder
+  quantidade_recebida?: Prisma.SortOrder
 }
 
 export type MaletaItemScalarRelationFilter = {
@@ -493,6 +521,14 @@ export type MaletaItemUncheckedUpdateManyWithoutMaletaNestedInput = {
   deleteMany?: Prisma.MaletaItemScalarWhereInput | Prisma.MaletaItemScalarWhereInput[]
 }
 
+export type NullableIntFieldUpdateOperationsInput = {
+  set?: number | null
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 export type MaletaItemCreateNestedOneWithoutVendasInput = {
   create?: Prisma.XOR<Prisma.MaletaItemCreateWithoutVendasInput, Prisma.MaletaItemUncheckedCreateWithoutVendasInput>
   connectOrCreate?: Prisma.MaletaItemCreateOrConnectWithoutVendasInput
@@ -509,9 +545,10 @@ export type MaletaItemUpdateOneRequiredWithoutVendasNestedInput = {
 
 export type MaletaItemCreateWithoutProduct_variantInput = {
   id?: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   maleta: Prisma.MaletaCreateNestedOneWithoutItensInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaleta_itemInput
 }
@@ -519,9 +556,10 @@ export type MaletaItemCreateWithoutProduct_variantInput = {
 export type MaletaItemUncheckedCreateWithoutProduct_variantInput = {
   id?: string
   maleta_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaleta_itemInput
 }
 
@@ -558,16 +596,18 @@ export type MaletaItemScalarWhereInput = {
   id?: Prisma.UuidFilter<"MaletaItem"> | string
   maleta_id?: Prisma.UuidFilter<"MaletaItem"> | string
   product_variant_id?: Prisma.UuidFilter<"MaletaItem"> | string
+  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFilter<"MaletaItem"> | number
   quantidade_vendida?: Prisma.IntFilter<"MaletaItem"> | number
-  preco_fixado?: Prisma.DecimalNullableFilter<"MaletaItem"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.IntNullableFilter<"MaletaItem"> | number | null
 }
 
 export type MaletaItemCreateWithoutMaletaInput = {
   id?: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   product_variant: Prisma.ProductVariantCreateNestedOneWithoutMaleta_itensInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutMaleta_itemInput
 }
@@ -575,9 +615,10 @@ export type MaletaItemCreateWithoutMaletaInput = {
 export type MaletaItemUncheckedCreateWithoutMaletaInput = {
   id?: string
   product_variant_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutMaleta_itemInput
 }
 
@@ -609,9 +650,10 @@ export type MaletaItemUpdateManyWithWhereWithoutMaletaInput = {
 
 export type MaletaItemCreateWithoutVendasInput = {
   id?: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
   maleta: Prisma.MaletaCreateNestedOneWithoutItensInput
   product_variant: Prisma.ProductVariantCreateNestedOneWithoutMaleta_itensInput
 }
@@ -620,9 +662,10 @@ export type MaletaItemUncheckedCreateWithoutVendasInput = {
   id?: string
   maleta_id: string
   product_variant_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
 }
 
 export type MaletaItemCreateOrConnectWithoutVendasInput = {
@@ -643,9 +686,10 @@ export type MaletaItemUpdateToOneWithWhereWithoutVendasInput = {
 
 export type MaletaItemUpdateWithoutVendasInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maleta?: Prisma.MaletaUpdateOneRequiredWithoutItensNestedInput
   product_variant?: Prisma.ProductVariantUpdateOneRequiredWithoutMaleta_itensNestedInput
 }
@@ -654,24 +698,27 @@ export type MaletaItemUncheckedUpdateWithoutVendasInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
   product_variant_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type MaletaItemCreateManyProduct_variantInput = {
   id?: string
   maleta_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
 }
 
 export type MaletaItemUpdateWithoutProduct_variantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   maleta?: Prisma.MaletaUpdateOneRequiredWithoutItensNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutMaleta_itemNestedInput
 }
@@ -679,33 +726,37 @@ export type MaletaItemUpdateWithoutProduct_variantInput = {
 export type MaletaItemUncheckedUpdateWithoutProduct_variantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaleta_itemNestedInput
 }
 
 export type MaletaItemUncheckedUpdateManyWithoutProduct_variantInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 export type MaletaItemCreateManyMaletaInput = {
   id?: string
   product_variant_id: string
+  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada: number
   quantidade_vendida?: number
-  preco_fixado?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: number | null
 }
 
 export type MaletaItemUpdateWithoutMaletaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   product_variant?: Prisma.ProductVariantUpdateOneRequiredWithoutMaleta_itensNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutMaleta_itemNestedInput
 }
@@ -713,18 +764,20 @@ export type MaletaItemUpdateWithoutMaletaInput = {
 export type MaletaItemUncheckedUpdateWithoutMaletaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   product_variant_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutMaleta_itemNestedInput
 }
 
 export type MaletaItemUncheckedUpdateManyWithoutMaletaInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   product_variant_id?: Prisma.StringFieldUpdateOperationsInput | string
+  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   quantidade_enviada?: Prisma.IntFieldUpdateOperationsInput | number
   quantidade_vendida?: Prisma.IntFieldUpdateOperationsInput | number
-  preco_fixado?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  quantidade_recebida?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
 }
 
 
@@ -762,9 +815,10 @@ export type MaletaItemSelect<ExtArgs extends runtime.Types.Extensions.InternalAr
   id?: boolean
   maleta_id?: boolean
   product_variant_id?: boolean
+  preco_fixado?: boolean
   quantidade_enviada?: boolean
   quantidade_vendida?: boolean
-  preco_fixado?: boolean
+  quantidade_recebida?: boolean
   maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   product_variant?: boolean | Prisma.ProductVariantDefaultArgs<ExtArgs>
   vendas?: boolean | Prisma.MaletaItem$vendasArgs<ExtArgs>
@@ -775,9 +829,10 @@ export type MaletaItemSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   maleta_id?: boolean
   product_variant_id?: boolean
+  preco_fixado?: boolean
   quantidade_enviada?: boolean
   quantidade_vendida?: boolean
-  preco_fixado?: boolean
+  quantidade_recebida?: boolean
   maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   product_variant?: boolean | Prisma.ProductVariantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maletaItem"]>
@@ -786,9 +841,10 @@ export type MaletaItemSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ex
   id?: boolean
   maleta_id?: boolean
   product_variant_id?: boolean
+  preco_fixado?: boolean
   quantidade_enviada?: boolean
   quantidade_vendida?: boolean
-  preco_fixado?: boolean
+  quantidade_recebida?: boolean
   maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   product_variant?: boolean | Prisma.ProductVariantDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["maletaItem"]>
@@ -797,12 +853,13 @@ export type MaletaItemSelectScalar = {
   id?: boolean
   maleta_id?: boolean
   product_variant_id?: boolean
+  preco_fixado?: boolean
   quantidade_enviada?: boolean
   quantidade_vendida?: boolean
-  preco_fixado?: boolean
+  quantidade_recebida?: boolean
 }
 
-export type MaletaItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maleta_id" | "product_variant_id" | "quantidade_enviada" | "quantidade_vendida" | "preco_fixado", ExtArgs["result"]["maletaItem"]>
+export type MaletaItemOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maleta_id" | "product_variant_id" | "preco_fixado" | "quantidade_enviada" | "quantidade_vendida" | "quantidade_recebida", ExtArgs["result"]["maletaItem"]>
 export type MaletaItemInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   product_variant?: boolean | Prisma.ProductVariantDefaultArgs<ExtArgs>
@@ -829,9 +886,10 @@ export type $MaletaItemPayload<ExtArgs extends runtime.Types.Extensions.Internal
     id: string
     maleta_id: string
     product_variant_id: string
+    preco_fixado: runtime.Decimal | null
     quantidade_enviada: number
     quantidade_vendida: number
-    preco_fixado: runtime.Decimal | null
+    quantidade_recebida: number | null
   }, ExtArgs["result"]["maletaItem"]>
   composites: {}
 }
@@ -1261,9 +1319,10 @@ export interface MaletaItemFieldRefs {
   readonly id: Prisma.FieldRef<"MaletaItem", 'String'>
   readonly maleta_id: Prisma.FieldRef<"MaletaItem", 'String'>
   readonly product_variant_id: Prisma.FieldRef<"MaletaItem", 'String'>
+  readonly preco_fixado: Prisma.FieldRef<"MaletaItem", 'Decimal'>
   readonly quantidade_enviada: Prisma.FieldRef<"MaletaItem", 'Int'>
   readonly quantidade_vendida: Prisma.FieldRef<"MaletaItem", 'Int'>
-  readonly preco_fixado: Prisma.FieldRef<"MaletaItem", 'Decimal'>
+  readonly quantidade_recebida: Prisma.FieldRef<"MaletaItem", 'Int'>
 }
     
 

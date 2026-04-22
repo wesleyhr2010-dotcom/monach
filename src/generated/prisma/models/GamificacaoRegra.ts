@@ -28,10 +28,16 @@ export type AggregateGamificacaoRegra = {
 
 export type GamificacaoRegraAvgAggregateOutputType = {
   pontos: number | null
+  limite_diario: number | null
+  meta_valor: runtime.Decimal | null
+  ordem: number | null
 }
 
 export type GamificacaoRegraSumAggregateOutputType = {
   pontos: number | null
+  limite_diario: number | null
+  meta_valor: runtime.Decimal | null
+  ordem: number | null
 }
 
 export type GamificacaoRegraMinAggregateOutputType = {
@@ -41,6 +47,11 @@ export type GamificacaoRegraMinAggregateOutputType = {
   acao: string | null
   pontos: number | null
   ativo: boolean | null
+  icone: string | null
+  tipo: string | null
+  limite_diario: number | null
+  meta_valor: runtime.Decimal | null
+  ordem: number | null
   created_at: Date | null
 }
 
@@ -51,6 +62,11 @@ export type GamificacaoRegraMaxAggregateOutputType = {
   acao: string | null
   pontos: number | null
   ativo: boolean | null
+  icone: string | null
+  tipo: string | null
+  limite_diario: number | null
+  meta_valor: runtime.Decimal | null
+  ordem: number | null
   created_at: Date | null
 }
 
@@ -61,6 +77,11 @@ export type GamificacaoRegraCountAggregateOutputType = {
   acao: number
   pontos: number
   ativo: number
+  icone: number
+  tipo: number
+  limite_diario: number
+  meta_valor: number
+  ordem: number
   created_at: number
   _all: number
 }
@@ -68,10 +89,16 @@ export type GamificacaoRegraCountAggregateOutputType = {
 
 export type GamificacaoRegraAvgAggregateInputType = {
   pontos?: true
+  limite_diario?: true
+  meta_valor?: true
+  ordem?: true
 }
 
 export type GamificacaoRegraSumAggregateInputType = {
   pontos?: true
+  limite_diario?: true
+  meta_valor?: true
+  ordem?: true
 }
 
 export type GamificacaoRegraMinAggregateInputType = {
@@ -81,6 +108,11 @@ export type GamificacaoRegraMinAggregateInputType = {
   acao?: true
   pontos?: true
   ativo?: true
+  icone?: true
+  tipo?: true
+  limite_diario?: true
+  meta_valor?: true
+  ordem?: true
   created_at?: true
 }
 
@@ -91,6 +123,11 @@ export type GamificacaoRegraMaxAggregateInputType = {
   acao?: true
   pontos?: true
   ativo?: true
+  icone?: true
+  tipo?: true
+  limite_diario?: true
+  meta_valor?: true
+  ordem?: true
   created_at?: true
 }
 
@@ -101,6 +138,11 @@ export type GamificacaoRegraCountAggregateInputType = {
   acao?: true
   pontos?: true
   ativo?: true
+  icone?: true
+  tipo?: true
+  limite_diario?: true
+  meta_valor?: true
+  ordem?: true
   created_at?: true
   _all?: true
 }
@@ -198,6 +240,11 @@ export type GamificacaoRegraGroupByOutputType = {
   acao: string
   pontos: number
   ativo: boolean
+  icone: string
+  tipo: string
+  limite_diario: number | null
+  meta_valor: runtime.Decimal | null
+  ordem: number
   created_at: Date
   _count: GamificacaoRegraCountAggregateOutputType | null
   _avg: GamificacaoRegraAvgAggregateOutputType | null
@@ -231,7 +278,13 @@ export type GamificacaoRegraWhereInput = {
   acao?: Prisma.StringFilter<"GamificacaoRegra"> | string
   pontos?: Prisma.IntFilter<"GamificacaoRegra"> | number
   ativo?: Prisma.BoolFilter<"GamificacaoRegra"> | boolean
+  icone?: Prisma.StringFilter<"GamificacaoRegra"> | string
+  tipo?: Prisma.StringFilter<"GamificacaoRegra"> | string
+  limite_diario?: Prisma.IntNullableFilter<"GamificacaoRegra"> | number | null
+  meta_valor?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeFilter<"GamificacaoRegra"> | Date | string
+  extrato?: Prisma.PontosExtratoListRelationFilter
 }
 
 export type GamificacaoRegraOrderByWithRelationInput = {
@@ -241,21 +294,33 @@ export type GamificacaoRegraOrderByWithRelationInput = {
   acao?: Prisma.SortOrder
   pontos?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  icone?: Prisma.SortOrder
+  tipo?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_valor?: Prisma.SortOrderInput | Prisma.SortOrder
+  ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  extrato?: Prisma.PontosExtratoOrderByRelationAggregateInput
 }
 
 export type GamificacaoRegraWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  acao?: string
   AND?: Prisma.GamificacaoRegraWhereInput | Prisma.GamificacaoRegraWhereInput[]
   OR?: Prisma.GamificacaoRegraWhereInput[]
   NOT?: Prisma.GamificacaoRegraWhereInput | Prisma.GamificacaoRegraWhereInput[]
   nome?: Prisma.StringFilter<"GamificacaoRegra"> | string
   descricao?: Prisma.StringFilter<"GamificacaoRegra"> | string
-  acao?: Prisma.StringFilter<"GamificacaoRegra"> | string
   pontos?: Prisma.IntFilter<"GamificacaoRegra"> | number
   ativo?: Prisma.BoolFilter<"GamificacaoRegra"> | boolean
+  icone?: Prisma.StringFilter<"GamificacaoRegra"> | string
+  tipo?: Prisma.StringFilter<"GamificacaoRegra"> | string
+  limite_diario?: Prisma.IntNullableFilter<"GamificacaoRegra"> | number | null
+  meta_valor?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeFilter<"GamificacaoRegra"> | Date | string
-}, "id">
+  extrato?: Prisma.PontosExtratoListRelationFilter
+}, "id" | "acao">
 
 export type GamificacaoRegraOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -264,6 +329,11 @@ export type GamificacaoRegraOrderByWithAggregationInput = {
   acao?: Prisma.SortOrder
   pontos?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  icone?: Prisma.SortOrder
+  tipo?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrderInput | Prisma.SortOrder
+  meta_valor?: Prisma.SortOrderInput | Prisma.SortOrder
+  ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   _count?: Prisma.GamificacaoRegraCountOrderByAggregateInput
   _avg?: Prisma.GamificacaoRegraAvgOrderByAggregateInput
@@ -282,6 +352,11 @@ export type GamificacaoRegraScalarWhereWithAggregatesInput = {
   acao?: Prisma.StringWithAggregatesFilter<"GamificacaoRegra"> | string
   pontos?: Prisma.IntWithAggregatesFilter<"GamificacaoRegra"> | number
   ativo?: Prisma.BoolWithAggregatesFilter<"GamificacaoRegra"> | boolean
+  icone?: Prisma.StringWithAggregatesFilter<"GamificacaoRegra"> | string
+  tipo?: Prisma.StringWithAggregatesFilter<"GamificacaoRegra"> | string
+  limite_diario?: Prisma.IntNullableWithAggregatesFilter<"GamificacaoRegra"> | number | null
+  meta_valor?: Prisma.DecimalNullableWithAggregatesFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntWithAggregatesFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeWithAggregatesFilter<"GamificacaoRegra"> | Date | string
 }
 
@@ -292,7 +367,13 @@ export type GamificacaoRegraCreateInput = {
   acao: string
   pontos: number
   ativo?: boolean
+  icone?: string
+  tipo?: string
+  limite_diario?: number | null
+  meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: number
   created_at?: Date | string
+  extrato?: Prisma.PontosExtratoCreateNestedManyWithoutRegraInput
 }
 
 export type GamificacaoRegraUncheckedCreateInput = {
@@ -302,7 +383,13 @@ export type GamificacaoRegraUncheckedCreateInput = {
   acao: string
   pontos: number
   ativo?: boolean
+  icone?: string
+  tipo?: string
+  limite_diario?: number | null
+  meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: number
   created_at?: Date | string
+  extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutRegraInput
 }
 
 export type GamificacaoRegraUpdateInput = {
@@ -312,7 +399,13 @@ export type GamificacaoRegraUpdateInput = {
   acao?: Prisma.StringFieldUpdateOperationsInput | string
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  extrato?: Prisma.PontosExtratoUpdateManyWithoutRegraNestedInput
 }
 
 export type GamificacaoRegraUncheckedUpdateInput = {
@@ -322,7 +415,13 @@ export type GamificacaoRegraUncheckedUpdateInput = {
   acao?: Prisma.StringFieldUpdateOperationsInput | string
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutRegraNestedInput
 }
 
 export type GamificacaoRegraCreateManyInput = {
@@ -332,6 +431,11 @@ export type GamificacaoRegraCreateManyInput = {
   acao: string
   pontos: number
   ativo?: boolean
+  icone?: string
+  tipo?: string
+  limite_diario?: number | null
+  meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: number
   created_at?: Date | string
 }
 
@@ -342,6 +446,11 @@ export type GamificacaoRegraUpdateManyMutationInput = {
   acao?: Prisma.StringFieldUpdateOperationsInput | string
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -352,6 +461,11 @@ export type GamificacaoRegraUncheckedUpdateManyInput = {
   acao?: Prisma.StringFieldUpdateOperationsInput | string
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
@@ -362,11 +476,19 @@ export type GamificacaoRegraCountOrderByAggregateInput = {
   acao?: Prisma.SortOrder
   pontos?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  icone?: Prisma.SortOrder
+  tipo?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrder
+  meta_valor?: Prisma.SortOrder
+  ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
 export type GamificacaoRegraAvgOrderByAggregateInput = {
   pontos?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrder
+  meta_valor?: Prisma.SortOrder
+  ordem?: Prisma.SortOrder
 }
 
 export type GamificacaoRegraMaxOrderByAggregateInput = {
@@ -376,6 +498,11 @@ export type GamificacaoRegraMaxOrderByAggregateInput = {
   acao?: Prisma.SortOrder
   pontos?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  icone?: Prisma.SortOrder
+  tipo?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrder
+  meta_valor?: Prisma.SortOrder
+  ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
@@ -386,13 +513,147 @@ export type GamificacaoRegraMinOrderByAggregateInput = {
   acao?: Prisma.SortOrder
   pontos?: Prisma.SortOrder
   ativo?: Prisma.SortOrder
+  icone?: Prisma.SortOrder
+  tipo?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrder
+  meta_valor?: Prisma.SortOrder
+  ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
 
 export type GamificacaoRegraSumOrderByAggregateInput = {
   pontos?: Prisma.SortOrder
+  limite_diario?: Prisma.SortOrder
+  meta_valor?: Prisma.SortOrder
+  ordem?: Prisma.SortOrder
 }
 
+export type GamificacaoRegraNullableScalarRelationFilter = {
+  is?: Prisma.GamificacaoRegraWhereInput | null
+  isNot?: Prisma.GamificacaoRegraWhereInput | null
+}
+
+export type GamificacaoRegraCreateNestedOneWithoutExtratoInput = {
+  create?: Prisma.XOR<Prisma.GamificacaoRegraCreateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedCreateWithoutExtratoInput>
+  connectOrCreate?: Prisma.GamificacaoRegraCreateOrConnectWithoutExtratoInput
+  connect?: Prisma.GamificacaoRegraWhereUniqueInput
+}
+
+export type GamificacaoRegraUpdateOneWithoutExtratoNestedInput = {
+  create?: Prisma.XOR<Prisma.GamificacaoRegraCreateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedCreateWithoutExtratoInput>
+  connectOrCreate?: Prisma.GamificacaoRegraCreateOrConnectWithoutExtratoInput
+  upsert?: Prisma.GamificacaoRegraUpsertWithoutExtratoInput
+  disconnect?: Prisma.GamificacaoRegraWhereInput | boolean
+  delete?: Prisma.GamificacaoRegraWhereInput | boolean
+  connect?: Prisma.GamificacaoRegraWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.GamificacaoRegraUpdateToOneWithWhereWithoutExtratoInput, Prisma.GamificacaoRegraUpdateWithoutExtratoInput>, Prisma.GamificacaoRegraUncheckedUpdateWithoutExtratoInput>
+}
+
+export type GamificacaoRegraCreateWithoutExtratoInput = {
+  id?: string
+  nome: string
+  descricao?: string
+  acao: string
+  pontos: number
+  ativo?: boolean
+  icone?: string
+  tipo?: string
+  limite_diario?: number | null
+  meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: number
+  created_at?: Date | string
+}
+
+export type GamificacaoRegraUncheckedCreateWithoutExtratoInput = {
+  id?: string
+  nome: string
+  descricao?: string
+  acao: string
+  pontos: number
+  ativo?: boolean
+  icone?: string
+  tipo?: string
+  limite_diario?: number | null
+  meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: number
+  created_at?: Date | string
+}
+
+export type GamificacaoRegraCreateOrConnectWithoutExtratoInput = {
+  where: Prisma.GamificacaoRegraWhereUniqueInput
+  create: Prisma.XOR<Prisma.GamificacaoRegraCreateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedCreateWithoutExtratoInput>
+}
+
+export type GamificacaoRegraUpsertWithoutExtratoInput = {
+  update: Prisma.XOR<Prisma.GamificacaoRegraUpdateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedUpdateWithoutExtratoInput>
+  create: Prisma.XOR<Prisma.GamificacaoRegraCreateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedCreateWithoutExtratoInput>
+  where?: Prisma.GamificacaoRegraWhereInput
+}
+
+export type GamificacaoRegraUpdateToOneWithWhereWithoutExtratoInput = {
+  where?: Prisma.GamificacaoRegraWhereInput
+  data: Prisma.XOR<Prisma.GamificacaoRegraUpdateWithoutExtratoInput, Prisma.GamificacaoRegraUncheckedUpdateWithoutExtratoInput>
+}
+
+export type GamificacaoRegraUpdateWithoutExtratoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  acao?: Prisma.StringFieldUpdateOperationsInput | string
+  pontos?: Prisma.IntFieldUpdateOperationsInput | number
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type GamificacaoRegraUncheckedUpdateWithoutExtratoInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  nome?: Prisma.StringFieldUpdateOperationsInput | string
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  acao?: Prisma.StringFieldUpdateOperationsInput | string
+  pontos?: Prisma.IntFieldUpdateOperationsInput | number
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  icone?: Prisma.StringFieldUpdateOperationsInput | string
+  tipo?: Prisma.StringFieldUpdateOperationsInput | string
+  limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
+  meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  ordem?: Prisma.IntFieldUpdateOperationsInput | number
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+
+/**
+ * Count Type GamificacaoRegraCountOutputType
+ */
+
+export type GamificacaoRegraCountOutputType = {
+  extrato: number
+}
+
+export type GamificacaoRegraCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  extrato?: boolean | GamificacaoRegraCountOutputTypeCountExtratoArgs
+}
+
+/**
+ * GamificacaoRegraCountOutputType without action
+ */
+export type GamificacaoRegraCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GamificacaoRegraCountOutputType
+   */
+  select?: Prisma.GamificacaoRegraCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * GamificacaoRegraCountOutputType without action
+ */
+export type GamificacaoRegraCountOutputTypeCountExtratoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.PontosExtratoWhereInput
+}
 
 
 export type GamificacaoRegraSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -402,7 +663,14 @@ export type GamificacaoRegraSelect<ExtArgs extends runtime.Types.Extensions.Inte
   acao?: boolean
   pontos?: boolean
   ativo?: boolean
+  icone?: boolean
+  tipo?: boolean
+  limite_diario?: boolean
+  meta_valor?: boolean
+  ordem?: boolean
   created_at?: boolean
+  extrato?: boolean | Prisma.GamificacaoRegra$extratoArgs<ExtArgs>
+  _count?: boolean | Prisma.GamificacaoRegraCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["gamificacaoRegra"]>
 
 export type GamificacaoRegraSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -412,6 +680,11 @@ export type GamificacaoRegraSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   acao?: boolean
   pontos?: boolean
   ativo?: boolean
+  icone?: boolean
+  tipo?: boolean
+  limite_diario?: boolean
+  meta_valor?: boolean
+  ordem?: boolean
   created_at?: boolean
 }, ExtArgs["result"]["gamificacaoRegra"]>
 
@@ -422,6 +695,11 @@ export type GamificacaoRegraSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   acao?: boolean
   pontos?: boolean
   ativo?: boolean
+  icone?: boolean
+  tipo?: boolean
+  limite_diario?: boolean
+  meta_valor?: boolean
+  ordem?: boolean
   created_at?: boolean
 }, ExtArgs["result"]["gamificacaoRegra"]>
 
@@ -432,14 +710,27 @@ export type GamificacaoRegraSelectScalar = {
   acao?: boolean
   pontos?: boolean
   ativo?: boolean
+  icone?: boolean
+  tipo?: boolean
+  limite_diario?: boolean
+  meta_valor?: boolean
+  ordem?: boolean
   created_at?: boolean
 }
 
-export type GamificacaoRegraOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "descricao" | "acao" | "pontos" | "ativo" | "created_at", ExtArgs["result"]["gamificacaoRegra"]>
+export type GamificacaoRegraOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "descricao" | "acao" | "pontos" | "ativo" | "icone" | "tipo" | "limite_diario" | "meta_valor" | "ordem" | "created_at", ExtArgs["result"]["gamificacaoRegra"]>
+export type GamificacaoRegraInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  extrato?: boolean | Prisma.GamificacaoRegra$extratoArgs<ExtArgs>
+  _count?: boolean | Prisma.GamificacaoRegraCountOutputTypeDefaultArgs<ExtArgs>
+}
+export type GamificacaoRegraIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
+export type GamificacaoRegraIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {}
 
 export type $GamificacaoRegraPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "GamificacaoRegra"
-  objects: {}
+  objects: {
+    extrato: Prisma.$PontosExtratoPayload<ExtArgs>[]
+  }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     nome: string
@@ -447,6 +738,11 @@ export type $GamificacaoRegraPayload<ExtArgs extends runtime.Types.Extensions.In
     acao: string
     pontos: number
     ativo: boolean
+    icone: string
+    tipo: string
+    limite_diario: number | null
+    meta_valor: runtime.Decimal | null
+    ordem: number
     created_at: Date
   }, ExtArgs["result"]["gamificacaoRegra"]>
   composites: {}
@@ -842,6 +1138,7 @@ readonly fields: GamificacaoRegraFieldRefs;
  */
 export interface Prisma__GamificacaoRegraClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  extrato<T extends Prisma.GamificacaoRegra$extratoArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GamificacaoRegra$extratoArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$PontosExtratoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -877,6 +1174,11 @@ export interface GamificacaoRegraFieldRefs {
   readonly acao: Prisma.FieldRef<"GamificacaoRegra", 'String'>
   readonly pontos: Prisma.FieldRef<"GamificacaoRegra", 'Int'>
   readonly ativo: Prisma.FieldRef<"GamificacaoRegra", 'Boolean'>
+  readonly icone: Prisma.FieldRef<"GamificacaoRegra", 'String'>
+  readonly tipo: Prisma.FieldRef<"GamificacaoRegra", 'String'>
+  readonly limite_diario: Prisma.FieldRef<"GamificacaoRegra", 'Int'>
+  readonly meta_valor: Prisma.FieldRef<"GamificacaoRegra", 'Decimal'>
+  readonly ordem: Prisma.FieldRef<"GamificacaoRegra", 'Int'>
   readonly created_at: Prisma.FieldRef<"GamificacaoRegra", 'DateTime'>
 }
     
@@ -894,6 +1196,10 @@ export type GamificacaoRegraFindUniqueArgs<ExtArgs extends runtime.Types.Extensi
    * Omit specific fields from the GamificacaoRegra
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
   /**
    * Filter, which GamificacaoRegra to fetch.
    */
@@ -913,6 +1219,10 @@ export type GamificacaoRegraFindUniqueOrThrowArgs<ExtArgs extends runtime.Types.
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  /**
    * Filter, which GamificacaoRegra to fetch.
    */
   where: Prisma.GamificacaoRegraWhereUniqueInput
@@ -930,6 +1240,10 @@ export type GamificacaoRegraFindFirstArgs<ExtArgs extends runtime.Types.Extensio
    * Omit specific fields from the GamificacaoRegra
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
   /**
    * Filter, which GamificacaoRegra to fetch.
    */
@@ -979,6 +1293,10 @@ export type GamificacaoRegraFindFirstOrThrowArgs<ExtArgs extends runtime.Types.E
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  /**
    * Filter, which GamificacaoRegra to fetch.
    */
   where?: Prisma.GamificacaoRegraWhereInput
@@ -1027,6 +1345,10 @@ export type GamificacaoRegraFindManyArgs<ExtArgs extends runtime.Types.Extension
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  /**
    * Filter, which GamificacaoRegras to fetch.
    */
   where?: Prisma.GamificacaoRegraWhereInput
@@ -1069,6 +1391,10 @@ export type GamificacaoRegraCreateArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the GamificacaoRegra
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
   /**
    * The data needed to create a GamificacaoRegra.
    */
@@ -1117,6 +1443,10 @@ export type GamificacaoRegraUpdateArgs<ExtArgs extends runtime.Types.Extensions.
    * Omit specific fields from the GamificacaoRegra
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
   /**
    * The data needed to update a GamificacaoRegra.
    */
@@ -1184,6 +1514,10 @@ export type GamificacaoRegraUpsertArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  /**
    * The filter to search for the GamificacaoRegra to update in case it exists.
    */
   where: Prisma.GamificacaoRegraWhereUniqueInput
@@ -1210,6 +1544,10 @@ export type GamificacaoRegraDeleteArgs<ExtArgs extends runtime.Types.Extensions.
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
   /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  /**
    * Filter which GamificacaoRegra to delete.
    */
   where: Prisma.GamificacaoRegraWhereUniqueInput
@@ -1230,6 +1568,30 @@ export type GamificacaoRegraDeleteManyArgs<ExtArgs extends runtime.Types.Extensi
 }
 
 /**
+ * GamificacaoRegra.extrato
+ */
+export type GamificacaoRegra$extratoArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the PontosExtrato
+   */
+  select?: Prisma.PontosExtratoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the PontosExtrato
+   */
+  omit?: Prisma.PontosExtratoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.PontosExtratoInclude<ExtArgs> | null
+  where?: Prisma.PontosExtratoWhereInput
+  orderBy?: Prisma.PontosExtratoOrderByWithRelationInput | Prisma.PontosExtratoOrderByWithRelationInput[]
+  cursor?: Prisma.PontosExtratoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.PontosExtratoScalarFieldEnum | Prisma.PontosExtratoScalarFieldEnum[]
+}
+
+/**
  * GamificacaoRegra without action
  */
 export type GamificacaoRegraDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1241,4 +1603,8 @@ export type GamificacaoRegraDefaultArgs<ExtArgs extends runtime.Types.Extensions
    * Omit specific fields from the GamificacaoRegra
    */
   omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
 }

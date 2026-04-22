@@ -225,6 +225,7 @@ export type PontosExtratoWhereInput = {
   descricao?: Prisma.StringFilter<"PontosExtrato"> | string
   created_at?: Prisma.DateTimeFilter<"PontosExtrato"> | Date | string
   reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
+  regra?: Prisma.XOR<Prisma.GamificacaoRegraNullableScalarRelationFilter, Prisma.GamificacaoRegraWhereInput> | null
 }
 
 export type PontosExtratoOrderByWithRelationInput = {
@@ -235,6 +236,7 @@ export type PontosExtratoOrderByWithRelationInput = {
   descricao?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   reseller?: Prisma.ResellerOrderByWithRelationInput
+  regra?: Prisma.GamificacaoRegraOrderByWithRelationInput
 }
 
 export type PontosExtratoWhereUniqueInput = Prisma.AtLeast<{
@@ -248,6 +250,7 @@ export type PontosExtratoWhereUniqueInput = Prisma.AtLeast<{
   descricao?: Prisma.StringFilter<"PontosExtrato"> | string
   created_at?: Prisma.DateTimeFilter<"PontosExtrato"> | Date | string
   reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
+  regra?: Prisma.XOR<Prisma.GamificacaoRegraNullableScalarRelationFilter, Prisma.GamificacaoRegraWhereInput> | null
 }, "id">
 
 export type PontosExtratoOrderByWithAggregationInput = {
@@ -278,11 +281,11 @@ export type PontosExtratoScalarWhereWithAggregatesInput = {
 
 export type PontosExtratoCreateInput = {
   id?: string
-  regra_id?: string | null
   pontos: number
   descricao?: string
   created_at?: Date | string
   reseller: Prisma.ResellerCreateNestedOneWithoutPontos_extratoInput
+  regra?: Prisma.GamificacaoRegraCreateNestedOneWithoutExtratoInput
 }
 
 export type PontosExtratoUncheckedCreateInput = {
@@ -296,11 +299,11 @@ export type PontosExtratoUncheckedCreateInput = {
 
 export type PontosExtratoUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  regra_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   descricao?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   reseller?: Prisma.ResellerUpdateOneRequiredWithoutPontos_extratoNestedInput
+  regra?: Prisma.GamificacaoRegraUpdateOneWithoutExtratoNestedInput
 }
 
 export type PontosExtratoUncheckedUpdateInput = {
@@ -323,7 +326,6 @@ export type PontosExtratoCreateManyInput = {
 
 export type PontosExtratoUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  regra_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   descricao?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -425,12 +427,54 @@ export type PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput = {
   deleteMany?: Prisma.PontosExtratoScalarWhereInput | Prisma.PontosExtratoScalarWhereInput[]
 }
 
+export type PontosExtratoCreateNestedManyWithoutRegraInput = {
+  create?: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput> | Prisma.PontosExtratoCreateWithoutRegraInput[] | Prisma.PontosExtratoUncheckedCreateWithoutRegraInput[]
+  connectOrCreate?: Prisma.PontosExtratoCreateOrConnectWithoutRegraInput | Prisma.PontosExtratoCreateOrConnectWithoutRegraInput[]
+  createMany?: Prisma.PontosExtratoCreateManyRegraInputEnvelope
+  connect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+}
+
+export type PontosExtratoUncheckedCreateNestedManyWithoutRegraInput = {
+  create?: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput> | Prisma.PontosExtratoCreateWithoutRegraInput[] | Prisma.PontosExtratoUncheckedCreateWithoutRegraInput[]
+  connectOrCreate?: Prisma.PontosExtratoCreateOrConnectWithoutRegraInput | Prisma.PontosExtratoCreateOrConnectWithoutRegraInput[]
+  createMany?: Prisma.PontosExtratoCreateManyRegraInputEnvelope
+  connect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+}
+
+export type PontosExtratoUpdateManyWithoutRegraNestedInput = {
+  create?: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput> | Prisma.PontosExtratoCreateWithoutRegraInput[] | Prisma.PontosExtratoUncheckedCreateWithoutRegraInput[]
+  connectOrCreate?: Prisma.PontosExtratoCreateOrConnectWithoutRegraInput | Prisma.PontosExtratoCreateOrConnectWithoutRegraInput[]
+  upsert?: Prisma.PontosExtratoUpsertWithWhereUniqueWithoutRegraInput | Prisma.PontosExtratoUpsertWithWhereUniqueWithoutRegraInput[]
+  createMany?: Prisma.PontosExtratoCreateManyRegraInputEnvelope
+  set?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  disconnect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  delete?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  connect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  update?: Prisma.PontosExtratoUpdateWithWhereUniqueWithoutRegraInput | Prisma.PontosExtratoUpdateWithWhereUniqueWithoutRegraInput[]
+  updateMany?: Prisma.PontosExtratoUpdateManyWithWhereWithoutRegraInput | Prisma.PontosExtratoUpdateManyWithWhereWithoutRegraInput[]
+  deleteMany?: Prisma.PontosExtratoScalarWhereInput | Prisma.PontosExtratoScalarWhereInput[]
+}
+
+export type PontosExtratoUncheckedUpdateManyWithoutRegraNestedInput = {
+  create?: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput> | Prisma.PontosExtratoCreateWithoutRegraInput[] | Prisma.PontosExtratoUncheckedCreateWithoutRegraInput[]
+  connectOrCreate?: Prisma.PontosExtratoCreateOrConnectWithoutRegraInput | Prisma.PontosExtratoCreateOrConnectWithoutRegraInput[]
+  upsert?: Prisma.PontosExtratoUpsertWithWhereUniqueWithoutRegraInput | Prisma.PontosExtratoUpsertWithWhereUniqueWithoutRegraInput[]
+  createMany?: Prisma.PontosExtratoCreateManyRegraInputEnvelope
+  set?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  disconnect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  delete?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  connect?: Prisma.PontosExtratoWhereUniqueInput | Prisma.PontosExtratoWhereUniqueInput[]
+  update?: Prisma.PontosExtratoUpdateWithWhereUniqueWithoutRegraInput | Prisma.PontosExtratoUpdateWithWhereUniqueWithoutRegraInput[]
+  updateMany?: Prisma.PontosExtratoUpdateManyWithWhereWithoutRegraInput | Prisma.PontosExtratoUpdateManyWithWhereWithoutRegraInput[]
+  deleteMany?: Prisma.PontosExtratoScalarWhereInput | Prisma.PontosExtratoScalarWhereInput[]
+}
+
 export type PontosExtratoCreateWithoutResellerInput = {
   id?: string
-  regra_id?: string | null
   pontos: number
   descricao?: string
   created_at?: Date | string
+  regra?: Prisma.GamificacaoRegraCreateNestedOneWithoutExtratoInput
 }
 
 export type PontosExtratoUncheckedCreateWithoutResellerInput = {
@@ -479,6 +523,48 @@ export type PontosExtratoScalarWhereInput = {
   created_at?: Prisma.DateTimeFilter<"PontosExtrato"> | Date | string
 }
 
+export type PontosExtratoCreateWithoutRegraInput = {
+  id?: string
+  pontos: number
+  descricao?: string
+  created_at?: Date | string
+  reseller: Prisma.ResellerCreateNestedOneWithoutPontos_extratoInput
+}
+
+export type PontosExtratoUncheckedCreateWithoutRegraInput = {
+  id?: string
+  reseller_id: string
+  pontos: number
+  descricao?: string
+  created_at?: Date | string
+}
+
+export type PontosExtratoCreateOrConnectWithoutRegraInput = {
+  where: Prisma.PontosExtratoWhereUniqueInput
+  create: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput>
+}
+
+export type PontosExtratoCreateManyRegraInputEnvelope = {
+  data: Prisma.PontosExtratoCreateManyRegraInput | Prisma.PontosExtratoCreateManyRegraInput[]
+  skipDuplicates?: boolean
+}
+
+export type PontosExtratoUpsertWithWhereUniqueWithoutRegraInput = {
+  where: Prisma.PontosExtratoWhereUniqueInput
+  update: Prisma.XOR<Prisma.PontosExtratoUpdateWithoutRegraInput, Prisma.PontosExtratoUncheckedUpdateWithoutRegraInput>
+  create: Prisma.XOR<Prisma.PontosExtratoCreateWithoutRegraInput, Prisma.PontosExtratoUncheckedCreateWithoutRegraInput>
+}
+
+export type PontosExtratoUpdateWithWhereUniqueWithoutRegraInput = {
+  where: Prisma.PontosExtratoWhereUniqueInput
+  data: Prisma.XOR<Prisma.PontosExtratoUpdateWithoutRegraInput, Prisma.PontosExtratoUncheckedUpdateWithoutRegraInput>
+}
+
+export type PontosExtratoUpdateManyWithWhereWithoutRegraInput = {
+  where: Prisma.PontosExtratoScalarWhereInput
+  data: Prisma.XOR<Prisma.PontosExtratoUpdateManyMutationInput, Prisma.PontosExtratoUncheckedUpdateManyWithoutRegraInput>
+}
+
 export type PontosExtratoCreateManyResellerInput = {
   id?: string
   regra_id?: string | null
@@ -489,10 +575,10 @@ export type PontosExtratoCreateManyResellerInput = {
 
 export type PontosExtratoUpdateWithoutResellerInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  regra_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   pontos?: Prisma.IntFieldUpdateOperationsInput | number
   descricao?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  regra?: Prisma.GamificacaoRegraUpdateOneWithoutExtratoNestedInput
 }
 
 export type PontosExtratoUncheckedUpdateWithoutResellerInput = {
@@ -511,6 +597,38 @@ export type PontosExtratoUncheckedUpdateManyWithoutResellerInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
+export type PontosExtratoCreateManyRegraInput = {
+  id?: string
+  reseller_id: string
+  pontos: number
+  descricao?: string
+  created_at?: Date | string
+}
+
+export type PontosExtratoUpdateWithoutRegraInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  pontos?: Prisma.IntFieldUpdateOperationsInput | number
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutPontos_extratoNestedInput
+}
+
+export type PontosExtratoUncheckedUpdateWithoutRegraInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pontos?: Prisma.IntFieldUpdateOperationsInput | number
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type PontosExtratoUncheckedUpdateManyWithoutRegraInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  pontos?: Prisma.IntFieldUpdateOperationsInput | number
+  descricao?: Prisma.StringFieldUpdateOperationsInput | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
 
 
 export type PontosExtratoSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -521,6 +639,7 @@ export type PontosExtratoSelect<ExtArgs extends runtime.Types.Extensions.Interna
   descricao?: boolean
   created_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }, ExtArgs["result"]["pontosExtrato"]>
 
 export type PontosExtratoSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -531,6 +650,7 @@ export type PontosExtratoSelectCreateManyAndReturn<ExtArgs extends runtime.Types
   descricao?: boolean
   created_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }, ExtArgs["result"]["pontosExtrato"]>
 
 export type PontosExtratoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -541,6 +661,7 @@ export type PontosExtratoSelectUpdateManyAndReturn<ExtArgs extends runtime.Types
   descricao?: boolean
   created_at?: boolean
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }, ExtArgs["result"]["pontosExtrato"]>
 
 export type PontosExtratoSelectScalar = {
@@ -555,18 +676,22 @@ export type PontosExtratoSelectScalar = {
 export type PontosExtratoOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "reseller_id" | "regra_id" | "pontos" | "descricao" | "created_at", ExtArgs["result"]["pontosExtrato"]>
 export type PontosExtratoInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }
 export type PontosExtratoIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }
 export type PontosExtratoIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
+  regra?: boolean | Prisma.PontosExtrato$regraArgs<ExtArgs>
 }
 
 export type $PontosExtratoPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "PontosExtrato"
   objects: {
     reseller: Prisma.$ResellerPayload<ExtArgs>
+    regra: Prisma.$GamificacaoRegraPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -970,6 +1095,7 @@ readonly fields: PontosExtratoFieldRefs;
 export interface Prisma__PontosExtratoClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
   reseller<T extends Prisma.ResellerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResellerDefaultArgs<ExtArgs>>): Prisma.Prisma__ResellerClient<runtime.Types.Result.GetResult<Prisma.$ResellerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  regra<T extends Prisma.PontosExtrato$regraArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.PontosExtrato$regraArgs<ExtArgs>>): Prisma.Prisma__GamificacaoRegraClient<runtime.Types.Result.GetResult<Prisma.$GamificacaoRegraPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1398,6 +1524,25 @@ export type PontosExtratoDeleteManyArgs<ExtArgs extends runtime.Types.Extensions
    * Limit how many PontosExtratoes to delete.
    */
   limit?: number
+}
+
+/**
+ * PontosExtrato.regra
+ */
+export type PontosExtrato$regraArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the GamificacaoRegra
+   */
+  select?: Prisma.GamificacaoRegraSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the GamificacaoRegra
+   */
+  omit?: Prisma.GamificacaoRegraOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.GamificacaoRegraInclude<ExtArgs> | null
+  where?: Prisma.GamificacaoRegraWhereInput
 }
 
 /**

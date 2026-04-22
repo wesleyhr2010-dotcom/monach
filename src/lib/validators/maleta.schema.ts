@@ -20,6 +20,25 @@ export const criarMaletaSchema = z.object({
     itens: z.array(maletaItemSchema).min(1, "Pelo menos 1 item é necessário"),
 });
 
+/** Schema for registrar_venda */
+export const registrarVendaSchema = z.object({
+    maleta_item_id: z.string().uuid("ID do item inválido"),
+    cliente_nome: z.string().min(2, "Nome é obrigatório").max(100),
+    cliente_telefone: z.string().min(8, "Telefone inválido").max(20),
+    preco_unitario: z.coerce.number().positive("Preço inválido"),
+});
+
+export const registrarVendaMultiplaSchema = z.object({
+  cliente_nome: z.string().min(2, "Nome é obrigatório").max(100),
+  cliente_telefone: z.string().min(8, "Telefone inválido").max(20),
+  itens: z.array(
+    z.object({
+      maleta_item_id: z.string().uuid(),
+      quantidade: z.number().int().positive()
+    })
+  ).min(1, "Selecione ao menos 1 item"),
+});
+
 /** Schema for registering sold items */
 export const itemVendidoSchema = z.object({
     maleta_item_id: z.string().uuid(),
@@ -29,4 +48,16 @@ export const itemVendidoSchema = z.object({
 export const fecharMaletaSchema = z.object({
     id: z.string().uuid("ID da maleta inválido"),
     itensVendidos: z.array(itemVendidoSchema),
+});
+
+/** Schema for conferir (review + close) a maleta */
+export const conferirItemSchema = z.object({
+    item_id: z.string().uuid("ID do item inválido"),
+    quantidade_recebida: z.number().int().min(0, "Quantidade recebida não pode ser negativa"),
+});
+
+export const conferirMaletaSchema = z.object({
+    maleta_id: z.string().uuid("ID da maleta inválido"),
+    itens_conferidos: z.array(conferirItemSchema).min(1, "Pelo menos 1 item é necessário"),
+    nota_acerto: z.string().max(500).optional(),
 });

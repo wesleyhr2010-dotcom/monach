@@ -3,22 +3,27 @@
    ============================================ */
 
 :root {
-    --admin-bg: #0f0f0f;
-    --admin-surface: #1a1a1a;
+    --admin-bg: #0a0a0a;
+    --admin-surface: #171717;
     --admin-surface-hover: #222222;
+    --admin-surface-row-atrasada: #1a1010;
+    --admin-surface-row-aguardando: #1a1a10;
     --admin-border: #2a2a2a;
-    --admin-border-focus: #b4aba2;
-    --admin-text: #f5f5f5;
+    --admin-border-focus: #35605a;
+    --admin-text: #ededed;
     --admin-text-muted: #888888;
-    --admin-accent: #b4aba2;
-    --admin-accent-hover: #c5bdb5;
-    --admin-danger: #ef4444;
-    --admin-danger-hover: #dc2626;
-    --admin-success: #22c55e;
-    --admin-warning: #f59e0b;
+    --admin-text-dim: #444444;
+    --admin-accent: #35605a;
+    --admin-accent-hover: #2a4d48;
+    --admin-danger: #e05c5c;
+    --admin-danger-hover: #c44545;
+    --admin-success: #4ade80;
+    --admin-warning: #facc15;
     --admin-radius: 8px;
     --admin-radius-sm: 4px;
-    --admin-sidebar-width: 260px;
+    --admin-radius-lg: 12px;
+    --admin-radius-pill: 9px;
+    --admin-sidebar-width: 240px;
 }
 
 /* Layout */
@@ -129,6 +134,15 @@
 .admin-content {
     flex: 1;
     padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+@media (max-width: 768px) {
+    .admin-content {
+        padding: 16px;
+    }
 }
 
 /* Cards */
@@ -154,18 +168,20 @@
 }
 
 .admin-stat-label {
-    font-size: 12px;
-    font-weight: 500;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--admin-text-muted);
+    letter-spacing: 1px;
+    color: var(--admin-text-dim);
     margin-bottom: 8px;
+    font-family: 'Raleway', system-ui, sans-serif;
 }
 
 .admin-stat-value {
-    font-size: 28px;
+    font-size: 24px;
     font-weight: 700;
     color: var(--admin-text);
+    font-family: 'Playfair Display', system-ui, serif;
 }
 
 /* Table */
@@ -180,24 +196,30 @@
 
 .admin-table th {
     text-align: left;
-    padding: 12px 16px;
-    font-size: 11px;
-    font-weight: 600;
+    padding: 12px 20px;
+    font-size: 10px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--admin-text-muted);
+    letter-spacing: 1px;
+    color: var(--admin-text-dim);
     border-bottom: 1px solid var(--admin-border);
+    background: #141414;
 }
 
 .admin-table td {
-    padding: 12px 16px;
-    font-size: 14px;
+    padding: 14px 20px;
+    font-size: 13px;
     border-bottom: 1px solid var(--admin-border);
     vertical-align: middle;
+    font-family: 'Raleway', system-ui, sans-serif;
 }
 
 .admin-table tr:hover td {
     background: var(--admin-surface-hover);
+}
+
+.admin-table tr td {
+    transition: background 0.15s ease;
 }
 
 .admin-table-thumb {
@@ -252,7 +274,7 @@
 
 .admin-btn-primary {
     background: var(--admin-accent);
-    color: #000;
+    color: #ffffff;
 }
 
 .admin-btn-primary:hover {
@@ -735,10 +757,11 @@
 }
 
 .admin-page-title {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
     letter-spacing: -0.01em;
     color: var(--admin-text);
+    font-family: 'Playfair Display', system-ui, serif;
 }
 
 /* -- Additional root aliases for inline styles -- */
@@ -746,7 +769,10 @@
     --admin-primary: var(--admin-accent);
     --admin-text-primary: var(--admin-text);
     --admin-text-secondary: var(--admin-text-muted);
+    --admin-text-dim: var(--admin-text-dim);
     --admin-bg-secondary: var(--admin-surface-hover);
+    --admin-row-atrasada: var(--admin-surface-row-atrasada);
+    --admin-row-aguardando: var(--admin-surface-row-aguardando);
 }
 
 /* Alerts */
@@ -767,4 +793,16 @@
     background: #065f46;
     color: #d1fae5;
     border: 1px solid #047857;
+}
+
+.admin-alert-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Tables inside admin-content should not add extra padding */
+.admin-content > .admin-card[style*="padding: 0"] .admin-table td,
+.admin-content > .admin-card[style*="padding:0"] .admin-table td {
+    vertical-align: middle;
 }

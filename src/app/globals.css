@@ -101,3 +101,36 @@ img {
   max-width: 100%;
   height: auto;
 }
+
+/* ============================================
+   Admin Dark Theme — Shadcn/UI overrides
+   Maps shadcn/ui CSS variables to admin dark
+   palette when inside .admin-layout
+   ============================================ */
+.admin-layout {
+  --color-background: #0a0a0a;
+  --color-foreground: #ededed;
+  --color-card: #171717;
+  --color-card-foreground: #ededed;
+  --color-popover: #171717;
+  --color-popover-foreground: #ededed;
+  --color-primary: #35605a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #222222;
+  --color-secondary-foreground: #ededed;
+  --color-muted: #171717;
+  --color-muted-foreground: #888888;
+  --color-accent: #222222;
+  --color-accent-foreground: #ededed;
+  --color-destructive: #e05c5c;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #2a2a2a;
+  --color-input: #2a2a2a;
+  --color-ring: #35605a;
+  background: #0a0a0a;
+  color: #ededed;
+}
+
+.admin-layout * {
+  border-color: var(--color-border);
+}

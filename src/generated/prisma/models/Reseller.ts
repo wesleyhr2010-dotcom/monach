@@ -36,57 +36,96 @@ export type ResellerSumAggregateOutputType = {
 
 export type ResellerMinAggregateOutputType = {
   id: string | null
+  auth_user_id: string | null
+  colaboradora_id: string | null
   name: string | null
-  slug: string | null
-  whatsapp: string | null
   email: string | null
+  whatsapp: string | null
   avatar_url: string | null
   bio: string | null
+  slug: string | null
+  role: $Enums.UserRole | null
+  taxa_comissao: runtime.Decimal | null
+  endereco_cep: string | null
+  endereco_logradouro: string | null
+  endereco_numero: string | null
+  endereco_complemento: string | null
+  endereco_cidade: string | null
+  endereco_estado: string | null
+  cedula: string | null
+  instagram: string | null
+  edad: string | null
+  estado_civil: string | null
+  hijos: string | null
+  empresa: string | null
+  informconf: string | null
   is_active: boolean | null
+  perfil_completo: boolean | null
   created_at: Date | null
   updated_at: Date | null
-  role: $Enums.UserRole | null
-  colaboradora_id: string | null
-  taxa_comissao: runtime.Decimal | null
-  perfil_completo: boolean | null
-  auth_user_id: string | null
 }
 
 export type ResellerMaxAggregateOutputType = {
   id: string | null
+  auth_user_id: string | null
+  colaboradora_id: string | null
   name: string | null
-  slug: string | null
-  whatsapp: string | null
   email: string | null
+  whatsapp: string | null
   avatar_url: string | null
   bio: string | null
+  slug: string | null
+  role: $Enums.UserRole | null
+  taxa_comissao: runtime.Decimal | null
+  endereco_cep: string | null
+  endereco_logradouro: string | null
+  endereco_numero: string | null
+  endereco_complemento: string | null
+  endereco_cidade: string | null
+  endereco_estado: string | null
+  cedula: string | null
+  instagram: string | null
+  edad: string | null
+  estado_civil: string | null
+  hijos: string | null
+  empresa: string | null
+  informconf: string | null
   is_active: boolean | null
+  perfil_completo: boolean | null
   created_at: Date | null
   updated_at: Date | null
-  role: $Enums.UserRole | null
-  colaboradora_id: string | null
-  taxa_comissao: runtime.Decimal | null
-  perfil_completo: boolean | null
-  auth_user_id: string | null
 }
 
 export type ResellerCountAggregateOutputType = {
   id: number
+  auth_user_id: number
+  colaboradora_id: number
   name: number
-  slug: number
-  whatsapp: number
   email: number
+  whatsapp: number
   avatar_url: number
   bio: number
+  slug: number
+  role: number
+  taxa_comissao: number
+  endereco_cep: number
+  endereco_logradouro: number
+  endereco_numero: number
+  endereco_complemento: number
+  endereco_cidade: number
+  endereco_estado: number
+  cedula: number
+  instagram: number
+  edad: number
+  estado_civil: number
+  hijos: number
+  empresa: number
+  informconf: number
   is_active: number
+  perfil_completo: number
+  documentos_url: number
   created_at: number
   updated_at: number
-  role: number
-  colaboradora_id: number
-  taxa_comissao: number
-  documentos_url: number
-  perfil_completo: number
-  auth_user_id: number
   _all: number
 }
 
@@ -101,57 +140,96 @@ export type ResellerSumAggregateInputType = {
 
 export type ResellerMinAggregateInputType = {
   id?: true
+  auth_user_id?: true
+  colaboradora_id?: true
   name?: true
-  slug?: true
-  whatsapp?: true
   email?: true
+  whatsapp?: true
   avatar_url?: true
   bio?: true
+  slug?: true
+  role?: true
+  taxa_comissao?: true
+  endereco_cep?: true
+  endereco_logradouro?: true
+  endereco_numero?: true
+  endereco_complemento?: true
+  endereco_cidade?: true
+  endereco_estado?: true
+  cedula?: true
+  instagram?: true
+  edad?: true
+  estado_civil?: true
+  hijos?: true
+  empresa?: true
+  informconf?: true
   is_active?: true
+  perfil_completo?: true
   created_at?: true
   updated_at?: true
-  role?: true
-  colaboradora_id?: true
-  taxa_comissao?: true
-  perfil_completo?: true
-  auth_user_id?: true
 }
 
 export type ResellerMaxAggregateInputType = {
   id?: true
+  auth_user_id?: true
+  colaboradora_id?: true
   name?: true
-  slug?: true
-  whatsapp?: true
   email?: true
+  whatsapp?: true
   avatar_url?: true
   bio?: true
+  slug?: true
+  role?: true
+  taxa_comissao?: true
+  endereco_cep?: true
+  endereco_logradouro?: true
+  endereco_numero?: true
+  endereco_complemento?: true
+  endereco_cidade?: true
+  endereco_estado?: true
+  cedula?: true
+  instagram?: true
+  edad?: true
+  estado_civil?: true
+  hijos?: true
+  empresa?: true
+  informconf?: true
   is_active?: true
+  perfil_completo?: true
   created_at?: true
   updated_at?: true
-  role?: true
-  colaboradora_id?: true
-  taxa_comissao?: true
-  perfil_completo?: true
-  auth_user_id?: true
 }
 
 export type ResellerCountAggregateInputType = {
   id?: true
+  auth_user_id?: true
+  colaboradora_id?: true
   name?: true
-  slug?: true
-  whatsapp?: true
   email?: true
+  whatsapp?: true
   avatar_url?: true
   bio?: true
+  slug?: true
+  role?: true
+  taxa_comissao?: true
+  endereco_cep?: true
+  endereco_logradouro?: true
+  endereco_numero?: true
+  endereco_complemento?: true
+  endereco_cidade?: true
+  endereco_estado?: true
+  cedula?: true
+  instagram?: true
+  edad?: true
+  estado_civil?: true
+  hijos?: true
+  empresa?: true
+  informconf?: true
   is_active?: true
+  perfil_completo?: true
+  documentos_url?: true
   created_at?: true
   updated_at?: true
-  role?: true
-  colaboradora_id?: true
-  taxa_comissao?: true
-  documentos_url?: true
-  perfil_completo?: true
-  auth_user_id?: true
   _all?: true
 }
 
@@ -243,21 +321,34 @@ export type ResellerGroupByArgs<ExtArgs extends runtime.Types.Extensions.Interna
 
 export type ResellerGroupByOutputType = {
   id: string
+  auth_user_id: string | null
+  colaboradora_id: string | null
   name: string
-  slug: string
-  whatsapp: string
   email: string
+  whatsapp: string
   avatar_url: string
   bio: string
+  slug: string
+  role: $Enums.UserRole
+  taxa_comissao: runtime.Decimal
+  endereco_cep: string
+  endereco_logradouro: string
+  endereco_numero: string
+  endereco_complemento: string
+  endereco_cidade: string
+  endereco_estado: string
+  cedula: string
+  instagram: string
+  edad: string
+  estado_civil: string
+  hijos: string
+  empresa: string
+  informconf: string
   is_active: boolean
+  perfil_completo: boolean
+  documentos_url: runtime.JsonValue
   created_at: Date
   updated_at: Date
-  role: $Enums.UserRole
-  colaboradora_id: string | null
-  taxa_comissao: runtime.Decimal
-  documentos_url: runtime.JsonValue
-  perfil_completo: boolean
-  auth_user_id: string | null
   _count: ResellerCountAggregateOutputType | null
   _avg: ResellerAvgAggregateOutputType | null
   _sum: ResellerSumAggregateOutputType | null
@@ -285,21 +376,34 @@ export type ResellerWhereInput = {
   OR?: Prisma.ResellerWhereInput[]
   NOT?: Prisma.ResellerWhereInput | Prisma.ResellerWhereInput[]
   id?: Prisma.UuidFilter<"Reseller"> | string
+  auth_user_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
+  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
   name?: Prisma.StringFilter<"Reseller"> | string
-  slug?: Prisma.StringFilter<"Reseller"> | string
-  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   email?: Prisma.StringFilter<"Reseller"> | string
+  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   avatar_url?: Prisma.StringFilter<"Reseller"> | string
   bio?: Prisma.StringFilter<"Reseller"> | string
+  slug?: Prisma.StringFilter<"Reseller"> | string
+  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFilter<"Reseller"> | string
+  endereco_logradouro?: Prisma.StringFilter<"Reseller"> | string
+  endereco_numero?: Prisma.StringFilter<"Reseller"> | string
+  endereco_complemento?: Prisma.StringFilter<"Reseller"> | string
+  endereco_cidade?: Prisma.StringFilter<"Reseller"> | string
+  endereco_estado?: Prisma.StringFilter<"Reseller"> | string
+  cedula?: Prisma.StringFilter<"Reseller"> | string
+  instagram?: Prisma.StringFilter<"Reseller"> | string
+  edad?: Prisma.StringFilter<"Reseller"> | string
+  estado_civil?: Prisma.StringFilter<"Reseller"> | string
+  hijos?: Prisma.StringFilter<"Reseller"> | string
+  empresa?: Prisma.StringFilter<"Reseller"> | string
+  informconf?: Prisma.StringFilter<"Reseller"> | string
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
+  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
-  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
-  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
-  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonFilter<"Reseller">
-  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
-  auth_user_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
   colaboradora?: Prisma.XOR<Prisma.ResellerNullableScalarRelationFilter, Prisma.ResellerWhereInput> | null
   revendedoras_sob_mim?: Prisma.ResellerListRelationFilter
   reseller_products?: Prisma.ResellerProductListRelationFilter
@@ -308,25 +412,44 @@ export type ResellerWhereInput = {
   resgates?: Prisma.ResgateListRelationFilter
   analytics_acessos?: Prisma.AnalyticsAcessoListRelationFilter
   analytics_diario?: Prisma.AnalyticsDiarioListRelationFilter
+  documentos?: Prisma.ResellerDocumentoListRelationFilter
+  dados_bancarios?: Prisma.XOR<Prisma.DadosBancariosNullableScalarRelationFilter, Prisma.DadosBancariosWhereInput> | null
+  notif_preferencias?: Prisma.XOR<Prisma.NotificacaoPreferenciaNullableScalarRelationFilter, Prisma.NotificacaoPreferenciaWhereInput> | null
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeListRelationFilter
+  vendas?: Prisma.VendaMaletaListRelationFilter
+  leads_atribuidos?: Prisma.RevendedoraLeadListRelationFilter
 }
 
 export type ResellerOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  auth_user_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  colaboradora_id?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  whatsapp?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  whatsapp?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  taxa_comissao?: Prisma.SortOrder
+  endereco_cep?: Prisma.SortOrder
+  endereco_logradouro?: Prisma.SortOrder
+  endereco_numero?: Prisma.SortOrder
+  endereco_complemento?: Prisma.SortOrder
+  endereco_cidade?: Prisma.SortOrder
+  endereco_estado?: Prisma.SortOrder
+  cedula?: Prisma.SortOrder
+  instagram?: Prisma.SortOrder
+  edad?: Prisma.SortOrder
+  estado_civil?: Prisma.SortOrder
+  hijos?: Prisma.SortOrder
+  empresa?: Prisma.SortOrder
+  informconf?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  perfil_completo?: Prisma.SortOrder
+  documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  colaboradora_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  taxa_comissao?: Prisma.SortOrder
-  documentos_url?: Prisma.SortOrder
-  perfil_completo?: Prisma.SortOrder
-  auth_user_id?: Prisma.SortOrderInput | Prisma.SortOrder
   colaboradora?: Prisma.ResellerOrderByWithRelationInput
   revendedoras_sob_mim?: Prisma.ResellerOrderByRelationAggregateInput
   reseller_products?: Prisma.ResellerProductOrderByRelationAggregateInput
@@ -335,28 +458,47 @@ export type ResellerOrderByWithRelationInput = {
   resgates?: Prisma.ResgateOrderByRelationAggregateInput
   analytics_acessos?: Prisma.AnalyticsAcessoOrderByRelationAggregateInput
   analytics_diario?: Prisma.AnalyticsDiarioOrderByRelationAggregateInput
+  documentos?: Prisma.ResellerDocumentoOrderByRelationAggregateInput
+  dados_bancarios?: Prisma.DadosBancariosOrderByWithRelationInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaOrderByWithRelationInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeOrderByRelationAggregateInput
+  vendas?: Prisma.VendaMaletaOrderByRelationAggregateInput
+  leads_atribuidos?: Prisma.RevendedoraLeadOrderByRelationAggregateInput
 }
 
 export type ResellerWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  slug?: string
   auth_user_id?: string
+  slug?: string
   AND?: Prisma.ResellerWhereInput | Prisma.ResellerWhereInput[]
   OR?: Prisma.ResellerWhereInput[]
   NOT?: Prisma.ResellerWhereInput | Prisma.ResellerWhereInput[]
+  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
   name?: Prisma.StringFilter<"Reseller"> | string
-  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   email?: Prisma.StringFilter<"Reseller"> | string
+  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   avatar_url?: Prisma.StringFilter<"Reseller"> | string
   bio?: Prisma.StringFilter<"Reseller"> | string
+  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFilter<"Reseller"> | string
+  endereco_logradouro?: Prisma.StringFilter<"Reseller"> | string
+  endereco_numero?: Prisma.StringFilter<"Reseller"> | string
+  endereco_complemento?: Prisma.StringFilter<"Reseller"> | string
+  endereco_cidade?: Prisma.StringFilter<"Reseller"> | string
+  endereco_estado?: Prisma.StringFilter<"Reseller"> | string
+  cedula?: Prisma.StringFilter<"Reseller"> | string
+  instagram?: Prisma.StringFilter<"Reseller"> | string
+  edad?: Prisma.StringFilter<"Reseller"> | string
+  estado_civil?: Prisma.StringFilter<"Reseller"> | string
+  hijos?: Prisma.StringFilter<"Reseller"> | string
+  empresa?: Prisma.StringFilter<"Reseller"> | string
+  informconf?: Prisma.StringFilter<"Reseller"> | string
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
+  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
-  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
-  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
-  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonFilter<"Reseller">
-  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
   colaboradora?: Prisma.XOR<Prisma.ResellerNullableScalarRelationFilter, Prisma.ResellerWhereInput> | null
   revendedoras_sob_mim?: Prisma.ResellerListRelationFilter
   reseller_products?: Prisma.ResellerProductListRelationFilter
@@ -365,25 +507,44 @@ export type ResellerWhereUniqueInput = Prisma.AtLeast<{
   resgates?: Prisma.ResgateListRelationFilter
   analytics_acessos?: Prisma.AnalyticsAcessoListRelationFilter
   analytics_diario?: Prisma.AnalyticsDiarioListRelationFilter
-}, "id" | "slug" | "auth_user_id">
+  documentos?: Prisma.ResellerDocumentoListRelationFilter
+  dados_bancarios?: Prisma.XOR<Prisma.DadosBancariosNullableScalarRelationFilter, Prisma.DadosBancariosWhereInput> | null
+  notif_preferencias?: Prisma.XOR<Prisma.NotificacaoPreferenciaNullableScalarRelationFilter, Prisma.NotificacaoPreferenciaWhereInput> | null
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeListRelationFilter
+  vendas?: Prisma.VendaMaletaListRelationFilter
+  leads_atribuidos?: Prisma.RevendedoraLeadListRelationFilter
+}, "id" | "auth_user_id" | "slug">
 
 export type ResellerOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  auth_user_id?: Prisma.SortOrderInput | Prisma.SortOrder
+  colaboradora_id?: Prisma.SortOrderInput | Prisma.SortOrder
   name?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  whatsapp?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  whatsapp?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  taxa_comissao?: Prisma.SortOrder
+  endereco_cep?: Prisma.SortOrder
+  endereco_logradouro?: Prisma.SortOrder
+  endereco_numero?: Prisma.SortOrder
+  endereco_complemento?: Prisma.SortOrder
+  endereco_cidade?: Prisma.SortOrder
+  endereco_estado?: Prisma.SortOrder
+  cedula?: Prisma.SortOrder
+  instagram?: Prisma.SortOrder
+  edad?: Prisma.SortOrder
+  estado_civil?: Prisma.SortOrder
+  hijos?: Prisma.SortOrder
+  empresa?: Prisma.SortOrder
+  informconf?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  perfil_completo?: Prisma.SortOrder
+  documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  colaboradora_id?: Prisma.SortOrderInput | Prisma.SortOrder
-  taxa_comissao?: Prisma.SortOrder
-  documentos_url?: Prisma.SortOrder
-  perfil_completo?: Prisma.SortOrder
-  auth_user_id?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.ResellerCountOrderByAggregateInput
   _avg?: Prisma.ResellerAvgOrderByAggregateInput
   _max?: Prisma.ResellerMaxOrderByAggregateInput
@@ -396,39 +557,65 @@ export type ResellerScalarWhereWithAggregatesInput = {
   OR?: Prisma.ResellerScalarWhereWithAggregatesInput[]
   NOT?: Prisma.ResellerScalarWhereWithAggregatesInput | Prisma.ResellerScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"Reseller"> | string
+  auth_user_id?: Prisma.UuidNullableWithAggregatesFilter<"Reseller"> | string | null
+  colaboradora_id?: Prisma.UuidNullableWithAggregatesFilter<"Reseller"> | string | null
   name?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
-  slug?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
-  whatsapp?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
   email?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  whatsapp?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
   avatar_url?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
   bio?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  slug?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  role?: Prisma.EnumUserRoleWithAggregatesFilter<"Reseller"> | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalWithAggregatesFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  endereco_logradouro?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  endereco_numero?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  endereco_complemento?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  endereco_cidade?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  endereco_estado?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  cedula?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  instagram?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  edad?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  estado_civil?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  hijos?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  empresa?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
+  informconf?: Prisma.StringWithAggregatesFilter<"Reseller"> | string
   is_active?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
+  perfil_completo?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
+  documentos_url?: Prisma.JsonWithAggregatesFilter<"Reseller">
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Reseller"> | Date | string
-  role?: Prisma.EnumUserRoleWithAggregatesFilter<"Reseller"> | $Enums.UserRole
-  colaboradora_id?: Prisma.UuidNullableWithAggregatesFilter<"Reseller"> | string | null
-  taxa_comissao?: Prisma.DecimalWithAggregatesFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonWithAggregatesFilter<"Reseller">
-  perfil_completo?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
-  auth_user_id?: Prisma.UuidNullableWithAggregatesFilter<"Reseller"> | string | null
 }
 
 export type ResellerCreateInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -437,25 +624,44 @@ export type ResellerCreateInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
@@ -463,24 +669,43 @@ export type ResellerUncheckedCreateInput = {
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -489,25 +714,44 @@ export type ResellerUpdateInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
@@ -515,62 +759,107 @@ export type ResellerUncheckedUpdateInput = {
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateManyInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
 }
 
 export type ResellerUpdateManyMutationInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type ResellerUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type ResellerNullableScalarRelationFilter = {
@@ -590,21 +879,34 @@ export type ResellerOrderByRelationAggregateInput = {
 
 export type ResellerCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  auth_user_id?: Prisma.SortOrder
+  colaboradora_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  whatsapp?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  whatsapp?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  taxa_comissao?: Prisma.SortOrder
+  endereco_cep?: Prisma.SortOrder
+  endereco_logradouro?: Prisma.SortOrder
+  endereco_numero?: Prisma.SortOrder
+  endereco_complemento?: Prisma.SortOrder
+  endereco_cidade?: Prisma.SortOrder
+  endereco_estado?: Prisma.SortOrder
+  cedula?: Prisma.SortOrder
+  instagram?: Prisma.SortOrder
+  edad?: Prisma.SortOrder
+  estado_civil?: Prisma.SortOrder
+  hijos?: Prisma.SortOrder
+  empresa?: Prisma.SortOrder
+  informconf?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  perfil_completo?: Prisma.SortOrder
+  documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  colaboradora_id?: Prisma.SortOrder
-  taxa_comissao?: Prisma.SortOrder
-  documentos_url?: Prisma.SortOrder
-  perfil_completo?: Prisma.SortOrder
-  auth_user_id?: Prisma.SortOrder
 }
 
 export type ResellerAvgOrderByAggregateInput = {
@@ -613,38 +915,64 @@ export type ResellerAvgOrderByAggregateInput = {
 
 export type ResellerMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  auth_user_id?: Prisma.SortOrder
+  colaboradora_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  whatsapp?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  whatsapp?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  taxa_comissao?: Prisma.SortOrder
+  endereco_cep?: Prisma.SortOrder
+  endereco_logradouro?: Prisma.SortOrder
+  endereco_numero?: Prisma.SortOrder
+  endereco_complemento?: Prisma.SortOrder
+  endereco_cidade?: Prisma.SortOrder
+  endereco_estado?: Prisma.SortOrder
+  cedula?: Prisma.SortOrder
+  instagram?: Prisma.SortOrder
+  edad?: Prisma.SortOrder
+  estado_civil?: Prisma.SortOrder
+  hijos?: Prisma.SortOrder
+  empresa?: Prisma.SortOrder
+  informconf?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  perfil_completo?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  colaboradora_id?: Prisma.SortOrder
-  taxa_comissao?: Prisma.SortOrder
-  perfil_completo?: Prisma.SortOrder
-  auth_user_id?: Prisma.SortOrder
 }
 
 export type ResellerMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  auth_user_id?: Prisma.SortOrder
+  colaboradora_id?: Prisma.SortOrder
   name?: Prisma.SortOrder
-  slug?: Prisma.SortOrder
-  whatsapp?: Prisma.SortOrder
   email?: Prisma.SortOrder
+  whatsapp?: Prisma.SortOrder
   avatar_url?: Prisma.SortOrder
   bio?: Prisma.SortOrder
+  slug?: Prisma.SortOrder
+  role?: Prisma.SortOrder
+  taxa_comissao?: Prisma.SortOrder
+  endereco_cep?: Prisma.SortOrder
+  endereco_logradouro?: Prisma.SortOrder
+  endereco_numero?: Prisma.SortOrder
+  endereco_complemento?: Prisma.SortOrder
+  endereco_cidade?: Prisma.SortOrder
+  endereco_estado?: Prisma.SortOrder
+  cedula?: Prisma.SortOrder
+  instagram?: Prisma.SortOrder
+  edad?: Prisma.SortOrder
+  estado_civil?: Prisma.SortOrder
+  hijos?: Prisma.SortOrder
+  empresa?: Prisma.SortOrder
+  informconf?: Prisma.SortOrder
   is_active?: Prisma.SortOrder
+  perfil_completo?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
-  role?: Prisma.SortOrder
-  colaboradora_id?: Prisma.SortOrder
-  taxa_comissao?: Prisma.SortOrder
-  perfil_completo?: Prisma.SortOrder
-  auth_user_id?: Prisma.SortOrder
 }
 
 export type ResellerSumOrderByAggregateInput = {
@@ -676,6 +1004,14 @@ export type ResellerUncheckedCreateNestedManyWithoutColaboradoraInput = {
   connect?: Prisma.ResellerWhereUniqueInput | Prisma.ResellerWhereUniqueInput[]
 }
 
+export type StringFieldUpdateOperationsInput = {
+  set?: string
+}
+
+export type NullableStringFieldUpdateOperationsInput = {
+  set?: string | null
+}
+
 export type EnumUserRoleFieldUpdateOperationsInput = {
   set?: $Enums.UserRole
 }
@@ -686,6 +1022,14 @@ export type DecimalFieldUpdateOperationsInput = {
   decrement?: runtime.Decimal | runtime.DecimalJsLike | number | string
   multiply?: runtime.Decimal | runtime.DecimalJsLike | number | string
   divide?: runtime.Decimal | runtime.DecimalJsLike | number | string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
+}
+
+export type DateTimeFieldUpdateOperationsInput = {
+  set?: Date | string
 }
 
 export type ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput = {
@@ -726,6 +1070,34 @@ export type ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput = {
   deleteMany?: Prisma.ResellerScalarWhereInput | Prisma.ResellerScalarWhereInput[]
 }
 
+export type ResellerCreateNestedOneWithoutDocumentosInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutDocumentosInput, Prisma.ResellerUncheckedCreateWithoutDocumentosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutDocumentosInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutDocumentosNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutDocumentosInput, Prisma.ResellerUncheckedCreateWithoutDocumentosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutDocumentosInput
+  upsert?: Prisma.ResellerUpsertWithoutDocumentosInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutDocumentosInput, Prisma.ResellerUpdateWithoutDocumentosInput>, Prisma.ResellerUncheckedUpdateWithoutDocumentosInput>
+}
+
+export type ResellerCreateNestedOneWithoutDados_bancariosInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutDados_bancariosInput, Prisma.ResellerUncheckedCreateWithoutDados_bancariosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutDados_bancariosInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutDados_bancariosNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutDados_bancariosInput, Prisma.ResellerUncheckedCreateWithoutDados_bancariosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutDados_bancariosInput
+  upsert?: Prisma.ResellerUpsertWithoutDados_bancariosInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutDados_bancariosInput, Prisma.ResellerUpdateWithoutDados_bancariosInput>, Prisma.ResellerUncheckedUpdateWithoutDados_bancariosInput>
+}
+
 export type ResellerCreateNestedOneWithoutReseller_productsInput = {
   create?: Prisma.XOR<Prisma.ResellerCreateWithoutReseller_productsInput, Prisma.ResellerUncheckedCreateWithoutReseller_productsInput>
   connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutReseller_productsInput
@@ -754,6 +1126,20 @@ export type ResellerUpdateOneRequiredWithoutMaletasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutMaletasInput, Prisma.ResellerUpdateWithoutMaletasInput>, Prisma.ResellerUncheckedUpdateWithoutMaletasInput>
 }
 
+export type ResellerCreateNestedOneWithoutVendasInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutVendasInput, Prisma.ResellerUncheckedCreateWithoutVendasInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutVendasInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutVendasNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutVendasInput, Prisma.ResellerUncheckedCreateWithoutVendasInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutVendasInput
+  upsert?: Prisma.ResellerUpsertWithoutVendasInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutVendasInput, Prisma.ResellerUpdateWithoutVendasInput>, Prisma.ResellerUncheckedUpdateWithoutVendasInput>
+}
+
 export type ResellerCreateNestedOneWithoutPontos_extratoInput = {
   create?: Prisma.XOR<Prisma.ResellerCreateWithoutPontos_extratoInput, Prisma.ResellerUncheckedCreateWithoutPontos_extratoInput>
   connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutPontos_extratoInput
@@ -780,6 +1166,34 @@ export type ResellerUpdateOneRequiredWithoutResgatesNestedInput = {
   upsert?: Prisma.ResellerUpsertWithoutResgatesInput
   connect?: Prisma.ResellerWhereUniqueInput
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutResgatesInput, Prisma.ResellerUpdateWithoutResgatesInput>, Prisma.ResellerUncheckedUpdateWithoutResgatesInput>
+}
+
+export type ResellerCreateNestedOneWithoutSolicitacoes_brindeInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedCreateWithoutSolicitacoes_brindeInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutSolicitacoes_brindeInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutSolicitacoes_brindeNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedCreateWithoutSolicitacoes_brindeInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutSolicitacoes_brindeInput
+  upsert?: Prisma.ResellerUpsertWithoutSolicitacoes_brindeInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutSolicitacoes_brindeInput, Prisma.ResellerUpdateWithoutSolicitacoes_brindeInput>, Prisma.ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput>
+}
+
+export type ResellerCreateNestedOneWithoutNotif_preferenciasInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedCreateWithoutNotif_preferenciasInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutNotif_preferenciasInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutNotif_preferenciasNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedCreateWithoutNotif_preferenciasInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutNotif_preferenciasInput
+  upsert?: Prisma.ResellerUpsertWithoutNotif_preferenciasInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutNotif_preferenciasInput, Prisma.ResellerUpdateWithoutNotif_preferenciasInput>, Prisma.ResellerUncheckedUpdateWithoutNotif_preferenciasInput>
 }
 
 export type ResellerCreateNestedOneWithoutAnalytics_acessosInput = {
@@ -814,22 +1228,51 @@ export type ResellerUpdateOneWithoutAnalytics_diarioNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutAnalytics_diarioInput, Prisma.ResellerUpdateWithoutAnalytics_diarioInput>, Prisma.ResellerUncheckedUpdateWithoutAnalytics_diarioInput>
 }
 
+export type ResellerCreateNestedOneWithoutLeads_atribuidosInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedCreateWithoutLeads_atribuidosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutLeads_atribuidosInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneWithoutLeads_atribuidosNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedCreateWithoutLeads_atribuidosInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutLeads_atribuidosInput
+  upsert?: Prisma.ResellerUpsertWithoutLeads_atribuidosInput
+  disconnect?: Prisma.ResellerWhereInput | boolean
+  delete?: Prisma.ResellerWhereInput | boolean
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutLeads_atribuidosInput, Prisma.ResellerUpdateWithoutLeads_atribuidosInput>, Prisma.ResellerUncheckedUpdateWithoutLeads_atribuidosInput>
+}
+
 export type ResellerCreateWithoutRevendedoras_sob_mimInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
@@ -837,31 +1280,56 @@ export type ResellerCreateWithoutRevendedoras_sob_mimInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutRevendedoras_sob_mimInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutRevendedoras_sob_mimInput = {
@@ -871,20 +1339,33 @@ export type ResellerCreateOrConnectWithoutRevendedoras_sob_mimInput = {
 
 export type ResellerCreateWithoutColaboradoraInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
@@ -892,24 +1373,43 @@ export type ResellerCreateWithoutColaboradoraInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutColaboradoraInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
@@ -917,6 +1417,12 @@ export type ResellerUncheckedCreateWithoutColaboradoraInput = {
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutColaboradoraInput = {
@@ -942,20 +1448,33 @@ export type ResellerUpdateToOneWithWhereWithoutRevendedoras_sob_mimInput = {
 
 export type ResellerUpdateWithoutRevendedoras_sob_mimInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
@@ -963,31 +1482,56 @@ export type ResellerUpdateWithoutRevendedoras_sob_mimInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutRevendedoras_sob_mimInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUpsertWithWhereUniqueWithoutColaboradoraInput = {
@@ -1011,39 +1555,449 @@ export type ResellerScalarWhereInput = {
   OR?: Prisma.ResellerScalarWhereInput[]
   NOT?: Prisma.ResellerScalarWhereInput | Prisma.ResellerScalarWhereInput[]
   id?: Prisma.UuidFilter<"Reseller"> | string
+  auth_user_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
+  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
   name?: Prisma.StringFilter<"Reseller"> | string
-  slug?: Prisma.StringFilter<"Reseller"> | string
-  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   email?: Prisma.StringFilter<"Reseller"> | string
+  whatsapp?: Prisma.StringFilter<"Reseller"> | string
   avatar_url?: Prisma.StringFilter<"Reseller"> | string
   bio?: Prisma.StringFilter<"Reseller"> | string
+  slug?: Prisma.StringFilter<"Reseller"> | string
+  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFilter<"Reseller"> | string
+  endereco_logradouro?: Prisma.StringFilter<"Reseller"> | string
+  endereco_numero?: Prisma.StringFilter<"Reseller"> | string
+  endereco_complemento?: Prisma.StringFilter<"Reseller"> | string
+  endereco_cidade?: Prisma.StringFilter<"Reseller"> | string
+  endereco_estado?: Prisma.StringFilter<"Reseller"> | string
+  cedula?: Prisma.StringFilter<"Reseller"> | string
+  instagram?: Prisma.StringFilter<"Reseller"> | string
+  edad?: Prisma.StringFilter<"Reseller"> | string
+  estado_civil?: Prisma.StringFilter<"Reseller"> | string
+  hijos?: Prisma.StringFilter<"Reseller"> | string
+  empresa?: Prisma.StringFilter<"Reseller"> | string
+  informconf?: Prisma.StringFilter<"Reseller"> | string
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
+  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
-  role?: Prisma.EnumUserRoleFilter<"Reseller"> | $Enums.UserRole
-  colaboradora_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
-  taxa_comissao?: Prisma.DecimalFilter<"Reseller"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonFilter<"Reseller">
-  perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
-  auth_user_id?: Prisma.UuidNullableFilter<"Reseller"> | string | null
+}
+
+export type ResellerCreateWithoutDocumentosInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutDocumentosInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutDocumentosInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutDocumentosInput, Prisma.ResellerUncheckedCreateWithoutDocumentosInput>
+}
+
+export type ResellerUpsertWithoutDocumentosInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutDocumentosInput, Prisma.ResellerUncheckedUpdateWithoutDocumentosInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutDocumentosInput, Prisma.ResellerUncheckedCreateWithoutDocumentosInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutDocumentosInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutDocumentosInput, Prisma.ResellerUncheckedUpdateWithoutDocumentosInput>
+}
+
+export type ResellerUpdateWithoutDocumentosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutDocumentosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerCreateWithoutDados_bancariosInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutDados_bancariosInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutDados_bancariosInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutDados_bancariosInput, Prisma.ResellerUncheckedCreateWithoutDados_bancariosInput>
+}
+
+export type ResellerUpsertWithoutDados_bancariosInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutDados_bancariosInput, Prisma.ResellerUncheckedUpdateWithoutDados_bancariosInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutDados_bancariosInput, Prisma.ResellerUncheckedCreateWithoutDados_bancariosInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutDados_bancariosInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutDados_bancariosInput, Prisma.ResellerUncheckedUpdateWithoutDados_bancariosInput>
+}
+
+export type ResellerUpdateWithoutDados_bancariosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutDados_bancariosInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutReseller_productsInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
@@ -1051,31 +2005,56 @@ export type ResellerCreateWithoutReseller_productsInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutReseller_productsInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutReseller_productsInput = {
@@ -1096,20 +2075,33 @@ export type ResellerUpdateToOneWithWhereWithoutReseller_productsInput = {
 
 export type ResellerUpdateWithoutReseller_productsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
@@ -1117,49 +2109,87 @@ export type ResellerUpdateWithoutReseller_productsInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutReseller_productsInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutMaletasInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -1167,31 +2197,56 @@ export type ResellerCreateWithoutMaletasInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutMaletasInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutMaletasInput = {
@@ -1212,20 +2267,33 @@ export type ResellerUpdateToOneWithWhereWithoutMaletasInput = {
 
 export type ResellerUpdateWithoutMaletasInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -1233,49 +2301,279 @@ export type ResellerUpdateWithoutMaletasInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutMaletasInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerCreateWithoutVendasInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutVendasInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutVendasInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutVendasInput, Prisma.ResellerUncheckedCreateWithoutVendasInput>
+}
+
+export type ResellerUpsertWithoutVendasInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutVendasInput, Prisma.ResellerUncheckedUpdateWithoutVendasInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutVendasInput, Prisma.ResellerUncheckedCreateWithoutVendasInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutVendasInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutVendasInput, Prisma.ResellerUncheckedUpdateWithoutVendasInput>
+}
+
+export type ResellerUpdateWithoutVendasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutVendasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutPontos_extratoInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -1283,31 +2581,56 @@ export type ResellerCreateWithoutPontos_extratoInput = {
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutPontos_extratoInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutPontos_extratoInput = {
@@ -1328,20 +2651,33 @@ export type ResellerUpdateToOneWithWhereWithoutPontos_extratoInput = {
 
 export type ResellerUpdateWithoutPontos_extratoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -1349,49 +2685,87 @@ export type ResellerUpdateWithoutPontos_extratoInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutPontos_extratoInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutResgatesInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -1399,31 +2773,56 @@ export type ResellerCreateWithoutResgatesInput = {
   pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutResgatesInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutResgatesInput = {
@@ -1444,20 +2843,33 @@ export type ResellerUpdateToOneWithWhereWithoutResgatesInput = {
 
 export type ResellerUpdateWithoutResgatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -1465,49 +2877,471 @@ export type ResellerUpdateWithoutResgatesInput = {
   pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutResgatesInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerCreateWithoutSolicitacoes_brindeInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutSolicitacoes_brindeInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutSolicitacoes_brindeInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedCreateWithoutSolicitacoes_brindeInput>
+}
+
+export type ResellerUpsertWithoutSolicitacoes_brindeInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedCreateWithoutSolicitacoes_brindeInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutSolicitacoes_brindeInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutSolicitacoes_brindeInput, Prisma.ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput>
+}
+
+export type ResellerUpdateWithoutSolicitacoes_brindeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerCreateWithoutNotif_preferenciasInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutNotif_preferenciasInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutNotif_preferenciasInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedCreateWithoutNotif_preferenciasInput>
+}
+
+export type ResellerUpsertWithoutNotif_preferenciasInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedUpdateWithoutNotif_preferenciasInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedCreateWithoutNotif_preferenciasInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutNotif_preferenciasInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutNotif_preferenciasInput, Prisma.ResellerUncheckedUpdateWithoutNotif_preferenciasInput>
+}
+
+export type ResellerUpdateWithoutNotif_preferenciasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutNotif_preferenciasInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutAnalytics_acessosInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -1515,31 +3349,56 @@ export type ResellerCreateWithoutAnalytics_acessosInput = {
   pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutAnalytics_acessosInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutAnalytics_acessosInput = {
@@ -1560,20 +3419,33 @@ export type ResellerUpdateToOneWithWhereWithoutAnalytics_acessosInput = {
 
 export type ResellerUpdateWithoutAnalytics_acessosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -1581,49 +3453,87 @@ export type ResellerUpdateWithoutAnalytics_acessosInput = {
   pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutAnalytics_acessosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerCreateWithoutAnalytics_diarioInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
   colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
   revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
@@ -1631,31 +3541,56 @@ export type ResellerCreateWithoutAnalytics_diarioInput = {
   pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerUncheckedCreateWithoutAnalytics_diarioInput = {
   id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
-  role?: $Enums.UserRole
-  colaboradora_id?: string | null
-  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: boolean
-  auth_user_id?: string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
   reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
   maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
   resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
 
 export type ResellerCreateOrConnectWithoutAnalytics_diarioInput = {
@@ -1676,20 +3611,33 @@ export type ResellerUpdateToOneWithWhereWithoutAnalytics_diarioInput = {
 
 export type ResellerUpdateWithoutAnalytics_diarioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
@@ -1697,67 +3645,192 @@ export type ResellerUpdateWithoutAnalytics_diarioInput = {
   pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateWithoutAnalytics_diarioInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
-  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
-  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
-  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
   pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
-export type ResellerCreateManyColaboradoraInput = {
+export type ResellerCreateWithoutLeads_atribuidosInput = {
   id?: string
+  auth_user_id?: string | null
   name: string
-  slug: string
-  whatsapp: string
   email?: string
+  whatsapp: string
   avatar_url?: string
   bio?: string
-  is_active?: boolean
-  created_at?: Date | string
-  updated_at?: Date | string
+  slug: string
   role?: $Enums.UserRole
   taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
   perfil_completo?: boolean
-  auth_user_id?: string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
 }
 
-export type ResellerUpdateWithoutColaboradoraInput = {
+export type ResellerUncheckedCreateWithoutLeads_atribuidosInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+}
+
+export type ResellerCreateOrConnectWithoutLeads_atribuidosInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedCreateWithoutLeads_atribuidosInput>
+}
+
+export type ResellerUpsertWithoutLeads_atribuidosInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedUpdateWithoutLeads_atribuidosInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedCreateWithoutLeads_atribuidosInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutLeads_atribuidosInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutLeads_atribuidosInput, Prisma.ResellerUncheckedUpdateWithoutLeads_atribuidosInput>
+}
+
+export type ResellerUpdateWithoutLeads_atribuidosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
   revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
@@ -1765,24 +3838,43 @@ export type ResellerUpdateWithoutColaboradoraInput = {
   resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
 }
 
-export type ResellerUncheckedUpdateWithoutColaboradoraInput = {
+export type ResellerUncheckedUpdateWithoutLeads_atribuidosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
   reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
   maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
@@ -1790,24 +3882,161 @@ export type ResellerUncheckedUpdateWithoutColaboradoraInput = {
   resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
   analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+}
+
+export type ResellerCreateManyColaboradoraInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+}
+
+export type ResellerUpdateWithoutColaboradoraInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutColaboradoraInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
 
 export type ResellerUncheckedUpdateManyWithoutColaboradoraInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   name?: Prisma.StringFieldUpdateOperationsInput | string
-  slug?: Prisma.StringFieldUpdateOperationsInput | string
-  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
   avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
   bio?: Prisma.StringFieldUpdateOperationsInput | string
-  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
   role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
   taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
-  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
-  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 
@@ -1823,6 +4052,10 @@ export type ResellerCountOutputType = {
   resgates: number
   analytics_acessos: number
   analytics_diario: number
+  documentos: number
+  solicitacoes_brinde: number
+  vendas: number
+  leads_atribuidos: number
 }
 
 export type ResellerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1833,6 +4066,10 @@ export type ResellerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   resgates?: boolean | ResellerCountOutputTypeCountResgatesArgs
   analytics_acessos?: boolean | ResellerCountOutputTypeCountAnalytics_acessosArgs
   analytics_diario?: boolean | ResellerCountOutputTypeCountAnalytics_diarioArgs
+  documentos?: boolean | ResellerCountOutputTypeCountDocumentosArgs
+  solicitacoes_brinde?: boolean | ResellerCountOutputTypeCountSolicitacoes_brindeArgs
+  vendas?: boolean | ResellerCountOutputTypeCountVendasArgs
+  leads_atribuidos?: boolean | ResellerCountOutputTypeCountLeads_atribuidosArgs
 }
 
 /**
@@ -1894,24 +4131,65 @@ export type ResellerCountOutputTypeCountAnalytics_diarioArgs<ExtArgs extends run
   where?: Prisma.AnalyticsDiarioWhereInput
 }
 
+/**
+ * ResellerCountOutputType without action
+ */
+export type ResellerCountOutputTypeCountDocumentosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.ResellerDocumentoWhereInput
+}
+
+/**
+ * ResellerCountOutputType without action
+ */
+export type ResellerCountOutputTypeCountSolicitacoes_brindeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SolicitacaoBrindeWhereInput
+}
+
+/**
+ * ResellerCountOutputType without action
+ */
+export type ResellerCountOutputTypeCountVendasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VendaMaletaWhereInput
+}
+
+/**
+ * ResellerCountOutputType without action
+ */
+export type ResellerCountOutputTypeCountLeads_atribuidosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.RevendedoraLeadWhereInput
+}
+
 
 export type ResellerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  auth_user_id?: boolean
+  colaboradora_id?: boolean
   name?: boolean
-  slug?: boolean
-  whatsapp?: boolean
   email?: boolean
+  whatsapp?: boolean
   avatar_url?: boolean
   bio?: boolean
+  slug?: boolean
+  role?: boolean
+  taxa_comissao?: boolean
+  endereco_cep?: boolean
+  endereco_logradouro?: boolean
+  endereco_numero?: boolean
+  endereco_complemento?: boolean
+  endereco_cidade?: boolean
+  endereco_estado?: boolean
+  cedula?: boolean
+  instagram?: boolean
+  edad?: boolean
+  estado_civil?: boolean
+  hijos?: boolean
+  empresa?: boolean
+  informconf?: boolean
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
-  role?: boolean
-  colaboradora_id?: boolean
-  taxa_comissao?: boolean
-  documentos_url?: boolean
-  perfil_completo?: boolean
-  auth_user_id?: boolean
   colaboradora?: boolean | Prisma.Reseller$colaboradoraArgs<ExtArgs>
   revendedoras_sob_mim?: boolean | Prisma.Reseller$revendedoras_sob_mimArgs<ExtArgs>
   reseller_products?: boolean | Prisma.Reseller$reseller_productsArgs<ExtArgs>
@@ -1920,69 +4198,114 @@ export type ResellerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   resgates?: boolean | Prisma.Reseller$resgatesArgs<ExtArgs>
   analytics_acessos?: boolean | Prisma.Reseller$analytics_acessosArgs<ExtArgs>
   analytics_diario?: boolean | Prisma.Reseller$analytics_diarioArgs<ExtArgs>
+  documentos?: boolean | Prisma.Reseller$documentosArgs<ExtArgs>
+  dados_bancarios?: boolean | Prisma.Reseller$dados_bancariosArgs<ExtArgs>
+  notif_preferencias?: boolean | Prisma.Reseller$notif_preferenciasArgs<ExtArgs>
+  solicitacoes_brinde?: boolean | Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>
+  vendas?: boolean | Prisma.Reseller$vendasArgs<ExtArgs>
+  leads_atribuidos?: boolean | Prisma.Reseller$leads_atribuidosArgs<ExtArgs>
   _count?: boolean | Prisma.ResellerCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["reseller"]>
 
 export type ResellerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  auth_user_id?: boolean
+  colaboradora_id?: boolean
   name?: boolean
-  slug?: boolean
-  whatsapp?: boolean
   email?: boolean
+  whatsapp?: boolean
   avatar_url?: boolean
   bio?: boolean
+  slug?: boolean
+  role?: boolean
+  taxa_comissao?: boolean
+  endereco_cep?: boolean
+  endereco_logradouro?: boolean
+  endereco_numero?: boolean
+  endereco_complemento?: boolean
+  endereco_cidade?: boolean
+  endereco_estado?: boolean
+  cedula?: boolean
+  instagram?: boolean
+  edad?: boolean
+  estado_civil?: boolean
+  hijos?: boolean
+  empresa?: boolean
+  informconf?: boolean
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
-  role?: boolean
-  colaboradora_id?: boolean
-  taxa_comissao?: boolean
-  documentos_url?: boolean
-  perfil_completo?: boolean
-  auth_user_id?: boolean
   colaboradora?: boolean | Prisma.Reseller$colaboradoraArgs<ExtArgs>
 }, ExtArgs["result"]["reseller"]>
 
 export type ResellerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  auth_user_id?: boolean
+  colaboradora_id?: boolean
   name?: boolean
-  slug?: boolean
-  whatsapp?: boolean
   email?: boolean
+  whatsapp?: boolean
   avatar_url?: boolean
   bio?: boolean
+  slug?: boolean
+  role?: boolean
+  taxa_comissao?: boolean
+  endereco_cep?: boolean
+  endereco_logradouro?: boolean
+  endereco_numero?: boolean
+  endereco_complemento?: boolean
+  endereco_cidade?: boolean
+  endereco_estado?: boolean
+  cedula?: boolean
+  instagram?: boolean
+  edad?: boolean
+  estado_civil?: boolean
+  hijos?: boolean
+  empresa?: boolean
+  informconf?: boolean
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
-  role?: boolean
-  colaboradora_id?: boolean
-  taxa_comissao?: boolean
-  documentos_url?: boolean
-  perfil_completo?: boolean
-  auth_user_id?: boolean
   colaboradora?: boolean | Prisma.Reseller$colaboradoraArgs<ExtArgs>
 }, ExtArgs["result"]["reseller"]>
 
 export type ResellerSelectScalar = {
   id?: boolean
+  auth_user_id?: boolean
+  colaboradora_id?: boolean
   name?: boolean
-  slug?: boolean
-  whatsapp?: boolean
   email?: boolean
+  whatsapp?: boolean
   avatar_url?: boolean
   bio?: boolean
+  slug?: boolean
+  role?: boolean
+  taxa_comissao?: boolean
+  endereco_cep?: boolean
+  endereco_logradouro?: boolean
+  endereco_numero?: boolean
+  endereco_complemento?: boolean
+  endereco_cidade?: boolean
+  endereco_estado?: boolean
+  cedula?: boolean
+  instagram?: boolean
+  edad?: boolean
+  estado_civil?: boolean
+  hijos?: boolean
+  empresa?: boolean
+  informconf?: boolean
   is_active?: boolean
+  perfil_completo?: boolean
+  documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
-  role?: boolean
-  colaboradora_id?: boolean
-  taxa_comissao?: boolean
-  documentos_url?: boolean
-  perfil_completo?: boolean
-  auth_user_id?: boolean
 }
 
-export type ResellerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "slug" | "whatsapp" | "email" | "avatar_url" | "bio" | "is_active" | "created_at" | "updated_at" | "role" | "colaboradora_id" | "taxa_comissao" | "documentos_url" | "perfil_completo" | "auth_user_id", ExtArgs["result"]["reseller"]>
+export type ResellerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth_user_id" | "colaboradora_id" | "name" | "email" | "whatsapp" | "avatar_url" | "bio" | "slug" | "role" | "taxa_comissao" | "endereco_cep" | "endereco_logradouro" | "endereco_numero" | "endereco_complemento" | "endereco_cidade" | "endereco_estado" | "cedula" | "instagram" | "edad" | "estado_civil" | "hijos" | "empresa" | "informconf" | "is_active" | "perfil_completo" | "documentos_url" | "created_at" | "updated_at", ExtArgs["result"]["reseller"]>
 export type ResellerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   colaboradora?: boolean | Prisma.Reseller$colaboradoraArgs<ExtArgs>
   revendedoras_sob_mim?: boolean | Prisma.Reseller$revendedoras_sob_mimArgs<ExtArgs>
@@ -1992,6 +4315,12 @@ export type ResellerInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   resgates?: boolean | Prisma.Reseller$resgatesArgs<ExtArgs>
   analytics_acessos?: boolean | Prisma.Reseller$analytics_acessosArgs<ExtArgs>
   analytics_diario?: boolean | Prisma.Reseller$analytics_diarioArgs<ExtArgs>
+  documentos?: boolean | Prisma.Reseller$documentosArgs<ExtArgs>
+  dados_bancarios?: boolean | Prisma.Reseller$dados_bancariosArgs<ExtArgs>
+  notif_preferencias?: boolean | Prisma.Reseller$notif_preferenciasArgs<ExtArgs>
+  solicitacoes_brinde?: boolean | Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>
+  vendas?: boolean | Prisma.Reseller$vendasArgs<ExtArgs>
+  leads_atribuidos?: boolean | Prisma.Reseller$leads_atribuidosArgs<ExtArgs>
   _count?: boolean | Prisma.ResellerCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ResellerIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -2012,24 +4341,43 @@ export type $ResellerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     resgates: Prisma.$ResgatePayload<ExtArgs>[]
     analytics_acessos: Prisma.$AnalyticsAcessoPayload<ExtArgs>[]
     analytics_diario: Prisma.$AnalyticsDiarioPayload<ExtArgs>[]
+    documentos: Prisma.$ResellerDocumentoPayload<ExtArgs>[]
+    dados_bancarios: Prisma.$DadosBancariosPayload<ExtArgs> | null
+    notif_preferencias: Prisma.$NotificacaoPreferenciaPayload<ExtArgs> | null
+    solicitacoes_brinde: Prisma.$SolicitacaoBrindePayload<ExtArgs>[]
+    vendas: Prisma.$VendaMaletaPayload<ExtArgs>[]
+    leads_atribuidos: Prisma.$RevendedoraLeadPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    auth_user_id: string | null
+    colaboradora_id: string | null
     name: string
-    slug: string
-    whatsapp: string
     email: string
+    whatsapp: string
     avatar_url: string
     bio: string
+    slug: string
+    role: $Enums.UserRole
+    taxa_comissao: runtime.Decimal
+    endereco_cep: string
+    endereco_logradouro: string
+    endereco_numero: string
+    endereco_complemento: string
+    endereco_cidade: string
+    endereco_estado: string
+    cedula: string
+    instagram: string
+    edad: string
+    estado_civil: string
+    hijos: string
+    empresa: string
+    informconf: string
     is_active: boolean
+    perfil_completo: boolean
+    documentos_url: runtime.JsonValue
     created_at: Date
     updated_at: Date
-    role: $Enums.UserRole
-    colaboradora_id: string | null
-    taxa_comissao: runtime.Decimal
-    documentos_url: runtime.JsonValue
-    perfil_completo: boolean
-    auth_user_id: string | null
   }, ExtArgs["result"]["reseller"]>
   composites: {}
 }
@@ -2432,6 +4780,12 @@ export interface Prisma__ResellerClient<T, Null = never, ExtArgs extends runtime
   resgates<T extends Prisma.Reseller$resgatesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$resgatesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResgatePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analytics_acessos<T extends Prisma.Reseller$analytics_acessosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$analytics_acessosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsAcessoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   analytics_diario<T extends Prisma.Reseller$analytics_diarioArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$analytics_diarioArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$AnalyticsDiarioPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  documentos<T extends Prisma.Reseller$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResellerDocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  dados_bancarios<T extends Prisma.Reseller$dados_bancariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$dados_bancariosArgs<ExtArgs>>): Prisma.Prisma__DadosBancariosClient<runtime.Types.Result.GetResult<Prisma.$DadosBancariosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notif_preferencias<T extends Prisma.Reseller$notif_preferenciasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$notif_preferenciasArgs<ExtArgs>>): Prisma.Prisma__NotificacaoPreferenciaClient<runtime.Types.Result.GetResult<Prisma.$NotificacaoPreferenciaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  solicitacoes_brinde<T extends Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitacaoBrindePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  vendas<T extends Prisma.Reseller$vendasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$vendasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendaMaletaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  leads_atribuidos<T extends Prisma.Reseller$leads_atribuidosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$leads_atribuidosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RevendedoraLeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2462,21 +4816,34 @@ export interface Prisma__ResellerClient<T, Null = never, ExtArgs extends runtime
  */
 export interface ResellerFieldRefs {
   readonly id: Prisma.FieldRef<"Reseller", 'String'>
+  readonly auth_user_id: Prisma.FieldRef<"Reseller", 'String'>
+  readonly colaboradora_id: Prisma.FieldRef<"Reseller", 'String'>
   readonly name: Prisma.FieldRef<"Reseller", 'String'>
-  readonly slug: Prisma.FieldRef<"Reseller", 'String'>
-  readonly whatsapp: Prisma.FieldRef<"Reseller", 'String'>
   readonly email: Prisma.FieldRef<"Reseller", 'String'>
+  readonly whatsapp: Prisma.FieldRef<"Reseller", 'String'>
   readonly avatar_url: Prisma.FieldRef<"Reseller", 'String'>
   readonly bio: Prisma.FieldRef<"Reseller", 'String'>
+  readonly slug: Prisma.FieldRef<"Reseller", 'String'>
+  readonly role: Prisma.FieldRef<"Reseller", 'UserRole'>
+  readonly taxa_comissao: Prisma.FieldRef<"Reseller", 'Decimal'>
+  readonly endereco_cep: Prisma.FieldRef<"Reseller", 'String'>
+  readonly endereco_logradouro: Prisma.FieldRef<"Reseller", 'String'>
+  readonly endereco_numero: Prisma.FieldRef<"Reseller", 'String'>
+  readonly endereco_complemento: Prisma.FieldRef<"Reseller", 'String'>
+  readonly endereco_cidade: Prisma.FieldRef<"Reseller", 'String'>
+  readonly endereco_estado: Prisma.FieldRef<"Reseller", 'String'>
+  readonly cedula: Prisma.FieldRef<"Reseller", 'String'>
+  readonly instagram: Prisma.FieldRef<"Reseller", 'String'>
+  readonly edad: Prisma.FieldRef<"Reseller", 'String'>
+  readonly estado_civil: Prisma.FieldRef<"Reseller", 'String'>
+  readonly hijos: Prisma.FieldRef<"Reseller", 'String'>
+  readonly empresa: Prisma.FieldRef<"Reseller", 'String'>
+  readonly informconf: Prisma.FieldRef<"Reseller", 'String'>
   readonly is_active: Prisma.FieldRef<"Reseller", 'Boolean'>
+  readonly perfil_completo: Prisma.FieldRef<"Reseller", 'Boolean'>
+  readonly documentos_url: Prisma.FieldRef<"Reseller", 'Json'>
   readonly created_at: Prisma.FieldRef<"Reseller", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Reseller", 'DateTime'>
-  readonly role: Prisma.FieldRef<"Reseller", 'UserRole'>
-  readonly colaboradora_id: Prisma.FieldRef<"Reseller", 'String'>
-  readonly taxa_comissao: Prisma.FieldRef<"Reseller", 'Decimal'>
-  readonly documentos_url: Prisma.FieldRef<"Reseller", 'Json'>
-  readonly perfil_completo: Prisma.FieldRef<"Reseller", 'Boolean'>
-  readonly auth_user_id: Prisma.FieldRef<"Reseller", 'String'>
 }
     
 
@@ -3057,6 +5424,140 @@ export type Reseller$analytics_diarioArgs<ExtArgs extends runtime.Types.Extensio
   take?: number
   skip?: number
   distinct?: Prisma.AnalyticsDiarioScalarFieldEnum | Prisma.AnalyticsDiarioScalarFieldEnum[]
+}
+
+/**
+ * Reseller.documentos
+ */
+export type Reseller$documentosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the ResellerDocumento
+   */
+  select?: Prisma.ResellerDocumentoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the ResellerDocumento
+   */
+  omit?: Prisma.ResellerDocumentoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ResellerDocumentoInclude<ExtArgs> | null
+  where?: Prisma.ResellerDocumentoWhereInput
+  orderBy?: Prisma.ResellerDocumentoOrderByWithRelationInput | Prisma.ResellerDocumentoOrderByWithRelationInput[]
+  cursor?: Prisma.ResellerDocumentoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.ResellerDocumentoScalarFieldEnum | Prisma.ResellerDocumentoScalarFieldEnum[]
+}
+
+/**
+ * Reseller.dados_bancarios
+ */
+export type Reseller$dados_bancariosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the DadosBancarios
+   */
+  select?: Prisma.DadosBancariosSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the DadosBancarios
+   */
+  omit?: Prisma.DadosBancariosOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.DadosBancariosInclude<ExtArgs> | null
+  where?: Prisma.DadosBancariosWhereInput
+}
+
+/**
+ * Reseller.notif_preferencias
+ */
+export type Reseller$notif_preferenciasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the NotificacaoPreferencia
+   */
+  select?: Prisma.NotificacaoPreferenciaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the NotificacaoPreferencia
+   */
+  omit?: Prisma.NotificacaoPreferenciaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificacaoPreferenciaInclude<ExtArgs> | null
+  where?: Prisma.NotificacaoPreferenciaWhereInput
+}
+
+/**
+ * Reseller.solicitacoes_brinde
+ */
+export type Reseller$solicitacoes_brindeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the SolicitacaoBrinde
+   */
+  select?: Prisma.SolicitacaoBrindeSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the SolicitacaoBrinde
+   */
+  omit?: Prisma.SolicitacaoBrindeOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SolicitacaoBrindeInclude<ExtArgs> | null
+  where?: Prisma.SolicitacaoBrindeWhereInput
+  orderBy?: Prisma.SolicitacaoBrindeOrderByWithRelationInput | Prisma.SolicitacaoBrindeOrderByWithRelationInput[]
+  cursor?: Prisma.SolicitacaoBrindeWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SolicitacaoBrindeScalarFieldEnum | Prisma.SolicitacaoBrindeScalarFieldEnum[]
+}
+
+/**
+ * Reseller.vendas
+ */
+export type Reseller$vendasArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VendaMaleta
+   */
+  select?: Prisma.VendaMaletaSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VendaMaleta
+   */
+  omit?: Prisma.VendaMaletaOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VendaMaletaInclude<ExtArgs> | null
+  where?: Prisma.VendaMaletaWhereInput
+  orderBy?: Prisma.VendaMaletaOrderByWithRelationInput | Prisma.VendaMaletaOrderByWithRelationInput[]
+  cursor?: Prisma.VendaMaletaWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VendaMaletaScalarFieldEnum | Prisma.VendaMaletaScalarFieldEnum[]
+}
+
+/**
+ * Reseller.leads_atribuidos
+ */
+export type Reseller$leads_atribuidosArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RevendedoraLead
+   */
+  select?: Prisma.RevendedoraLeadSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the RevendedoraLead
+   */
+  omit?: Prisma.RevendedoraLeadOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.RevendedoraLeadInclude<ExtArgs> | null
+  where?: Prisma.RevendedoraLeadWhereInput
+  orderBy?: Prisma.RevendedoraLeadOrderByWithRelationInput | Prisma.RevendedoraLeadOrderByWithRelationInput[]
+  cursor?: Prisma.RevendedoraLeadWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.RevendedoraLeadScalarFieldEnum | Prisma.RevendedoraLeadScalarFieldEnum[]
 }
 
 /**

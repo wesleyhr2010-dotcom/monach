@@ -29,11 +29,13 @@ export type AggregateAnalyticsDiario = {
 export type AnalyticsDiarioAvgAggregateOutputType = {
   total_visitas: number | null
   visitantes_unicos: number | null
+  cliques_whatsapp: number | null
 }
 
 export type AnalyticsDiarioSumAggregateOutputType = {
   total_visitas: number | null
   visitantes_unicos: number | null
+  cliques_whatsapp: number | null
 }
 
 export type AnalyticsDiarioMinAggregateOutputType = {
@@ -43,6 +45,7 @@ export type AnalyticsDiarioMinAggregateOutputType = {
   tipo: string | null
   total_visitas: number | null
   visitantes_unicos: number | null
+  cliques_whatsapp: number | null
 }
 
 export type AnalyticsDiarioMaxAggregateOutputType = {
@@ -52,6 +55,7 @@ export type AnalyticsDiarioMaxAggregateOutputType = {
   tipo: string | null
   total_visitas: number | null
   visitantes_unicos: number | null
+  cliques_whatsapp: number | null
 }
 
 export type AnalyticsDiarioCountAggregateOutputType = {
@@ -61,6 +65,7 @@ export type AnalyticsDiarioCountAggregateOutputType = {
   tipo: number
   total_visitas: number
   visitantes_unicos: number
+  cliques_whatsapp: number
   _all: number
 }
 
@@ -68,11 +73,13 @@ export type AnalyticsDiarioCountAggregateOutputType = {
 export type AnalyticsDiarioAvgAggregateInputType = {
   total_visitas?: true
   visitantes_unicos?: true
+  cliques_whatsapp?: true
 }
 
 export type AnalyticsDiarioSumAggregateInputType = {
   total_visitas?: true
   visitantes_unicos?: true
+  cliques_whatsapp?: true
 }
 
 export type AnalyticsDiarioMinAggregateInputType = {
@@ -82,6 +89,7 @@ export type AnalyticsDiarioMinAggregateInputType = {
   tipo?: true
   total_visitas?: true
   visitantes_unicos?: true
+  cliques_whatsapp?: true
 }
 
 export type AnalyticsDiarioMaxAggregateInputType = {
@@ -91,6 +99,7 @@ export type AnalyticsDiarioMaxAggregateInputType = {
   tipo?: true
   total_visitas?: true
   visitantes_unicos?: true
+  cliques_whatsapp?: true
 }
 
 export type AnalyticsDiarioCountAggregateInputType = {
@@ -100,6 +109,7 @@ export type AnalyticsDiarioCountAggregateInputType = {
   tipo?: true
   total_visitas?: true
   visitantes_unicos?: true
+  cliques_whatsapp?: true
   _all?: true
 }
 
@@ -196,6 +206,7 @@ export type AnalyticsDiarioGroupByOutputType = {
   tipo: string
   total_visitas: number
   visitantes_unicos: number
+  cliques_whatsapp: number
   _count: AnalyticsDiarioCountAggregateOutputType | null
   _avg: AnalyticsDiarioAvgAggregateOutputType | null
   _sum: AnalyticsDiarioSumAggregateOutputType | null
@@ -228,6 +239,7 @@ export type AnalyticsDiarioWhereInput = {
   tipo?: Prisma.StringFilter<"AnalyticsDiario"> | string
   total_visitas?: Prisma.IntFilter<"AnalyticsDiario"> | number
   visitantes_unicos?: Prisma.IntFilter<"AnalyticsDiario"> | number
+  cliques_whatsapp?: Prisma.IntFilter<"AnalyticsDiario"> | number
   reseller?: Prisma.XOR<Prisma.ResellerNullableScalarRelationFilter, Prisma.ResellerWhereInput> | null
 }
 
@@ -238,6 +250,7 @@ export type AnalyticsDiarioOrderByWithRelationInput = {
   tipo?: Prisma.SortOrder
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
   reseller?: Prisma.ResellerOrderByWithRelationInput
 }
 
@@ -252,6 +265,7 @@ export type AnalyticsDiarioWhereUniqueInput = Prisma.AtLeast<{
   tipo?: Prisma.StringFilter<"AnalyticsDiario"> | string
   total_visitas?: Prisma.IntFilter<"AnalyticsDiario"> | number
   visitantes_unicos?: Prisma.IntFilter<"AnalyticsDiario"> | number
+  cliques_whatsapp?: Prisma.IntFilter<"AnalyticsDiario"> | number
   reseller?: Prisma.XOR<Prisma.ResellerNullableScalarRelationFilter, Prisma.ResellerWhereInput> | null
 }, "id" | "data_reseller_id_tipo">
 
@@ -262,6 +276,7 @@ export type AnalyticsDiarioOrderByWithAggregationInput = {
   tipo?: Prisma.SortOrder
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
   _count?: Prisma.AnalyticsDiarioCountOrderByAggregateInput
   _avg?: Prisma.AnalyticsDiarioAvgOrderByAggregateInput
   _max?: Prisma.AnalyticsDiarioMaxOrderByAggregateInput
@@ -279,14 +294,16 @@ export type AnalyticsDiarioScalarWhereWithAggregatesInput = {
   tipo?: Prisma.StringWithAggregatesFilter<"AnalyticsDiario"> | string
   total_visitas?: Prisma.IntWithAggregatesFilter<"AnalyticsDiario"> | number
   visitantes_unicos?: Prisma.IntWithAggregatesFilter<"AnalyticsDiario"> | number
+  cliques_whatsapp?: Prisma.IntWithAggregatesFilter<"AnalyticsDiario"> | number
 }
 
 export type AnalyticsDiarioCreateInput = {
   id?: string
   data: Date | string
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
   reseller?: Prisma.ResellerCreateNestedOneWithoutAnalytics_diarioInput
 }
 
@@ -294,9 +311,10 @@ export type AnalyticsDiarioUncheckedCreateInput = {
   id?: string
   data: Date | string
   reseller_id?: string | null
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
 }
 
 export type AnalyticsDiarioUpdateInput = {
@@ -305,6 +323,7 @@ export type AnalyticsDiarioUpdateInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
   reseller?: Prisma.ResellerUpdateOneWithoutAnalytics_diarioNestedInput
 }
 
@@ -315,15 +334,17 @@ export type AnalyticsDiarioUncheckedUpdateInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalyticsDiarioCreateManyInput = {
   id?: string
   data: Date | string
   reseller_id?: string | null
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
 }
 
 export type AnalyticsDiarioUpdateManyMutationInput = {
@@ -332,6 +353,7 @@ export type AnalyticsDiarioUpdateManyMutationInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalyticsDiarioUncheckedUpdateManyInput = {
@@ -341,6 +363,7 @@ export type AnalyticsDiarioUncheckedUpdateManyInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalyticsDiarioListRelationFilter = {
@@ -366,11 +389,13 @@ export type AnalyticsDiarioCountOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
 }
 
 export type AnalyticsDiarioAvgOrderByAggregateInput = {
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
 }
 
 export type AnalyticsDiarioMaxOrderByAggregateInput = {
@@ -380,6 +405,7 @@ export type AnalyticsDiarioMaxOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
 }
 
 export type AnalyticsDiarioMinOrderByAggregateInput = {
@@ -389,11 +415,13 @@ export type AnalyticsDiarioMinOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
 }
 
 export type AnalyticsDiarioSumOrderByAggregateInput = {
   total_visitas?: Prisma.SortOrder
   visitantes_unicos?: Prisma.SortOrder
+  cliques_whatsapp?: Prisma.SortOrder
 }
 
 export type AnalyticsDiarioCreateNestedManyWithoutResellerInput = {
@@ -441,17 +469,19 @@ export type AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput = {
 export type AnalyticsDiarioCreateWithoutResellerInput = {
   id?: string
   data: Date | string
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
 }
 
 export type AnalyticsDiarioUncheckedCreateWithoutResellerInput = {
   id?: string
   data: Date | string
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
 }
 
 export type AnalyticsDiarioCreateOrConnectWithoutResellerInput = {
@@ -490,14 +520,16 @@ export type AnalyticsDiarioScalarWhereInput = {
   tipo?: Prisma.StringFilter<"AnalyticsDiario"> | string
   total_visitas?: Prisma.IntFilter<"AnalyticsDiario"> | number
   visitantes_unicos?: Prisma.IntFilter<"AnalyticsDiario"> | number
+  cliques_whatsapp?: Prisma.IntFilter<"AnalyticsDiario"> | number
 }
 
 export type AnalyticsDiarioCreateManyResellerInput = {
   id?: string
   data: Date | string
-  tipo: string
+  tipo?: string
   total_visitas?: number
   visitantes_unicos?: number
+  cliques_whatsapp?: number
 }
 
 export type AnalyticsDiarioUpdateWithoutResellerInput = {
@@ -506,6 +538,7 @@ export type AnalyticsDiarioUpdateWithoutResellerInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalyticsDiarioUncheckedUpdateWithoutResellerInput = {
@@ -514,6 +547,7 @@ export type AnalyticsDiarioUncheckedUpdateWithoutResellerInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 export type AnalyticsDiarioUncheckedUpdateManyWithoutResellerInput = {
@@ -522,6 +556,7 @@ export type AnalyticsDiarioUncheckedUpdateManyWithoutResellerInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   total_visitas?: Prisma.IntFieldUpdateOperationsInput | number
   visitantes_unicos?: Prisma.IntFieldUpdateOperationsInput | number
+  cliques_whatsapp?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
 
@@ -533,6 +568,7 @@ export type AnalyticsDiarioSelect<ExtArgs extends runtime.Types.Extensions.Inter
   tipo?: boolean
   total_visitas?: boolean
   visitantes_unicos?: boolean
+  cliques_whatsapp?: boolean
   reseller?: boolean | Prisma.AnalyticsDiario$resellerArgs<ExtArgs>
 }, ExtArgs["result"]["analyticsDiario"]>
 
@@ -543,6 +579,7 @@ export type AnalyticsDiarioSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   tipo?: boolean
   total_visitas?: boolean
   visitantes_unicos?: boolean
+  cliques_whatsapp?: boolean
   reseller?: boolean | Prisma.AnalyticsDiario$resellerArgs<ExtArgs>
 }, ExtArgs["result"]["analyticsDiario"]>
 
@@ -553,6 +590,7 @@ export type AnalyticsDiarioSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   tipo?: boolean
   total_visitas?: boolean
   visitantes_unicos?: boolean
+  cliques_whatsapp?: boolean
   reseller?: boolean | Prisma.AnalyticsDiario$resellerArgs<ExtArgs>
 }, ExtArgs["result"]["analyticsDiario"]>
 
@@ -563,9 +601,10 @@ export type AnalyticsDiarioSelectScalar = {
   tipo?: boolean
   total_visitas?: boolean
   visitantes_unicos?: boolean
+  cliques_whatsapp?: boolean
 }
 
-export type AnalyticsDiarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "reseller_id" | "tipo" | "total_visitas" | "visitantes_unicos", ExtArgs["result"]["analyticsDiario"]>
+export type AnalyticsDiarioOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "data" | "reseller_id" | "tipo" | "total_visitas" | "visitantes_unicos" | "cliques_whatsapp", ExtArgs["result"]["analyticsDiario"]>
 export type AnalyticsDiarioInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   reseller?: boolean | Prisma.AnalyticsDiario$resellerArgs<ExtArgs>
 }
@@ -588,6 +627,7 @@ export type $AnalyticsDiarioPayload<ExtArgs extends runtime.Types.Extensions.Int
     tipo: string
     total_visitas: number
     visitantes_unicos: number
+    cliques_whatsapp: number
   }, ExtArgs["result"]["analyticsDiario"]>
   composites: {}
 }
@@ -1018,6 +1058,7 @@ export interface AnalyticsDiarioFieldRefs {
   readonly tipo: Prisma.FieldRef<"AnalyticsDiario", 'String'>
   readonly total_visitas: Prisma.FieldRef<"AnalyticsDiario", 'Int'>
   readonly visitantes_unicos: Prisma.FieldRef<"AnalyticsDiario", 'Int'>
+  readonly cliques_whatsapp: Prisma.FieldRef<"AnalyticsDiario", 'Int'>
 }
     
 

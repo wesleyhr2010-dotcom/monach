@@ -1,6 +1,6 @@
 // ============================================
 // Monarca Semijoias — Prisma Schema
-// Base existente + extensões do PRD
+// Fonte de verdade: .docs/sistema/SPEC_DATABASE.md
 // ============================================
 
 generator client {
@@ -13,7 +13,164 @@ datasource db {
 }
 
 // ============================================
-// Tabelas Existentes
+// Enums
+// ============================================
+
+enum UserRole {
+  ADMIN
+  COLABORADORA
+  REVENDEDORA
+
+  @@map("user_role")
+}
+
+enum MaletaStatus {
+  ativa
+  atrasada
+  aguardando_revisao
+  concluida
+
+  @@map("maleta_status")
+}
+
+enum LeadStatus {
+  pendente
+  aprovado
+  rejeitado
+
+  @@map("lead_status")
+}
+
+// ============================================
+// Módulo 1 — Identidade e Autenticação
+// ============================================
+
+model Reseller {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  auth_user_id String?  @unique @db.Uuid
+  // FK para si mesmo (colaboradora responsável)
+  colaboradora_id String? @db.Uuid
+
+  // Identidade
+  name       String
+  email      String   @default("")
+  whatsapp   String
+  avatar_url String   @default("")
+  bio        String   @default("")
+  slug       String   @unique
+
+  // RBAC
+  role UserRole @default(REVENDEDORA)
+
+  // Comissão
+  taxa_comissao Decimal @default(0) @db.Decimal(5, 2)
+
+  // Endereço (Paraguai)
+  endereco_cep         String @default("")
+  endereco_logradouro  String @default("")
+  endereco_numero      String @default("")
+  endereco_complemento String @default("")
+  endereco_cidade      String @default("")
+  endereco_estado      String @default("")
+
+  // Dados de candidatura (copiados do RevendedoraLead na aprovação)
+  cedula       String @default("")
+  instagram    String @default("")
+  edad         String @default("")
+  estado_civil String @default("")
+  hijos        String @default("")
+  empresa      String @default("")
+  informconf   String @default("")
+
+  // Controle (legado: is_active; SPEC: ativo)
+  is_active       Boolean  @default(true)
+  perfil_completo Boolean  @default(false)
+  documentos_url  Json     @default("[]")
+
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  // Relações
+  colaboradora           Reseller?              @relation("Supervisao", fields: [colaboradora_id], references: [id])
+  revendedoras_sob_mim   Reseller[]             @relation("Supervisao")
+  reseller_products      ResellerProduct[]
+  maletas                Maleta[]
+  pontos_extrato         PontosExtrato[]
+  resgates               Resgate[]
+  analytics_acessos      AnalyticsAcesso[]
+  analytics_diario       AnalyticsDiario[]
+  documentos             ResellerDocumento[]
+  dados_bancarios        DadosBancarios?
+  notif_preferencias     NotificacaoPreferencia?
+  solicitacoes_brinde    SolicitacaoBrinde[]
+  vendas                 VendaMaleta[]
+  leads_atribuidos       RevendedoraLead[]      @relation("LeadsAtribuidos")
+
+  @@index([slug])
+  @@index([is_active])
+  @@index([auth_user_id])
+  @@index([role])
+  @@index([colaboradora_id])
+  @@map("resellers")
+}
+
+model ResellerDocumento {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reseller_id String   @db.Uuid
+  tipo        String   // "ci" | "rg" | "cpf"
+  url         String
+  status      String   @default("pendente")
+  // "pendente" | "em_analise" | "aprovado" | "rejeitado"
+  observacao  String   @default("")
+  created_at  DateTime @default(now()) @db.Timestamptz()
+  updated_at  DateTime @updatedAt @db.Timestamptz()
+
+  reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+
+  @@index([reseller_id])
+  @@map("reseller_documentos")
+}
+
+model Contrato {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome       String
+  url        String
+  obrigatorio Boolean @default(false)
+  ativo      Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamptz()
+
+  @@map("contratos")
+}
+
+model DadosBancarios {
+  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reseller_id String @unique @db.Uuid
+  tipo        String // "alias" | "cuenta_bancaria"
+
+  // Alias Bancard (equivalente ao PIX paraguaio)
+  alias_tipo    String?
+  alias_valor   String?
+  alias_titular String?
+  alias_ci_ruc  String?
+
+  // Conta bancária tradicional
+  banco       String?
+  agencia     String?
+  cuenta      String?
+  tipo_cuenta String? // "corriente" | "ahorro"
+  titular     String?
+  ci_ruc      String?
+
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+
+  @@map("datos_bancarios")
+}
+
+// ============================================
+// Módulo 2 — Catálogo de Produtos
 // ============================================
 
 model Product {
@@ -25,6 +182,7 @@ model Product {
   price             Decimal? @db.Decimal(12, 2)
   images            String[] @default([])
   product_type      String   @default("simple")
+  ativo             Boolean  @default(true)
   created_at        DateTime @default(now()) @db.Timestamptz()
   updated_at        DateTime @default(now()) @updatedAt @db.Timestamptz()
 
@@ -44,14 +202,14 @@ model ProductVariant {
   price           Decimal? @db.Decimal(12, 2)
   sku             String?
   in_stock        Boolean  @default(true)
+  stock_quantity  Int      @default(0)
+  image_url       String   @default("")
+  ativo           Boolean  @default(true)
   created_at      DateTime @default(now()) @db.Timestamptz()
 
-  // ----- Extensões PRD -----
-  stock_quantity Int @default(0)
-
-  product      Product      @relation(fields: [product_id], references: [id], onDelete: Cascade)
-  maleta_itens MaletaItem[]
-
+product            Product             @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  maleta_itens       MaletaItem[]
+  estoque_movimentos EstoqueMovimento[]
   @@unique([product_id, attribute_name, attribute_value])
   @@index([product_id])
   @@index([sku])
@@ -59,11 +217,12 @@ model ProductVariant {
 }
 
 model Category {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name       String   @unique
-  slug       String   @unique
-  parent_id  String?  @db.Uuid
-  sort_order Int      @default(0)
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  name      String   @unique
+  slug      String   @unique
+  parent_id String?  @db.Uuid
+  sort_order Int     @default(0)
+  ativo     Boolean  @default(true)
   created_at DateTime @default(now()) @db.Timestamptz()
 
   parent   Category?         @relation("CategoryHierarchy", fields: [parent_id], references: [id])
@@ -85,56 +244,6 @@ model ProductCategory {
   @@map("product_categories")
 }
 
-// ============================================
-// Resellers (Tabela Central de Perfis)
-// ============================================
-
-enum UserRole {
-  ADMIN
-  COLABORADORA
-  REVENDEDORA
-
-  @@map("user_role")
-}
-
-model Reseller {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  name       String
-  slug       String   @unique
-  whatsapp   String
-  email      String   @default("")
-  avatar_url String   @default("")
-  bio        String   @default("")
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now()) @db.Timestamptz()
-  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
-
-  // ----- Extensões PRD -----
-  role            UserRole @default(REVENDEDORA)
-  colaboradora_id String?  @db.Uuid
-  taxa_comissao   Decimal  @default(0) @db.Decimal(5, 2)
-  documentos_url  Json     @default("[]")
-  perfil_completo Boolean  @default(false)
-  auth_user_id    String?  @unique @db.Uuid
-
-  // Relações
-  colaboradora         Reseller?         @relation("Supervisao", fields: [colaboradora_id], references: [id])
-  revendedoras_sob_mim Reseller[]        @relation("Supervisao")
-  reseller_products    ResellerProduct[]
-  maletas              Maleta[]
-  pontos_extrato       PontosExtrato[]
-  resgates             Resgate[]
-  analytics_acessos    AnalyticsAcesso[]
-  analytics_diario     AnalyticsDiario[]
-
-  @@index([slug])
-  @@index([is_active])
-  @@index([auth_user_id])
-  @@index([role])
-  @@index([colaboradora_id])
-  @@map("resellers")
-}
-
 model ResellerProduct {
   id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   reseller_id  String   @db.Uuid
@@ -153,36 +262,36 @@ model ResellerProduct {
 }
 
 // ============================================
-// Maletas (Consignação)
+// Módulo 3 — Maletas (Consignação)
 // ============================================
 
-enum MaletaStatus {
-  ativa
-  atrasada
-  aguardando_revisao
-  concluida
-
-  @@map("maleta_status")
-}
-
 model Maleta {
-  id                        String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  reseller_id               String       @db.Uuid
-  status                    MaletaStatus @default(ativa)
-  data_envio                DateTime     @default(now()) @db.Timestamptz()
-  data_limite               DateTime     @db.Timestamptz()
-  comprovante_devolucao_url String?
+  id          String       @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  numero      Int          @default(autoincrement())
+  reseller_id String       @db.Uuid
+  criada_por  String?      @db.Uuid
+  status      MaletaStatus @default(ativa)
+  data_envio  DateTime     @default(now()) @db.Timestamptz()
+  data_limite DateTime     @db.Timestamptz()
 
-  // Valores congelados no fecho
+  // Snapshot financeiro (calculado no fechamento — IMUTÁVEL)
+  valor_total_enviado         Decimal? @db.Decimal(12, 2)
   valor_total_vendido         Decimal? @db.Decimal(12, 2)
   valor_comissao_revendedora  Decimal? @db.Decimal(12, 2)
   valor_comissao_colaboradora Decimal? @db.Decimal(12, 2)
+  pct_comissao_aplicado       Decimal? @db.Decimal(5, 2)
+  nota_acerto                 String?
+
+  // Devolução
+  comprovante_devolucao_url String?
 
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
 
-  reseller Reseller     @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
-  itens    MaletaItem[]
+  reseller             Reseller            @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+  itens                MaletaItem[]
+  vendas               VendaMaleta[]
+  estoque_movimentos   EstoqueMovimento[]
 
   @@index([reseller_id])
   @@index([status])
@@ -194,9 +303,10 @@ model MaletaItem {
   id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   maleta_id          String   @db.Uuid
   product_variant_id String   @db.Uuid
+  preco_fixado       Decimal? @db.Decimal(12, 2)
   quantidade_enviada Int
   quantidade_vendida Int      @default(0)
-  preco_fixado       Decimal? @db.Decimal(12, 2)
+  quantidade_recebida Int?
 
   maleta          Maleta         @relation(fields: [maleta_id], references: [id], onDelete: Cascade)
   product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
@@ -208,33 +318,81 @@ model MaletaItem {
 }
 
 model VendaMaleta {
-  id               String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  maleta_item_id   String   @db.Uuid
+  id             String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  maleta_id      String   @db.Uuid
+  maleta_item_id String   @db.Uuid
+  reseller_id    String   @db.Uuid
+
+  // Dados do cliente
   cliente_nome     String
   cliente_telefone String
-  quantidade       Int      @default(1)
-  preco_unitario   Decimal  @db.Decimal(12, 2)
-  created_at       DateTime @default(now()) @db.Timestamptz()
 
+  quantidade     Int     @default(1)
+  preco_unitario Decimal @db.Decimal(12, 2)
+  created_at     DateTime @default(now()) @db.Timestamptz()
+
+  maleta      Maleta     @relation(fields: [maleta_id], references: [id])
   maleta_item MaletaItem @relation(fields: [maleta_item_id], references: [id], onDelete: Cascade)
+  reseller    Reseller   @relation(fields: [reseller_id], references: [id])
 
+  @@index([maleta_id])
   @@index([maleta_item_id])
+  @@index([reseller_id])
   @@index([created_at])
   @@map("vendas_maleta")
 }
 
 // ============================================
-// Gamificação
+// Módulo 3a — Movimentação de Estoque
+// ============================================
+
+enum EstoqueMovimentoTipo {
+  reserva_maleta
+  devolucao_maleta
+  ajuste_manual
+  venda_direta
+
+  @@map("estoque_movimento_tipo")
+}
+
+model EstoqueMovimento {
+  id                String              @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  product_variant_id String              @db.Uuid
+  quantidade        Int
+  tipo              EstoqueMovimentoTipo
+  motivo            String              @default("")
+  maleta_id         String?             @db.Uuid
+  created_at        DateTime            @default(now()) @db.Timestamptz()
+
+  product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
+  maleta         Maleta?        @relation(fields: [maleta_id], references: [id])
+
+  @@index([product_variant_id])
+  @@index([tipo])
+  @@index([created_at])
+  @@map("estoque_movimentos")
+}
+
+// ============================================
+// Módulo 4 — Gamificação
 // ============================================
 
 model GamificacaoRegra {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome       String
-  descricao  String   @default("")
-  acao       String // ex: "venda_maleta", "meta_mensal"
-  pontos     Int
-  ativo      Boolean  @default(true)
-  created_at DateTime @default(now()) @db.Timestamptz()
+  id          String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome        String
+  descricao   String  @default("")
+  acao        String  @unique
+  pontos      Int
+  ativo       Boolean @default(true)
+  icone       String  @default("star")
+  tipo        String  @default("por_evento")
+  // "diario" | "unico" | "por_evento" | "mensal"
+  limite_diario Int?
+  meta_valor    Decimal? @db.Decimal(12, 2)
+  ordem         Int      @default(0)
+  created_at  DateTime @default(now()) @db.Timestamptz()
+
+  extrato PontosExtrato[]
 
   @@map("gamificacao_regras")
 }
@@ -247,18 +405,41 @@ model PontosExtrato {
   descricao   String   @default("")
   created_at  DateTime @default(now()) @db.Timestamptz()
 
-  reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+  reseller Reseller          @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+  regra    GamificacaoRegra? @relation(fields: [regra_id], references: [id])
 
   @@index([reseller_id])
+  @@index([created_at])
   @@map("pontos_extrato")
 }
 
+model NivelRegra {
+  id             String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome           String  // "Bronze" | "Prata" | "Ouro" | "Diamante"
+  pontos_minimos Int
+  cor            String
+  ordem          Int     @default(0)
+  ativo          Boolean @default(true)
+
+  @@map("nivel_regras")
+}
+
+model CommissionTier {
+  id              String  @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  min_sales_value Decimal @db.Decimal(12, 2)
+  pct             Decimal @db.Decimal(5, 2)
+  ativo           Boolean @default(true)
+
+  @@map("commission_tiers")
+}
+
+// Legado — mantido enquanto o código existente usa prisma.resgate
 model Resgate {
   id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   reseller_id String   @db.Uuid
   pontos      Int
   premio      String
-  status      String   @default("pendente") // pendente, aprovado, entregue
+  status      String   @default("pendente")
   created_at  DateTime @default(now()) @db.Timestamptz()
 
   reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
@@ -268,15 +449,74 @@ model Resgate {
 }
 
 // ============================================
-// Analytics
+// Módulo 5 — Brindes (Presentes)
+// ============================================
+
+model Brinde {
+  id           String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome         String
+  descricao    String   @default("")
+  imagem_url   String
+  custo_pontos Int
+  estoque      Int      @default(0) // -1 = ilimitado
+  ativo        Boolean  @default(true)
+  created_at   DateTime @default(now()) @db.Timestamptz()
+
+  solicitacoes SolicitacaoBrinde[]
+
+  @@map("brindes")
+}
+
+model SolicitacaoBrinde {
+  id              String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reseller_id     String   @db.Uuid
+  brinde_id       String   @db.Uuid
+  pontos_debitados Int
+  status          String   @default("pendente")
+  // "pendente" | "separado" | "entregado"
+  created_at      DateTime @default(now()) @db.Timestamptz()
+
+  reseller Reseller @relation(fields: [reseller_id], references: [id])
+  brinde   Brinde   @relation(fields: [brinde_id], references: [id])
+
+  @@index([reseller_id])
+  @@index([status])
+  @@map("solicitacoes_brinde")
+}
+
+// ============================================
+// Módulo 6 — Notificações
+// ============================================
+
+model NotificacaoPreferencia {
+  id          String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reseller_id String @unique @db.Uuid
+
+  nova_maleta       Boolean @default(true)
+  prazo_proximo     Boolean @default(true)
+  maleta_atrasada   Boolean @default(true)
+  acerto_confirmado Boolean @default(true)
+  brinde_entregue   Boolean @default(true)
+  pontos_ganhos     Boolean @default(false)
+
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+
+  @@map("notificacao_preferencias")
+}
+
+// ============================================
+// Módulo 7 — Analytics
 // ============================================
 
 model AnalyticsAcesso {
   id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   reseller_id String?  @db.Uuid
   visitor_id  String?
-  tipo_evento String // "catalogo_geral", "catalogo_revendedora", "produto", "carrinho"
-  page_url    String
+  tipo_evento String
+  produto_id  String?  @db.Uuid
+  page_url    String   @default("")
   user_agent  String   @default("")
   referrer    String   @default("")
   is_bot      Boolean  @default(false)
@@ -295,9 +535,10 @@ model AnalyticsDiario {
   id                String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
   data              DateTime @db.Date
   reseller_id       String?  @db.Uuid
-  tipo              String // "catalogo_geral", "catalogo_revendedora", "produto", "carrinho"
+  tipo              String   @default("")
   total_visitas     Int      @default(0)
   visitantes_unicos Int      @default(0)
+  cliques_whatsapp  Int      @default(0)
 
   reseller Reseller? @relation(fields: [reseller_id], references: [id], onDelete: SetNull)
 
@@ -305,4 +546,39 @@ model AnalyticsDiario {
   @@index([data])
   @@index([reseller_id])
   @@map("analytics_diario")
+}
+
+// ============================================
+// Módulo 8 — Candidaturas (Leads de Revendedoras)
+// ============================================
+
+model RevendedoraLead {
+  id   String @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+
+  // Dados do formulário público
+  nome         String
+  cedula       String
+  edad         String
+  direccion    String
+  estado_civil String @default("")
+  hijos        String @default("")
+  instagram    String @default("")
+  whatsapp     String
+  empresa      String @default("")
+  informconf   String @default("")
+
+  // Gestão do admin
+  status           LeadStatus @default(pendente)
+  taxa_comissao    Decimal?   @db.Decimal(5, 2)
+  colaboradora_id  String?    @db.Uuid
+  observacao_admin String     @default("")
+
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  colaboradora Reseller? @relation("LeadsAtribuidos", fields: [colaboradora_id], references: [id])
+
+  @@index([status])
+  @@index([created_at])
+  @@map("revendedora_leads")
 }

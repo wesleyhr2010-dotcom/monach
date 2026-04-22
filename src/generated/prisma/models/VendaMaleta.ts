@@ -38,7 +38,9 @@ export type VendaMaletaSumAggregateOutputType = {
 
 export type VendaMaletaMinAggregateOutputType = {
   id: string | null
+  maleta_id: string | null
   maleta_item_id: string | null
+  reseller_id: string | null
   cliente_nome: string | null
   cliente_telefone: string | null
   quantidade: number | null
@@ -48,7 +50,9 @@ export type VendaMaletaMinAggregateOutputType = {
 
 export type VendaMaletaMaxAggregateOutputType = {
   id: string | null
+  maleta_id: string | null
   maleta_item_id: string | null
+  reseller_id: string | null
   cliente_nome: string | null
   cliente_telefone: string | null
   quantidade: number | null
@@ -58,7 +62,9 @@ export type VendaMaletaMaxAggregateOutputType = {
 
 export type VendaMaletaCountAggregateOutputType = {
   id: number
+  maleta_id: number
   maleta_item_id: number
+  reseller_id: number
   cliente_nome: number
   cliente_telefone: number
   quantidade: number
@@ -80,7 +86,9 @@ export type VendaMaletaSumAggregateInputType = {
 
 export type VendaMaletaMinAggregateInputType = {
   id?: true
+  maleta_id?: true
   maleta_item_id?: true
+  reseller_id?: true
   cliente_nome?: true
   cliente_telefone?: true
   quantidade?: true
@@ -90,7 +98,9 @@ export type VendaMaletaMinAggregateInputType = {
 
 export type VendaMaletaMaxAggregateInputType = {
   id?: true
+  maleta_id?: true
   maleta_item_id?: true
+  reseller_id?: true
   cliente_nome?: true
   cliente_telefone?: true
   quantidade?: true
@@ -100,7 +110,9 @@ export type VendaMaletaMaxAggregateInputType = {
 
 export type VendaMaletaCountAggregateInputType = {
   id?: true
+  maleta_id?: true
   maleta_item_id?: true
+  reseller_id?: true
   cliente_nome?: true
   cliente_telefone?: true
   quantidade?: true
@@ -197,7 +209,9 @@ export type VendaMaletaGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
 
 export type VendaMaletaGroupByOutputType = {
   id: string
+  maleta_id: string
   maleta_item_id: string
+  reseller_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade: number
@@ -230,24 +244,32 @@ export type VendaMaletaWhereInput = {
   OR?: Prisma.VendaMaletaWhereInput[]
   NOT?: Prisma.VendaMaletaWhereInput | Prisma.VendaMaletaWhereInput[]
   id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  maleta_id?: Prisma.UuidFilter<"VendaMaleta"> | string
   maleta_item_id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  reseller_id?: Prisma.UuidFilter<"VendaMaleta"> | string
   cliente_nome?: Prisma.StringFilter<"VendaMaleta"> | string
   cliente_telefone?: Prisma.StringFilter<"VendaMaleta"> | string
   quantidade?: Prisma.IntFilter<"VendaMaleta"> | number
   preco_unitario?: Prisma.DecimalFilter<"VendaMaleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFilter<"VendaMaleta"> | Date | string
+  maleta?: Prisma.XOR<Prisma.MaletaScalarRelationFilter, Prisma.MaletaWhereInput>
   maleta_item?: Prisma.XOR<Prisma.MaletaItemScalarRelationFilter, Prisma.MaletaItemWhereInput>
+  reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
 }
 
 export type VendaMaletaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
+  maleta_id?: Prisma.SortOrder
   maleta_item_id?: Prisma.SortOrder
+  reseller_id?: Prisma.SortOrder
   cliente_nome?: Prisma.SortOrder
   cliente_telefone?: Prisma.SortOrder
   quantidade?: Prisma.SortOrder
   preco_unitario?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
+  maleta?: Prisma.MaletaOrderByWithRelationInput
   maleta_item?: Prisma.MaletaItemOrderByWithRelationInput
+  reseller?: Prisma.ResellerOrderByWithRelationInput
 }
 
 export type VendaMaletaWhereUniqueInput = Prisma.AtLeast<{
@@ -255,18 +277,24 @@ export type VendaMaletaWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.VendaMaletaWhereInput | Prisma.VendaMaletaWhereInput[]
   OR?: Prisma.VendaMaletaWhereInput[]
   NOT?: Prisma.VendaMaletaWhereInput | Prisma.VendaMaletaWhereInput[]
+  maleta_id?: Prisma.UuidFilter<"VendaMaleta"> | string
   maleta_item_id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  reseller_id?: Prisma.UuidFilter<"VendaMaleta"> | string
   cliente_nome?: Prisma.StringFilter<"VendaMaleta"> | string
   cliente_telefone?: Prisma.StringFilter<"VendaMaleta"> | string
   quantidade?: Prisma.IntFilter<"VendaMaleta"> | number
   preco_unitario?: Prisma.DecimalFilter<"VendaMaleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFilter<"VendaMaleta"> | Date | string
+  maleta?: Prisma.XOR<Prisma.MaletaScalarRelationFilter, Prisma.MaletaWhereInput>
   maleta_item?: Prisma.XOR<Prisma.MaletaItemScalarRelationFilter, Prisma.MaletaItemWhereInput>
+  reseller?: Prisma.XOR<Prisma.ResellerScalarRelationFilter, Prisma.ResellerWhereInput>
 }, "id">
 
 export type VendaMaletaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
+  maleta_id?: Prisma.SortOrder
   maleta_item_id?: Prisma.SortOrder
+  reseller_id?: Prisma.SortOrder
   cliente_nome?: Prisma.SortOrder
   cliente_telefone?: Prisma.SortOrder
   quantidade?: Prisma.SortOrder
@@ -284,7 +312,9 @@ export type VendaMaletaScalarWhereWithAggregatesInput = {
   OR?: Prisma.VendaMaletaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VendaMaletaScalarWhereWithAggregatesInput | Prisma.VendaMaletaScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"VendaMaleta"> | string
+  maleta_id?: Prisma.UuidWithAggregatesFilter<"VendaMaleta"> | string
   maleta_item_id?: Prisma.UuidWithAggregatesFilter<"VendaMaleta"> | string
+  reseller_id?: Prisma.UuidWithAggregatesFilter<"VendaMaleta"> | string
   cliente_nome?: Prisma.StringWithAggregatesFilter<"VendaMaleta"> | string
   cliente_telefone?: Prisma.StringWithAggregatesFilter<"VendaMaleta"> | string
   quantidade?: Prisma.IntWithAggregatesFilter<"VendaMaleta"> | number
@@ -299,12 +329,16 @@ export type VendaMaletaCreateInput = {
   quantidade?: number
   preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Date | string
+  maleta: Prisma.MaletaCreateNestedOneWithoutVendasInput
   maleta_item: Prisma.MaletaItemCreateNestedOneWithoutVendasInput
+  reseller: Prisma.ResellerCreateNestedOneWithoutVendasInput
 }
 
 export type VendaMaletaUncheckedCreateInput = {
   id?: string
+  maleta_id: string
   maleta_item_id: string
+  reseller_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade?: number
@@ -319,12 +353,16 @@ export type VendaMaletaUpdateInput = {
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
   preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maleta?: Prisma.MaletaUpdateOneRequiredWithoutVendasNestedInput
   maleta_item?: Prisma.MaletaItemUpdateOneRequiredWithoutVendasNestedInput
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutVendasNestedInput
 }
 
 export type VendaMaletaUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
@@ -334,7 +372,9 @@ export type VendaMaletaUncheckedUpdateInput = {
 
 export type VendaMaletaCreateManyInput = {
   id?: string
+  maleta_id: string
   maleta_item_id: string
+  reseller_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade?: number
@@ -353,7 +393,9 @@ export type VendaMaletaUpdateManyMutationInput = {
 
 export type VendaMaletaUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
   maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
@@ -373,7 +415,9 @@ export type VendaMaletaOrderByRelationAggregateInput = {
 
 export type VendaMaletaCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  maleta_id?: Prisma.SortOrder
   maleta_item_id?: Prisma.SortOrder
+  reseller_id?: Prisma.SortOrder
   cliente_nome?: Prisma.SortOrder
   cliente_telefone?: Prisma.SortOrder
   quantidade?: Prisma.SortOrder
@@ -388,7 +432,9 @@ export type VendaMaletaAvgOrderByAggregateInput = {
 
 export type VendaMaletaMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  maleta_id?: Prisma.SortOrder
   maleta_item_id?: Prisma.SortOrder
+  reseller_id?: Prisma.SortOrder
   cliente_nome?: Prisma.SortOrder
   cliente_telefone?: Prisma.SortOrder
   quantidade?: Prisma.SortOrder
@@ -398,7 +444,9 @@ export type VendaMaletaMaxOrderByAggregateInput = {
 
 export type VendaMaletaMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
+  maleta_id?: Prisma.SortOrder
   maleta_item_id?: Prisma.SortOrder
+  reseller_id?: Prisma.SortOrder
   cliente_nome?: Prisma.SortOrder
   cliente_telefone?: Prisma.SortOrder
   quantidade?: Prisma.SortOrder
@@ -409,6 +457,90 @@ export type VendaMaletaMinOrderByAggregateInput = {
 export type VendaMaletaSumOrderByAggregateInput = {
   quantidade?: Prisma.SortOrder
   preco_unitario?: Prisma.SortOrder
+}
+
+export type VendaMaletaCreateNestedManyWithoutResellerInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput> | Prisma.VendaMaletaCreateWithoutResellerInput[] | Prisma.VendaMaletaUncheckedCreateWithoutResellerInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutResellerInput | Prisma.VendaMaletaCreateOrConnectWithoutResellerInput[]
+  createMany?: Prisma.VendaMaletaCreateManyResellerInputEnvelope
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+}
+
+export type VendaMaletaUncheckedCreateNestedManyWithoutResellerInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput> | Prisma.VendaMaletaCreateWithoutResellerInput[] | Prisma.VendaMaletaUncheckedCreateWithoutResellerInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutResellerInput | Prisma.VendaMaletaCreateOrConnectWithoutResellerInput[]
+  createMany?: Prisma.VendaMaletaCreateManyResellerInputEnvelope
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+}
+
+export type VendaMaletaUpdateManyWithoutResellerNestedInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput> | Prisma.VendaMaletaCreateWithoutResellerInput[] | Prisma.VendaMaletaUncheckedCreateWithoutResellerInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutResellerInput | Prisma.VendaMaletaCreateOrConnectWithoutResellerInput[]
+  upsert?: Prisma.VendaMaletaUpsertWithWhereUniqueWithoutResellerInput | Prisma.VendaMaletaUpsertWithWhereUniqueWithoutResellerInput[]
+  createMany?: Prisma.VendaMaletaCreateManyResellerInputEnvelope
+  set?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  disconnect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  delete?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  update?: Prisma.VendaMaletaUpdateWithWhereUniqueWithoutResellerInput | Prisma.VendaMaletaUpdateWithWhereUniqueWithoutResellerInput[]
+  updateMany?: Prisma.VendaMaletaUpdateManyWithWhereWithoutResellerInput | Prisma.VendaMaletaUpdateManyWithWhereWithoutResellerInput[]
+  deleteMany?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
+}
+
+export type VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput> | Prisma.VendaMaletaCreateWithoutResellerInput[] | Prisma.VendaMaletaUncheckedCreateWithoutResellerInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutResellerInput | Prisma.VendaMaletaCreateOrConnectWithoutResellerInput[]
+  upsert?: Prisma.VendaMaletaUpsertWithWhereUniqueWithoutResellerInput | Prisma.VendaMaletaUpsertWithWhereUniqueWithoutResellerInput[]
+  createMany?: Prisma.VendaMaletaCreateManyResellerInputEnvelope
+  set?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  disconnect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  delete?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  update?: Prisma.VendaMaletaUpdateWithWhereUniqueWithoutResellerInput | Prisma.VendaMaletaUpdateWithWhereUniqueWithoutResellerInput[]
+  updateMany?: Prisma.VendaMaletaUpdateManyWithWhereWithoutResellerInput | Prisma.VendaMaletaUpdateManyWithWhereWithoutResellerInput[]
+  deleteMany?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
+}
+
+export type VendaMaletaCreateNestedManyWithoutMaletaInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput> | Prisma.VendaMaletaCreateWithoutMaletaInput[] | Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput | Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput[]
+  createMany?: Prisma.VendaMaletaCreateManyMaletaInputEnvelope
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+}
+
+export type VendaMaletaUncheckedCreateNestedManyWithoutMaletaInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput> | Prisma.VendaMaletaCreateWithoutMaletaInput[] | Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput | Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput[]
+  createMany?: Prisma.VendaMaletaCreateManyMaletaInputEnvelope
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+}
+
+export type VendaMaletaUpdateManyWithoutMaletaNestedInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput> | Prisma.VendaMaletaCreateWithoutMaletaInput[] | Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput | Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput[]
+  upsert?: Prisma.VendaMaletaUpsertWithWhereUniqueWithoutMaletaInput | Prisma.VendaMaletaUpsertWithWhereUniqueWithoutMaletaInput[]
+  createMany?: Prisma.VendaMaletaCreateManyMaletaInputEnvelope
+  set?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  disconnect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  delete?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  update?: Prisma.VendaMaletaUpdateWithWhereUniqueWithoutMaletaInput | Prisma.VendaMaletaUpdateWithWhereUniqueWithoutMaletaInput[]
+  updateMany?: Prisma.VendaMaletaUpdateManyWithWhereWithoutMaletaInput | Prisma.VendaMaletaUpdateManyWithWhereWithoutMaletaInput[]
+  deleteMany?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
+}
+
+export type VendaMaletaUncheckedUpdateManyWithoutMaletaNestedInput = {
+  create?: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput> | Prisma.VendaMaletaCreateWithoutMaletaInput[] | Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput[]
+  connectOrCreate?: Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput | Prisma.VendaMaletaCreateOrConnectWithoutMaletaInput[]
+  upsert?: Prisma.VendaMaletaUpsertWithWhereUniqueWithoutMaletaInput | Prisma.VendaMaletaUpsertWithWhereUniqueWithoutMaletaInput[]
+  createMany?: Prisma.VendaMaletaCreateManyMaletaInputEnvelope
+  set?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  disconnect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  delete?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  connect?: Prisma.VendaMaletaWhereUniqueInput | Prisma.VendaMaletaWhereUniqueInput[]
+  update?: Prisma.VendaMaletaUpdateWithWhereUniqueWithoutMaletaInput | Prisma.VendaMaletaUpdateWithWhereUniqueWithoutMaletaInput[]
+  updateMany?: Prisma.VendaMaletaUpdateManyWithWhereWithoutMaletaInput | Prisma.VendaMaletaUpdateManyWithWhereWithoutMaletaInput[]
+  deleteMany?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
 }
 
 export type VendaMaletaCreateNestedManyWithoutMaleta_itemInput = {
@@ -453,8 +585,21 @@ export type VendaMaletaUncheckedUpdateManyWithoutMaleta_itemNestedInput = {
   deleteMany?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
 }
 
-export type VendaMaletaCreateWithoutMaleta_itemInput = {
+export type VendaMaletaCreateWithoutResellerInput = {
   id?: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+  maleta: Prisma.MaletaCreateNestedOneWithoutVendasInput
+  maleta_item: Prisma.MaletaItemCreateNestedOneWithoutVendasInput
+}
+
+export type VendaMaletaUncheckedCreateWithoutResellerInput = {
+  id?: string
+  maleta_id: string
+  maleta_item_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade?: number
@@ -462,8 +607,110 @@ export type VendaMaletaCreateWithoutMaleta_itemInput = {
   created_at?: Date | string
 }
 
+export type VendaMaletaCreateOrConnectWithoutResellerInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  create: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput>
+}
+
+export type VendaMaletaCreateManyResellerInputEnvelope = {
+  data: Prisma.VendaMaletaCreateManyResellerInput | Prisma.VendaMaletaCreateManyResellerInput[]
+  skipDuplicates?: boolean
+}
+
+export type VendaMaletaUpsertWithWhereUniqueWithoutResellerInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  update: Prisma.XOR<Prisma.VendaMaletaUpdateWithoutResellerInput, Prisma.VendaMaletaUncheckedUpdateWithoutResellerInput>
+  create: Prisma.XOR<Prisma.VendaMaletaCreateWithoutResellerInput, Prisma.VendaMaletaUncheckedCreateWithoutResellerInput>
+}
+
+export type VendaMaletaUpdateWithWhereUniqueWithoutResellerInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  data: Prisma.XOR<Prisma.VendaMaletaUpdateWithoutResellerInput, Prisma.VendaMaletaUncheckedUpdateWithoutResellerInput>
+}
+
+export type VendaMaletaUpdateManyWithWhereWithoutResellerInput = {
+  where: Prisma.VendaMaletaScalarWhereInput
+  data: Prisma.XOR<Prisma.VendaMaletaUpdateManyMutationInput, Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerInput>
+}
+
+export type VendaMaletaScalarWhereInput = {
+  AND?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
+  OR?: Prisma.VendaMaletaScalarWhereInput[]
+  NOT?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
+  id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  maleta_id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  maleta_item_id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  reseller_id?: Prisma.UuidFilter<"VendaMaleta"> | string
+  cliente_nome?: Prisma.StringFilter<"VendaMaleta"> | string
+  cliente_telefone?: Prisma.StringFilter<"VendaMaleta"> | string
+  quantidade?: Prisma.IntFilter<"VendaMaleta"> | number
+  preco_unitario?: Prisma.DecimalFilter<"VendaMaleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFilter<"VendaMaleta"> | Date | string
+}
+
+export type VendaMaletaCreateWithoutMaletaInput = {
+  id?: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+  maleta_item: Prisma.MaletaItemCreateNestedOneWithoutVendasInput
+  reseller: Prisma.ResellerCreateNestedOneWithoutVendasInput
+}
+
+export type VendaMaletaUncheckedCreateWithoutMaletaInput = {
+  id?: string
+  maleta_item_id: string
+  reseller_id: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+}
+
+export type VendaMaletaCreateOrConnectWithoutMaletaInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  create: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput>
+}
+
+export type VendaMaletaCreateManyMaletaInputEnvelope = {
+  data: Prisma.VendaMaletaCreateManyMaletaInput | Prisma.VendaMaletaCreateManyMaletaInput[]
+  skipDuplicates?: boolean
+}
+
+export type VendaMaletaUpsertWithWhereUniqueWithoutMaletaInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  update: Prisma.XOR<Prisma.VendaMaletaUpdateWithoutMaletaInput, Prisma.VendaMaletaUncheckedUpdateWithoutMaletaInput>
+  create: Prisma.XOR<Prisma.VendaMaletaCreateWithoutMaletaInput, Prisma.VendaMaletaUncheckedCreateWithoutMaletaInput>
+}
+
+export type VendaMaletaUpdateWithWhereUniqueWithoutMaletaInput = {
+  where: Prisma.VendaMaletaWhereUniqueInput
+  data: Prisma.XOR<Prisma.VendaMaletaUpdateWithoutMaletaInput, Prisma.VendaMaletaUncheckedUpdateWithoutMaletaInput>
+}
+
+export type VendaMaletaUpdateManyWithWhereWithoutMaletaInput = {
+  where: Prisma.VendaMaletaScalarWhereInput
+  data: Prisma.XOR<Prisma.VendaMaletaUpdateManyMutationInput, Prisma.VendaMaletaUncheckedUpdateManyWithoutMaletaInput>
+}
+
+export type VendaMaletaCreateWithoutMaleta_itemInput = {
+  id?: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+  maleta: Prisma.MaletaCreateNestedOneWithoutVendasInput
+  reseller: Prisma.ResellerCreateNestedOneWithoutVendasInput
+}
+
 export type VendaMaletaUncheckedCreateWithoutMaleta_itemInput = {
   id?: string
+  maleta_id: string
+  reseller_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade?: number
@@ -497,21 +744,98 @@ export type VendaMaletaUpdateManyWithWhereWithoutMaleta_itemInput = {
   data: Prisma.XOR<Prisma.VendaMaletaUpdateManyMutationInput, Prisma.VendaMaletaUncheckedUpdateManyWithoutMaleta_itemInput>
 }
 
-export type VendaMaletaScalarWhereInput = {
-  AND?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
-  OR?: Prisma.VendaMaletaScalarWhereInput[]
-  NOT?: Prisma.VendaMaletaScalarWhereInput | Prisma.VendaMaletaScalarWhereInput[]
-  id?: Prisma.UuidFilter<"VendaMaleta"> | string
-  maleta_item_id?: Prisma.UuidFilter<"VendaMaleta"> | string
-  cliente_nome?: Prisma.StringFilter<"VendaMaleta"> | string
-  cliente_telefone?: Prisma.StringFilter<"VendaMaleta"> | string
-  quantidade?: Prisma.IntFilter<"VendaMaleta"> | number
-  preco_unitario?: Prisma.DecimalFilter<"VendaMaleta"> | runtime.Decimal | runtime.DecimalJsLike | number | string
-  created_at?: Prisma.DateTimeFilter<"VendaMaleta"> | Date | string
+export type VendaMaletaCreateManyResellerInput = {
+  id?: string
+  maleta_id: string
+  maleta_item_id: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+}
+
+export type VendaMaletaUpdateWithoutResellerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maleta?: Prisma.MaletaUpdateOneRequiredWithoutVendasNestedInput
+  maleta_item?: Prisma.MaletaItemUpdateOneRequiredWithoutVendasNestedInput
+}
+
+export type VendaMaletaUncheckedUpdateWithoutResellerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VendaMaletaUncheckedUpdateManyWithoutResellerInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VendaMaletaCreateManyMaletaInput = {
+  id?: string
+  maleta_item_id: string
+  reseller_id: string
+  cliente_nome: string
+  cliente_telefone: string
+  quantidade?: number
+  preco_unitario: runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Date | string
+}
+
+export type VendaMaletaUpdateWithoutMaletaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maleta_item?: Prisma.MaletaItemUpdateOneRequiredWithoutVendasNestedInput
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutVendasNestedInput
+}
+
+export type VendaMaletaUncheckedUpdateWithoutMaletaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type VendaMaletaUncheckedUpdateManyWithoutMaletaInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_item_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
+  quantidade?: Prisma.IntFieldUpdateOperationsInput | number
+  preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
 
 export type VendaMaletaCreateManyMaleta_itemInput = {
   id?: string
+  maleta_id: string
+  reseller_id: string
   cliente_nome: string
   cliente_telefone: string
   quantidade?: number
@@ -526,10 +850,14 @@ export type VendaMaletaUpdateWithoutMaleta_itemInput = {
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
   preco_unitario?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maleta?: Prisma.MaletaUpdateOneRequiredWithoutVendasNestedInput
+  reseller?: Prisma.ResellerUpdateOneRequiredWithoutVendasNestedInput
 }
 
 export type VendaMaletaUncheckedUpdateWithoutMaleta_itemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
@@ -539,6 +867,8 @@ export type VendaMaletaUncheckedUpdateWithoutMaleta_itemInput = {
 
 export type VendaMaletaUncheckedUpdateManyWithoutMaleta_itemInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
+  maleta_id?: Prisma.StringFieldUpdateOperationsInput | string
+  reseller_id?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_nome?: Prisma.StringFieldUpdateOperationsInput | string
   cliente_telefone?: Prisma.StringFieldUpdateOperationsInput | string
   quantidade?: Prisma.IntFieldUpdateOperationsInput | number
@@ -550,40 +880,54 @@ export type VendaMaletaUncheckedUpdateManyWithoutMaleta_itemInput = {
 
 export type VendaMaletaSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  maleta_id?: boolean
   maleta_item_id?: boolean
+  reseller_id?: boolean
   cliente_nome?: boolean
   cliente_telefone?: boolean
   quantidade?: boolean
   preco_unitario?: boolean
   created_at?: boolean
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendaMaleta"]>
 
 export type VendaMaletaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  maleta_id?: boolean
   maleta_item_id?: boolean
+  reseller_id?: boolean
   cliente_nome?: boolean
   cliente_telefone?: boolean
   quantidade?: boolean
   preco_unitario?: boolean
   created_at?: boolean
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendaMaleta"]>
 
 export type VendaMaletaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
+  maleta_id?: boolean
   maleta_item_id?: boolean
+  reseller_id?: boolean
   cliente_nome?: boolean
   cliente_telefone?: boolean
   quantidade?: boolean
   preco_unitario?: boolean
   created_at?: boolean
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["vendaMaleta"]>
 
 export type VendaMaletaSelectScalar = {
   id?: boolean
+  maleta_id?: boolean
   maleta_item_id?: boolean
+  reseller_id?: boolean
   cliente_nome?: boolean
   cliente_telefone?: boolean
   quantidade?: boolean
@@ -591,25 +935,35 @@ export type VendaMaletaSelectScalar = {
   created_at?: boolean
 }
 
-export type VendaMaletaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maleta_item_id" | "cliente_nome" | "cliente_telefone" | "quantidade" | "preco_unitario" | "created_at", ExtArgs["result"]["vendaMaleta"]>
+export type VendaMaletaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "maleta_id" | "maleta_item_id" | "reseller_id" | "cliente_nome" | "cliente_telefone" | "quantidade" | "preco_unitario" | "created_at", ExtArgs["result"]["vendaMaleta"]>
 export type VendaMaletaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }
 export type VendaMaletaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }
 export type VendaMaletaIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  maleta?: boolean | Prisma.MaletaDefaultArgs<ExtArgs>
   maleta_item?: boolean | Prisma.MaletaItemDefaultArgs<ExtArgs>
+  reseller?: boolean | Prisma.ResellerDefaultArgs<ExtArgs>
 }
 
 export type $VendaMaletaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "VendaMaleta"
   objects: {
+    maleta: Prisma.$MaletaPayload<ExtArgs>
     maleta_item: Prisma.$MaletaItemPayload<ExtArgs>
+    reseller: Prisma.$ResellerPayload<ExtArgs>
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
+    maleta_id: string
     maleta_item_id: string
+    reseller_id: string
     cliente_nome: string
     cliente_telefone: string
     quantidade: number
@@ -1009,7 +1363,9 @@ readonly fields: VendaMaletaFieldRefs;
  */
 export interface Prisma__VendaMaletaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
+  maleta<T extends Prisma.MaletaDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaletaDefaultArgs<ExtArgs>>): Prisma.Prisma__MaletaClient<runtime.Types.Result.GetResult<Prisma.$MaletaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   maleta_item<T extends Prisma.MaletaItemDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.MaletaItemDefaultArgs<ExtArgs>>): Prisma.Prisma__MaletaItemClient<runtime.Types.Result.GetResult<Prisma.$MaletaItemPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  reseller<T extends Prisma.ResellerDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ResellerDefaultArgs<ExtArgs>>): Prisma.Prisma__ResellerClient<runtime.Types.Result.GetResult<Prisma.$ResellerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1040,7 +1396,9 @@ export interface Prisma__VendaMaletaClient<T, Null = never, ExtArgs extends runt
  */
 export interface VendaMaletaFieldRefs {
   readonly id: Prisma.FieldRef<"VendaMaleta", 'String'>
+  readonly maleta_id: Prisma.FieldRef<"VendaMaleta", 'String'>
   readonly maleta_item_id: Prisma.FieldRef<"VendaMaleta", 'String'>
+  readonly reseller_id: Prisma.FieldRef<"VendaMaleta", 'String'>
   readonly cliente_nome: Prisma.FieldRef<"VendaMaleta", 'String'>
   readonly cliente_telefone: Prisma.FieldRef<"VendaMaleta", 'String'>
   readonly quantidade: Prisma.FieldRef<"VendaMaleta", 'Int'>
