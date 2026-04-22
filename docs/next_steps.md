@@ -25,12 +25,12 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
   - [x] **Imagens reais dos produtos** em `MaletaItemRow` — usar `next/image` em vez de `<img>`
   - [x] **Estado de loading/skeleton** nas páginas server component de maleta
   - [x] **Testes unitários** para componentes e actions de maleta
-- [ ] **Devolução com câmera + comprovante** — upload via `/api/upload-r2`. Ref.: [`revendedoras/SPEC_DEVOLUCAO.md`](./revendedoras/SPEC_DEVOLUCAO.md), [`sistema/SPEC_API_UPLOAD_R2.md`](./sistema/SPEC_API_UPLOAD_R2.md).
-  - [ ] Paso 1: Resumen — resumo de enviados/vendidos/a devolver, badge de atrasada
-  - [ ] Paso 2: Foto — captura de câmera ou upload, preview da imagem
-  - [ ] Paso 3: Revisión final — resumo + comissão estimada + foto confirmada
-  - [ ] Paso 4: Confirmación — splash de sucesso com próximos passos
-  - [ ] Server Action `devolverMaleta()` — muda status para `aguardando_revisao`, faz upload do comprovante via R2, dispara notificação
+- [x] **Devolução com câmera + comprovante** — upload via `/api/upload-r2`. Ref.: [`revendedoras/SPEC_DEVOLUCAO.md`](./revendedoras/SPEC_DEVOLUCAO.md), [`sistema/SPEC_API_UPLOAD_R2.md`](./sistema/SPEC_API_UPLOAD_R2.md).
+  - [x] Paso 1: Resumen — resumo de enviados/vendidos/a devolver, badge de atrasada
+  - [x] Paso 2: Foto — captura de câmera ou upload, preview da imagem
+  - [x] Paso 3: Revisión final — resumo + comissão estimada + foto confirmada
+  - [x] Paso 4: Confirmación — splash de sucesso com próximos passos
+  - [x] Server Action `submitDevolucao()` — muda status para `aguardando_revisao`, faz upload do comprovante via R2, dispara notificação push para consultora e admins
 - [ ] **Fechar maleta sem comprovante (admin/consultora)** — tornar comprovante opcional no `conferirEFecharMaleta` quando acionado via botão "Cerrar sin comprobante" no `/admin/maletas/[id]`. Registrar justificativa em `nota_acerto` (ex.: "Cierre manual sin comprobante"). Revendedora continua obrigada a enviar foto pelo PWA. Atualizar antes: [`admin/SPEC_ADMIN_CONFERIR_MALETA.md`](./admin/SPEC_ADMIN_CONFERIR_MALETA.md) e [`admin/SPEC_ADMIN_MALETAS.md`](./admin/SPEC_ADMIN_MALETAS.md) (seção "Fechar Maleta Manualmente"). Tocar: `src/app/admin/actions-maletas.ts` (`conferirEFecharMaleta` — remover bloqueio da linha 464-466 condicionalmente), `src/app/admin/maleta/[id]/` (UI do botão).
 - [ ] **Editar maleta após criação — acrescentar itens e aumentar quantidade** — nova Server Action `adicionarItensMaleta(maletaId, itens[])` permitida para ADMIN/COLABORADORA enquanto maleta estiver em `ativa` ou `atrasada`. Regras: (1) apenas acréscimo — não remove nem diminui; (2) valida estoque com reserva atômica (mesma lógica de `criarMaleta`); (3) novos itens recebem snapshot do preço atual em `preco_fixado`; (4) itens que já existiam na maleta: incrementa `quantidade_enviada` mantendo o `preco_fixado` original; (5) registra `estoqueMovimento` tipo `reserva_maleta`; (6) dispara push para a revendedora ("Se añadieron artículos a tu consignación"). Criar UI em `/admin/maletas/[id]/editar` (ou modal na página de detalhe) reutilizando `ProdutosSelectorStep` de `/admin/maletas/nova`. Atualizar antes: [`admin/SPEC_ADMIN_MALETAS.md`](./admin/SPEC_ADMIN_MALETAS.md) (nova seção "Tela 5: Editar Maleta") e [`revendedoras/SPEC_MALETA.md`](./revendedoras/SPEC_MALETA.md) (avisar revendedora quando a maleta foi alterada).
 - [ ] **RBAC e RLS validados por tabela** — revisar middleware, guards de Server Actions e policies Supabase para `REVENDEDORA`, `COLABORADORA`, `ADMIN`. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md).

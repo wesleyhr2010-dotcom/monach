@@ -184,19 +184,20 @@ Rotas implementadas em `src/app/admin/`:
 - `layout.tsx`, `login/`, `progresso/`, `vendas/` — rotas base presentes.
 - Server Action central em `actions-revendedora.ts`.
 - Componentes PWA: `AppHeader`, `AppBottomNav`, `MaletaCard`, `StatCard`, `SectionHeader`, `CommissionTiers`.
-- **Maleta PWA (parcial)**:
+- **Maleta PWA**:
   - `/app/maleta/` — listagem de consignações com `MaletaList` + `MaletaListItemCard`.
   - `/app/maleta/[id]/` — detalhes com itens, total vendido, badge de status, botões Registrar Venta e Devolver.
   - `/app/maleta/[id]/registrar-venta/` — formulário de venda com seleção de cliente e artigo.
+  - `/app/maleta/[id]/devolver/` — fluxo multi-step de devolução (4 pasos: resumen, foto, revisión, confirmación) com câmera nativa PWA, compressão de imagem, upload via `/api/upload-r2` e Server Action `submitDevolucao`.
   - Componentes reutilizáveis: `StatusBadge`, `MaletaList`, `MaletaItemRow`, `ActionButton`, `AppPageHeader`, `SummaryCard`, `CommissionCard`, `AlertBanner`, `SummaryRow`, `BottomAction`.
-  - Server action `registrarVenda` no `actions-revendedora.ts`.
-  - **Pendente**: validação Zod, lock pessimista, gamificação (`awardPoints`), fluxo de devolução (4 pasoso com câmera), imagens com `next/image`, skeletons, testes.
+  - Server actions `registrarVenda`, `registrarVendaMultipla`, `submitDevolucao` no `actions-revendedora.ts`.
+  - **Pendente**: onboarding, home com métricas reais, recuperar senha, catálogo PWA, desempenho.
 
 ### 6.4 Infraestrutura técnica em operação
 
 - **Auth**: Supabase SSR (`@supabase/ssr`), `middleware.ts`, `role-gate.tsx`, rotas `src/app/api/auth/`.
 - **Banco**: Prisma com schema em `prisma/schema.prisma`, migrations aplicadas, seed de gamificação (`seed-gamificacao.ts`).
-- **Uploads**: API `src/app/api/` + integração Cloudflare R2 via `@aws-sdk/client-s3` (bucket `fotos-monarca`).
+- **Uploads**: APIs `src/app/api/` incluindo `/api/upload-r2` (upload autenticado para R2 com validação de path, tipo e tamanho) + integração Cloudflare R2 via `@aws-sdk/client-s3` (bucket `fotos-monarca`).
 - **PWA**: Serwist (`sw.ts`, `manifest.ts`, `ServiceWorkerRegistration.tsx`), OneSignal (`OneSignalWrapper.tsx`).
 - **Cron**: `src/app/api/cron/`.
 - **Tracking**: `src/app/api/track/` + `AnalyticsTracker.tsx`.
@@ -217,7 +218,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Admin — Produtos e Categorias | **Funcional** | CRUD completo, upload R2, hierarquia. |
 | Admin — Maletas | **Funcional** | Ciclo completo implementado. Telas refatoradas com tema dark consistente + componentes reutilizáveis (`AdminPageHeader`, `AdminStatCard`, `AdminStatusBadge`, `AdminStepIndicator`, `AdminFilterBar`, `AdminEmptyState`, `AdminFinancialSummary`, `AdminAvatar`). Bug de transações Prisma 7 resolvido. |
 | Admin — Equipe / Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
-| Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta), progresso, vendas iniciados; fluxo de devolução pendente. |
+| Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |
 | RBAC + RLS | **Parcial** | `role-gate.tsx` + middleware existem; RLS Supabase a validar por tabela. |
 | Gamificação (motor) | **Parcial** | Seed presente; regras de pontos/tiers/comissão a implementar. |

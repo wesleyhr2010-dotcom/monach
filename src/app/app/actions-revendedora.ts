@@ -2,9 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
-import { Prisma } from "@/generated/prisma";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints } from "@/lib/gamificacao";
+import { sendPushNotification } from "@/lib/onesignal-server";
 
 export async function getDashboardCompleto() {
     const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
@@ -265,4 +265,97 @@ export async function registrarVenda(rawInput: {
     });
 
     return { success: true };
+}
+
+// ============================================
+// Submit Devolucao (revendedora)
+// ============================================
+export async function submitDevolucao(input: {
+    maleta_id: string;
+    comprovante_url: string;
+}): Promise<{ success: boolean; error?: string }> {
+    try {
+        const user = await requireAuth(["REVENDEDORA"]);
+        if (!user?.profileId) {
+            throw new Error("No autorizado.");
+        }
+        const resellerId = user.profileId;
+
+        await prisma.$transaction(async (tx) => {
+            // 1. Verificar ownership
+            const maleta = await tx.maleta.findFirstOrThrow({
+                where: { id: input.maleta_id, reseller_id: resellerId },
+            });
+
+            // 2. Validar estado (solo 'ativa' o 'atrasada' pueden devolver)
+            if (!["ativa", "atrasada"].includes(maleta.status)) {
+                throw new Error(
+                    "Esta consignación no puede devolverse en su estado actual."
+                );
+            }
+
+            // 3. Actualizar estado de la consignación a pendiente de revisión material
+            await tx.maleta.update({
+                where: { id: input.maleta_id },
+                data: {
+                    status: "aguardando_revisao",
+                    comprovante_devolucao_url: input.comprovante_url,
+                },
+            });
+        });
+
+        // 4. Notificar consultora/admin (best-effort fuera de tx)
+        await notificarDevolucaoPendente(resellerId, input.maleta_id);
+
+        return { success: true };
+    } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Error desconocido al enviar devolución";
+        console.error("[submitDevolucao] Error:", msg);
+        return { success: false, error: msg };
+    }
+}
+
+async function notificarDevolucaoPendente(resellerId: string, _maletaId: string) {
+  void _maletaId; // parâmetro reservado para logs futuros
+    try {
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: { name: true, colaboradora_id: true },
+        });
+
+        if (!reseller) return;
+
+        const msg = `📦 ${reseller.name} devolvió su consignación. Esperando confirmación.`;
+
+        const targetUserIds: string[] = [];
+
+        // Notificar consultora responsable
+        if (reseller.colaboradora_id) {
+            const colaboradora = await prisma.reseller.findUnique({
+                where: { id: reseller.colaboradora_id },
+                select: { auth_user_id: true },
+            });
+            if (colaboradora?.auth_user_id) {
+                targetUserIds.push(colaboradora.auth_user_id);
+            }
+        }
+
+        // Notificar todos los ADMINs
+        const admins = await prisma.reseller.findMany({
+            where: { role: "ADMIN" },
+            select: { auth_user_id: true },
+        });
+        for (const admin of admins) {
+            if (admin.auth_user_id) {
+                targetUserIds.push(admin.auth_user_id);
+            }
+        }
+
+        if (targetUserIds.length > 0) {
+            await sendPushNotification(targetUserIds, "Devolución Pendiente", msg);
+        }
+    } catch (err: unknown) {
+        console.error("[notificarDevolucaoPendente] Error:", err);
+        // Best-effort: no fallar la devolución si la notificación falla
+    }
 }
