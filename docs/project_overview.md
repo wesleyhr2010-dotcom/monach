@@ -215,7 +215,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 |------|--------|-----------|
 | Site público + catálogo | **Funcional** | Homepage, produto, carrinho, landing de captação rodando em produção interna. |
 | Admin — Produtos e Categorias | **Funcional** | CRUD completo, upload R2, hierarquia. |
-| Admin — Maletas | **Funcional** | Ciclo completo implementado. Telas refatoradas com tema dark consistente + componentes reutilizáveis (`AdminPageHeader`, `AdminStatCard`, `AdminStatusBadge`, `AdminStepIndicator`, `AdminFilterBar`, `AdminEmptyState`, `AdminFinancialSummary`, `AdminAvatar`). Bug de transações Prisma 7 resolvido. |
+| Admin — Maletas | **Funcional** | Ciclo completo implementado (criar, conferir, fechar, fechar sem comprovante). Telas refatoradas com tema dark consistente + componentes reutilizáveis. Bug de transações Prisma 7 resolvido. |
 | Admin — Equipe / Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
 | Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta), progresso, vendas iniciados; fluxo de devolução pendente. |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |

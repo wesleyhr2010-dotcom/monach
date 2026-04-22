@@ -60,4 +60,5 @@ export const conferirMaletaSchema = z.object({
     maleta_id: z.string().uuid("ID da maleta inválido"),
     itens_conferidos: z.array(conferirItemSchema).min(1, "Pelo menos 1 item é necessário"),
     nota_acerto: z.string().max(500).optional(),
+    cierre_manual_sin_comprobante: z.boolean().optional(),
 });

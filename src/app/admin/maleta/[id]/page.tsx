@@ -6,6 +6,7 @@ import {
   getMaletaById,
   devolverMaleta,
   fecharManualmenteMaleta,
+  conferirEFecharMaleta,
 } from "@/app/admin/actions-maletas";
 import type { MaletaDetail } from "@/app/admin/actions-maletas";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
@@ -38,6 +39,10 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
   const [vendidos, setVendidos] = useState<Record<string, number>>({});
   const [fechando, setFechando] = useState(false);
   const [now] = useState(() => Date.now());
+
+  const [showCerrarSinCompDialog, setShowCerrarSinCompDialog] = useState(false);
+  const [cerrandoSinComp, setCerrandoSinComp] = useState(false);
+  const [notaCierreManual, setNotaCierreManual] = useState("");
 
   async function loadMaleta() {
     setLoading(true);
@@ -94,6 +99,34 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
       setError(result.error || "Error al cerrar.");
     }
     setFechando(false);
+  }
+
+  async function handleCerrarSinComprobante() {
+    if (!maleta) return;
+    setCerrandoSinComp(true);
+    setError("");
+
+    const itens_conferidos = maleta.itens.map((item) => ({
+      item_id: item.id,
+      quantidade_recebida: item.quantidade_enviada - item.quantidade_vendida,
+    }));
+
+    const result = await conferirEFecharMaleta({
+      maleta_id: id,
+      itens_conferidos,
+      nota_acerto: notaCierreManual || undefined,
+      cierre_manual_sin_comprobante: true,
+    });
+
+    if (result.success) {
+      setShowCerrarSinCompDialog(false);
+      setSuccessMsg("Consignación cerrada sin comprobante.");
+      loadMaleta();
+      setTimeout(() => setSuccessMsg(""), 3000);
+    } else {
+      setError(result.error || "Error al cerrar sin comprobante.");
+    }
+    setCerrandoSinComp(false);
   }
 
   if (loading) {
@@ -545,14 +578,25 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
             </>
           )}
           {isAguardando && (
-            <Link href={`/admin/maleta/${id}/conferir`}>
-              <button
-                style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 18px", height: 38, borderRadius: 9, background: "#35605A", border: "none", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Raleway, system-ui, sans-serif" }}
-              >
-                <Check style={{ width: 13, height: 13 }} />
-                Conferir Consignación
-              </button>
-            </Link>
+            <>
+              <Link href={`/admin/maleta/${id}/conferir`}>
+                <button
+                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 18px", height: 38, borderRadius: 9, background: "#35605A", border: "none", color: "#fff", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Raleway, system-ui, sans-serif" }}
+                >
+                  <Check style={{ width: 13, height: 13 }} />
+                  Conferir Consignación
+                </button>
+              </Link>
+              {!maleta.comprovante_devolucao_url && (
+                <button
+                  onClick={() => setShowCerrarSinCompDialog(true)}
+                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 18px", height: 38, borderRadius: 9, background: "#171717", border: "1px solid #E05C5C", color: "#E05C5C", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Raleway, system-ui, sans-serif" }}
+                >
+                  <XCircle style={{ width: 13, height: 13 }} />
+                  Cerrar sin Comprobante
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
@@ -622,6 +666,33 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
               <button className="admin-btn admin-btn-secondary" onClick={() => setShowFecharDialog(false)}>Cancelar</button>
               <button className="admin-btn admin-btn-primary" onClick={handleFecharManualmente} disabled={fechando}>
                 {fechando ? "Cerrando..." : "Confirmar Cierre Manual"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── Dialog: Cerrar sin Comprobante ── */}
+      {showCerrarSinCompDialog && (
+        <div className="admin-dialog-overlay" onClick={() => setShowCerrarSinCompDialog(false)}>
+          <div className="admin-dialog" onClick={(e) => e.stopPropagation()}>
+            <h3 style={{ color: "var(--admin-text)" }}><XCircle className="w-5 h-5 inline mr-2" />Cerrar sin Comprobante</h3>
+            <p style={{ fontSize: 14, color: "var(--admin-text-muted)", marginBottom: 16 }}>
+              Vas a cerrar esta consignación sin comprobante de devolución. Se asumirá que todos los artículos no vendidos fueron recibidos.
+            </p>
+            <div className="admin-form-group">
+              <label className="admin-label">Justificación (opcional)</label>
+              <input
+                className="admin-input"
+                placeholder="Ej: Entrega presencial sin foto"
+                value={notaCierreManual}
+                onChange={(e) => setNotaCierreManual(e.target.value)}
+              />
+            </div>
+            <div className="admin-dialog-actions">
+              <button className="admin-btn admin-btn-secondary" onClick={() => setShowCerrarSinCompDialog(false)}>Cancelar</button>
+              <button className="admin-btn admin-btn-primary" onClick={handleCerrarSinComprobante} disabled={cerrandoSinComp}>
+                {cerrandoSinComp ? "Cerrando..." : "Confirmar Cierre"}
               </button>
             </div>
           </div>
