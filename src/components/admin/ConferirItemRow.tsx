@@ -132,7 +132,6 @@ export function QuantidadeStepper({ value, max, situacao, onChange }: Quantidade
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
-          borderRight: "1px solid #2A2A2A",
           background: "transparent",
           cursor: "pointer",
           flexShrink: 0,
