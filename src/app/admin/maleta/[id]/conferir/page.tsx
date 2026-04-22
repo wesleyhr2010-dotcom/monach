@@ -379,6 +379,8 @@ interface ConferirBottomBarProps {
   confirmando: boolean;
   error?: string;
   successMsg?: string;
+  onCerrarSinComprobante?: () => void;
+  mostrarCerrarSinComp?: boolean;
 }
 
 function ConferirBottomBar({
@@ -386,6 +388,8 @@ function ConferirBottomBar({
   confirmando,
   error,
   successMsg,
+  onCerrarSinComprobante,
+  mostrarCerrarSinComp,
 }: ConferirBottomBarProps) {
   return (
     <div
@@ -432,38 +436,71 @@ function ConferirBottomBar({
         )}
       </div>
 
-      {/* CTA */}
-      <button
-        onClick={onConfirmar}
-        disabled={confirmando}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 7,
-          backgroundColor: confirmando ? "#29494A" : "#35605A",
-          borderRadius: 9,
-          height: 38,
-          paddingInline: 18,
-          border: "none",
-          cursor: confirmando ? "not-allowed" : "pointer",
-          opacity: confirmando ? 0.7 : 1,
-          transition: "background 0.2s",
-        }}
-      >
-        <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round">
-          <path d="M2 7l3.5 3.5L11 3" />
-        </svg>
-        <span
+      {/* CTAs */}
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        {mostrarCerrarSinComp && onCerrarSinComprobante && (
+          <button
+            onClick={onCerrarSinComprobante}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 7,
+              backgroundColor: "transparent",
+              borderRadius: 9,
+              height: 38,
+              paddingInline: 18,
+              border: "1px solid #E05C5C",
+              cursor: "pointer",
+              transition: "background 0.2s",
+            }}
+          >
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#E05C5C" strokeWidth="1.5" strokeLinecap="round">
+              <path d="M6.5 1L1 12h11L6.5 1z" /><path d="M6.5 5v3M6.5 9.5h.01" />
+            </svg>
+            <span
+              style={{
+                color: "#E05C5C",
+                fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
+                fontSize: 13,
+                fontWeight: 600,
+              }}
+            >
+              Cerrar sin Comprobante
+            </span>
+          </button>
+        )}
+        <button
+          onClick={onConfirmar}
+          disabled={confirmando}
           style={{
-            color: "#FFFFFF",
-            fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
-            fontSize: 13,
-            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            backgroundColor: confirmando ? "#29494A" : "#35605A",
+            borderRadius: 9,
+            height: 38,
+            paddingInline: 18,
+            border: "none",
+            cursor: confirmando ? "not-allowed" : "pointer",
+            opacity: confirmando ? 0.7 : 1,
+            transition: "background 0.2s",
           }}
         >
-          {confirmando ? "Confirmando..." : "Confirmar Recebimento"}
-        </span>
-      </button>
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round">
+            <path d="M2 7l3.5 3.5L11 3" />
+          </svg>
+          <span
+            style={{
+              color: "#FFFFFF",
+              fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
+              fontSize: 13,
+              fontWeight: 600,
+            }}
+          >
+            {confirmando ? "Confirmando..." : "Confirmar Recebimento"}
+          </span>
+        </button>
+      </div>
     </div>
   );
 }
@@ -480,6 +517,10 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
   const [successMsg, setSuccessMsg] = useState("");
   const [recebidos, setRecebidos] = useState<Record<string, number>>({});
   const [confirmando, setConfirmando] = useState(false);
+
+  const [showCerrarSinCompDialog, setShowCerrarSinCompDialog] = useState(false);
+  const [cerrandoSinComp, setCerrandoSinComp] = useState(false);
+  const [notaCierreManual, setNotaCierreManual] = useState("");
 
   // Load data
   useEffect(() => {
@@ -528,6 +569,33 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
       setError(result.error || "Error al cerrar la consignación.");
     }
     setConfirmando(false);
+  }
+
+  async function handleCerrarSinComprobante() {
+    if (!maleta) return;
+    setCerrandoSinComp(true);
+    setError("");
+
+    const itens_conferidos = maleta.itens.map((item) => ({
+      item_id: item.id,
+      quantidade_recebida: item.quantidade_enviada - item.quantidade_vendida,
+    }));
+
+    const result = await conferirEFecharMaleta({
+      maleta_id: id,
+      itens_conferidos,
+      nota_acerto: notaCierreManual || undefined,
+      cierre_manual_sin_comprobante: true,
+    });
+
+    if (result.success) {
+      setShowCerrarSinCompDialog(false);
+      setSuccessMsg("Consignación cerrada sin comprobante.");
+      setTimeout(() => router.push("/admin/maleta"), 2000);
+    } else {
+      setError(result.error || "Error al cerrar sin comprobante.");
+    }
+    setCerrandoSinComp(false);
   }
 
   // ── Guard states ──────────────────────────────────────────────────────────
@@ -674,7 +742,100 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
         confirmando={confirmando}
         error={error}
         successMsg={successMsg}
+        onCerrarSinComprobante={() => setShowCerrarSinCompDialog(true)}
+        mostrarCerrarSinComp={!maleta.comprovante_devolucao_url}
       />
+
+      {/* Dialog: Cerrar sin Comprobante */}
+      {showCerrarSinCompDialog && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            backgroundColor: "rgba(0,0,0,0.6)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 100,
+          }}
+          onClick={() => setShowCerrarSinCompDialog(false)}
+        >
+          <div
+            style={{
+              background: "#171717",
+              border: "1px solid #2A2A2A",
+              borderRadius: 12,
+              padding: "24px",
+              width: 440,
+              maxWidth: "90vw",
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3 style={{ color: "#EDEDED", marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
+              Cerrar sin Comprobante
+            </h3>
+            <p style={{ fontSize: 13, color: "#888", marginBottom: 16 }}>
+              Vas a cerrar esta consignación sin comprobante de devolución. Se asumirá que todos los artículos no vendidos fueron recibidos.
+            </p>
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ display: "block", fontSize: 12, color: "#666", marginBottom: 6, fontFamily: "Raleway,system-ui,sans-serif" }}>
+                Justificación (opcional)
+              </label>
+              <input
+                type="text"
+                placeholder="Ej: Entrega presencial sin foto"
+                value={notaCierreManual}
+                onChange={(e) => setNotaCierreManual(e.target.value)}
+                style={{
+                  width: "100%",
+                  background: "#0A0A0A",
+                  border: "1px solid #2A2A2A",
+                  borderRadius: 8,
+                  padding: "8px 12px",
+                  color: "#EDEDED",
+                  fontSize: 13,
+                  fontFamily: "Raleway,system-ui,sans-serif",
+                }}
+              />
+            </div>
+            <div style={{ display: "flex", justifyContent: "flex-end", gap: 10 }}>
+              <button
+                onClick={() => setShowCerrarSinCompDialog(false)}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: "1px solid #2A2A2A",
+                  background: "transparent",
+                  color: "#888",
+                  cursor: "pointer",
+                  fontSize: 13,
+                  fontFamily: "Raleway,system-ui,sans-serif",
+                }}
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleCerrarSinComprobante}
+                disabled={cerrandoSinComp}
+                style={{
+                  padding: "8px 16px",
+                  borderRadius: 8,
+                  border: "none",
+                  background: "#E05C5C",
+                  color: "#fff",
+                  cursor: cerrandoSinComp ? "not-allowed" : "pointer",
+                  opacity: cerrandoSinComp ? 0.7 : 1,
+                  fontSize: 13,
+                  fontWeight: 600,
+                  fontFamily: "Raleway,system-ui,sans-serif",
+                }}
+              >
+                {cerrandoSinComp ? "Cerrando..." : "Confirmar Cierre"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Spin animation */}
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
