@@ -11,7 +11,7 @@ import type { MaletaDetail } from "@/app/admin/actions-maletas";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
 import { fmtCurrency, daysRemaining, type MaletaStatus } from "@/lib/maleta-helpers";
 import {
-  Upload, XCircle, Package,
+  Upload, XCircle, Package, Plus,
   MessageSquare, Bell, ChevronLeft, Check, AlertTriangle,
 } from "lucide-react";
 
@@ -532,6 +532,14 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
         <div style={{ display: "flex", gap: 10 }}>
           {isActive && (
             <>
+              <Link href={`/admin/maleta/${id}/editar`}>
+                <button
+                  style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 18px", height: 38, borderRadius: 9, background: "#1C3A35", border: "1px solid rgba(53,96,90,0.33)", color: "#4ADE80", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "Raleway, system-ui, sans-serif" }}
+                >
+                  <Plus style={{ width: 13, height: 13 }} />
+                  Editar Consignación
+                </button>
+              </Link>
               <button
                 onClick={() => setShowFecharDialog(true)}
                 style={{ display: "flex", alignItems: "center", gap: 7, padding: "0 18px", height: 38, borderRadius: 9, background: "#171717", border: "1px solid #2A2A2A", color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "Raleway, system-ui, sans-serif" }}

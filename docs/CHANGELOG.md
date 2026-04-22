@@ -1,5 +1,19 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Editar Maleta (Admin)
+
+### Criado
+- **Server Action `adicionarItensMaleta`** — permite a ADMIN/COLABORADORA adicionar itens a uma maleta `ativa` ou `atrasada`. Regras: apenas acréscimo, valida estoque, novos itens recebem snapshot de preço, itens existentes incrementam `quantidade_enviada` mantendo `preco_fixado`, registra `estoqueMovimento` tipo `reserva_maleta`, dispara push para revendedora. Implementa compensação de rollback se a reserva de estoque falhar (mesmo padrão de `criarMaleta`).
+- **Schema Zod `adicionarItensMaletaSchema`** — validação de `maleta_id` + array de `itens` com `product_variant_id` e `quantidade`.
+- **Página `/admin/maleta/[id]/editar/`** — interface para adicionar produtos novos ou aumentar quantidade de itens já existentes na consignação. Layout de duas colunas (busca + selecionados), reutilizando padrão visual do admin dark.
+
+### Modificado
+- **`src/app/admin/maleta/[id]/page.tsx`** — adicionado botão "Editar Consignación" visível quando status é `ativa` ou `atrasada`.
+- **`docs/admin/SPEC_ADMIN_MALETAS.md`** — nova seção "Tela 5: Editar Maleta" com layout, regras de negócio e assinatura da Server Action.
+- **`docs/revendedoras/SPEC_MALETA.md`** — adicionado edge case sobre notificação push quando a maleta é editada pelo admin.
+
+---
+
 ## 2026-04-22 — Hotfix: Build Error no Vercel
 
 ### Corrigido

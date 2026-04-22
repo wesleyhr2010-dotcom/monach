@@ -371,7 +371,77 @@ model Maleta {
 
 ---
 
-## Componentes
+---
+
+## Tela 5: Editar Maleta `/admin/maletas/[id]/editar`
+
+### Layout
+
+```
+← Editar Maleta #102 — Ana Silva               [ATIVA]
+
+Adicionar Artículos
+[🔍 Buscar producto...]
+
+┌─────────────────────────────────────────────┐
+│ [img] Gargantilha G$1.250  Estoque: 8       │
+│ Qtd: [─] [1] [+]                            │
+└─────────────────────────────────────────────┘
+┌─────────────────────────────────────────────┐
+│ [img] Ring Ouro   G$890    Estoque: 3       │
+│ Qtd: [─] [2] [+]                            │
+└─────────────────────────────────────────────┘
+
+Ítems actuales de la consignación:
+┌─────────────────────────────────────────────┐
+│ [img] Collar      G$950    Qtd:3  (existe) │
+│ Qtd adicional: [─] [1] [+]                  │
+└─────────────────────────────────────────────┘
+
+Itens nuevos: 2  │  Total adicional: G$ 2.030
+
+[← Cancelar]   [✅ Guardar Cambios]
+```
+
+### Regras de Negócio
+1. Só é possível editar maleta com status `ativa` ou `atrasada`.
+2. **Apenas acréscimo** — não é possível remover itens nem diminuir quantidades existentes.
+3. Novos itens: recebem `preco_fixado` = preço atual do `product_variant`.
+4. Itens já existentes: incrementa `quantidade_enviada` mantendo o `preco_fixado` original.
+5. Validação de estoque: `quantidade_adicional <= stock_quantity` disponível.
+6. Estoque é decrementado atomicamente (mesma lógica de `createMaleta`).
+7. Registra `estoqueMovimento` tipo `reserva_maleta` para cada item adicionado.
+8. Dispara push para revendedora: "Se añadieron artículos a tu consignación".
+9. RBAC: COLABORADORA só pode editar maletas de suas revendedoras.
+
+### Server Action: `adicionarItensMaleta(input)`
+
+```ts
+async function adicionarItensMaleta(input: {
+  maleta_id: string;
+  itens: { product_variant_id: string; quantidade: number }[];
+}) {
+  // 1. Validar auth (ADMIN/COLABORADORA) + ownership
+  // 2. Verificar maleta.status in ['ativa', 'atrasada']
+  // 3. Buscar itens existentes da maleta
+  // 4. Para cada item no input:
+  //    - Se já existe na maleta: incrementa quantidade_enviada
+  //    - Se é novo: cria MaletaItem com preco_fixado snapshot
+  // 5. Decrementar estoque (sequencial com compensação)
+  // 6. Registrar estoqueMovimento
+  // 7. Push notification para revendedora (best-effort)
+}
+```
+
+### Componentes
+
+| Componente | Tipo | Responsabilidade |
+|-----------|------|-----------------|
+| `EditarMaletaPage` | **Client** | Seleção de produtos + confirmação de acréscimo |
+
+---
+
+## Componentes (sumário)
 
 | Componente | Tipo | Responsabilidade |
 |-----------|------|-----------------|
@@ -384,3 +454,4 @@ model Maleta {
 | `MaletaDetalhePage` | Server | Dashboard da maleta |
 | `ConferirMaletaPage` | **Client** | Ajuste de qtd recebida + confirmar |
 | `ComprovanteViewer` | **Client** | Lightbox da foto do comprovante |
+| `EditarMaletaPage` | **Client** | Adicionar itens a maleta ativa |

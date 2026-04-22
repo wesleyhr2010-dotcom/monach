@@ -29,6 +29,7 @@ Permitir que a revendedora visualize suas consignações (atuais e históricas),
 - Item totalmente vendido → não aparece no catálogo mas continua visível nos detalhes.
 - Acesso a maleta de outra revendedora via URL manipulada → 404 (filtro por `reseller_id`).
 - Maleta concluída → botões de ação ocultos.
+- **Maleta editada pelo admin** → revendedora recebe push notification "Se añadieron artículos a tu consignación" e o detalhe da maleta reflete as novas quantidades/envios imediatamente.
 
 ## Dependências
 - `SPEC_ADMIN_MALETAS.md` — criação/envio de maletas.

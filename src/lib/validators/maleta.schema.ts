@@ -62,3 +62,9 @@ export const conferirMaletaSchema = z.object({
     nota_acerto: z.string().max(500).optional(),
     cierre_manual_sin_comprobante: z.boolean().optional(),
 });
+
+/** Schema for adding items to an existing maleta */
+export const adicionarItensMaletaSchema = z.object({
+    maleta_id: z.string().uuid("ID da maleta inválido"),
+    itens: z.array(maletaItemSchema).min(1, "Pelo menos 1 item é necessário"),
+});

@@ -7,7 +7,7 @@ export type { MaletaListItem, MaletaDetail, MaletaItemDetail } from "@/lib/types
 import { mapMaletaToListItem, mapMaletaToDetail } from "@/lib/mappers/maleta.mapper";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { atribuirXP } from "@/app/admin/actions-gamificacao";
-import { conferirMaletaSchema } from "@/lib/validators/maleta.schema";
+import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validators/maleta.schema";
 import { requireAuth } from "@/lib/user";
 import type { Role } from "@/lib/user";
 
@@ -673,6 +673,187 @@ export async function fecharManualmenteMaleta(
         );
 
         await prisma.$transaction(ops);
+
+        return { success: true };
+    } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Error desconocido";
+        return { success: false, error: msg };
+    }
+}
+
+// ============================================
+// Adicionar Itens a Maleta Existente
+// ============================================
+
+export async function adicionarItensMaleta(
+    input: {
+        maleta_id: string;
+        itens: { product_variant_id: string; quantidade: number }[];
+    }
+): Promise<{ success: boolean; error?: string }> {
+    const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
+    if (!user) return { success: false, error: "No tienes permiso para realizar esta acción." };
+
+    const parsed = adicionarItensMaletaSchema.safeParse(input);
+    if (!parsed.success) {
+        const firstIssue = parsed.error.issues[0];
+        return { success: false, error: firstIssue?.message || "Datos inválidos." };
+    }
+
+    const data = parsed.data;
+
+    try {
+        // 1. Pre-read: maleta + existing items
+        const maleta = await prisma.maleta.findFirst({
+            where: {
+                id: data.maleta_id,
+                status: { in: ["ativa", "atrasada"] },
+                ...(user.role === "COLABORADORA" && user.profileId
+                    ? { reseller: { colaboradora_id: user.profileId } }
+                    : {}),
+            },
+            include: {
+                itens: true,
+                reseller: { select: { id: true, name: true, auth_user_id: true } },
+            },
+        });
+
+        if (!maleta) {
+            return { success: false, error: "Consignación no encontrada o no está activa." };
+        }
+
+        // 2. Map existing items by variant_id
+        const existingByVariant = new Map<string, typeof maleta.itens[0]>();
+        for (const item of maleta.itens) {
+            existingByVariant.set(item.product_variant_id, item);
+        }
+
+        // 3. Get all variant IDs and fetch variants with stock
+        const variantIds = data.itens.map((i) => i.product_variant_id);
+        const variants = await prisma.productVariant.findMany({
+            where: { id: { in: variantIds } },
+        });
+        const variantMap = new Map(variants.map((v) => [v.id, v]));
+
+        // 4. Validate stock availability
+        for (const item of data.itens) {
+            const variant = variantMap.get(item.product_variant_id);
+            if (!variant) {
+                return { success: false, error: `Variante ${item.product_variant_id} no encontrada.` };
+            }
+            if (variant.stock_quantity < item.quantidade) {
+                return { success: false, error: `Stock insuficiente para "${variant.attribute_value}": disponible ${variant.stock_quantity}, solicitado ${item.quantidade}.` };
+            }
+        }
+
+        // 5. Separate updates vs creates
+        const updates: { maletaItemId: string; additionalQty: number; variantId: string }[] = [];
+        const creates: { variantId: string; quantidade: number; preco: number }[] = [];
+
+        for (const item of data.itens) {
+            const existing = existingByVariant.get(item.product_variant_id);
+            const variant = variantMap.get(item.product_variant_id)!;
+            if (existing) {
+                updates.push({
+                    maletaItemId: existing.id,
+                    additionalQty: item.quantidade,
+                    variantId: item.product_variant_id,
+                });
+            } else {
+                creates.push({
+                    variantId: item.product_variant_id,
+                    quantidade: item.quantidade,
+                    preco: variant.price ? Number(variant.price) : 0,
+                });
+            }
+        }
+
+        // 6. Update existing items (increment quantidade_enviada)
+        for (const upd of updates) {
+            await prisma.maletaItem.update({
+                where: { id: upd.maletaItemId },
+                data: { quantidade_enviada: { increment: upd.additionalQty } },
+            });
+        }
+
+        // 7. Create new items
+        for (const crt of creates) {
+            await prisma.maletaItem.create({
+                data: {
+                    maleta_id: data.maleta_id,
+                    product_variant_id: crt.variantId,
+                    quantidade_enviada: crt.quantidade,
+                    preco_fixado: crt.preco,
+                },
+            });
+        }
+
+        // 8. Decrement stock (sequential with compensating rollback)
+        const stockErrors: { variantId: string; qty: number }[] = [];
+        const decremented: { variantId: string; qty: number }[] = [];
+
+        for (const item of data.itens) {
+            try {
+                await prisma.productVariant.update({
+                    where: { id: item.product_variant_id },
+                    data: { stock_quantity: { decrement: item.quantidade } },
+                });
+                decremented.push({ variantId: item.product_variant_id, qty: item.quantidade });
+            } catch (variantErr) {
+                console.error("[adicionarItensMaleta] Error decrementing stock for variant", item.product_variant_id, variantErr);
+                stockErrors.push({ variantId: item.product_variant_id, qty: item.quantidade });
+            }
+        }
+
+        if (stockErrors.length > 0) {
+            // Compensate: increment stock back for successful decrements
+            for (const d of decremented) {
+                await prisma.productVariant.update({
+                    where: { id: d.variantId },
+                    data: { stock_quantity: { increment: d.qty } },
+                }).catch(() => {});
+            }
+            // Compensate: revert quantidade_enviada increments
+            for (const upd of updates) {
+                await prisma.maletaItem.update({
+                    where: { id: upd.maletaItemId },
+                    data: { quantidade_enviada: { decrement: upd.additionalQty } },
+                }).catch(() => {});
+            }
+            // Compensate: delete newly created items
+            for (const crt of creates) {
+                await prisma.maletaItem.deleteMany({
+                    where: { maleta_id: data.maleta_id, product_variant_id: crt.variantId },
+                }).catch(() => {});
+            }
+            return { success: false, error: "Error al reservar stock. Intenta de nuevo." };
+        }
+
+        // 9. Register stock movements
+        for (const item of data.itens) {
+            try {
+                await prisma.estoqueMovimento.create({
+                    data: {
+                        product_variant_id: item.product_variant_id,
+                        quantidade: item.quantidade,
+                        tipo: "reserva_maleta",
+                        motivo: `Adición a Consignación #${maleta.numero}`,
+                        maleta_id: data.maleta_id,
+                    },
+                });
+            } catch (movErr) {
+                console.error("[adicionarItensMaleta] Error creating stock movement for variant", item.product_variant_id, movErr);
+            }
+        }
+
+        // 10. Push notification (best-effort)
+        if (maleta.reseller.auth_user_id) {
+            sendPushNotification(
+                [maleta.reseller.auth_user_id],
+                "Consignación actualizada 📦",
+                `Se añadieron artículos a tu consignación #${maleta.numero}. Revisa los nuevos productos en la app.`
+            ).catch((err: unknown) => console.error("[Push] Falha:", err));
+        }
 
         return { success: true };
     } catch (err: unknown) {
