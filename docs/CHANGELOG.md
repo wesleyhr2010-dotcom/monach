@@ -1,5 +1,33 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Onboarding e Perfil da Revendedora (PWA)
+
+### Criado
+- **Campo `onboarding_completo`** no schema `Reseller` com migration `20260422000000_add_onboarding_completo`.
+- **Regras de gamificação** `primeiro_acesso` (50 pts, `unico`) e `perfil_completo` (100 pts, `unico`) adicionadas ao `seed-gamificacao.ts`.
+- **Página `/app/bienvenida`** — fluxo multi-step de onboarding:
+  - Step 1: Boas-vindas com pontos de primeiro acesso (anti-duplicata via verificação no `PontosExtrato`).
+  - Step 2: 3 slides explicando o funcionamento (consignação, comissão, pontos).
+  - Step 3: Completar perfil rápido (avatar, WhatsApp) com upload para R2.
+  - Step 4: Opt-in de push notifications (OneSignal `requestPermission`).
+  - Step 5: Tela final com resumo de pontos ganhos.
+- **Server Actions** em `src/app/app/bienvenida/actions.ts`: `awardPrimeiroAcesso`, `completeOnboarding`, `getOnboardingStatus`.
+- **Páginas de Perfil** em `/app/perfil/*`:
+  - `page.tsx` — resumo com avatar, nome, pontos, tasa de comisión, consultora e menu.
+  - `datos/page.tsx` — edição de dados pessoais (nome, whatsapp, avatar, endereço) com upload R2.
+  - `bancario/page.tsx` — formulário de dados bancários com tabs Alias (Bancard) e Cuenta Bancaria.
+  - `soporte/page.tsx` — redirect automático para WhatsApp da consultora ou suporte geral.
+  - `documentos/page.tsx` e `notificaciones/page.tsx` — stubs com mensagem "Próximamente".
+- **Server Actions** em `src/app/app/perfil/actions.ts`: `actualizarPerfilRevendedora`, `guardarDatosBancarios`, `getPerfilCompleto`.
+
+### Modificado
+- **`src/app/app/layout.tsx`** — convertido para Server Component leve; lógica client (nav, bottom nav, OneSignal) extraída para `AppShell.tsx`.
+- **`src/app/app/page.tsx`** — Server Component wrapper que detecta primeiro acesso (`!onboarding_completo && maletas.length === 0`) e redireciona para `/app/bienvenida`; renderiza `AppDashboardClient`.
+- **`src/components/app/AppShell.tsx`** — novo componente client com navegação desktop/mobile; exclui shell em `/app/login` e `/app/bienvenida`.
+- **`prisma/seed-gamificacao.ts`** — adicionado campo `tipo` às regras (`unico`, `por_evento`, `mensal`, `diario`).
+
+---
+
 ## 2026-04-22 — Proteção de Dados Sensíveis (PII, Documentos, Bancários)
 
 ### Criado

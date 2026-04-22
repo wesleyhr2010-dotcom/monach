@@ -83,9 +83,10 @@ model Reseller {
   informconf   String @default("")
 
   // Controle (legado: is_active; SPEC: ativo)
-  is_active       Boolean  @default(true)
-  perfil_completo Boolean  @default(false)
-  documentos_url  Json     @default("[]")
+  is_active           Boolean  @default(true)
+  perfil_completo     Boolean  @default(false)
+  onboarding_completo Boolean  @default(false)
+  documentos_url      Json     @default("[]")
 
   created_at DateTime @default(now()) @db.Timestamptz()
   updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()

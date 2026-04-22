@@ -65,8 +65,8 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
   - [x] `registrarVenda` usa `preco_fixado` do banco; schema e frontend atualizados.
   - [x] Testes de regressão de segurança em `src/__tests__/security/rbac-regression.test.ts` (11 testes passando).
 - [x] **Proteção de dados sensíveis** — sanitização de logs, criptografia at-rest AES-256-GCM para dados bancários, signed URLs para documentos pessoais (1h TTL), helpers de máscara para UI, e sanitizador de vitrina pública. Ref.: [`sistema/SPEC_SECURITY_DATA_PROTECTION.md`](./sistema/SPEC_SECURITY_DATA_PROTECTION.md).
-- [ ] **Onboarding e completude de perfil** da revendedora. Ref.: [`revendedoras/SPEC_ONBOARDING_REVENDEDORA.md`](./revendedoras/SPEC_ONBOARDING_REVENDEDORA.md), [`revendedoras/SPEC_PERFIL.md`](./revendedoras/SPEC_PERFIL.md).
-- [ ] **Home do PWA** com métricas reais e maleta ativa. Ref.: [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md).
+- [x] **Onboarding e completude de perfil** da revendedora. Ref.: [`revendedoras/SPEC_ONBOARDING_REVENDEDORA.md`](./revendedoras/SPEC_ONBOARDING_REVENDEDORA.md), [`revendedoras/SPEC_PERFIL.md`](./revendedoras/SPEC_PERFIL.md).
+- [~] **Home do PWA** com métricas reais e maleta ativa. Ref.: [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md).
 - [ ] **Recuperar senha** (reset via SMTP). Ref.: [`revendedoras/SPEC_RECUPERAR_CONTRASENA.md`](./revendedoras/SPEC_RECUPERAR_CONTRASENA.md).
 
 ---

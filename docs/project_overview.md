@@ -181,17 +181,27 @@ Rotas implementadas em `src/app/admin/`:
 
 ### 6.3 Portal Revendedora (`/app/*`)
 
-- `layout.tsx`, `login/`, `progresso/`, `vendas/` — rotas base presentes.
+- `layout.tsx` (Server Component) + `AppShell.tsx` (Client Component) — refatorado para suportar redirect de onboarding.
+- `login/`, `progresso/`, `vendas/` — rotas base presentes.
 - Server Action central em `actions-revendedora.ts`.
 - Componentes PWA: `AppHeader`, `AppBottomNav`, `MaletaCard`, `StatCard`, `SectionHeader`, `CommissionTiers`.
+- **Onboarding**:
+  - `/app/bienvenida/` — fluxo multi-step (boas-vindas + pontos, 3 slides explicativos, completar perfil, opt-in push, conclusão). Server Actions: `awardPrimeiroAcesso`, `completeOnboarding`.
+- **Perfil**:
+  - `/app/perfil/` — resumo com avatar, nome, pontos, tasa de comisión, consultora e menu.
+  - `/app/perfil/datos/` — edição de dados pessoais (nome, whatsapp, avatar, endereço) com upload R2.
+  - `/app/perfil/bancario/` — formulário de dados bancários (Alias Bancard / Cuenta Bancaria).
+  - `/app/perfil/soporte/` — redirect automático para WhatsApp da consultora.
+  - `documentos/` e `notificaciones/` — stubs.
+  - Server Actions em `perfil/actions.ts`: `actualizarPerfilRevendedora`, `guardarDatosBancarios`, `getPerfilCompleto`.
 - **Maleta PWA**:
   - `/app/maleta/` — listagem de consignações com `MaletaList` + `MaletaListItemCard`.
-  - `/app/maleta/[id]/` — detalhes com itens, total vendido, badge de status, botões Registrar Venta e Devolver.
+  - `/app/maleta/[id]/` — detalhes com itens, total vendido, badge de status, botões Registrar Venta y Devolver.
   - `/app/maleta/[id]/registrar-venta/` — formulário de venda com seleção de cliente e artigo.
   - `/app/maleta/[id]/devolver/` — fluxo multi-step de devolução (4 pasos: resumen, foto, revisión, confirmación) com câmera nativa PWA, compressão de imagem, upload via `/api/upload-r2` e Server Action `submitDevolucao`.
   - Componentes reutilizáveis: `StatusBadge`, `MaletaList`, `MaletaItemRow`, `ActionButton`, `AppPageHeader`, `SummaryCard`, `CommissionCard`, `AlertBanner`, `SummaryRow`, `BottomAction`.
   - Server actions `registrarVenda`, `registrarVendaMultipla`, `submitDevolucao` no `actions-revendedora.ts`.
-  - **Pendente**: onboarding, home com métricas reais, recuperar senha, catálogo PWA, desempenho.
+  - **Pendente**: home com métricas reais, recuperar senha, catálogo PWA, desempenho.
 
 ### 6.4 Infraestrutura técnica em operação
 
@@ -220,7 +230,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Admin — Produtos e Categorias | **Funcional** | CRUD completo, upload R2, hierarquia. |
 | Admin — Maletas | **Funcional** | Ciclo completo implementado (criar, editar, conferir, fechar, fechar sem comprovante). Telas refatoradas com tema dark consistente + componentes reutilizáveis. Bug de transações Prisma 7 resolvido. |
 | Admin — Equipe / Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
-| Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. |
+| Portal Revendedora (PWA) | **Em desenvolvimento** | Login, onboarding completo, perfil (resumo/datos/bancario/soporte), maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |
 | RBAC + RLS | **Funcional — auditoria 2026-04-22 resolvida** | Todas as vulnerabilidades críticas corrigidas: `requireAuth` + ownership check em `devolverMaleta`; removidos exports inseguros de `fecharMaleta`/`conciliarMaleta`; `checkOverdueMaletas` convertida em cron job autenticado; `getActiveResellers`/`getAvailableVariants` protegidos; middleware fail-closed para `userRole=null`; auto-link restrito a `REVENDEDORA`; `assertIsInGroup` aplicado nas actions `/app` para COLABORADORA; `registrarVenda` usa `preco_fixado` do banco. Testes de regressão em `src/__tests__/security/rbac-regression.test.ts`. RLS cobre 23 tabelas. |
 | Proteção de dados sensíveis | **Funcional** | Criptografia AES-256-GCM via Prisma Client Extension para `DadosBancarios` (campos `alias_ci_ruc`, `alias_valor`, `cuenta`, `ci_ruc`). Upload de documentos para `private/` no R2. Signed URLs de documentos com TTL de 1h + log de auditoria. Helper `sanitizeForLog` para sanitização de PII em logs. Helpers de máscara (`maskAlias`, `maskCuenta`, `maskCI`, `maskEmail`, `maskWhatsApp`). Sanitizador de vitrina pública (`getPublicVitrinaData`). Ref.: `SPEC_SECURITY_DATA_PROTECTION.md`. |

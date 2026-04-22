@@ -23,11 +23,12 @@ async function main() {
 
     // Níveis removidos do schema.    // Seed Regras
     const regras = [
-        { nome: "Venda na Maleta", acao: "venda_maleta", pontos: 10, descricao: "Pontos por cada venda registrada" },
-        { nome: "Meta Mensal Atingida", acao: "meta_mensal", pontos: 100, descricao: "Bônus por atingir meta mensal" },
-        { nome: "Devolução no Prazo", acao: "devolucao_prazo", pontos: 50, descricao: "Devolver maleta antes do prazo" },
-        { nome: "Primeiro Acesso ao App", acao: "primeiro_acesso", pontos: 20, descricao: "Recompensa de boas-vindas" },
-        { nome: "Maleta Completa", acao: "maleta_completa", pontos: 200, descricao: "Vender 100% dos itens da maleta" },
+        { nome: "Venda na Maleta", acao: "venda_maleta", pontos: 10, tipo: "por_evento", descricao: "Pontos por cada venda registrada" },
+        { nome: "Meta Mensal Atingida", acao: "meta_mensal", pontos: 100, tipo: "mensal", descricao: "Bônus por atingir meta mensal" },
+        { nome: "Devolução no Prazo", acao: "devolucao_prazo", pontos: 50, tipo: "por_evento", descricao: "Devolver maleta antes do prazo" },
+        { nome: "Primeiro Acesso ao App", acao: "primeiro_acesso", pontos: 50, tipo: "unico", descricao: "Recompensa de boas-vindas" },
+        { nome: "Perfil Completo", acao: "perfil_completo", pontos: 100, tipo: "unico", descricao: "Completar todos los datos del perfil" },
+        { nome: "Maleta Completa", acao: "maleta_completa", pontos: 200, tipo: "por_evento", descricao: "Vender 100% dos itens da maleta" },
     ];
 
     for (const regra of regras) {
