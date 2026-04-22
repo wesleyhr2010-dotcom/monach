@@ -420,6 +420,7 @@ export async function conferirEFecharMaleta(
         maleta_id: string;
         itens_conferidos: { item_id: string; quantidade_recebida: number }[];
         nota_acerto?: string;
+        cierre_manual_sin_comprobante?: boolean;
     }
 ): Promise<{ success: boolean; error?: string }> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
@@ -432,13 +433,13 @@ export async function conferirEFecharMaleta(
     }
 
     const data = parsed.data;
+    const cierreManual = data.cierre_manual_sin_comprobante ?? false;
 
     try {
         // Pre-read: get maleta data for validation and calculations
         const maleta = await prisma.maleta.findFirst({
             where: {
                 id: data.maleta_id,
-                status: "aguardando_revisao",
                 ...(user.role === "COLABORADORA" && user.profileId
                     ? { reseller: { colaboradora_id: user.profileId } }
                     : {}),
@@ -460,8 +461,16 @@ export async function conferirEFecharMaleta(
             return { success: false, error: "Consignación no encontrada o ya fue cerrada." };
         }
 
-        // Validate comprovante obrigatório
-        if (!maleta.comprovante_devolucao_url) {
+        // Validate status
+        const allowedStatus = cierreManual
+            ? ["ativa", "atrasada", "aguardando_revisao"]
+            : ["aguardando_revisao"];
+        if (!allowedStatus.includes(maleta.status)) {
+            return { success: false, error: "Consignación no encontrada o ya fue cerrada." };
+        }
+
+        // Validate comprovante obrigatório (skip when cierre_manual_sin_comprobante)
+        if (!cierreManual && !maleta.comprovante_devolucao_url) {
             return { success: false, error: "La revendedora aún no envió el comprobante de devolución. No se puede conferir sin comprobante." };
         }
 
@@ -544,7 +553,9 @@ export async function conferirEFecharMaleta(
                     valor_comissao_revendedora: comissaoRevendedora,
                     valor_comissao_colaboradora: comissaoColaboradora,
                     pct_comissao_aplicado: pctComissaoRevendedora,
-                    nota_acerto: data.nota_acerto ?? null,
+                    nota_acerto: data.nota_acerto
+                        ? (cierreManual ? `Cierre manual sin comprobante — ${data.nota_acerto}` : data.nota_acerto)
+                        : (cierreManual ? "Cierre manual sin comprobante" : null),
                 },
             })
         );

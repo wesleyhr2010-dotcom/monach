@@ -4,8 +4,19 @@
 
 ### Corrigido
 - **Import inválido do Prisma em `gamificacao.ts`** — O módulo `@/generated/prisma` não existe como entry point; o Prisma gera os arquivos em sub-módulos (`client.ts`, `browser.ts`, etc.). Import corrigido de `@/generated/prisma` para `@/generated/prisma/client`. O erro bloqueava todo o deploy na `main` com `Type error: Cannot find module '@/generated/prisma'`.
+- **Propriedade CSS duplicada em `ConferirItemRow.tsx`** — Removida `borderRight` duplicada no objeto `style` que causava erro de TypeScript.
 
 ---
+
+## 2026-04-22 — Fechar Maleta sem Comprovante (Admin)
+
+### Modificado
+- **`conferirEFecharMaleta`** — aceita parâmetro `cierre_manual_sin_comprobante?: boolean`. Quando `true`:
+  - Permite maletas em `ativa`/`atrasada`/`aguardando_revisao` (sem exigir comprovante).
+  - Pula validação de `comprovante_devolucao_url`.
+  - Registra `nota_acerto` com prefixo `"Cierre manual sin comprobante"`.
+- **Schema Zod `conferirMaletaSchema`** — adicionado campo `cierre_manual_sin_comprobante: z.boolean().optional()`.
+- **Página `/admin/maleta/[id]/`** — botão "Cerrar sin Comprobante" visível quando a maleta está em `aguardando_revisao` sem comprovante. Abre diálogo com campo de justificativa opcional e confirmação.
 
 ## 2026-04-22 — Devolução de Consignación (PWA)
 
