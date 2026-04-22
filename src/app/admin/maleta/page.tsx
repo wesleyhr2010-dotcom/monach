@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+export const dynamic = "force-dynamic";
 import Link from "next/link";
 import { getMaletas, checkOverdueMaletas, getColaboradoras } from "@/app/admin/actions-maletas";
 import type { MaletaListItem } from "@/app/admin/actions-maletas";

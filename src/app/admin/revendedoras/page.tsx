@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+
+export const dynamic = "force-dynamic";
 import {
     getRevendedoras,
     getColaboradoras,
