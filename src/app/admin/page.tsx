@@ -1,4 +1,6 @@
 import { requireAuth } from "@/lib/user";
+
+export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
 import {
     getDashboardMetricas,

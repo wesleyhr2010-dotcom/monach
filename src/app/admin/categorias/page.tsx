@@ -1,6 +1,8 @@
 import { getCategories } from "../actions-categories";
 import { CategoryManager } from "./CategoryManager";
 
+export const dynamic = "force-dynamic";
+
 export const metadata = {
     title: "Categorías — Monarca Admin",
 };

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+export const dynamic = "force-dynamic";
 import { getLeads, aprovarLead, recusarLead } from "../actions-leads";
 import type { LeadItem } from "../actions-leads";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

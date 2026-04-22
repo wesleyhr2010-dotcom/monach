@@ -1,6 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
+
+export const dynamic = "force-dynamic";
 import { getNiveis, getRegras, getResgates, criarNivel, criarRegra, atualizarRegra, deletarRegra, atualizarStatusResgate } from "../actions-gamificacao";
 import type { NivelGamificacaoItem, RegraGamificacaoItem, ResgateItem } from "../actions-gamificacao";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";

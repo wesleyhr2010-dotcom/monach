@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+export const dynamic = "force-dynamic";
 import { ProductForm } from "../ProductForm";
 import { getCategories } from "../../actions-categories";
 
