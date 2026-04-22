@@ -203,6 +203,7 @@ Rotas implementadas em `src/app/admin/`:
 - **Tracking**: `src/app/api/track/` + `AnalyticsTracker.tsx`.
 - **Export**: `src/app/api/export/`.
 - **RLS**: Script consolidado `scripts/rls-policies.sql` com policies para 23 tabelas (resellers, maletas, maleta_itens, vendas_maleta, pontos_extrato, reseller_documentos, datos_bancarios, notificacao_preferencias, solicitacoes_brinde, resgates, analytics_acessos, analytics_diario, revendedora_leads, gamificacao_regras, nivel_regras, commission_tiers, brindes, contratos, categories, products, product_variants, reseller_products, estoque_movimentos).
+- **Proteção de dados**: Prisma Client Extension com criptografia AES-256-GCM para `DadosBancarios` (`src/lib/prisma/encrypt-middleware.ts`); upload de documentos para path `private/` no R2; Server Actions de signed URLs com auditoria (`src/lib/data-protection/document-access.ts`); helpers de máscara para UI (`src/lib/data-protection/mask-utils.ts`); sanitizador de vitrina pública (`src/lib/data-protection/vitrina-sanitizer.ts`); helper `sanitizeForLog` para logs (`src/lib/errors/sanitize-log.ts`).
 - **Tooling**: Vitest configurado (`vitest.config.ts`, `src/__tests__/`), ESLint 9, Tailwind v4.
 
 ### 6.5 Correções recentes (últimos commits)
@@ -222,6 +223,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |
 | RBAC + RLS | **Funcional — auditoria 2026-04-22 resolvida** | Todas as vulnerabilidades críticas corrigidas: `requireAuth` + ownership check em `devolverMaleta`; removidos exports inseguros de `fecharMaleta`/`conciliarMaleta`; `checkOverdueMaletas` convertida em cron job autenticado; `getActiveResellers`/`getAvailableVariants` protegidos; middleware fail-closed para `userRole=null`; auto-link restrito a `REVENDEDORA`; `assertIsInGroup` aplicado nas actions `/app` para COLABORADORA; `registrarVenda` usa `preco_fixado` do banco. Testes de regressão em `src/__tests__/security/rbac-regression.test.ts`. RLS cobre 23 tabelas. |
+| Proteção de dados sensíveis | **Funcional** | Criptografia AES-256-GCM via Prisma Client Extension para `DadosBancarios` (campos `alias_ci_ruc`, `alias_valor`, `cuenta`, `ci_ruc`). Upload de documentos para `private/` no R2. Signed URLs de documentos com TTL de 1h + log de auditoria. Helper `sanitizeForLog` para sanitização de PII em logs. Helpers de máscara (`maskAlias`, `maskCuenta`, `maskCI`, `maskEmail`, `maskWhatsApp`). Sanitizador de vitrina pública (`getPublicVitrinaData`). Ref.: `SPEC_SECURITY_DATA_PROTECTION.md`. |
 | Gamificação (motor) | **Parcial** | Seed presente; regras de pontos/tiers/comissão a implementar. |
 | Notificações (OneSignal) | **Parcial** | Wrapper + prompt nativo; campanhas admin e centro de notificações pendentes. |
 | Emails transacionais (Brevo) | **Não iniciado** | SPEC pronta, integração ausente. |

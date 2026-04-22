@@ -74,8 +74,8 @@ export async function GET(request: NextRequest) {
             events_processed: events.length,
             groups_upserted: upserted,
         });
-    } catch (err) {
-        console.error("[Cron] Aggregate analytics error:", err);
+    } catch (err: unknown) {
+        console.error("[Cron] Aggregate analytics error:", err instanceof Error ? err.message : err);
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }

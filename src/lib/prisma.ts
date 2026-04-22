@@ -6,10 +6,7 @@
 import { PrismaClient } from "@/generated/prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
-
-const globalForPrisma = globalThis as unknown as {
-    prisma: PrismaClient | undefined;
-};
+import { withEncryptionExtension } from "./prisma/encrypt-middleware";
 
 function createPrismaClient() {
     const pool = new Pool({
@@ -17,11 +14,19 @@ function createPrismaClient() {
     });
     const adapter = new PrismaPg(pool);
 
-    return new PrismaClient({
+    const client = new PrismaClient({
         adapter,
         log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
     });
+
+    return withEncryptionExtension(client);
 }
+
+type ExtendedPrismaClient = ReturnType<typeof createPrismaClient>;
+
+const globalForPrisma = globalThis as unknown as {
+    prisma: ExtendedPrismaClient | undefined;
+};
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 

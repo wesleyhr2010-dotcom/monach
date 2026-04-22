@@ -37,7 +37,7 @@ export async function uploadProductImage(
 
         return `https://${R2_PUBLIC_DOMAIN}/${key}`;
     } catch (error) {
-        console.error("Image upload failed:", error);
+        console.error("[uploadProductImage] Error:", error instanceof Error ? error.message : String(error));
         return null;
     }
 }

@@ -183,8 +183,8 @@ export async function GET(request: NextRequest) {
                 "Content-Disposition": `attachment; filename="monarca_${filename}.pdf"`,
             },
         });
-    } catch (err) {
-        console.error("[Export PDF] Error:", err);
+    } catch (err: unknown) {
+        console.error("[Export PDF] Error:", err instanceof Error ? err.message : err);
         return NextResponse.json({ error: "Erro ao gerar PDF" }, { status: 500 });
     }
 }

@@ -1,5 +1,10 @@
-import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
+
+/**
+ * Tipo do cliente Prisma estendido (com middleware de criptografia).
+ * Usado em transações para compatibilidade com o client estendido.
+ */
+type ExtendedPrismaClient = typeof prisma;
 
 /**
  * Concede pontos de gamificação a uma revendedora com base em uma regra configurada no banco.
@@ -9,7 +14,7 @@ export async function awardPoints(
   resellerId: string,
   acao: string,
   tx?: Omit<
-    Prisma.TransactionClient,
+    ExtendedPrismaClient,
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
   >
 ) {

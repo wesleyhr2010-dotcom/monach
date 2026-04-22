@@ -157,8 +157,8 @@ export async function GET(request: NextRequest) {
                 "Content-Disposition": `attachment; filename="monarca_${filename}_${today}.csv"`,
             },
         });
-    } catch (err) {
-        console.error("[Export] Error:", err);
+    } catch (err: unknown) {
+        console.error("[Export] Error:", err instanceof Error ? err.message : err);
         return NextResponse.json({ error: "Erro ao exportar" }, { status: 500 });
     }
 }

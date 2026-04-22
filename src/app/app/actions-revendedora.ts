@@ -373,7 +373,7 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
             await sendPushNotification(targetUserIds, "Devolución Pendiente", msg);
         }
     } catch (err: unknown) {
-        console.error("[notificarDevolucaoPendente] Error:", err);
+        console.error("[notificarDevolucaoPendente] Error:", err instanceof Error ? err.message : String(err));
         // Best-effort: no fallar la devolución si la notificación falla
     }
 }

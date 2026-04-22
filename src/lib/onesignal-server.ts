@@ -24,7 +24,7 @@ export async function sendPushNotification(
             contents: { en: message, pt: message },
         };
 
-        console.log("[OneSignal Server] Enviando push para external_ids:", userIds);
+        console.log("[OneSignal Server] Enviando push para", userIds.length, "usuário(s)");
 
         const response = await fetch("https://api.onesignal.com/notifications", {
             method: "POST",
@@ -38,14 +38,14 @@ export async function sendPushNotification(
         const data = await response.json().catch(() => ({}));
 
         if (!response.ok) {
-            console.error("[OneSignal Server] Falha ao enviar Push:", response.status, JSON.stringify(data));
+            console.error("[OneSignal Server] Falha ao enviar Push:", response.status);
             return { success: false, error: "API Error", status: response.status, details: data };
         }
 
-        console.log("[OneSignal Server] Push enviado com sucesso:", JSON.stringify(data));
+        console.log("[OneSignal Server] Push enviado com sucesso. ID:", data?.id || "n/a");
         return { success: true, data };
     } catch (error) {
-        console.error("[OneSignal Server] Exceção ao despachar Push:", error);
+        console.error("[OneSignal Server] Exceção ao despachar Push:", error instanceof Error ? error.message : error);
         return { success: false, error: "Internal Exception" };
     }
 }

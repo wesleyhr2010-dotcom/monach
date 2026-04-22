@@ -45,8 +45,8 @@ export async function POST(request: NextRequest) {
                 referrer: referrer.slice(0, 500),
                 is_bot: botDetected,
             },
-        }).catch((err) => {
-            console.error("[Analytics] Failed to track:", err);
+        }).catch((err: unknown) => {
+            console.error("[Analytics] Failed to track:", err instanceof Error ? err.message : err);
         });
 
         const response = new NextResponse(null, { status: 204 });

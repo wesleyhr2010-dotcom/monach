@@ -31,9 +31,9 @@ function validateFile(file: File): void {
 }
 
 async function validateKey(key: string, userId: string, role?: string): Promise<void> {
-  // Revendedoras solo pueden subir a su propio espacio o comprovantes de sus maletas
-  const resellerPaths = [`resellers/${userId}/`, `comprovantes/`];
-  const adminPaths = ["products/", "brindes/", "contratos/"];
+  // Revendedoras solo pueden subir a su propio espacio, comprovantes de sus maletas o documentos privados
+  const resellerPaths = [`resellers/${userId}/`, `comprovantes/`, `private/resellers/`];
+  const adminPaths = ["products/", "brindes/", "contratos/", "private/"];
 
   const isAdmin = role === "ADMIN" || role === "COLABORADORA";
   const isResellerPath = resellerPaths.some((prefix) => key.startsWith(prefix));
@@ -60,6 +60,22 @@ async function validateKey(key: string, userId: string, role?: string): Promise<
     });
     if (!maleta || maleta.reseller.auth_user_id !== userId) {
       throw new Error("No autorizado para subir comprobante de esta consignación");
+    }
+  }
+
+  // Si es documento privado de revendedora, validar ownership
+  if (key.startsWith("private/resellers/")) {
+    const parts = key.split("/");
+    const resellerIdFromPath = parts[2];
+    if (!resellerIdFromPath) {
+      throw new Error("Path de documento privado inválido");
+    }
+    const reseller = await prisma.reseller.findFirst({
+      where: { id: resellerIdFromPath },
+      select: { auth_user_id: true },
+    });
+    if (!isAdmin && (!reseller || reseller.auth_user_id !== userId)) {
+      throw new Error("No autorizado para subir documento en este path privado");
     }
   }
 }

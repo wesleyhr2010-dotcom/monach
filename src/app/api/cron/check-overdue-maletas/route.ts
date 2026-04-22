@@ -22,8 +22,8 @@ export async function GET(request: NextRequest) {
             success: true,
             updated: result.count,
         });
-    } catch (err) {
-        console.error("[Cron] Check overdue maletas error:", err);
+    } catch (err: unknown) {
+        console.error("[Cron] Check overdue maletas error:", err instanceof Error ? err.message : err);
         return NextResponse.json({ error: "Internal error" }, { status: 500 });
     }
 }

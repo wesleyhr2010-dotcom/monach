@@ -1,5 +1,26 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Proteção de Dados Sensíveis (PII, Documentos, Bancários)
+
+### Criado
+- **`src/lib/prisma/encrypt-middleware.ts`** — Prisma Client Extension (`$extends`) que cifra/decifra campos sensíveis de `DadosBancarios` em AES-256-GCM. Campos protegidos: `alias_ci_ruc`, `alias_valor`, `cuenta`, `ci_ruc`. Formato: `iv:encrypted:authTag` (hex). Falha silenciosa em dev se `ENCRYPTION_KEY` ausente; erro fatal em produção.
+- **`src/lib/errors/sanitize-log.ts`** — helper `sanitizeForLog(obj)` que substitui campos sensíveis (senha, email, whatsapp, conta, CI, token, etc.) por `[REDACTED]` recursivamente. `safeLogError(prefix, payload)` como wrapper conveniente.
+- **`src/lib/data-protection/document-access.ts`** — Server Actions `getDocumentSignedUrl` (revendedora) e `getDocumentSignedUrlAdmin` (admin/consultora). Geram signed URLs de documentos em R2 com TTL de 1h. Incluem owner check, validação de grupo para COLABORADORA, e log de auditoria estruturado (`event: document_accessed` / `admin_document_accessed`).
+- **`src/lib/data-protection/mask-utils.ts`** — helpers de máscara para UI: `maskAlias`, `maskCuenta`, `maskCI`, `maskEmail`, `maskWhatsApp`.
+- **`src/lib/data-protection/vitrina-sanitizer.ts`** — `getPublicVitrinaData(slug)` e `toPublicResellerPayload()` garantem que a vitrina pública exponha apenas `name`, `avatar_url`, `slug` e link `wa.me` — nunca email, endereço, taxa ou role.
+
+### Modificado
+- **`src/lib/prisma.ts`** — cliente Prisma agora instanciado com `withEncryptionExtension()`, garantindo criptografia transparente para todas as operações de `dadosBancarios`.
+- **`src/app/api/upload-r2/route.ts`** — adicionado suporte a path `private/resellers/{id}/docs/` para documentos pessoais, com validação de ownership. Revendedoras só podem subir em seu próprio path privado; admin/consultora podem subir em qualquer path privado.
+- **`src/lib/r2.ts`** — `R2_PUBLIC_DOMAIN` exportado para reutilização em extratores de chave.
+- **`src/.env.local.example`** — adicionada variável `ENCRYPTION_KEY` com instrução de geração.
+- **Logs sanitizados** — `src/lib/onesignal-server.ts`, `src/app/api/track/route.ts`, `src/app/api/cron/check-overdue-maletas/route.ts`, `src/app/api/cron/aggregate-analytics/route.ts`, `src/app/api/export/route.ts`, `src/app/api/export/pdf/route.ts`: erro logs agora emitem apenas `err.message` em vez do objeto de erro completo, evitando vazamento acidental de dados de payload.
+
+### Dependências
+- Adicionado `@aws-sdk/s3-request-presigner` para geração de signed URLs no R2.
+
+---
+
 ## 2026-04-22 — Correção de Vulnerabilidades Críticas RBAC
 
 ### Corrigido (todas as vulnerabilidades da auditoria 2026-04-22)
