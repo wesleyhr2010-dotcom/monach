@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/user";
 
 function getMesAtual() {
     const now = new Date();
@@ -29,6 +30,7 @@ export interface DashboardMetricas {
 }
 
 export async function getDashboardMetricas(colaboradoraId?: string): Promise<DashboardMetricas> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     const { start, end } = getMesAtual();
     const mesAnteriorStart = new Date(start.getFullYear(), start.getMonth() - 1, 1);
     const mesAnteriorEnd = new Date(start.getFullYear(), start.getMonth(), 0, 23, 59, 59, 999);
@@ -110,6 +112,7 @@ export interface AlertaMaleta {
 }
 
 export async function getAlertasMaletas(colaboradoraId?: string): Promise<AlertaMaleta[]> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     const amanha = new Date();
     amanha.setDate(amanha.getDate() + 1);
     amanha.setHours(23, 59, 59, 999);
@@ -186,6 +189,7 @@ export interface RankingColaboradora {
 }
 
 export async function getRankingColaboradoras(): Promise<RankingColaboradora[]> {
+    await requireAuth(["ADMIN"]);
     const { start, end } = getMesAtual();
 
     const colaboradoras = await prisma.reseller.findMany({
@@ -247,6 +251,7 @@ export interface RankingRevendedora {
 }
 
 export async function getRankingRevendedoras(colaboradoraId: string): Promise<RankingRevendedora[]> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     const { start, end } = getMesAtual();
 
     const revendedoras = await prisma.reseller.findMany({
@@ -284,6 +289,7 @@ export async function getRankingRevendedoras(colaboradoraId: string): Promise<Ra
 // ============================================
 
 export async function getMinhaComissao(resellerId: string): Promise<number> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     const { start, end } = getMesAtual();
     const result = await prisma.maleta.aggregate({
         _sum: { valor_comissao_colaboradora: true },

@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/action-utils";
 import { uploadAvatar } from "@/lib/upload";
+import { requireAuth } from "@/lib/user";
 import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 
@@ -11,6 +12,7 @@ export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 // ============================================
 
 export async function getColaboradoras(): Promise<ColaboradoraItem[]> {
+    await requireAuth(["ADMIN"]);
     const data = await prisma.reseller.findMany({
         where: { role: "COLABORADORA" },
         orderBy: { name: "asc" },
@@ -37,6 +39,7 @@ export async function getColaboradoras(): Promise<ColaboradoraItem[]> {
 // ============================================
 
 export async function getRevendedoras(): Promise<RevendedoraItem[]> {
+    await requireAuth(["ADMIN"]);
     const data = await prisma.reseller.findMany({
         where: { role: "REVENDEDORA" },
         orderBy: { name: "asc" },
@@ -63,6 +66,7 @@ export async function getRevendedoras(): Promise<RevendedoraItem[]> {
 // ============================================
 
 export async function criarColaboradora(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         const name = formData.get("name") as string;
         const whatsapp = formData.get("whatsapp") as string;
@@ -102,6 +106,7 @@ export async function criarColaboradora(formData: FormData): Promise<{ success: 
 // ============================================
 
 export async function criarRevendedora(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         const name = formData.get("name") as string;
         const whatsapp = formData.get("whatsapp") as string;
@@ -146,6 +151,7 @@ export async function atualizarMembro(
     id: string,
     formData: FormData
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         const name = formData.get("name") as string;
         const whatsapp = formData.get("whatsapp") as string;
@@ -183,6 +189,7 @@ export async function atualizarMembro(
 // ============================================
 
 export async function deletarMembro(id: string): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.reseller.delete({ where: { id } });
         return { success: true };
@@ -200,6 +207,7 @@ export async function vincularRevendedora(
     revendedoraId: string,
     colaboradoraId: string | null
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.reseller.update({
             where: { id: revendedoraId },

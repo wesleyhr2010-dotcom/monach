@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/user";
 
 // ============================================
 // Types
@@ -42,6 +43,7 @@ export interface TopRevendedora {
 // ============================================
 
 export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
+    await requireAuth(["ADMIN"]);
     const now = new Date();
     const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const startOfWeek = new Date(startOfDay);
@@ -94,6 +96,7 @@ async function getCountsForPeriod(since: Date): Promise<PeriodCounts> {
 // ============================================
 
 export async function getAnalyticsByDay(days = 30): Promise<DailyData[]> {
+    await requireAuth(["ADMIN"]);
     const since = new Date();
     since.setDate(since.getDate() - days);
     since.setHours(0, 0, 0, 0);
@@ -155,6 +158,7 @@ export async function getAnalyticsByDay(days = 30): Promise<DailyData[]> {
 // ============================================
 
 export async function getTopRevendedorasByAccess(limit = 10): Promise<TopRevendedora[]> {
+    await requireAuth(["ADMIN"]);
     const since = new Date();
     since.setDate(since.getDate() - 30);
 

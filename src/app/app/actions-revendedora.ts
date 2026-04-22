@@ -2,14 +2,15 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
 
 export async function getDashboardCompleto() {
     const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    if (!user || !user.profileId) {
-        throw new Error("Não autorizado");
+    if (!user.profileId) {
+        throw new Error("BUSINESS: Perfil no encontrado.");
     }
 
     const resellerId = user.profileId;
@@ -68,6 +69,14 @@ export async function getDashboardCompleto() {
 // Get active maleta for a reseller
 // ============================================
 export async function getMinhasMaletas(resellerId: string) {
+    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+    // Prevenir IDOR: garantir que a revendedora só veja seus próprios dados
+    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+        throw new Error("BUSINESS: No tienes permiso para ver estas consignaciones.");
+    }
+    if (user.role === "COLABORADORA" && user.profileId) {
+        await assertIsInGroup(resellerId, user.profileId);
+    }
     const maletas = await prisma.maleta.findMany({
         where: { reseller_id: resellerId },
         include: {
@@ -95,8 +104,7 @@ export async function registrarVendaMultipla(inputData: {
     itens: Array<{ maleta_item_id: string; quantidade: number }>;
 }) {
     const user = await requireAuth(["REVENDEDORA"]);
-    if (!user?.profileId) throw new Error("No autorizado.");
-    const resellerId = user.profileId;
+    const resellerId = user.profileId!;
 
     const data = registrarVendaMultiplaSchema.parse(inputData);
 
@@ -145,6 +153,13 @@ export async function registrarVendaMultipla(inputData: {
 // Get all sales for a reseller
 // ============================================
 export async function getMinhasVendas(resellerId: string) {
+    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+        throw new Error("BUSINESS: No tienes permiso para ver estas ventas.");
+    }
+    if (user.role === "COLABORADORA" && user.profileId) {
+        await assertIsInGroup(resellerId, user.profileId);
+    }
     const vendas = await prisma.vendaMaleta.findMany({
         where: {
             maleta_item: {
@@ -171,6 +186,13 @@ export async function getMinhasVendas(resellerId: string) {
 // Financial summary
 // ============================================
 export async function getResumoFinanceiro(resellerId: string) {
+    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+        throw new Error("BUSINESS: No tienes permiso para ver este resumen.");
+    }
+    if (user.role === "COLABORADORA" && user.profileId) {
+        await assertIsInGroup(resellerId, user.profileId);
+    }
     const reseller = await prisma.reseller.findUnique({
         where: { id: resellerId },
         select: { taxa_comissao: true },
@@ -210,11 +232,10 @@ export async function registrarVenda(rawInput: {
     maleta_item_id: string;
     cliente_nome: string;
     cliente_telefone: string;
-    preco_unitario: number;
+    preco_unitario?: number;
 }) {
     const user = await requireAuth(["REVENDEDORA"]);
-    if (!user?.profileId) throw new Error("No autorizado.");
-    const resellerId = user.profileId;
+    const resellerId = user.profileId!;
 
     const input = registrarVendaSchema.parse(rawInput);
 
@@ -240,8 +261,8 @@ export async function registrarVenda(rawInput: {
                 reseller_id: resellerId,
                 cliente_nome: input.cliente_nome,
                 cliente_telefone: input.cliente_telefone,
-                preco_unitario: input.preco_unitario,
-                quantidade: 1,
+                    preco_unitario: item.preco_fixado ?? 0,
+                    quantidade: 1,
             },
         });
 
@@ -276,10 +297,7 @@ export async function submitDevolucao(input: {
 }): Promise<{ success: boolean; error?: string }> {
     try {
         const user = await requireAuth(["REVENDEDORA"]);
-        if (!user?.profileId) {
-            throw new Error("No autorizado.");
-        }
-        const resellerId = user.profileId;
+        const resellerId = user.profileId!;
 
         await prisma.$transaction(async (tx) => {
             // 1. Verificar ownership

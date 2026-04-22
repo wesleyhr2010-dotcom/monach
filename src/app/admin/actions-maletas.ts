@@ -29,7 +29,6 @@ export async function getMaletas(
     dataFim?: string
 ): Promise<MaletaListItem[]> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
-    if (!user) return [];
 
     const where: Prisma.MaletaWhereInput = {};
     if (resellerId) where.reseller_id = resellerId;
@@ -71,8 +70,15 @@ export async function getMaletas(
 // ============================================
 
 export async function getMaletaById(id: string): Promise<MaletaDetail | null> {
-    const maleta = await prisma.maleta.findUnique({
-        where: { id },
+    const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
+
+    const maleta = await prisma.maleta.findFirst({
+        where: {
+            id,
+            ...(user.role === "COLABORADORA" && user.profileId
+                ? { reseller: { colaboradora_id: user.profileId } }
+                : {}),
+        },
         include: {
             reseller: {
                 select: {
@@ -148,7 +154,6 @@ export async function criarMaleta(
     itens: CriarMaletaItem[]
 ): Promise<{ success: boolean; id?: string; error?: string }> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
-    if (!user) return { success: false, error: "No tienes permiso para realizar esta acción." };
 
     try {
         // 0. RBAC: COLABORADORA só pode criar para suas revendedoras
@@ -282,7 +287,27 @@ export async function devolverMaleta(
     id: string,
     comprovanteUrl: string
 ): Promise<{ success: boolean; error?: string }> {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId;
+
+    if (!resellerId) {
+        return { success: false, error: "Perfil de revendedora no encontrado." };
+    }
+
     try {
+        // Ownership check: só pode devolver maleta própria
+        const maleta = await prisma.maleta.findFirst({
+            where: { id, reseller_id: resellerId },
+        });
+
+        if (!maleta) {
+            return { success: false, error: "Consignación no encontrada." };
+        }
+
+        if (!["ativa", "atrasada"].includes(maleta.status)) {
+            return { success: false, error: "Esta consignación no puede devolverse en su estado actual." };
+        }
+
         await prisma.maleta.update({
             where: { id },
             data: {
@@ -306,7 +331,9 @@ interface ItemVendido {
     quantidade_vendida: number;
 }
 
-export async function fecharMaleta(
+// NOTA: função legada, não exportada. Novo fluxo usa conferirEFecharMaleta / fecharManualmenteMaleta.
+// Mantida apenas para referência interna; remover em refatoração futura se não for reativada.
+async function _fecharMaleta(
     id: string,
     itensVendidos: ItemVendido[]
 ): Promise<{ success: boolean; error?: string }> {
@@ -343,7 +370,9 @@ export async function fecharMaleta(
 // Mantido para compatibilidade. Novo fluxo usar conferirEFecharMaleta.
 // ============================================
 
-export async function conciliarMaleta(
+// NOTA: função legada, não exportada. Novo fluxo usa conferirEFecharMaleta.
+// Mantida apenas para referência interna; remover em refatoração futura se não for reativada.
+async function _conciliarMaleta(
     id: string
 ): Promise<{ success: boolean; error?: string }> {
     try {
@@ -424,7 +453,6 @@ export async function conferirEFecharMaleta(
     }
 ): Promise<{ success: boolean; error?: string }> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
-    if (!user) return { success: false, error: "No tienes permiso para realizar esta acción." };
 
     const parsed = conferirMaletaSchema.safeParse(input);
     if (!parsed.success) {
@@ -600,8 +628,15 @@ export async function conferirEFecharMaleta(
 // ============================================
 
 export async function getActiveResellers() {
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+
+    const where: Prisma.ResellerWhereInput = { is_active: true, role: "REVENDEDORA" };
+    if (user.role === "COLABORADORA" && user.profileId) {
+        where.colaboradora_id = user.profileId;
+    }
+
     const resellers = await prisma.reseller.findMany({
-        where: { is_active: true, role: "REVENDEDORA" },
+        where,
         select: { id: true, name: true, avatar_url: true, whatsapp: true, taxa_comissao: true },
         orderBy: { name: "asc" },
     });
@@ -612,18 +647,7 @@ export async function getActiveResellers() {
     }));
 }
 
-// ============================================
-// Get Colaboradoras (for filter dropdown)
-// ============================================
 
-export async function getColaboradoras() {
-    const colaboradoras = await prisma.reseller.findMany({
-        where: { is_active: true, role: "COLABORADORA" },
-        select: { id: true, name: true },
-        orderBy: { name: "asc" },
-    });
-    return colaboradoras;
-}
 
 // ============================================
 // Fechar Manualmente Maleta (admin força fechamento)
@@ -634,7 +658,6 @@ export async function fecharManualmenteMaleta(
     itensVendidos: ItemVendido[]
 ): Promise<{ success: boolean; error?: string }> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
-    if (!user) return { success: false, error: "No tienes permiso." };
 
     try {
         // Pre-read: get maleta data
@@ -692,7 +715,6 @@ export async function adicionarItensMaleta(
     }
 ): Promise<{ success: boolean; error?: string }> {
     const user = await requireAuth(["ADMIN" as Role, "COLABORADORA" as Role]);
-    if (!user) return { success: false, error: "No tienes permiso para realizar esta acción." };
 
     const parsed = adicionarItensMaletaSchema.safeParse(input);
     if (!parsed.success) {
@@ -867,6 +889,8 @@ export async function adicionarItensMaleta(
 // ============================================
 
 export async function getAvailableVariants(search?: string) {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
+
     // 1. Get products WITH variants that have stock > 0
     const variantWhere: Record<string, unknown> = { stock_quantity: { gt: 0 } };
     if (search) {
@@ -899,19 +923,5 @@ export async function getAvailableVariants(search?: string) {
     return result;
 }
 
-// ============================================
-// Update Maleta Status (for overdue check)
-// ============================================
-
-export async function checkOverdueMaletas() {
-    const now = new Date();
-    await prisma.maleta.updateMany({
-        where: {
-            status: "ativa",
-            data_limite: { lt: now },
-        },
-        data: { status: "atrasada" },
-    });
-}
 
 

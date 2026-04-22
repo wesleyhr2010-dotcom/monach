@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 
 export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
@@ -33,8 +33,10 @@ function formatCurrency(value: number): string {
 }
 
 export default async function AdminDashboardPage() {
-    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-    if (!user) redirect("/admin/login");
+    const user = await getCurrentUser();
+    if (!user || !user.isActive || (user.role !== "ADMIN" && user.role !== "COLABORADORA")) {
+        redirect("/admin/login");
+    }
 
     const isSuperAdmin = user.role === "ADMIN";
     const colaboradoraId = isSuperAdmin ? undefined : (user.profileId ?? undefined);

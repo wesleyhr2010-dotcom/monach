@@ -195,13 +195,14 @@ Rotas implementadas em `src/app/admin/`:
 
 ### 6.4 Infraestrutura técnica em operação
 
-- **Auth**: Supabase SSR (`@supabase/ssr`), `middleware.ts`, `role-gate.tsx`, rotas `src/app/api/auth/`.
+- **Auth & RBAC**: Supabase SSR (`@supabase/ssr`), `middleware.ts` com verificação de `is_active` e restrição de rotas admin para COLABORADORA, `role-gate.tsx` usando `getCurrentUser`, guard `requireAuth` com throw de `BUSINESS:` errors, helpers `assertIsInGroup` e `getResellerScope`.
 - **Banco**: Prisma com schema em `prisma/schema.prisma`, migrations aplicadas, seed de gamificação (`seed-gamificacao.ts`).
 - **Uploads**: APIs `src/app/api/` incluindo `/api/upload-r2` (upload autenticado para R2 com validação de path, tipo e tamanho) + integração Cloudflare R2 via `@aws-sdk/client-s3` (bucket `fotos-monarca`).
 - **PWA**: Serwist (`sw.ts`, `manifest.ts`, `ServiceWorkerRegistration.tsx`), OneSignal (`OneSignalWrapper.tsx`).
 - **Cron**: `src/app/api/cron/`.
 - **Tracking**: `src/app/api/track/` + `AnalyticsTracker.tsx`.
 - **Export**: `src/app/api/export/`.
+- **RLS**: Script consolidado `scripts/rls-policies.sql` com policies para 23 tabelas (resellers, maletas, maleta_itens, vendas_maleta, pontos_extrato, reseller_documentos, datos_bancarios, notificacao_preferencias, solicitacoes_brinde, resgates, analytics_acessos, analytics_diario, revendedora_leads, gamificacao_regras, nivel_regras, commission_tiers, brindes, contratos, categories, products, product_variants, reseller_products, estoque_movimentos).
 - **Tooling**: Vitest configurado (`vitest.config.ts`, `src/__tests__/`), ESLint 9, Tailwind v4.
 
 ### 6.5 Correções recentes (últimos commits)
@@ -220,7 +221,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Admin — Equipe / Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
 | Portal Revendedora (PWA) | **Em desenvolvimento** | Login, home, maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |
-| RBAC + RLS | **Parcial** | `role-gate.tsx` + middleware existem; RLS Supabase a validar por tabela. |
+| RBAC + RLS | **Funcional — auditoria 2026-04-22 resolvida** | Todas as vulnerabilidades críticas corrigidas: `requireAuth` + ownership check em `devolverMaleta`; removidos exports inseguros de `fecharMaleta`/`conciliarMaleta`; `checkOverdueMaletas` convertida em cron job autenticado; `getActiveResellers`/`getAvailableVariants` protegidos; middleware fail-closed para `userRole=null`; auto-link restrito a `REVENDEDORA`; `assertIsInGroup` aplicado nas actions `/app` para COLABORADORA; `registrarVenda` usa `preco_fixado` do banco. Testes de regressão em `src/__tests__/security/rbac-regression.test.ts`. RLS cobre 23 tabelas. |
 | Gamificação (motor) | **Parcial** | Seed presente; regras de pontos/tiers/comissão a implementar. |
 | Notificações (OneSignal) | **Parcial** | Wrapper + prompt nativo; campanhas admin e centro de notificações pendentes. |
 | Emails transacionais (Brevo) | **Não iniciado** | SPEC pronta, integração ausente. |

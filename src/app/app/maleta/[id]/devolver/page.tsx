@@ -1,4 +1,4 @@
-import { requireAuth } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import DevolverClient from "./DevolverClient";
@@ -7,8 +7,8 @@ export const dynamic = "force-dynamic";
 
 export default async function DevolverPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const user = await requireAuth(["REVENDEDORA"]);
-  if (!user?.profileId) notFound();
+  const user = await getCurrentUser();
+  if (!user?.profileId || user.role !== "REVENDEDORA") notFound();
 
   const maleta = await prisma.maleta.findFirst({
     where: { id, reseller_id: user.profileId },

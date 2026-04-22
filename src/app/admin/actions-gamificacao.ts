@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { requireAuth } from "@/lib/user";
 
 // ============================================
 // Types
@@ -37,6 +38,7 @@ export interface ResgateItem {
 // ============================================
 
 export async function getNiveis(): Promise<NivelGamificacaoItem[]> {
+    await requireAuth(["ADMIN"]);
     return [];
 }
 
@@ -45,6 +47,7 @@ export async function criarNivel(data: {
     xp_minimo: number;
     bonus_comissao: number;
 }): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     return { success: false, error: "Tabela NivelGamificacao não existe mais" }
 }
 
@@ -52,10 +55,12 @@ export async function atualizarNivel(
     id: string,
     data: { nome?: string; xp_minimo?: number; bonus_comissao?: number }
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     return { success: false, error: "Tabela NivelGamificacao não existe mais" }
 }
 
 export async function deletarNivel(id: string): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     return { success: false, error: "Tabela NivelGamificacao não existe mais" };
 }
 
@@ -64,6 +69,7 @@ export async function deletarNivel(id: string): Promise<{ success: boolean; erro
 // ============================================
 
 export async function getRegras(): Promise<RegraGamificacaoItem[]> {
+    await requireAuth(["ADMIN"]);
     const regras = await prisma.gamificacaoRegra.findMany({
         orderBy: { created_at: "asc" },
     });
@@ -83,6 +89,7 @@ export async function criarRegra(data: {
     acao: string;
     pontos: number;
 }): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.gamificacaoRegra.create({ data });
         return { success: true };
@@ -95,6 +102,7 @@ export async function atualizarRegra(
     id: string,
     data: { nome?: string; descricao?: string; acao?: string; pontos?: number; ativo?: boolean }
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.gamificacaoRegra.update({ where: { id }, data });
         return { success: true };
@@ -104,6 +112,7 @@ export async function atualizarRegra(
 }
 
 export async function deletarRegra(id: string): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.gamificacaoRegra.delete({ where: { id } });
         return { success: true };
@@ -117,6 +126,7 @@ export async function deletarRegra(id: string): Promise<{ success: boolean; erro
 // ============================================
 
 export async function getResgates(): Promise<ResgateItem[]> {
+    await requireAuth(["ADMIN"]);
     const resgates = await prisma.resgate.findMany({
         include: { reseller: { select: { name: true } } },
         orderBy: { created_at: "desc" },
@@ -136,6 +146,7 @@ export async function atualizarStatusResgate(
     id: string,
     status: "aprovado" | "entregue" | "recusado"
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     try {
         await prisma.resgate.update({ where: { id }, data: { status } });
         return { success: true };
@@ -153,6 +164,7 @@ export async function atribuirXP(
     acao: string,
     descricaoExtra?: string
 ): Promise<{ success: boolean; pontos?: number; error?: string }> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     try {
         // Find active rule for this action
         const regra = await prisma.gamificacaoRegra.findFirst({
@@ -189,6 +201,7 @@ export async function solicitarResgate(data: {
     pontos: number;
     premio: string;
 }): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
     try {
         // Mock verification since xp_total is removed
         const xp_total = 9999;
@@ -227,6 +240,7 @@ export async function solicitarResgate(data: {
 // ============================================
 
 export async function getExtratoPontos(resellerId: string) {
+    await requireAuth(["ADMIN", "COLABORADORA", "REVENDEDORA"]);
     const extrato = await prisma.pontosExtrato.findMany({
         where: { reseller_id: resellerId },
         orderBy: { created_at: "desc" },

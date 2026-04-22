@@ -5,11 +5,7 @@ import { requireAuth } from "@/lib/user";
 
 export async function getPerfilRevendedora() {
     const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    if (!user || !user.profileId) {
-        throw new Error("Não autorizado");
-    }
-
-    const resellerId = user.profileId;
+    const resellerId = user.profileId!;
 
     const reseller = await prisma.reseller.findUnique({
         where: { id: resellerId },

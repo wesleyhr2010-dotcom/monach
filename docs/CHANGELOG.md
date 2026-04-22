@@ -1,5 +1,58 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Correção de Vulnerabilidades Críticas RBAC
+
+### Corrigido (todas as vulnerabilidades da auditoria 2026-04-22)
+- **`src/app/admin/actions-maletas.ts`** — `devolverMaleta`: adicionado `requireAuth(["REVENDEDORA"])` + ownership check (`findFirst({ id, reseller_id })`) + validação de status. `fecharMaleta` e `conciliarMaleta`: removidos exports inseguros (renomeados para `_fecharMaleta` / `_conciliarMaleta`). `getActiveResellers`: adicionado `requireAuth(["ADMIN","COLABORADORA"])` + filtro por `colaboradora_id`. `getAvailableVariants`: adicionado `requireAuth(["ADMIN","COLABORADORA"])`. `getColaboradoras` duplicada removida; importação em `maleta/page.tsx` migrada para `actions-equipe.ts`.
+- **`src/app/api/cron/check-overdue-maletas/route.ts`** — `checkOverdueMaletas` convertida de Server Action pública para cron job autenticado por `CRON_SECRET`. Chamada removida do client component `maleta/page.tsx`.
+- **`src/lib/user.ts`** — Auto-link por email agora restrito a `role=REVENDEDORA` (previne takeover de perfis ADMIN/COLABORADORA). `getCurrentUser` retorna `null` quando não há perfil no banco, eliminando defaults permissivos (`role=REVENDEDORA`, `isActive=true`).
+- **`src/lib/middleware-auth.ts`** — Middleware invertido para fail-closed: só permite `/admin` se `userRole` for explicitamente `'ADMIN'` ou `'COLABORADORA'`; todos os outros casos redirecionam para `/app`.
+- **`src/app/app/actions-revendedora.ts`** — `getMinhasMaletas`, `getMinhasVendas`, `getResumoFinanceiro`: adicionado `assertIsInGroup` para COLABORADORA. `registrarVenda`: agora usa `item.preco_fixado` do banco em vez de `input.preco_unitario`; schema e frontend (`RegistrarVentaClient.tsx`) atualizados.
+- **`src/__tests__/security/rbac-regression.test.ts`** — 11 testes de regressão cobrindo: (a) chamadas sem sessão retornam `BUSINESS:` error; (b) COLABORADORA não acessa dados fora do grupo; (c) `getCurrentUser` retorna `null` sem perfil.
+
+## 2026-04-22 — Auditoria de Segurança RBAC (follow-up)
+
+### Identificado
+Auditoria crítica posterior à primeira implementação do RBAC revelou vulnerabilidades remanescentes — documentadas em `docs/next_steps.md` §Prioridade Crítica e nos novos padrões obrigatórios adicionados em `docs/sistema/SPEC_SECURITY_RBAC.md` §8–10.
+
+- **CRÍTICO:** Server Actions de mutação financeira sem `requireAuth` — `devolverMaleta`, `fecharMaleta`, `conciliarMaleta`, `checkOverdueMaletas` em `src/app/admin/actions-maletas.ts`.
+- **CRÍTICO:** Leitura de PII sem autenticação — `getActiveResellers`, `getColaboradoras` (em `actions-maletas.ts`), `getAvailableVariants`.
+- **ALTO:** Email auto-linking em `getCurrentUser` permite takeover de perfis ADMIN/COLABORADORA com `auth_user_id=null`.
+- **ALTO:** `getMinhasMaletas`, `getMinhasVendas`, `getResumoFinanceiro` em `actions-revendedora.ts` bloqueiam IDOR só para REVENDEDORA — COLABORADORA ainda vê dados fora do grupo (falta `assertIsInGroup`).
+- **ALTO:** Middleware fail-open quando `userRole === null` (query Supabase falha → usuário autenticado passa para `/admin`).
+- **MÉDIO:** `registrarVenda` aceita `preco_unitario` controlado pelo cliente.
+- **MÉDIO:** `getCurrentUser` retorna `REVENDEDORA` ativa por default quando perfil não existe.
+
+### Documentado (implementação pendente)
+- **`docs/sistema/SPEC_SECURITY_RBAC.md` §8 "Padrões Obrigatórios — Anti-Patterns Proibidos"** — 8 anti-patterns com exemplo ❌/✅ para usar em code review.
+- **`docs/sistema/SPEC_SECURITY_RBAC.md` §9 "Cron Jobs e Actions Automáticas"** — cron não expõe Server Action pública; usar Route Handler autenticado por `CRON_SECRET` ou Edge Function.
+- **`docs/sistema/SPEC_SECURITY_RBAC.md` §10 "Testes de Regressão de Segurança"** — 7 casos mínimos por Server Action.
+- **`docs/sistema/SPEC_SECURITY_RBAC.md` §7** — checklist expandido com 4 novos itens (cross-parent check, valores financeiros do banco, operações incrementais, whatsapp como PII).
+- **`docs/next_steps.md`** — criada seção "Prioridade Crítica — Auditoria de segurança RBAC" com 13 itens acionáveis referenciando arquivo:linha e correção específica. Item RBAC anterior movido de `[x]` para `[~]` (parcial) até os críticos serem resolvidos.
+
+### Não modificado neste commit
+Esta entrada é apenas de documentação — nenhum código `.ts` foi alterado. As correções de código estão planejadas na seção Crítica do `next_steps.md`.
+
+---
+
+## 2026-04-22 — RBAC e RLS Validados por Tabela
+
+### Criado
+- **`src/lib/auth/assert-in-group.ts`** — helper `assertIsInGroup(resellerId, colaboradoraId)` que lança `BUSINESS:` error se a revendedora não pertencer ao grupo da colaboradora.
+- **`src/lib/auth/get-reseller-scope.ts`** — helper `getResellerScope(caller)` que retorna filtro WHERE baseado na role (ADMIN = sem filtro, COLABORADORA = `colaboradora_id`, REVENDEDORA = `id`).
+- **`scripts/rls-policies.sql`** — script consolidado com RLS policies para 23 tabelas sensíveis, incluindo owner checks, leitura pública para produtos/categorias, e restrições por role.
+
+### Modificado
+- **`src/lib/user.ts`** — `requireAuth` agora lança `BUSINESS:` errors (throw) em vez de retornar `null`; verifica `is_active` com mensagem específica; retorna `colaboradoraId` no `CurrentUser`.
+- **`src/lib/middleware-auth.ts`** — middleware agora busca `is_active` no perfil e redireciona usuários inativos; adicionada restrição de rotas admin exclusivas para COLABORADORA (`/admin/productos`, `/admin/gamificacion`, `/admin/brindes`, `/admin/commission-tiers`, `/admin/contratos`, `/admin/equipo/consultoras`).
+- **`src/components/auth/role-gate.tsx`** — agora usa `getCurrentUser` (não-throwing) adequado para Server Components.
+- **Todas as Server Actions do admin** — `requireAuth` adicionado em `actions-products`, `actions-categories`, `actions-dashboard`, `actions-equipe`, `actions-gamificacao`, `actions-leads`, `actions-analytics`.
+- **`actions-maletas.ts`** — `getMaletaById` agora usa `findFirst` com filtro de colaboradora; removidos checks `if (!user)` obsoletos.
+- **`actions-revendedora.ts`** — `getMinhasMaletas`, `getMinhasVendas`, `getResumoFinanceiro` agora validam `profileId` contra o `resellerId` para prevenir IDOR.
+- **Páginas (page.tsx)** — todas as páginas de `/app/*` e `/admin/page.tsx` migradas de `requireAuth` para `getCurrentUser` para evitar throw em Server Components.
+
+---
+
 ## 2026-04-22 — Editar Maleta (Admin)
 
 ### Criado

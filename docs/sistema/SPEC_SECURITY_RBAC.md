@@ -312,11 +312,177 @@ USING (
 Ao implementar qualquer nova Server Action:
 
 ```
-[ ] Chamada requireAuth() no início da função
+[ ] Chamada requireAuth() no início da função — OBRIGATÓRIA, sem exceções
 [ ] Role check se necessário (allowedRoles)
 [ ] Owner check no WHERE das queries (nunca buscar só por id)
-[ ] COLABORADORA verificada com assertIsInGroup() quando aplicável
+[ ] COLABORADORA verificada com assertIsInGroup() quando aplicável — inclui actions de /app
+[ ] Quando operação recebe ID de recurso filho (ex: maleta_item_id), verificar pertinência ao recurso pai (maleta_id) na mesma query
+[ ] Valores financeiros NUNCA vêm do input do cliente — sempre do banco (preco_fixado, taxa_comissao, etc.)
 [ ] Retorno usando ActionResult (nunca throw direto para o cliente)
-[ ] Dados sensíveis NÃO incluídos no select (ex: não retornar senha hash)
+[ ] Dados sensíveis NÃO incluídos no select (whatsapp, email, dados_bancarios, documentos) a menos que requeridos e autorizados
 [ ] Input validado com Zod antes de qualquer operação
+[ ] Mutation actions usam operações incrementais (increment/decrement) em vez de SET absoluto quando representam contadores/somas
 ```
+
+---
+
+## 8. Padrões Obrigatórios — Anti-Patterns Proibidos
+
+Seção defensiva gerada a partir da auditoria de 2026-04-22. Qualquer código que contenha um destes padrões deve ser rejeitado em review.
+
+### 8.1 Server Action sem `requireAuth` — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — qualquer caller não autenticado executa
+"use server";
+export async function devolverMaleta(id: string, comprovanteUrl: string) {
+    await prisma.maleta.update({ where: { id }, data: { status: "aguardando_revisao", comprovante_devolucao_url: comprovanteUrl } });
+    return { success: true };
+}
+
+// ✅ OBRIGATÓRIO — guard + ownership
+export async function devolverMaleta(id: string, comprovanteUrl: string) {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const maleta = await prisma.maleta.findFirst({
+        where: { id, reseller_id: user.profileId! },
+    });
+    if (!maleta) return { success: false, error: "Consignación no encontrada." };
+    await prisma.maleta.update({ where: { id: maleta.id }, data: { ... } });
+    return { success: true };
+}
+```
+
+**Regra:** Toda função exportada em um arquivo com `"use server"` é um endpoint HTTP. Não existe "helper interno" em arquivo de action — se precisar de helper privado, crie um arquivo separado sem `"use server"`.
+
+### 8.2 Update de filho por ID sem verificar pai — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — atacante passa maleta_item_id de outra maleta
+for (const item of itensVendidos) {
+    await prisma.maletaItem.update({
+        where: { id: item.maleta_item_id },
+        data: { quantidade_vendida: item.quantidade_vendida },
+    });
+}
+
+// ✅ OBRIGATÓRIO — verificar pertinência
+const items = await prisma.maletaItem.findMany({
+    where: { id: { in: itensVendidos.map(i => i.maleta_item_id) }, maleta_id: maleta.id },
+});
+if (items.length !== itensVendidos.length) throw new Error("BUSINESS: Ítem no pertenece a esta consignación.");
+```
+
+### 8.3 SET absoluto em contadores vindos do cliente — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — atacante inflaciona quantidade vendida
+data: { quantidade_vendida: input.quantidade_vendida }
+
+// ✅ OBRIGATÓRIO — incremento atômico com lock pessimista
+await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${item.id}::uuid FOR UPDATE`;
+data: { quantidade_vendida: { increment: input.quantidade } }
+```
+
+### 8.4 Valor financeiro vindo do cliente — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — revendedora define preço da venda
+await tx.vendaMaleta.create({
+    data: { preco_unitario: input.preco_unitario, ... }
+});
+
+// ✅ OBRIGATÓRIO — usar snapshot imutável do banco
+const item = await tx.maletaItem.findFirstOrThrow({ where: { id, maleta: { reseller_id } } });
+await tx.vendaMaleta.create({
+    data: { preco_unitario: item.preco_fixado!, ... }
+});
+```
+
+### 8.5 Middleware fail-open — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — null role passa pelo middleware
+if (userRole === 'REVENDEDORA') {
+    return redirect('/app');
+}
+// resto da função passa adiante com userRole === null
+
+// ✅ OBRIGATÓRIO — fail-closed
+const isAdminLike = userRole === 'ADMIN' || userRole === 'COLABORADORA';
+if (isAdminRoute && !isAdminLike) {
+    return redirect('/app');
+}
+```
+
+### 8.6 Auto-link de `auth_user_id` por email para roles elevadas — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — auto-link sem restrição de role permite takeover
+profile = await prisma.reseller.findFirst({ where: { email: user.email, auth_user_id: null } });
+if (profile) await prisma.reseller.update({ where: { id: profile.id }, data: { auth_user_id: user.id } });
+
+// ✅ OBRIGATÓRIO — auto-link só para REVENDEDORA; ADMIN/COLABORADORA exigem processo manual
+profile = await prisma.reseller.findFirst({
+    where: { email: user.email, auth_user_id: null, role: "REVENDEDORA" },
+});
+if (profile) await prisma.reseller.update({ where: { id: profile.id }, data: { auth_user_id: user.id } });
+```
+
+### 8.7 COLABORADORA sem `assertIsInGroup` em actions de `/app` — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — COLABORADORA passa resellerId de qualquer grupo
+if (user.role === "REVENDEDORA" && user.profileId !== resellerId) throw ...;
+// passa direto para COLABORADORA
+
+// ✅ OBRIGATÓRIO — verificar pertinência ao grupo
+if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+    throw new Error("BUSINESS: No tienes permiso.");
+}
+if (user.role === "COLABORADORA") {
+    await assertIsInGroup(resellerId, user.profileId!);
+}
+```
+
+### 8.8 Default `isActive=true` para perfil ausente — PROIBIDO
+
+```ts
+// ❌ PROIBIDO — usuário Supabase sem perfil vira REVENDEDORA ativa
+return {
+    role: (profile?.role as Role) || "REVENDEDORA",
+    isActive: profile !== null ? profile.is_active : true,
+    ...
+};
+
+// ✅ OBRIGATÓRIO — retornar null quando perfil não existe
+if (!profile) return null;
+return { role: profile.role as Role, isActive: profile.is_active, ... };
+```
+
+---
+
+## 9. Cron Jobs e Actions Automáticas
+
+Actions que são disparadas por cron (ex: `checkOverdueMaletas`) NÃO devem ser exportadas como Server Actions públicas. Padrão obrigatório:
+
+- Mover lógica para um Route Handler (`src/app/api/cron/*/route.ts`) autenticado por header `Authorization: Bearer ${CRON_SECRET}`.
+- Ou para uma Supabase Edge Function com verificação do `service_role` token.
+- Se precisar permanecer como Server Action (trigger manual por ADMIN), envolver com `requireAuth(["ADMIN"])`.
+
+Ref.: [`SPEC_CRON_JOBS.md`](./SPEC_CRON_JOBS.md), [`SPEC_SECURITY_API_ENDPOINTS.md`](./SPEC_SECURITY_API_ENDPOINTS.md).
+
+---
+
+## 10. Testes de Regressão de Segurança
+
+Cada Server Action DEVE ter ao menos os seguintes casos de teste em `src/__tests__/security/`:
+
+1. **Sem sessão** — chamada sem cookie de sessão retorna `BUSINESS: Sesión no válida.`
+2. **Role errada** — chamada com role não listada em `allowedRoles` retorna `BUSINESS: No tienes permiso.`
+3. **Inativo** — caller com `is_active=false` retorna `BUSINESS: Tu cuenta no está activa.`
+4. **IDOR cross-user** — REVENDEDORA tentando acessar recurso de outra REVENDEDORA recebe erro ou `null`.
+5. **IDOR cross-group** (quando aplicável) — COLABORADORA tentando acessar recurso fora do seu grupo recebe erro.
+6. **Valor financeiro manipulado** (quando aplicável) — input com `preco_unitario` diferente do `preco_fixado` no banco é ignorado; registro usa valor do banco.
+7. **Cross-parent ID** (quando aplicável) — passar `maleta_item_id` de outra maleta retorna erro.
+
+Ref.: [`SPEC_TESTING_STRATEGY.md`](./SPEC_TESTING_STRATEGY.md).

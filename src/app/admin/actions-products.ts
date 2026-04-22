@@ -7,6 +7,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { safeAction, toNumber } from "@/lib/action-utils";
 import { uploadProductImage, deleteR2Image } from "@/lib/upload";
 import { mapProductToDTO, mapProductWithVariantsToDTO } from "@/lib/mappers/product.mapper";
+import { requireAuth } from "@/lib/user";
 
 // ============================================
 // Products — List
@@ -18,6 +19,7 @@ export async function getProducts(
     pageSize = 20,
     category = ""
 ): Promise<ProductsResponse> {
+    await requireAuth(["ADMIN"]);
     const offset = (page - 1) * pageSize;
 
     const where: Prisma.ProductWhereInput = {};
@@ -53,6 +55,7 @@ export async function getProducts(
 // ============================================
 
 export async function getProductById(id: string): Promise<Product | null> {
+    await requireAuth(["ADMIN"]);
     const product = await prisma.product.findUnique({
         where: { id },
         include: {
@@ -71,6 +74,7 @@ export async function getProductById(id: string): Promise<Product | null> {
 // ============================================
 
 export async function getDashboardStats() {
+    await requireAuth(["ADMIN"]);
     const [totalProducts, simpleCount, variableCount, allCategories] = await Promise.all([
         prisma.product.count(),
         prisma.product.count({ where: { product_type: "simple" } }),
@@ -97,6 +101,7 @@ export async function getDashboardStats() {
 
 export async function createProduct(formData: FormData) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         const { name, sku, shortDescription, description, price, productType, categoriesNames, variantData } =
             parseProductFormData(formData);
 
@@ -137,6 +142,7 @@ export async function createProduct(formData: FormData) {
 
 export async function updateProduct(id: string, formData: FormData) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         const { name, sku, shortDescription, description, price, productType, categoriesNames, variantData } =
             parseProductFormData(formData);
 
@@ -236,6 +242,7 @@ export async function updateProduct(id: string, formData: FormData) {
 
 export async function deleteProduct(id: string) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         // Get images to clean up from R2
         const product = await prisma.product.findUnique({
             where: { id },

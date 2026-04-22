@@ -40,17 +40,19 @@ export async function updateSession(request: NextRequest) {
     const isAppLoginPage = url.pathname.startsWith("/app/login")
 
     let userRole = null;
+    let isActive = true;
 
     if (user) {
-        // Busca a role na tabela unificada 'resellers'
+        // Busca a role e status na tabela unificada 'resellers'
         const { data: profile } = await supabase
             .from('resellers')
-            .select('role')
+            .select('role, is_active')
             .eq('auth_user_id', user.id)
             .single()
 
         if (profile) {
             userRole = profile.role;
+            isActive = profile.is_active;
         }
     }
 
@@ -64,16 +66,42 @@ export async function updateSession(request: NextRequest) {
         }
 
         if (user) {
-            // Se for Revendedora tentando acessar /admin, expulse para o /app
-            if (userRole === 'REVENDEDORA') {
+            // Usuário inativo não acessa nada
+            if (!isActive) {
+                url.pathname = "/app/login"
+                return NextResponse.redirect(url)
+            }
+
+            // FAIL-CLOSED: só permite /admin se role for ADMIN ou COLABORADORA explicitamente.
+            // Qualquer outro caso (REVENDEDORA, role null, erro de query) é redirecionado.
+            if (userRole !== 'ADMIN' && userRole !== 'COLABORADORA') {
                 url.pathname = "/app"
                 return NextResponse.redirect(url)
             }
 
             // Se for Admin/Colaboradora tentando acessar o Login, mande pro painel
-            if (isAdminLoginPage && (userRole === 'ADMIN' || userRole === 'COLABORADORA')) {
+            if (isAdminLoginPage) {
                 url.pathname = "/admin"
                 return NextResponse.redirect(url)
+            }
+
+            // COLABORADORA não acessa rotas exclusivas de ADMIN
+            if (userRole === 'COLABORADORA') {
+                const restrictedPaths = [
+                    "/admin/productos",
+                    "/admin/gamificacion",
+                    "/admin/brindes",
+                    "/admin/commission-tiers",
+                    "/admin/contratos",
+                    "/admin/equipo/consultoras",
+                ];
+                const isRestricted = restrictedPaths.some((path) =>
+                    url.pathname === path || url.pathname.startsWith(path + "/")
+                );
+                if (isRestricted) {
+                    url.pathname = "/admin"
+                    return NextResponse.redirect(url)
+                }
             }
         }
     }
@@ -88,6 +116,12 @@ export async function updateSession(request: NextRequest) {
         }
 
         if (user) {
+            // Usuário inativo não acessa nada
+            if (!isActive) {
+                url.pathname = "/app/login"
+                return NextResponse.redirect(url)
+            }
+
             // Se for Admin/Colaboradora tentando acessar /app, expulse para o /admin
             if (userRole === 'ADMIN' || userRole === 'COLABORADORA') {
                 url.pathname = "/admin"

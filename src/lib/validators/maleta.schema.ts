@@ -20,12 +20,15 @@ export const criarMaletaSchema = z.object({
     itens: z.array(maletaItemSchema).min(1, "Pelo menos 1 item é necessário"),
 });
 
-/** Schema for registrar_venda */
+/** Schema for registrar_venda
+ *  NOTA: preco_unitario é determinado pelo servidor (preco_fixado do banco).
+ *  O cliente não deve mais enviar este campo.
+ */
 export const registrarVendaSchema = z.object({
     maleta_item_id: z.string().uuid("ID do item inválido"),
     cliente_nome: z.string().min(2, "Nome é obrigatório").max(100),
     cliente_telefone: z.string().min(8, "Telefone inválido").max(20),
-    preco_unitario: z.coerce.number().positive("Preço inválido"),
+    preco_unitario: z.coerce.number().optional(), // legado: ignorado pelo servidor
 });
 
 export const registrarVendaMultiplaSchema = z.object({

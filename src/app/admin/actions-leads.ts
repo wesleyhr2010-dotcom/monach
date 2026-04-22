@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { createSupabaseSSRClient } from "@/lib/supabase-ssr";
+import { requireAuth } from "@/lib/user";
 
 // ============================================
 // Types
@@ -37,6 +38,7 @@ export async function submitLead(data: {
 // ============================================
 
 export async function getLeads(status?: string): Promise<LeadItem[]> {
+    await requireAuth(["ADMIN", "COLABORADORA"]);
     return [];
 }
 
@@ -48,6 +50,7 @@ export async function aprovarLead(
     leadId: string,
     taxaComissao: number
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     return { success: false, error: "Tabela LeadRevendedora não existe mais" };
 }
 
@@ -59,6 +62,7 @@ export async function recusarLead(
     leadId: string,
     observacao: string
 ): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
     return { success: false, error: "Tabela LeadRevendedora não existe mais" };
 }
 

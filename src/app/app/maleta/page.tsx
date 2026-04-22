@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { requireAuth } from "@/lib/user";
+import { getCurrentUser } from "@/lib/user";
 import { getMinhasMaletas } from "../actions-revendedora";
 import { MaletaList, type MaletaListItem } from "@/components/app/MaletaList";
 
@@ -10,8 +10,8 @@ function formatCurrency(value: number): string {
 }
 
 export default async function MaletaPage() {
-  const user = await requireAuth(["REVENDEDORA"]);
-  if (!user?.profileId) {
+  const user = await getCurrentUser();
+  if (!user?.profileId || user.role !== "REVENDEDORA") {
     return (
       <div className="flex items-center justify-center h-full">
         <p className="text-[#777777]" style={{ fontFamily: "var(--font-raleway)" }}>

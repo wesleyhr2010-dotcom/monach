@@ -55,7 +55,6 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
           maleta_item_id: selectedItemId,
           cliente_nome: clienteNome,
           cliente_telefone: clienteTelefone,
-          preco_unitario: selectedItem!.precoFixado,
         });
         router.push(`/app/maleta/${maletaId}`);
       } catch (err) {

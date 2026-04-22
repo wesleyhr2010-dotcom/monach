@@ -6,6 +6,26 @@
 
 ---
 
+## Prioridade Crítica — Auditoria de segurança RBAC (2026-04-22)
+
+Vulnerabilidades identificadas em auditoria da [`SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) após implementação inicial. Servidor Actions de mutação financeira expostas sem autenticação — exploráveis hoje por qualquer cliente que conheça a superfície de Server Actions. Corrigir antes de qualquer outra entrega.
+
+- [x] **[CRÍTICO] `devolverMaleta` sem `requireAuth` nem ownership check** — `src/app/admin/actions-maletas.ts:286`. Adicionado `requireAuth(["REVENDEDORA"])` + `findFirst({ where: { id, reseller_id: user.profileId }})` + validação de status. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §4, §5.
+- [x] **[CRÍTICO] `fecharMaleta` sem `requireAuth` nem ownership check** — `src/app/admin/actions-maletas.ts:314`. Função não era usada no fluxo atual; removido o `export` e renomeada para `_fecharMaleta` (referência interna apenas). Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §4.
+- [x] **[CRÍTICO] `conciliarMaleta` (legado) sem `requireAuth`** — `src/app/admin/actions-maletas.ts:351`. Removido o `export`; renomeada para `_conciliarMaleta` (referência interna apenas). Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §4.
+- [x] **[CRÍTICO] `checkOverdueMaletas` sem `requireAuth`** — `src/app/admin/actions-maletas.ts:908`. Removida da Server Action; convertida em cron job autenticado por `CRON_SECRET` em `src/app/api/cron/check-overdue-maletas/route.ts`. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
+- [x] **[CRÍTICO] `getActiveResellers` sem `requireAuth`** — `src/app/admin/actions-maletas.ts:606`. Adicionado `requireAuth(["ADMIN","COLABORADORA"])` + filtro por `colaboradora_id` quando caller for COLABORADORA. Ref.: [`sistema/SPEC_SECURITY_DATA_PROTECTION.md`](./sistema/SPEC_SECURITY_DATA_PROTECTION.md).
+- [x] **[CRÍTICO] `getColaboradoras` em `actions-maletas.ts` sem `requireAuth`** — `src/app/admin/actions-maletas.ts:622`. Removida duplicata; importações em `maleta/page.tsx` atualizadas para usar `actions-equipe.ts` (já protegida). Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §4.
+- [x] **[ALTO] Email auto-linking em `getCurrentUser` permite takeover de perfis elevados** — `src/lib/user.ts:40`. Restringido auto-link apenas a `role=REVENDEDORA`; ADMIN/COLABORADORA exigem vinculação explícita. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §3.
+- [x] **[ALTO] COLABORADORA vê dados fora do seu grupo em `/app` actions** — `src/app/app/actions-revendedora.ts:70,151,181` (`getMinhasMaletas`, `getMinhasVendas`, `getResumoFinanceiro`). Adicionado `assertIsInGroup(resellerId, user.profileId!)` para COLABORADORA. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §5.
+- [x] **[ALTO] Middleware fail-open em `userRole === null`** — `src/lib/middleware-auth.ts:42`. Invertido para fail-closed: só permite `/admin` se `userRole` for explicitamente 'ADMIN' ou 'COLABORADORA'; todos os outros casos redirecionam para `/app`. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §3.
+- [x] **[MÉDIO] `registrarVenda` usa `preco_unitario` controlado pelo cliente** — `src/app/app/actions-revendedora.ts:221`. Action agora ignora `preco_unitario` do input e usa `item.preco_fixado` do banco. Schema e frontend atualizados. Ref.: [`revendedoras/SPEC_MALETA.md`](./revendedoras/SPEC_MALETA.md).
+- [x] **[MÉDIO] `getAvailableVariants` sem `requireAuth`** — `src/app/admin/actions-maletas.ts:871`. Adicionado `requireAuth(["ADMIN","COLABORADORA"])`. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §4.
+- [x] **[MÉDIO] Role default `REVENDEDORA` + `isActive=true` para perfil ausente** — `src/lib/user.ts:62`. `getCurrentUser` agora retorna `null` quando não há perfil no banco, forçando `requireAuth` a rejeitar. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §3.
+- [x] **[DOC] Testes de regressão de segurança** — Criados 11 testes em `src/__tests__/security/rbac-regression.test.ts` cobrindo: (a) chamadas sem sessão retornam erro; (b) COLABORADORA não acessa dados fora do grupo; (c) `getCurrentUser` retorna null sem perfil. Ref.: [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md).
+
+---
+
 ## Prioridade Alta — Base do ciclo de negócio
 
 Itens bloqueantes do produto principal (maleta em consignação) e da segurança.
@@ -33,7 +53,17 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
   - [x] Server Action `submitDevolucao()` — muda status para `aguardando_revisao`, faz upload do comprovante via R2, dispara notificação push para consultora e admins
 - [x] **Fechar maleta sem comprovante (admin/consultora)** — tornar comprovante opcional no `conferirEFecharMaleta` quando acionado via botão "Cerrar sin comprobante" no `/admin/maletas/[id]`. Registrar justificativa em `nota_acerto` (ex.: "Cierre manual sin comprobante"). Revendedora continua obrigada a enviar foto pelo PWA. Tocou: `src/app/admin/actions-maletas.ts` (`conferirEFecharMaleta` — parâmetro `cierre_manual_sin_comprobante`), `src/app/admin/maleta/[id]/page.tsx` (botão + diálogo), `src/lib/validators/maleta.schema.ts`.
 - [x] **Editar maleta após criação — acrescentar itens e aumentar quantidade** — nova Server Action `adicionarItensMaleta(maletaId, itens[])` permitida para ADMIN/COLABORADORA enquanto maleta estiver em `ativa` ou `atrasada`. Regras: (1) apenas acréscimo — não remove nem diminui; (2) valida estoque com reserva atômica (mesma lógica de `criarMaleta`); (3) novos itens recebem snapshot do preço atual em `preco_fixado`; (4) itens que já existiam na maleta: incrementa `quantidade_enviada` mantendo o `preco_fixado` original; (5) registra `estoqueMovimento` tipo `reserva_maleta`; (6) dispara push para a revendedora ("Se añadieron artículos a tu consignación"). UI em `/admin/maletas/[id]/editar` com busca de produtos, seleção de quantidades e confirmação. SPECs atualizadas: [`admin/SPEC_ADMIN_MALETAS.md`](./admin/SPEC_ADMIN_MALETAS.md) (nova seção "Tela 5: Editar Maleta") e [`revendedoras/SPEC_MALETA.md`](./revendedoras/SPEC_MALETA.md).
-- [ ] **RBAC e RLS validados por tabela** — revisar middleware, guards de Server Actions e policies Supabase para `REVENDEDORA`, `COLABORADORA`, `ADMIN`. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md).
+- [x] **RBAC e RLS validados por tabela** — middleware, guards de Server Actions e policies Supabase revisados para `REVENDEDORA`, `COLABORADORA`, `ADMIN`. Todas as vulnerabilidades críticas da auditoria 2026-04-22 foram corrigidas e testes de regressão adicionados. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md).
+  - [x] `requireAuth` refatorado para lançar `BUSINESS:` errors (throw em vez de retornar null) e verificar `is_active`.
+  - [x] Criados helpers `assertIsInGroup` e `getResellerScope` em `src/lib/auth/`.
+  - [x] Adicionado `requireAuth` em todas as Server Actions do admin (`actions-products`, `actions-categories`, `actions-dashboard`, `actions-equipe`, `actions-gamificacao`, `actions-leads`, `actions-analytics`).
+  - [x] Fix IDOR em `getMaletaById` (owner check por colaboradora) e `getMinhasMaletas`/`getMinhasVendas`/`getResumoFinanceiro` (validação de `profileId` + `assertIsInGroup` para COLABORADORA).
+  - [x] Atualizado middleware (`middleware-auth.ts`) para fail-closed: só permite `/admin` se `userRole in ['ADMIN','COLABORADORA']`; verifica `is_active`; restringe rotas admin exclusivas para COLABORADORA.
+  - [x] Criado script SQL consolidado `scripts/rls-policies.sql` com policies para todas as 23 tabelas sensíveis.
+  - [x] Cobertura completa: `devolverMaleta`, `fecharMaleta`, `conciliarMaleta`, `checkOverdueMaletas`, `getActiveResellers`, `getColaboradoras`, `getAvailableVariants` protegidos ou removidos.
+  - [x] `getCurrentUser` retorna `null` para perfil ausente; auto-link restrito a `REVENDEDORA`.
+  - [x] `registrarVenda` usa `preco_fixado` do banco; schema e frontend atualizados.
+  - [x] Testes de regressão de segurança em `src/__tests__/security/rbac-regression.test.ts` (11 testes passando).
 - [ ] **Proteção de dados sensíveis** — sanitização de logs, criptografia/acesso a documentos e dados bancários. Ref.: [`sistema/SPEC_SECURITY_DATA_PROTECTION.md`](./sistema/SPEC_SECURITY_DATA_PROTECTION.md).
 - [ ] **Onboarding e completude de perfil** da revendedora. Ref.: [`revendedoras/SPEC_ONBOARDING_REVENDEDORA.md`](./revendedoras/SPEC_ONBOARDING_REVENDEDORA.md), [`revendedoras/SPEC_PERFIL.md`](./revendedoras/SPEC_PERFIL.md).
 - [ ] **Home do PWA** com métricas reais e maleta ativa. Ref.: [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md).

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 
 export const dynamic = "force-dynamic";
 import Link from "next/link";
-import { getMaletas, checkOverdueMaletas, getColaboradoras } from "@/app/admin/actions-maletas";
+import { getMaletas } from "@/app/admin/actions-maletas";
+import { getColaboradoras } from "@/app/admin/actions-equipe";
 import type { MaletaListItem } from "@/app/admin/actions-maletas";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AdminStatusBadge, getStatusRowStyle } from "@/components/admin/AdminStatusBadge";
@@ -30,7 +31,6 @@ export default function MaletasPage() {
   async function loadMaletas() {
     setLoading(true);
     try {
-      await checkOverdueMaletas();
       const data = await getMaletas(
         undefined,
         statusFilter === "all" ? undefined : statusFilter,

@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { safeAction, generateSlug } from "@/lib/action-utils";
+import { requireAuth } from "@/lib/user";
 
 // ============================================
 // Types
@@ -21,6 +22,7 @@ export interface Category {
 // ============================================
 
 export async function getCategories(): Promise<Category[]> {
+    await requireAuth(["ADMIN"]);
     const categories = await prisma.category.findMany({
         orderBy: [{ sort_order: "asc" }, { name: "asc" }],
     });
@@ -44,6 +46,7 @@ export async function createCategory(
     parent_id?: string | null
 ) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         const slug = generateSlug(name);
 
         // Get max sort_order for sibling level
@@ -78,6 +81,7 @@ export async function updateCategory(
     parent_id?: string | null
 ) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         const slug = generateSlug(name);
 
         const data: Record<string, unknown> = { name, slug };
@@ -100,6 +104,7 @@ export async function updateCategoriesOrder(
     items: { id: string; parent_id: string | null; sort_order: number }[]
 ) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         await prisma.$transaction(
             items.map((item) =>
                 prisma.category.update({
@@ -120,6 +125,7 @@ export async function updateCategoriesOrder(
 
 export async function deleteCategory(id: string) {
     return safeAction(async () => {
+        await requireAuth(["ADMIN"]);
         await prisma.category.delete({ where: { id } });
     });
 }
