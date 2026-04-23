@@ -5,8 +5,72 @@ import { generateSlug } from "@/lib/action-utils";
 import { uploadAvatar } from "@/lib/upload";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
+import { createServerClient } from "@/lib/supabase";
+import { emailConviteUsuario } from "@/lib/email-templates/convite-usuario";
 import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
+
+// ============================================
+// Helper: criar usuário no Supabase Auth + enviar convite
+// ============================================
+
+async function criarUsuarioAuthEEnviarConvite(params: {
+  email: string;
+  nome: string;
+  tipo: "consultora" | "revendedora";
+}): Promise<{ authUserId: string; actionLink: string | null }> {
+  const supabaseAdmin = createServerClient();
+
+  // 1. Criar usuário no Supabase Auth
+  const tempPassword = crypto.randomUUID();
+  const { data: authData, error: authError } = await supabaseAdmin.auth.admin.createUser({
+    email: params.email,
+    password: tempPassword,
+    email_confirm: true,
+  });
+
+  if (authError) {
+    if (authError.message.toLowerCase().includes("already") || authError.message.toLowerCase().includes("registered")) {
+      throw new Error("BUSINESS: Este correo ya está registrado en el sistema.");
+    }
+    throw new Error(`Auth error: ${authError.message}`);
+  }
+
+  if (!authData.user) {
+    throw new Error("BUSINESS: No se pudo crear el usuario de autenticación.");
+  }
+
+  const authUserId = authData.user.id;
+
+  // 2. Gerar link de definição de senha
+  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/app/nueva-contrasena`;
+  const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
+    type: "recovery",
+    email: params.email,
+    options: { redirectTo },
+  });
+
+  let actionLink: string | null = null;
+  if (!linkError && linkData?.properties?.action_link) {
+    actionLink = linkData.properties.action_link;
+  }
+
+  // 3. Enviar email de convite (não bloqueia se falhar)
+  if (actionLink) {
+    try {
+      await emailConviteUsuario({
+        email: params.email,
+        nome: params.nome,
+        linkDefinirSenha: actionLink,
+        tipo: params.tipo,
+      });
+    } catch (emailErr) {
+      console.error("[Convite Email] Falha ao enviar convite:", emailErr);
+    }
+  }
+
+  return { authUserId, actionLink };
+}
 
 // ============================================
 // List Colaboradoras (com métricas agregadas)
@@ -96,27 +160,50 @@ export async function criarColaboradora(formData: FormData): Promise<{ success: 
         const taxa_comissao = taxaStr ? parseFloat(taxaStr) : 0;
         const slug = generateSlug(name);
 
+        if (!email || !email.includes("@")) {
+            return { success: false, error: "El correo electrónico es obligatorio y debe ser válido." };
+        }
+
         let avatar_url = "";
         const avatarFile = formData.get("avatar") as File;
         if (avatarFile && avatarFile.size > 0) {
             avatar_url = await uploadAvatar(avatarFile, slug);
         }
 
-        await prisma.reseller.create({
-            data: {
-                name,
-                slug,
-                whatsapp,
-                email,
-                avatar_url,
-                taxa_comissao,
-                role: "COLABORADORA",
-            },
+        // 1. Criar no Supabase Auth + enviar convite
+        const { authUserId } = await criarUsuarioAuthEEnviarConvite({
+            email,
+            nome: name,
+            tipo: "consultora",
         });
+
+        // 2. Criar no Prisma (com compensação se falhar)
+        try {
+            await prisma.reseller.create({
+                data: {
+                    name,
+                    slug,
+                    whatsapp,
+                    email,
+                    avatar_url,
+                    taxa_comissao,
+                    role: "COLABORADORA",
+                    auth_user_id: authUserId,
+                },
+            });
+        } catch (prismaErr) {
+            // Compensação: remove usuário do Auth para não deixar órfão
+            const supabaseAdmin = createServerClient();
+            await supabaseAdmin.auth.admin.deleteUser(authUserId).catch(() => {
+                console.error("[Compensação] Falha ao remover usuário auth órfão:", authUserId);
+            });
+            throw prismaErr;
+        }
 
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
+        if (msg.includes("BUSINESS:")) return { success: false, error: msg.replace("BUSINESS:", "").trim() };
         if (msg.includes("Unique constraint")) return { success: false, error: "Já existe com este nome/slug" };
         return { success: false, error: msg };
     }
@@ -137,28 +224,51 @@ export async function criarRevendedora(formData: FormData): Promise<{ success: b
         const colaboradora_id = (formData.get("colaboradora_id") as string) || null;
         const slug = generateSlug(name);
 
+        if (!email || !email.includes("@")) {
+            return { success: false, error: "El correo electrónico es obligatorio y debe ser válido." };
+        }
+
         let avatar_url = "";
         const avatarFile = formData.get("avatar") as File;
         if (avatarFile && avatarFile.size > 0) {
             avatar_url = await uploadAvatar(avatarFile, slug);
         }
 
-        await prisma.reseller.create({
-            data: {
-                name,
-                slug,
-                whatsapp,
-                email,
-                avatar_url,
-                taxa_comissao,
-                role: "REVENDEDORA",
-                colaboradora_id: colaboradora_id || null,
-            },
+        // 1. Criar no Supabase Auth + enviar convite
+        const { authUserId } = await criarUsuarioAuthEEnviarConvite({
+            email,
+            nome: name,
+            tipo: "revendedora",
         });
+
+        // 2. Criar no Prisma (com compensação se falhar)
+        try {
+            await prisma.reseller.create({
+                data: {
+                    name,
+                    slug,
+                    whatsapp,
+                    email,
+                    avatar_url,
+                    taxa_comissao,
+                    role: "REVENDEDORA",
+                    colaboradora_id: colaboradora_id || null,
+                    auth_user_id: authUserId,
+                },
+            });
+        } catch (prismaErr) {
+            // Compensação: remove usuário do Auth para não deixar órfão
+            const supabaseAdmin = createServerClient();
+            await supabaseAdmin.auth.admin.deleteUser(authUserId).catch(() => {
+                console.error("[Compensação] Falha ao remover usuário auth órfão:", authUserId);
+            });
+            throw prismaErr;
+        }
 
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
+        if (msg.includes("BUSINESS:")) return { success: false, error: msg.replace("BUSINESS:", "").trim() };
         if (msg.includes("Unique constraint")) return { success: false, error: "Já existe com este nome/slug" };
         return { success: false, error: msg };
     }

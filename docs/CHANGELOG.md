@@ -1,5 +1,26 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Gestão de Equipe: Criação via Supabase Auth + Convite por Email
+
+### Criado
+- **`src/lib/email-templates/convite-usuario.ts`** — template de email transacional (Brevo) para convite de novos usuários. Contém saudação personalizada por tipo (consultora/revendedora), link de definição de senha e link para o portal.
+- **Helper `criarUsuarioAuthEEnviarConvite`** em `src/app/admin/actions-equipe.ts` — centraliza a criação do usuário no Supabase Auth (`auth.admin.createUser` com senha temporária), gera link de recovery (`auth.admin.generateLink`) e dispara email via Brevo (best-effort, não bloqueia operação principal).
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts`** — `criarColaboradora` e `criarRevendedora` reescritas:
+  1. Validam email obrigatório antes de prosseguir.
+  2. Criam usuário no Supabase Auth via helper e obtêm `authUserId`.
+  3. Criam registro no Prisma com `auth_user_id` preenchido (vínculo automático).
+  4. Implementam **compensação**: se a criação no Prisma falhar, o usuário do Auth é removido para evitar órfãos.
+  5. Enviar convite por email com link de definição de senha (24h de validade).
+  6. Tratam erro específico de email já registrado no Supabase Auth (`"Este correo ya está registrado en el sistema"`).
+
+### Verificado
+- ✅ Lint sem erros nos arquivos modificados.
+- ✅ 42 testes existentes passam (incluindo 11 de regressão RBAC).
+
+---
+
 ## 2026-04-23 — Fix: Compartilhamento de Fotos no Catálogo PWA (Individual e Múltiplo)
 
 ### Criado
