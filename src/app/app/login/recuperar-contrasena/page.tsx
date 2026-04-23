@@ -32,13 +32,19 @@ export default function RecuperarContrasenaPage() {
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         );
 
+        const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/app/nueva-contrasena`;
         const { error: supabaseError } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
-            redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/app/nueva-contrasena`,
+            redirectTo,
         });
 
-        if (supabaseError && supabaseError.message.toLowerCase().includes("rate")) {
+        if (supabaseError) {
             setState("idle");
-            setError("Demasiados intentos. Esperá 15 minutos antes de intentar nuevamente.");
+            if (supabaseError.message.toLowerCase().includes("rate")) {
+                setError("Demasiados intentos. Esperá 15 minutos antes de intentar nuevamente.");
+            } else {
+                setError(`Error: ${supabaseError.message}`);
+            }
+            console.error("[PWA resetPassword] Error:", supabaseError.message, "redirectTo:", redirectTo);
             return;
         }
 

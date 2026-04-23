@@ -153,12 +153,15 @@ export async function forgotPassword(formData: FormData): Promise<{ error?: stri
     return url;
   };
 
+  const redirectTo = `${getURL()}admin/login/reset-password`;
+
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${getURL()}admin/login/reset-password`,
+    redirectTo,
   });
 
   if (error) {
-    return { error: "Não foi possível enviar o e-mail. Tente novamente." };
+    console.error("[forgotPassword] Supabase error:", error.message, "| redirectTo:", redirectTo, "| email:", email);
+    return { error: `Error: ${error.message}` };
   }
 
   return { success: true };
