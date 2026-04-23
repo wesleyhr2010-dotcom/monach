@@ -40,7 +40,7 @@ export async function emailConviteUsuario(params: {
           <a href="${portalUrl}" style="color: #35605a;">${portalUrl}</a>
         </p>
         <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-        <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarca.com.py</p>
+        <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
       </div>
     `,
   });

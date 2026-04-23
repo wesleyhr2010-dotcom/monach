@@ -7,16 +7,16 @@ Padronizar o envio de e-mails do NEXT-MONARCA em um único provedor (Brevo), cob
 - **Brevo** — SMTP relay + API.
 - **Supabase Auth** — usa SMTP relay para reset/convite.
 - **Next.js Server Actions** — usam SDK `@getbrevo/brevo` para transacionais.
-- **Usuário final** — recebe e-mails de `no-reply@monarca.com.py`.
+- **Usuário final** — recebe e-mails de `no-reply@monarcasemijoyas.com.py`.
 
 ## Fluxo
 1. Reset/convite: Supabase envia via `smtp-relay.brevo.com:587` → inbox.
 2. Transacional: Server Action chama API da Brevo com template ID + variáveis → inbox.
-3. DNS configurado com SPF/DKIM/DMARC para `monarca.com.py`.
+3. DNS configurado com SPF/DKIM/DMARC para `monarcasemijoyas.com.py`.
 4. Templates mantidos no painel da Brevo e referenciados por ID no código.
 
 ## Regras de negócio
-- Todo envio parte de `no-reply@monarca.com.py`.
+- Todo envio parte de `no-reply@monarcasemijoyas.com.py`.
 - Tier gratuito: 300/dia; monitorar uso antes de escalar.
 - Templates em espanhol paraguaio; variáveis internacionalizáveis.
 - E-mails obrigatórios logados para auditoria (ex.: aprovação de lead).
@@ -60,7 +60,7 @@ EMAILS TRANSACIONAIS (documentos, acertos)
   (SDK @getbrevo/brevo instalado no projeto)
 ```
 
-Ambos saem do domínio `no-reply@monarca.com.py`.
+Ambos saem do domínio `no-reply@monarcasemijoyas.com.py`.
 
 ---
 
@@ -70,7 +70,7 @@ Ambos saem do domínio `no-reply@monarca.com.py`.
 
 1. Criar conta em [brevo.com](https://brevo.com)
 2. Ir em **Settings → Senders & IPs → Domains**
-3. Adicionar `monarca.com.py` e seguir o wizard de DNS
+3. Adicionar `monarcasemijoyas.com.py` e seguir o wizard de DNS
 4. Adicionar os registros no provedor DNS da Monarca:
 
 ```
@@ -86,7 +86,7 @@ TXT  brevo._domainkey   [chave DKIM gerada pelo Brevo]
 | Campo | Valor |
 |-------|-------|
 | Sender name | Monarca Semijoyas |
-| Sender email | `no-reply@monarca.com.py` |
+| Sender email | `no-reply@monarcasemijoyas.com.py` |
 | SMTP Host | `smtp-relay.brevo.com` |
 | Port | `587` |
 | Username | seu email de login no Brevo |
@@ -99,7 +99,7 @@ TXT  brevo._domainkey   [chave DKIM gerada pelo Brevo]
 ```env
 # Brevo — emails transacionais
 BREVO_API_KEY=xkeysib-xxxxxxxxxxxxxxxxxxxx
-BREVO_FROM_EMAIL=no-reply@monarca.com.py
+BREVO_FROM_EMAIL=no-reply@monarcasemijoyas.com.py
 BREVO_FROM_NAME=Monarca Semijoyas
 ```
 
@@ -132,7 +132,7 @@ Monarca — Restablece tu contraseña
   </a>
   <p style="color: #888; font-size: 13px;">El enlace expira en 1 hora. Si no solicitaste esto, ignora este correo.</p>
   <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarca.com.py</p>
+  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
 </div>
 ```
 
@@ -153,7 +153,7 @@ Monarca — ¡Bienvenida! Crea tu contraseña
   </a>
   <p style="color: #888; font-size: 13px;">El enlace expira en 24 horas.</p>
   <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarca.com.py</p>
+  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
 </div>
 ```
 
@@ -174,7 +174,7 @@ apiInstance.setApiKey(
 );
 
 const FROM = {
-  email: process.env.BREVO_FROM_EMAIL ?? 'no-reply@monarca.com.py',
+  email: process.env.BREVO_FROM_EMAIL ?? 'no-reply@monarcasemijoyas.com.py',
   name: process.env.BREVO_FROM_NAME ?? 'Monarca Semijoyas',
 };
 
@@ -398,7 +398,7 @@ export async function emailCandidaturaAprovada(params: {
           Ingresar al portal →
         </a>
         <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
-        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarca.com.py</p>
+        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
       </div>
     `,
   });
@@ -431,7 +431,7 @@ export async function emailCandidaturaRechazada(params: {
            a través de nuestras redes sociales o por WhatsApp.</p>
         <p>Te agradecemos tu comprensión.</p>
         <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
-        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarca.com.py</p>
+        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
       </div>
     `,
   });
@@ -460,7 +460,7 @@ src/lib/
 ## Checklist de Configuração (pré-produção)
 
 - [ ] Criar conta no Brevo em [brevo.com](https://brevo.com)
-- [ ] Adicionar e verificar domínio `monarca.com.py` (DNS: SPF + DKIM)
+- [ ] Adicionar e verificar domínio `monarcasemijoyas.com.py` (DNS: SPF + DKIM)
 - [ ] Gerar SMTP Key no Brevo → Settings → SMTP & API
 - [ ] Configurar SMTP no Supabase Dashboard apontando para Brevo
 - [ ] Testar email de reset de senha (revendedora + admin)

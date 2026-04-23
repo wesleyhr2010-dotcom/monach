@@ -88,7 +88,7 @@ SUPABASE_SERVICE_ROLE_KEY="eyJ..."
 | `R2_ACCESS_KEY_ID` | 🔴 | Chave de acesso do R2 API Token |
 | `R2_SECRET_ACCESS_KEY` | 🔴 | Secret do R2 API Token |
 | `R2_BUCKET_NAME` | 🔴 | Nome do bucket (ex: `monarca-assets`) |
-| `R2_PUBLIC_URL` | 🔴 | URL pública do bucket (ex: `https://assets.monarca.com.py`) |
+| `R2_PUBLIC_URL` | 🔴 | URL pública do bucket (ex: `https://assets.monarcasemijoyas.com.py`) |
 
 ### Como obter
 - Cloudflare Dashboard → R2 → Manage API Tokens → Create Token
@@ -99,7 +99,7 @@ R2_ACCOUNT_ID="abc123def456"
 R2_ACCESS_KEY_ID="your_access_key"
 R2_SECRET_ACCESS_KEY="your_secret_key"
 R2_BUCKET_NAME="monarca-assets"
-R2_PUBLIC_URL="https://assets.monarca.com.py"
+R2_PUBLIC_URL="https://assets.monarcasemijoyas.com.py"
 ```
 
 ---
@@ -126,7 +126,7 @@ ONESIGNAL_REST_API_KEY="os_v2_app_..."
 | Variável | Tipo | Descrição |
 |---------|------|-----------|
 | `BREVO_API_KEY` | 🔴 | API Key do Brevo para envio de emails transacionais |
-| `BREVO_FROM_EMAIL` | 🔴 | Email remetente verificado (ex: `noreply@monarca.com.py`) |
+| `BREVO_FROM_EMAIL` | 🔴 | Email remetente verificado (ex: `noreply@monarcasemijoyas.com.py`) |
 | `BREVO_FROM_NAME` | 🟢 | Nome remetente (default: `Monarca Semijoyas`) |
 
 ### Como obter
@@ -134,7 +134,7 @@ ONESIGNAL_REST_API_KEY="os_v2_app_..."
 
 ```env
 BREVO_API_KEY="xkeysib-..."
-BREVO_FROM_EMAIL="noreply@monarca.com.py"
+BREVO_FROM_EMAIL="noreply@monarcasemijoyas.com.py"
 BREVO_FROM_NAME="Monarca Semijoyas"
 ```
 
@@ -152,8 +152,8 @@ BREVO_FROM_NAME="Monarca Semijoyas"
 | `NEXTAUTH_SECRET` | 🟢 | Não usado (Supabase Auth). Reservado para futuro. |
 
 ```env
-NEXT_PUBLIC_SITE_URL="https://monarca.com.py"
-# Em staging: NEXT_PUBLIC_SITE_URL="https://staging.monarca.com.py"
+NEXT_PUBLIC_SITE_URL="https://monarcasemijoyas.com.py"
+# Em staging: NEXT_PUBLIC_SITE_URL="https://staging.monarcasemijoyas.com.py"
 ```
 
 ---
@@ -236,7 +236,7 @@ ONESIGNAL_REST_API_KEY=""
 
 # ── EMAIL (BREVO) ─────────────────────────────────────────────────
 BREVO_API_KEY=""
-BREVO_FROM_EMAIL="noreply@monarca.com.py"
+BREVO_FROM_EMAIL="noreply@monarcasemijoyas.com.py"
 BREVO_FROM_NAME="Monarca Semijoyas"
 
 # ── APP ───────────────────────────────────────────────────────────
@@ -303,9 +303,9 @@ export const env = createEnv({
 
 | Variável | Development | Staging | Production |
 |---------|------------|---------|-----------|
-| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://staging.monarca.com.py` | `https://monarca.com.py` |
+| `NEXT_PUBLIC_SITE_URL` | `http://localhost:3000` | `https://staging.monarcasemijoyas.com.py` | `https://monarcasemijoyas.com.py` |
 | `R2_BUCKET_NAME` | `monarca-assets-dev` | `monarca-assets-staging` | `monarca-assets` |
-| `BREVO_FROM_EMAIL` | `dev@monarca.com.py` | `staging@monarca.com.py` | `noreply@monarca.com.py` |
+| `BREVO_FROM_EMAIL` | `dev@monarcasemijoyas.com.py` | `staging@monarcasemijoyas.com.py` | `noreply@monarcasemijoyas.com.py` |
 | `SENTRY_DSN` | (vazio — não logar em dev) | Opcional | Obrigatório |
 
 > ⚠️ **Nunca usar credenciais de produção em ambiente de desenvolvimento.**

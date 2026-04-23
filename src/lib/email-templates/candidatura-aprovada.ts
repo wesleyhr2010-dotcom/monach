@@ -38,7 +38,7 @@ export async function emailCandidaturaAprovada(params: {
           Ingresar al portal →
         </a>
         <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
-        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarca.com.py</p>
+        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
       </div>
     `,
   });

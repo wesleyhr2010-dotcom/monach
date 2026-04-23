@@ -92,7 +92,7 @@ export async function shareImages(
  * Usa slug se disponível; senão, usa id do produto.
  */
 export function fallbackWhatsApp(items: ShareableItem[], siteUrl?: string): void {
-    const baseUrl = siteUrl || (typeof window !== "undefined" ? window.location.origin : "https://monarca.com.py");
+    const baseUrl = siteUrl || (typeof window !== "undefined" ? window.location.origin : "https://monarcasemijoyas.com.py");
 
     const lines = items
         .map((i) => {
@@ -115,7 +115,7 @@ export function fallbackWhatsAppIndividual(
     siteUrl?: string,
     formatPrice?: (n: number) => string
 ): void {
-    const baseUrl = siteUrl || (typeof window !== "undefined" ? window.location.origin : "https://monarca.com.py");
+    const baseUrl = siteUrl || (typeof window !== "undefined" ? window.location.origin : "https://monarcasemijoyas.com.py");
     const slug = item.producto.slug || item.producto.id;
     const url = `${baseUrl}/produto/${slug}`;
 

@@ -3,7 +3,7 @@ import { BrevoClient } from "@getbrevo/brevo";
 const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY ?? "" });
 
 const FROM = {
-  email: process.env.BREVO_FROM_EMAIL ?? "no-reply@monarca.com.py",
+  email: process.env.BREVO_FROM_EMAIL ?? "no-reply@monarcasemijoyas.com.py",
   name: process.env.BREVO_FROM_NAME ?? "Monarca Semijoyas",
 };
 

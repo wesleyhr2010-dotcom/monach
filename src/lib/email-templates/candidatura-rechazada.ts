@@ -17,7 +17,7 @@ export async function emailCandidaturaRechazada(params: {
            a través de nuestras redes sociales o por WhatsApp.</p>
         <p>Te agradecemos tu comprensión.</p>
         <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
-        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarca.com.py</p>
+        <p style="color:#aaa; font-size:12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
       </div>
     `,
   });
