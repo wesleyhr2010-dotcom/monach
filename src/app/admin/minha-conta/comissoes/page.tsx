@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getExtratoComissoes } from "./actions";
+import { getExtratoComissoes } from "../actions";
 import { formatGs } from "@/lib/format";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { ChevronDown, ChevronUp } from "lucide-react";
