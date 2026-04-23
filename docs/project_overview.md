@@ -206,8 +206,8 @@ Rotas implementadas em `src/app/admin/`:
   - Server actions `registrarVenda`, `registrarVendaMultipla`, `submitDevolucao` no `actions-revendedora.ts`.
   - **Pendente**: desempenho.
 - **Catálogo PWA**:
-  - `/app/catalogo/` — vitrine dos produtos da maleta ativa com busca, filtros por categoria e botão "Compartir" individual (Web Share API).
-  - `/app/catalogo/compartir/` — seleção multi-foto (máx. 10) com grid 3 colunas, checkmark verde, barra inferior sticky com contagem e botão "Compartir". Download das imagens do R2 e compartilhamento via `navigator.share({ files })` com fallback para WhatsApp.
+  - `/app/catalogo/` — vitrine dos produtos da maleta ativa com busca, filtros por categoria e botão "Compartir" individual (Web Share API com imagem real via proxy `/api/proxy-image`).
+  - `/app/catalogo/compartir/` — seleção multi-foto (máx. 10) com grid 3 colunas, checkmark verde, barra inferior sticky com contagem e botão "Compartir". Download das imagens via proxy `/api/proxy-image` (contorna CORS do R2) e compartilhamento via `navigator.share({ files })` com fallback para WhatsApp incluindo links dos produtos. Tratamento de `AbortError` como cancelamento.
   - Server Actions: `getCatalogoRevendedora` (itens da maleta ativa com saldo), `registrarPuntosCompartirCatalogo` (gamificação: +50 pts, limite 5x/dia).
 
 ### 6.4 Infraestrutura técnica em operação

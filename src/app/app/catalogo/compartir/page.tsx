@@ -4,6 +4,11 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCatalogoRevendedora, registrarPuntosCompartirCatalogo } from "../../actions-revendedora";
 import { ArrowLeft, Check, Share2, X, ImageOff } from "lucide-react";
+import {
+    downloadImageAsFile,
+    shareImages,
+    fallbackWhatsApp,
+} from "@/lib/share-images";
 
 export const dynamic = "force-dynamic";
 
@@ -15,6 +20,7 @@ interface CatalogoItem {
         id: string;
         name: string;
         sku: string;
+        slug: string;
         images: string[];
         category: string;
     };
@@ -66,26 +72,26 @@ export default function CompartirFotosPage() {
         setError(null);
 
         const selectedItems = itens.filter((i) => selectedIds.includes(i.id));
+        const itemsWithImage = selectedItems.filter((i) => i.producto.images[0]);
+
+        if (itemsWithImage.length === 0) {
+            setError("Nenhuma imagen disponible para compartir");
+            setSharing(false);
+            return;
+        }
 
         try {
-            // 1. Download images
+            // 1. Download images via proxy (contorna CORS do R2)
             const imageFiles: File[] = [];
-            for (let i = 0; i < selectedItems.length; i++) {
-                const item = selectedItems[i];
-                setProgress(`Descargando ${i + 1}/${selectedItems.length}...`);
+            for (let i = 0; i < itemsWithImage.length; i++) {
+                const item = itemsWithImage[i];
+                setProgress(`Descargando ${i + 1}/${itemsWithImage.length}...`);
 
                 const imageUrl = item.producto.images[0];
-                if (!imageUrl) continue;
-
-                try {
-                    const response = await fetch(imageUrl);
-                    if (!response.ok) throw new Error("Failed to fetch");
-                    const blob = await response.blob();
-                    const fileName = `${item.producto.sku || item.id}.webp`;
-                    const file = new File([blob], fileName, { type: blob.type || "image/webp" });
+                const fileName = `${item.producto.sku || item.id}.webp`;
+                const file = await downloadImageAsFile(imageUrl, fileName);
+                if (file) {
                     imageFiles.push(file);
-                } catch {
-                    console.warn(`Failed to download image for ${item.id}`);
                 }
             }
 
@@ -93,23 +99,20 @@ export default function CompartirFotosPage() {
 
             // 2. Share
             const text = `¡Joyas hermosas de Monarca! 💎\nVe más en nuestro catálogo.`;
+            const result = await shareImages(imageFiles, text);
 
-            if (
-                navigator.canShare &&
-                navigator.canShare({ files: imageFiles }) &&
-                imageFiles.length > 0
-            ) {
-                await navigator.share({ files: imageFiles, text });
-            } else {
-                // Fallback: WhatsApp with text links
-                const urls = selectedItems
-                    .map((i) => i.producto.name)
-                    .join("\n• ");
-                const waText = encodeURIComponent(`Joyas Monarca 💎\n\n${urls}`);
-                window.open(`https://wa.me/?text=${waText}`, "_blank");
+            if (!result.shared && !result.cancelled) {
+                // Fallback: WhatsApp com nomes e links dos produtos
+                fallbackWhatsApp(selectedItems);
             }
 
-            // 3. Award points
+            if (result.cancelled) {
+                // Usuário cancelou o share sheet — não registrar pontos nem limpar seleção
+                setSharing(false);
+                return;
+            }
+
+            // 3. Award points (só se realmente compartilhou ou usou fallback)
             await registrarPuntosCompartirCatalogo();
 
             // Reset

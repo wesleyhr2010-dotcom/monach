@@ -92,6 +92,12 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [ ] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
 - [ ] **Pipeline de Leads** vindos da landing "Seja Revendedora". Ref.: [`admin/SPEC_ADMIN_LEADS.md`](./admin/SPEC_ADMIN_LEADS.md), [`revendedoras/SPEC_SEJA_REVENDEDORA.md`](./revendedoras/SPEC_SEJA_REVENDEDORA.md).
 - [x] **Catálogo no PWA** da revendedora. Ref.: [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md).
+  - [x] Página `/app/catalogo` — grid com produtos da maleta ativa, busca e filtro por categoria
+  - [x] Página `/app/catalogo/compartir` — seleção multi-foto com checkmark e barra sticky
+  - [x] Server Action `getCatalogoRevendedora()` — lista itens da maleta ativa com saldo
+  - [x] Server Action `registrarPuntosCompartirCatalogo()` — gamificação +50pts por compartilhar
+  - [x] **[BUG] Compartilhar individual não envia foto nem informações completas** — Corrigido: `handleShareIndividual` agora baixa a imagem via proxy `/api/proxy-image`, cria `File` e usa `navigator.share({ files, text })` com foto + nome + preço + variante. Fallback WhatsApp inclui link do produto (`/produto/{id}`). Ref.: `src/app/app/catalogo/page.tsx`, `src/lib/share-images.ts`.
+  - [x] **[BUG] Compartilhar múltiplas fotos não funciona** — Corrigido: criada route `/api/proxy-image` para contornar CORS do R2; `handleCompartir` usa `downloadImageAsFile` via proxy; `AbortError` tratado como cancelamento (não exibe erro); fallback WhatsApp envia nomes + URLs dos produtos; validação de pelo menos 1 imagem válida antes de compartilhar; botão desabilitado se nenhuma imagem disponível. Ref.: `src/app/app/catalogo/compartir/page.tsx`, `src/lib/share-images.ts`, `src/app/api/proxy-image/route.ts`.
 - [ ] **Desempenho da revendedora** (analytics individual). Ref.: [`revendedoras/SPEC_DESEMPENHO.md`](./revendedoras/SPEC_DESEMPENHO.md).
 - [ ] **Dashboard admin** com KPIs globais/grupo. Ref.: [`admin/SPEC_ADMIN_DASHBOARD.md`](./admin/SPEC_ADMIN_DASHBOARD.md).
 - [ ] **Configurações globais** (tiers, níveis, contratos). Ref.: [`admin/SPEC_ADMIN_CONFIG.md`](./admin/SPEC_ADMIN_CONFIG.md).

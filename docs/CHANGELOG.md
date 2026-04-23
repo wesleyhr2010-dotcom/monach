@@ -1,5 +1,36 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Fix: Compartilhamento de Fotos no Catálogo PWA (Individual e Múltiplo)
+
+### Criado
+- **`src/app/api/proxy-image/route.ts`** — Route Handler que faz proxy de imagens do Cloudflare R2, contornando CORS no PWA. Recebe `?url=`, faz fetch do blob e retorna com `Access-Control-Allow-Origin: *` e cache de 24h.
+- **`src/lib/share-images.ts`** — helper reutilizável para compartilhamento de imagens:
+  - `downloadImageAsFile(url, fileName)` — baixa imagem via proxy local e converte para `File`.
+  - `isShareFilesSupported()` / `canShareFiles(files)` — detecta suporte a `navigator.canShare({ files })`.
+  - `shareImages(files, text)` — wrapper que trata `AbortError` como cancelamento (não exibe erro) e retorna `{ shared, cancelled }`.
+  - `fallbackWhatsApp(items)` / `fallbackWhatsAppIndividual(item)` — fallback para WhatsApp com nome + link do produto (`/produto/{id}`).
+
+### Modificado
+- **`src/app/app/actions-revendedora.ts`** — `getCatalogoRevendedora` agora retorna `slug: product.id` em cada item (necessário para gerar links públicos no fallback WhatsApp).
+- **`src/app/app/catalogo/page.tsx`** — `handleShareIndividual` reescrito:
+  1. Baixa imagem do produto via `downloadImageAsFile`.
+  2. Tenta `navigator.share({ files, text })` com foto + nome + preço + variante.
+  3. Se `canShare` não suportar ou imagem falhar, cai no `fallbackWhatsAppIndividual` com link do produto.
+- **`src/app/app/catalogo/compartir/page.tsx`** — `handleCompartir` reescrito:
+  1. Usa `downloadImageAsFile` via proxy para cada imagem selecionada.
+  2. `shareImages` trata `AbortError` separadamente: se usuário cancelar o share sheet, não registra pontos nem limpa seleção.
+  3. Fallback WhatsApp agora envia nomes + URLs dos produtos (não só nomes).
+  4. Validação prévia: se nenhum item selecionado tiver imagem, exibe erro amigável e aborta antes de iniciar download.
+  5. Interface `CatalogoItem` atualizada com `slug`.
+
+### Corrigido
+- **CORS no R2** — `fetch(imageUrl)` direto falhava silenciosamente; proxy local resolve.
+- **AbortError tratado como erro genérico** — cancelamento do share sheet não exibe mais "Erro ao compartir".
+- **Fallback WhatsApp sem links** — agora inclui URL pública de cada produto.
+- **Seleção vazia de imagens** — botão "Compartir" desabilita implicitamente quando `itemsWithImage.length === 0`.
+
+---
+
 ## 2026-04-23 — Fix build Vercel: import quebrado e demo órfão
 
 ### Corrigido

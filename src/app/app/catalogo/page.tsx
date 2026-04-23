@@ -5,6 +5,11 @@ import { useRouter } from "next/navigation";
 import { getCatalogoRevendedora } from "../actions-revendedora";
 import { formatGs } from "@/lib/format";
 import { Search, Share2, ArrowLeft, ImageOff } from "lucide-react";
+import {
+    downloadImageAsFile,
+    shareImages,
+    fallbackWhatsAppIndividual,
+} from "@/lib/share-images";
 
 export const dynamic = "force-dynamic";
 
@@ -17,6 +22,7 @@ interface CatalogoItem {
         id: string;
         name: string;
         sku: string;
+        slug: string;
         images: string[];
         category: string;
     };
@@ -56,13 +62,22 @@ export default function CatalogoPage() {
     });
 
     async function handleShareIndividual(item: CatalogoItem) {
+        const imageUrl = item.producto.images[0];
         const text = `¡Mira estas joyas de Monarca! 💎\n${item.producto.name} — ${formatGs(item.preco_fixado)}\n${item.variante.attribute_value}`;
-        if (navigator.share) {
-            await navigator.share({ text });
-        } else {
-            const waText = encodeURIComponent(text);
-            window.open(`https://wa.me/?text=${waText}`, "_blank");
+
+        // Tentar compartilhar com imagem real
+        if (imageUrl) {
+            const fileName = `${item.producto.sku || item.id}.webp`;
+            const file = await downloadImageAsFile(imageUrl, fileName);
+            if (file) {
+                const result = await shareImages([file], text);
+                if (result.shared || result.cancelled) return;
+                // Se não conseguiu share (canShare=false), cair no fallback
+            }
         }
+
+        // Fallback: WhatsApp com link do produto
+        fallbackWhatsAppIndividual(item, undefined, formatGs);
     }
 
     return (

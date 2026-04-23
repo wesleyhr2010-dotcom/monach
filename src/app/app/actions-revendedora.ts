@@ -489,6 +489,7 @@ export async function getCatalogoRevendedora() {
                 id: item.product_variant.product.id,
                 name: item.product_variant.product.name,
                 sku: item.product_variant.sku || item.product_variant.product.sku,
+                slug: item.product_variant.product.id,
                 images: item.product_variant.image_url
                     ? [item.product_variant.image_url]
                     : item.product_variant.product.images,
