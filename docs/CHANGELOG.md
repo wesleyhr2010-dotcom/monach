@@ -1,5 +1,16 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Fix build Vercel: imports quebrados pós-refatoração da gamificação
+
+### Corrigido
+- **`src/app/admin/actions-maletas.ts`** — `atribuirXP` (que não existia mais após reescrita de `actions-gamificacao.ts`) substituído por `awardPoints` de `@/lib/gamificacao`. Linhas 9, 595 e 605.
+- **`src/app/admin/gamificacao/page.tsx`** — reescrito para alinhar com a nova API: usa `upsertNivelRegra`, `deleteNivelRegra`, `atualizarRegra` (com schema Zod completo) e os campos reais do schema Prisma (`pontos_minimos`, `cor`, `ordem`, `tipo`). Tipos derivados de `Awaited<ReturnType<...>>` em vez de tipos custom inexistentes. UI traduzida para espanhol.
+
+### Notas
+- Correções de paths relativos também foram aplicadas localmente em arquivos do módulo `brindes/` (ainda untracked no working tree) — não entram neste commit. Devem ser comitadas junto quando o módulo brindes for publicado.
+
+---
+
 ## 2026-04-22 — Motor de Gamificação
 
 ### Criado

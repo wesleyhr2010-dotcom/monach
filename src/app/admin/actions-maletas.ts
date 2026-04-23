@@ -6,7 +6,7 @@ import type { MaletaListItem, MaletaDetail } from "@/lib/types";
 export type { MaletaListItem, MaletaDetail, MaletaItemDetail } from "@/lib/types";
 import { mapMaletaToListItem, mapMaletaToDetail } from "@/lib/mappers/maleta.mapper";
 import { sendPushNotification } from "@/lib/onesignal-server";
-import { atribuirXP } from "@/app/admin/actions-gamificacao";
+import { awardPoints } from "@/lib/gamificacao";
 import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validators/maleta.schema";
 import { requireAuth } from "@/lib/user";
 import type { Role } from "@/lib/user";
@@ -592,7 +592,7 @@ export async function conferirEFecharMaleta(
 
         // 4. Gamification — on-time return? (outside transaction — best-effort)
         if (new Date() <= maleta.data_limite) {
-            atribuirXP(maleta.reseller.id, "devolucao_prazo").catch((err: unknown) =>
+            awardPoints(maleta.reseller.id, "devolucao_prazo").catch((err: unknown) =>
                 console.error("[Gamificação] Falha ao atribuir XP devolucao_prazo:", err)
             );
         }
@@ -602,7 +602,7 @@ export async function conferirEFecharMaleta(
             ? (valorTotalVendido / valorTotalEnviado) * 100
             : 0;
         if (percentualVendido >= 100) {
-            atribuirXP(maleta.reseller.id, "maleta_completa").catch((err: unknown) =>
+            awardPoints(maleta.reseller.id, "maleta_completa").catch((err: unknown) =>
                 console.error("[Gamificação] Falha ao atribuir XP maleta_completa:", err)
             );
         }
