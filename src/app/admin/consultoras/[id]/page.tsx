@@ -1,19 +1,18 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useTransition } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { getPerfilConsultora } from "../../actions-equipe";
+import { getPerfilConsultora, atualizarMembro } from "../../actions-equipe";
 import type { ConsultoraPerfil } from "@/lib/types";
-import { formatGs, formatGsCompact, formatPct } from "@/lib/format";
+import { formatGsCompact, formatPct } from "@/lib/format";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {
-    ArrowLeft,
-    Users,
-    TrendingUp,
-    DollarSign,
     Phone,
     Mail,
     ArrowRight,
@@ -28,6 +27,10 @@ export default function ConsultoraPerfilPage() {
     const id = (params?.id as string) || "";
     const [perfil, setPerfil] = useState<ConsultoraPerfil | null>(null);
     const [loading, setLoading] = useState(true);
+    const [isPending, startTransition] = useTransition();
+    const [showEdit, setShowEdit] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -39,6 +42,33 @@ export default function ConsultoraPerfilPage() {
         }
         fetchPerfil();
     }, [id]);
+
+    function showMsg(type: "success" | "error", msg: string) {
+        if (type === "success") {
+            setSuccess(msg);
+            setTimeout(() => setSuccess(null), 3000);
+        } else {
+            setError(msg);
+            setTimeout(() => setError(null), 4000);
+        }
+    }
+
+    function handleEdit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        const fd = new FormData(e.currentTarget);
+        startTransition(async () => {
+            const res = await atualizarMembro(id, fd);
+            if (res.success) {
+                showMsg("success", "Dados atualizados com sucesso!");
+                setShowEdit(false);
+                // Recarrega perfil
+                const data = await getPerfilConsultora(id);
+                setPerfil(data);
+            } else {
+                showMsg("error", res.error || "Erro ao atualizar");
+            }
+        });
+    }
 
     if (loading) {
         return (
@@ -72,7 +102,7 @@ export default function ConsultoraPerfilPage() {
                     <h1>Perfil da Consultora</h1>
                 </div>
                 <div style={{ display: "flex", gap: "8px" }}>
-                    <Button variant="outline" size="sm">
+                    <Button variant="outline" size="sm" onClick={() => setShowEdit(true)}>
                         Editar Dados
                     </Button>
                     <Button variant="destructive" size="sm">
@@ -80,6 +110,60 @@ export default function ConsultoraPerfilPage() {
                     </Button>
                 </div>
             </header>
+
+            {/* Toast */}
+            {success && <div className="admin-toast admin-toast-success" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>✅ {success}</div>}
+            {error && <div className="admin-toast admin-toast-error" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>❌ {error}</div>}
+
+            {/* Edit Dialog */}
+            <Dialog open={showEdit} onOpenChange={setShowEdit}>
+                <DialogContent style={{ maxWidth: 480 }}>
+                    <DialogHeader>
+                        <DialogTitle>Editar Consultora</DialogTitle>
+                    </DialogHeader>
+                    <form onSubmit={handleEdit} className="space-y-4">
+                        <div>
+                            <Label htmlFor="edit-name">Nome *</Label>
+                            <Input id="edit-name" name="name" required defaultValue={perfil.name} />
+                        </div>
+                        <div>
+                            <Label htmlFor="edit-whatsapp">WhatsApp *</Label>
+                            <Input id="edit-whatsapp" name="whatsapp" required defaultValue={perfil.whatsapp} />
+                        </div>
+                        <div>
+                            <Label htmlFor="edit-email">Email</Label>
+                            <Input id="edit-email" name="email" type="email" defaultValue={perfil.email} />
+                        </div>
+                        <div>
+                            <Label htmlFor="edit-taxa">Comissão %</Label>
+                            <Input id="edit-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue={perfil.taxa_comissao} />
+                        </div>
+                        <div>
+                            <Label htmlFor="edit-active">Status</Label>
+                            <select
+                                id="edit-active"
+                                name="is_active"
+                                defaultValue={perfil.is_active ? "true" : "false"}
+                                style={{
+                                    width: "100%", padding: "8px 12px", borderRadius: "6px",
+                                    border: "1px solid var(--admin-border)",
+                                    background: "var(--admin-bg)", color: "var(--admin-text)",
+                                }}
+                            >
+                                <option value="true">Ativa</option>
+                                <option value="false">Inativa</option>
+                            </select>
+                        </div>
+                        <div>
+                            <Label htmlFor="edit-avatar">Nova Foto</Label>
+                            <Input id="edit-avatar" name="avatar" type="file" accept="image/*" />
+                        </div>
+                        <Button type="submit" className="w-full" disabled={isPending}>
+                            {isPending ? "Salvando..." : "Salvar Alterações"}
+                        </Button>
+                    </form>
+                </DialogContent>
+            </Dialog>
 
             <div className="admin-content">
                 {/* Identity Card */}
