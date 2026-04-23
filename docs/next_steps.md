@@ -115,6 +115,7 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [ ] **Testes E2E com Playwright** — golden paths (login → maleta → venda → devolução). Ref.: [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md).
 - [ ] **Observabilidade** — Sentry + logs estruturados + alertas. Ref.: [`sistema/SPEC_LOGGING_MONITORING.md`](./sistema/SPEC_LOGGING_MONITORING.md).
 - [ ] **Rate limiting** nos endpoints sensíveis (Upstash Redis). Ref.: [`sistema/SPEC_SECURITY_API_ENDPOINTS.md`](./sistema/SPEC_SECURITY_API_ENDPOINTS.md).
+- [ ] **Atualizar Site URL do Supabase Auth ao migrar domínio** — o Site URL e Redirect URLs no Supabase Dashboard (`Authentication → URL Configuration`) devem ser atualizados ao mudar de preview (`*.vercel.app`) para produção (`monarcasemijoyas.com.py`). Senão, os links de reset de senha e magic links continuam apontando para o domínio antigo. ⚠️ **Ação manual obrigatória no dashboard.**
 - [ ] **Deploy e rollback documentados** (ambientes, preview, produção). Ref.: [`sistema/SPEC_DEPLOY_STRATEGY.md`](./sistema/SPEC_DEPLOY_STRATEGY.md), [`sistema/SPEC_ENVIRONMENT_VARIABLES.md`](./sistema/SPEC_ENVIRONMENT_VARIABLES.md).
 
 ---
