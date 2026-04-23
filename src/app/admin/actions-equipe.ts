@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { generateSlug } from "@/lib/action-utils";
 import { uploadAvatar } from "@/lib/upload";
 import { requireAuth } from "@/lib/user";
+import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 
@@ -55,9 +56,13 @@ export async function getColaboradoras(): Promise<ColaboradoraItem[]> {
 // ============================================
 
 export async function getRevendedoras(): Promise<RevendedoraItem[]> {
-    await requireAuth(["ADMIN"]);
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+    const where: Record<string, unknown> = { role: "REVENDEDORA" };
+    if (user.role === "COLABORADORA" && user.profileId) {
+        where.colaboradora_id = user.profileId;
+    }
     const data = await prisma.reseller.findMany({
-        where: { role: "REVENDEDORA" },
+        where,
         orderBy: { name: "asc" },
         include: {
             colaboradora: { select: { id: true, name: true } },
@@ -243,7 +248,10 @@ export async function vincularRevendedora(
 import type { RevendedoraPerfil, ConsultoraPerfil } from "@/lib/types";
 
 export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfil | null> {
-    await requireAuth(["ADMIN"]);
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+    if (user.role === "COLABORADORA") {
+        await assertIsInGroup(id, user.profileId!);
+    }
     const r = await prisma.reseller.findUnique({
         where: { id, role: "REVENDEDORA" },
         include: {
@@ -355,7 +363,10 @@ export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfi
 // ============================================
 
 export async function getPerfilConsultora(id: string): Promise<ConsultoraPerfil | null> {
-    await requireAuth(["ADMIN"]);
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+    if (user.role === "COLABORADORA" && id !== user.profileId) {
+        throw new Error("BUSINESS: No autorizado.");
+    }
     const c = await prisma.reseller.findUnique({
         where: { id, role: "COLABORADORA" },
         include: {

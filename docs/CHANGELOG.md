@@ -31,6 +31,27 @@
 
 ---
 
+## 2026-04-23 — Sidebar da Consultora + Perfil e Extrato de Comissões
+
+### Criado
+- **`src/components/admin/AdminLayoutClient.tsx`** — Client Component extraído do `layout.tsx` do admin. Recebe `userRole` como prop e filtra a sidebar e o bottom nav para mostrar apenas itens permitidos por role.
+- **`src/app/admin/minha-conta/actions.ts`** — Server Actions para a consultora logada:
+  - `getMinhaConta()` — perfil da consultora + resumo do grupo (faturamento mensal, comissão, maletas ativas, revendedoras ativas, totais históricos).
+  - `getExtratoComissoes(ano?)` — agrupa maletas concluídas por mês, detalhando comissão da consultora por revendedora.
+- **`/admin/minha-conta/page.tsx`** — página de perfil da consultora com avatar, dados pessoais, taxa de comissão (read-only), cards de resumo e links rápidos para Comissões, Analytics e Revendedoras.
+- **`/admin/minha-conta/comissoes/page.tsx`** — extrato de comissões mês a mês com seleção de ano, total anual, e expansão de detalhes por maleta/revendedora.
+
+### Modificado
+- **`src/app/admin/layout.tsx`** — refatorado de Client Component para Server Component. Chama `getCurrentUser()`, valida role e is_active, redireciona se necessário, e passa `userRole` para `AdminLayoutClient`.
+- **`src/components/admin/BottomNav.tsx`** — recebe `userRole` como prop e filtra itens: COLABORADORA vê Inicio, Revend., Maleta, Analytics, Perfil, Comissões.
+- **`src/app/admin/actions-equipe.ts`** — ajustadas permissões para COLABORADORA:
+  - `getRevendedoras` agora aceita `COLABORADORA` e filtra por `colaboradora_id = user.profileId`.
+  - `getPerfilRevendedora` aceita `COLABORADORA` com `assertIsInGroup` para evitar IDOR.
+  - `getPerfilConsultora` aceita `COLABORADORA` mas só permite visualizar o próprio perfil.
+- **`docs/next_steps.md`** — item "Sidebar da Consultora" marcado como `[x]`.
+
+---
+
 ## 2026-04-23 — Fix build Vercel: import quebrado e demo órfão
 
 ### Corrigido
