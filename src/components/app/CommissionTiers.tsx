@@ -1,35 +1,24 @@
-export const COMMISSION_TIERS = [
-  { percent: "20%", threshold: 0 },
-  { percent: "25%", threshold: 400_000 },
-  { percent: "30%", threshold: 800_000 },
-  { percent: "35%", threshold: 1_200_000 },
-  { percent: "40%", threshold: 1_600_000 },
-];
-
-export function getActiveTierIndex(totalVendido: number): number {
-  let active = 0;
-  for (let i = 0; i < COMMISSION_TIERS.length; i++) {
-    if (totalVendido >= COMMISSION_TIERS[i].threshold) active = i;
-  }
-  return active;
+interface Tier {
+  pct: number;
+  min_sales_value: number;
 }
 
-export function getNextTierInfo(
-  totalVendido: number
-): { percent: string; remaining: number } | null {
-  const idx = getActiveTierIndex(totalVendido);
-  if (idx >= COMMISSION_TIERS.length - 1) return null;
-  const next = COMMISSION_TIERS[idx + 1];
-  return { percent: next.percent, remaining: next.threshold - totalVendido };
+interface CommissionInfo {
+  tierAtual: { pct: number; min_sales_value: number } | null;
+  proximoTier: { pct: number; min_sales_value: number } | null;
+  faltaParaProximo: number;
 }
 
 interface CommissionTiersProps {
-  totalVendido: number;
+  tiers: Tier[];
+  commissionInfo: CommissionInfo;
 }
 
-export function CommissionTiers({ totalVendido }: CommissionTiersProps) {
-  const activeIdx = getActiveTierIndex(totalVendido);
-  const next = getNextTierInfo(totalVendido);
+export function CommissionTiers({ tiers, commissionInfo }: CommissionTiersProps) {
+  const sorted = [...tiers].sort((a, b) => a.min_sales_value - b.min_sales_value);
+  const activeIdx = commissionInfo.tierAtual
+    ? sorted.findIndex((t) => t.pct === commissionInfo.tierAtual!.pct)
+    : -1;
 
   return (
     <div className="flex flex-col items-center mt-6">
@@ -41,35 +30,46 @@ export function CommissionTiers({ totalVendido }: CommissionTiersProps) {
       </span>
 
       <div className="flex gap-[6px] mb-3">
-        {COMMISSION_TIERS.map((tier, idx) => {
-          const isActive = idx <= activeIdx;
+        {sorted.map((tier, idx) => {
+          const isReached = idx <= activeIdx;
+          const isCurrent = idx === activeIdx;
           return (
             <div
-              key={tier.percent}
+              key={tier.pct}
               className="rounded-full px-3 py-[6px]"
-              style={{ backgroundColor: isActive ? "#35605A" : "#D9D6D2" }}
+              style={{
+                backgroundColor: isReached ? "#35605A" : "#D9D6D2",
+                border: isCurrent ? "2px solid #1A1A1A" : "2px solid transparent",
+              }}
             >
               <span
                 className="text-[11px] leading-[14px]"
                 style={{
                   fontFamily: "var(--font-raleway)",
                   fontWeight: 500,
-                  color: isActive ? "#FFFFFF" : "#777777",
+                  color: isReached ? "#FFFFFF" : "#777777",
                 }}
               >
-                {tier.percent}
+                {tier.pct}%
               </span>
             </div>
           );
         })}
       </div>
 
-      {next && (
+      {commissionInfo.proximoTier ? (
         <span
           className="text-[12px] leading-4 text-[#777777]"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
-          Faltan G$ {next.remaining.toLocaleString("es-PY")} para el {next.percent}
+          Faltan G$ {commissionInfo.faltaParaProximo.toLocaleString("es-PY")} para el {commissionInfo.proximoTier.pct}%
+        </span>
+      ) : (
+        <span
+          className="text-[12px] leading-4 text-[#35605A]"
+          style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
+        >
+          ¡Estás en el nivel máximo! 🎉
         </span>
       )}
     </div>

@@ -9,24 +9,37 @@ const STATUS_CONFIG: Record<MaletaStatus, { label: string; bg: string }> = {
   concluida: { label: "Concluida", bg: "#777777" },
 };
 
+interface Tier {
+  pct: number;
+  min_sales_value: number;
+}
+
+interface CommissionInfo {
+  tierAtual: { pct: number; min_sales_value: number } | null;
+  proximoTier: { pct: number; min_sales_value: number } | null;
+  faltaParaProximo: number;
+}
+
 interface MaletaCardProps {
   maleta: {
     status: string;
     data_limite: Date | null;
   } | null;
-  totalVendido: number;
+  tiers: Tier[];
+  commissionInfo: CommissionInfo;
 }
 
-function getDaysLeft(dataLimite: Date | null): string {
-  if (!dataLimite) return "Vence em breve";
+function getDaysLeft(dataLimite: Date | null): { text: string; urgente: boolean } {
+  if (!dataLimite) return { text: "Vence em breve", urgente: false };
   const diff = new Date(dataLimite).getTime() - Date.now();
   const days = Math.ceil(diff / (1000 * 60 * 60 * 24));
-  if (days < 0) return "Atrasada";
-  if (days === 0) return "Vence hoje";
-  return `Faltan ${days} día${days !== 1 ? "s" : ""}`;
+  if (days < 0) return { text: "Atrasada", urgente: true };
+  if (days === 0) return { text: "Vence hoy", urgente: true };
+  if (days <= 3) return { text: `Faltan ${days} día${days !== 1 ? "s" : ""}`, urgente: true };
+  return { text: `Faltan ${days} día${days !== 1 ? "s" : ""}`, urgente: false };
 }
 
-export function MaletaCard({ maleta, totalVendido }: MaletaCardProps) {
+export function MaletaCard({ maleta, tiers, commissionInfo }: MaletaCardProps) {
   if (!maleta) {
     return (
       <div className="bg-[#EBEBEB] rounded-2xl px-5 py-5">
@@ -34,15 +47,21 @@ export function MaletaCard({ maleta, totalVendido }: MaletaCardProps) {
           className="text-[13px] text-[#777777] text-center py-4"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
-          Ninguna maleta activa por el momento.
+          Ninguna consignación activa por el momento.
         </p>
+        <button
+          className="w-full mt-2 rounded-xl py-3 text-white text-[14px] font-medium"
+          style={{ backgroundColor: "#35605A", fontFamily: "var(--font-raleway)" }}
+        >
+          Solicitar consignación
+        </button>
       </div>
     );
   }
 
   const statusKey = maleta.status as MaletaStatus;
   const { label, bg } = STATUS_CONFIG[statusKey] ?? STATUS_CONFIG.ativa;
-  const daysLeft = getDaysLeft(maleta.data_limite);
+  const { text: daysLeft, urgente } = getDaysLeft(maleta.data_limite);
 
   return (
     <div className="bg-[#EBEBEB] rounded-2xl px-5 py-5">
@@ -66,14 +85,18 @@ export function MaletaCard({ maleta, totalVendido }: MaletaCardProps) {
 
       {/* Days left */}
       <span
-        className="text-[13px] leading-4 text-[#777777]"
-        style={{ fontFamily: "var(--font-raleway)" }}
+        className="text-[13px] leading-4"
+        style={{
+          fontFamily: "var(--font-raleway)",
+          color: urgente ? "#C0392B" : "#777777",
+          fontWeight: urgente ? 600 : 400,
+        }}
       >
         {daysLeft}
       </span>
 
       {/* Commission tiers */}
-      <CommissionTiers totalVendido={totalVendido} />
+      <CommissionTiers tiers={tiers} commissionInfo={commissionInfo} />
     </div>
   );
 }

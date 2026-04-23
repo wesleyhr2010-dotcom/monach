@@ -1,51 +1,62 @@
 import Link from "next/link";
 import { User } from "lucide-react";
 
-const NIVEL_COLORS: Record<string, string> = {
-  Bronce: "#B87333",
-  Plata: "#7A8FA6",
-  Oro: "#C9A84C",
-  Diamante: "#5B7FBF",
-};
+interface Rank {
+  nome: string;
+  cor: string;
+}
 
 interface AppHeaderProps {
   name: string;
-  nivel: string;
+  avatarUrl?: string | null;
+  rank: Rank;
+  pontos: number;
   notificacoes?: number;
 }
 
-export function AppHeader({ name, nivel, notificacoes = 0 }: AppHeaderProps) {
+export function AppHeader({ name, avatarUrl, rank, pontos, notificacoes = 0 }: AppHeaderProps) {
   const firstName = name.split(" ")[0];
-  const badgeColor = NIVEL_COLORS[nivel] ?? "#B87333";
 
   return (
     <header className="flex items-center gap-3 px-5 pt-6 pb-4 sticky top-0 z-10 bg-[#F5F2EF]">
       {/* Avatar */}
       <div
-        className="w-12 h-12 rounded-full bg-[#EBEBEB] flex items-center justify-center flex-shrink-0"
+        className="w-12 h-12 rounded-full bg-[#EBEBEB] flex items-center justify-center flex-shrink-0 overflow-hidden"
         style={{ border: "2px solid #35605A" }}
       >
-        <User size={24} stroke="#1A1A1A" strokeWidth={1.5} />
+        {avatarUrl ? (
+          <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
+        ) : (
+          <User size={24} stroke="#1A1A1A" strokeWidth={1.5} />
+        )}
       </div>
 
-      {/* Name */}
-      <span
-        className="flex-1 text-[16px] text-[#1A1A1A] leading-5"
-        style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
-      >
-        Hola, {firstName}
-      </span>
+      {/* Name + Pontos */}
+      <div className="flex flex-col flex-1 min-w-0">
+        <span
+          className="text-[16px] text-[#1A1A1A] leading-5"
+          style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
+        >
+          Hola, {firstName}
+        </span>
+        <span
+          className="text-[12px] text-[#777777] leading-4"
+          style={{ fontFamily: "var(--font-raleway)", fontWeight: 500 }}
+        >
+          {pontos.toLocaleString("es-PY")} pts
+        </span>
+      </div>
 
-      {/* Nivel badge */}
+      {/* Rank badge */}
       <div
-        className="rounded-full px-[14px] py-[6px]"
-        style={{ backgroundColor: badgeColor }}
+        className="rounded-full px-[14px] py-[6px] flex-shrink-0"
+        style={{ backgroundColor: rank.cor }}
       >
         <span
           className="text-white text-[12px] leading-4 tracking-[0.3px]"
           style={{ fontFamily: "var(--font-raleway)", fontWeight: 500 }}
         >
-          Nivel {nivel}
+          {rank.nome}
         </span>
       </div>
 

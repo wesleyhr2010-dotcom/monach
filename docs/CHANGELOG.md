@@ -1,5 +1,77 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Motor de Gamificação
+
+### Criado
+- **`src/app/app/progresso/actions.ts`** — Server Action `getRegrasProgresso` que busca regras ativas, calcula progresso diário/total por revendedora e determina estado visual (`disponible`, `en_progreso`, `completado_hoy`, `completado_siempre`).
+- **`src/app/app/progresso/page.tsx`** — tela "Cómo Ganar Puntos" com cards de cada regra, ícones Lucide, barra de progresso para tarefas diárias, estados completados e saldo total.
+
+### Modificado
+- **`src/lib/gamificacao.ts`** — `awardPoints` totalmente reescrito para respeitar:
+  - `ativo = false` → silencioso
+  - `tipo = 'unico'` → só 1x na vida
+  - `tipo = 'diario'` → respeita `limite_diario`
+  - `tipo = 'mensal'` → só 1x por mês
+  - `tipo = 'por_evento'` → ilimitado
+  - Usa `regra.nome` como descrição no extrato
+- **`prisma/seed-gamificacao.ts`** — seed atualizado com 7 módulos completos (`icone`, `tipo`, `limite_diario`, `meta_valor`, `ordem`) + upsert para manter dados atualizados. Tiers e níveis também usam upsert.
+- **`src/app/admin/actions-gamificacao.ts`** — reescrito com CRUD completo:
+  - `getRegras`, `atualizarRegra` (com validação Zod)
+  - `getNiveis`, `upsertNivelRegra`, `deleteNivelRegra` (protege nível base Bronze)
+  - `getResgates`, `atualizarStatusResgate`, `getExtratoPontos`
+
+---
+
+## 2026-04-22 — Integração Brevo (Emails Transacionais)
+
+### Criado
+- **`src/lib/emails.ts`** — cliente central Brevo usando SDK `@getbrevo/brevo`. Envia emails via API com fallback silencioso em caso de erro (não bloqueia operação principal).
+- **`src/lib/email-templates/`** — 6 templates de email transacional:
+  - `documento-pendente.ts` — notifica admin/consultora quando revendedora envia documento
+  - `documento-aprovado.ts` — confirma aprovação de documento para revendedora
+  - `documento-rejeitado.ts` — informa rejeição com motivo
+  - `acerto-confirmado.ts` — resumo financeiro após fechamento de maleta
+  - `candidatura-aprovada.ts` — boas-vindas com senha temporária para lead aprovada
+  - `candidatura-rechazada.ts` — recusa de candidatura
+- **`.env.local.example`** — adicionadas `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `BREVO_FROM_NAME`, `NEXT_PUBLIC_SITE_URL`.
+
+### Nota
+- Configuração SMTP do Supabase Auth (reset/convite via Brevo) é **manual no dashboard** e permanece pendente. Ver checklist em `SPEC_EMAILS.md` §10.
+
+---
+
+## 2026-04-22 — Recuperar Contraseña (PWA)
+
+### Criado
+- **`src/app/app/nueva-contrasena/page.tsx`** — tela para definir nova senha após clicar no link do email. Valida senha mínima de 6 caracteres e confirmação; chama `supabase.auth.updateUser({ password })`; redireciona para `/app` após 2s em caso de sucesso.
+
+### Modificado
+- **`src/lib/middleware-auth.ts`** — rota `/app/nueva-contrasena` excluída da verificação de sessão/role, igual a `/app/login`.
+- **`src/app/app/login/recuperar-contrasena/page.tsx`** — já existia; fluxo completo de solicitação de link por email via `supabase.auth.resetPasswordForEmail`.
+
+---
+
+## 2026-04-22 — Dashboard (Home) da Revendedora (PWA)
+
+### Criado
+- **`src/lib/gamificacao.ts`** — `getRankAtual(resellerId)` calcula rank (Bronce/Plata/Oro/Diamante) sobre pontos históricos; `computeCommissionPct(faturamentoMes)` calcula tier atual e próximo tier baseado em `CommissionTier` do banco.
+- **Seed de gamificação** — `prisma/seed-gamificacao.ts` agora popula `NivelRegra` (4 ranks com pontos mínimos e cores) e `CommissionTier` (5 tiers de 20% a 40%).
+
+### Modificado
+- **`src/app/app/actions-revendedora.ts`** — `getDashboardCompleto` totalmente reescrito:
+  - Métricas agora são do **mês civil vigente** (`faturamentoMes`, `ganhosMes`, `pecasVendidasMes`) em vez de histórico total.
+  - Busca `rank` real via `getRankAtual`, `pontosSaldo` histórico total, `maletaAtiva` com `data_limite`, e `commissionInfo` com tiers do banco.
+  - Retorna `avatarUrl` para exibição no header.
+- **`src/components/app/AppHeader.tsx`** — recebe `rank` (nome + cor), `pontos` e `avatarUrl`; exibe avatar real, nome, pontos e badge de rank colorido.
+- **`src/components/app/CommissionTiers.tsx`** — reescrito para aceitar `tiers` e `commissionInfo` via props (dinâmico do banco). Pills mostram tiers alcançados em verde, tier atual com bordo destacado, próximos em cinza. Texto auxiliar mostra quanto falta para o próximo tier ou mensagem de nível máximo.
+- **`src/components/app/MaletaCard.tsx`** — aceita `tiers` e `commissionInfo`; destaca visualmente maleta vencida (dias ≤ 0) em vermelho; mostra CTA "Solicitar consignación" quando não há maleta ativa.
+- **`src/app/app/AppDashboardClient.tsx`** — atualizado para consumir novos campos do `getDashboardCompleto` (`rank`, `pontosSaldo`, `faturamentoMes`, `ganhosMes`, `pecasVendidasMes`, `maletaAtiva`, `commissionInfo`).
+
+### Corrigido
+- Lint nos arquivos modificados: zero erros (1 warning pré-existente sobre `<img>` no avatar).
+
+---
+
 ## 2026-04-22 — Onboarding e Perfil da Revendedora (PWA)
 
 ### Criado

@@ -38,6 +38,7 @@ export async function updateSession(request: NextRequest) {
     const isAdminLoginPage = url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")
     const isAppRoute = url.pathname.startsWith("/app")
     const isAppLoginPage = url.pathname.startsWith("/app/login")
+    const isAppResetPage = url.pathname.startsWith("/app/nueva-contrasena")
 
     let userRole = null;
     let isActive = true;
@@ -110,7 +111,7 @@ export async function updateSession(request: NextRequest) {
     // Logic for /app routes (REVENDEDORA)
     // ============================================
     if (isAppRoute) {
-        if (!user && !isAppLoginPage) {
+        if (!user && !isAppLoginPage && !isAppResetPage) {
             url.pathname = "/app/login"
             return NextResponse.redirect(url)
         }

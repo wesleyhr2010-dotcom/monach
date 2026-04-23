@@ -4,8 +4,15 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
-import { awardPoints } from "@/lib/gamificacao";
+import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
+
+function getMonthBounds() {
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+    return { start, end };
+}
 
 export async function getDashboardCompleto() {
     const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
@@ -14,54 +21,101 @@ export async function getDashboardCompleto() {
     }
 
     const resellerId = user.profileId;
+    const { start, end } = getMonthBounds();
+
     const reseller = await prisma.reseller.findUnique({
         where: { id: resellerId },
-        select: { name: true, taxa_comissao: true },
+        select: { name: true, avatar_url: true },
     });
 
+    // Métricas do mês civil vigente
+    const vendasMes = await prisma.vendaMaleta.findMany({
+        where: {
+            reseller_id: resellerId,
+            created_at: { gte: start, lt: end },
+        },
+        select: {
+            quantidade: true,
+            preco_unitario: true,
+        },
+    });
+
+    const faturamentoMes = vendasMes.reduce(
+        (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
+        0
+    );
+    const pecasVendidasMes = vendasMes.reduce((sum, v) => sum + v.quantidade, 0);
+
+    // Pontos históricos totais
+    const pontosAggr = await prisma.pontosExtrato.aggregate({
+        where: { reseller_id: resellerId },
+        _sum: { pontos: true },
+    });
+    const pontosSaldo = pontosAggr._sum.pontos ?? 0;
+
+    // Maleta ativa
+    const maletaAtiva = await prisma.maleta.findFirst({
+        where: {
+            reseller_id: resellerId,
+            status: { in: ["ativa", "atrasada"] },
+        },
+        orderBy: { created_at: "desc" },
+        select: {
+            id: true,
+            status: true,
+            data_limite: true,
+        },
+    });
+
+    // Todas as maletas para histórico rápido
     const maletas = await prisma.maleta.findMany({
         where: { reseller_id: resellerId },
         include: {
             itens: {
-                include: {
-                    vendas: true
-                }
-            }
+                select: {
+                    quantidade_enviada: true,
+                    quantidade_vendida: true,
+                },
+            },
         },
         orderBy: { created_at: "desc" },
     });
 
-    let totalVendido = 0;
-    let totalPecas = 0;
-
-    maletas.forEach(maleta => {
-        maleta.itens.forEach(item => {
-            totalPecas += item.quantidade_vendida;
-            item.vendas.forEach(venda => {
-                totalVendido += Number(venda.preco_unitario) * venda.quantidade;
-            });
-        });
-    });
-
-    const comissaoPct = Number(reseller?.taxa_comissao || 0);
-    const comissaoValor = totalVendido * (comissaoPct / 100);
-
-    const historicoMaletas = maletas.map(m => ({
+    const historicoMaletas = maletas.map((m) => ({
         id: m.id,
         status: m.status,
         data_limite: m.data_limite,
         totalItens: m.itens.reduce((acc, item) => acc + item.quantidade_enviada, 0),
-        vendidos: m.itens.reduce((acc, item) => acc + item.quantidade_vendida, 0)
+        vendidos: m.itens.reduce((acc, item) => acc + item.quantidade_vendida, 0),
+    }));
+
+    const [rank, commissionInfo, allTiers] = await Promise.all([
+        getRankAtual(resellerId),
+        computeCommissionPct(faturamentoMes),
+        prisma.commissionTier.findMany({
+            where: { ativo: true },
+            orderBy: { min_sales_value: "asc" },
+        }),
+    ]);
+
+    const ganhosMes = faturamentoMes * ((commissionInfo.tierAtual?.pct ?? 0) / 100);
+
+    const tiers = allTiers.map((t) => ({
+        pct: Number(t.pct),
+        min_sales_value: Number(t.min_sales_value),
     }));
 
     return {
         nome: reseller?.name || "Revendedora",
-        nivel: "Iniciante",
-        xpTotal: 0,
-        totalVendido,
-        comissaoValor,
-        totalPecas,
+        avatarUrl: reseller?.avatar_url || null,
+        rank,
+        pontosSaldo,
+        faturamentoMes,
+        ganhosMes,
+        pecasVendidasMes,
+        maletaAtiva,
         historicoMaletas,
+        commissionInfo: { ...commissionInfo, tiers },
     };
 }
 

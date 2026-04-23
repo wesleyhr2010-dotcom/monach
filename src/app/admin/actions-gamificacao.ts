@@ -1,131 +1,102 @@
 "use server";
 
+import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 
 // ============================================
-// Types
+// Schemas
 // ============================================
 
-export interface NivelGamificacaoItem {
-    id: string;
-    nome: string;
-    xp_minimo: number;
-    bonus_comissao: number;
-}
+const updateRegraSchema = z.object({
+    nome: z.string().min(3).max(80),
+    descricao: z.string().max(200),
+    pontos: z.number().int().min(1).max(10000),
+    ativo: z.boolean(),
+    icone: z.string(),
+    ordem: z.number().int(),
+    limite_diario: z.number().int().min(1).nullable(),
+    meta_valor: z.number().positive().nullable(),
+});
 
-export interface RegraGamificacaoItem {
-    id: string;
-    nome: string;
-    descricao: string;
-    acao: string;
-    pontos: number;
-    ativo: boolean;
-}
-
-export interface ResgateItem {
-    id: string;
-    reseller_id: string;
-    reseller_name: string;
-    pontos: number;
-    premio: string;
-    status: string;
-    created_at: string;
-}
+const nivelSchema = z.object({
+    id: z.string().uuid().optional(),
+    nome: z.string().min(2).max(40),
+    pontos_minimos: z.number().int().min(0),
+    cor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+    ordem: z.number().int(),
+});
 
 // ============================================
-// Níveis — CRUD
+// Regras — Admin CRUD
 // ============================================
 
-export async function getNiveis(): Promise<NivelGamificacaoItem[]> {
+export async function getRegras() {
     await requireAuth(["ADMIN"]);
-    return [];
-}
-
-export async function criarNivel(data: {
-    nome: string;
-    xp_minimo: number;
-    bonus_comissao: number;
-}): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["ADMIN"]);
-    return { success: false, error: "Tabela NivelGamificacao não existe mais" }
-}
-
-export async function atualizarNivel(
-    id: string,
-    data: { nome?: string; xp_minimo?: number; bonus_comissao?: number }
-): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["ADMIN"]);
-    return { success: false, error: "Tabela NivelGamificacao não existe mais" }
-}
-
-export async function deletarNivel(id: string): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["ADMIN"]);
-    return { success: false, error: "Tabela NivelGamificacao não existe mais" };
-}
-
-// ============================================
-// Regras — CRUD
-// ============================================
-
-export async function getRegras(): Promise<RegraGamificacaoItem[]> {
-    await requireAuth(["ADMIN"]);
-    const regras = await prisma.gamificacaoRegra.findMany({
-        orderBy: { created_at: "asc" },
+    return prisma.gamificacaoRegra.findMany({
+        orderBy: { ordem: "asc" },
     });
-    return regras.map((r) => ({
-        id: r.id,
-        nome: r.nome,
-        descricao: r.descricao,
-        acao: r.acao,
-        pontos: r.pontos,
-        ativo: r.ativo,
-    }));
-}
-
-export async function criarRegra(data: {
-    nome: string;
-    descricao: string;
-    acao: string;
-    pontos: number;
-}): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["ADMIN"]);
-    try {
-        await prisma.gamificacaoRegra.create({ data });
-        return { success: true };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
 }
 
 export async function atualizarRegra(
     id: string,
-    data: { nome?: string; descricao?: string; acao?: string; pontos?: number; ativo?: boolean }
-): Promise<{ success: boolean; error?: string }> {
+    rawData: z.infer<typeof updateRegraSchema>
+) {
     await requireAuth(["ADMIN"]);
-    try {
-        await prisma.gamificacaoRegra.update({ where: { id }, data });
-        return { success: true };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
-}
-
-export async function deletarRegra(id: string): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["ADMIN"]);
-    try {
-        await prisma.gamificacaoRegra.delete({ where: { id } });
-        return { success: true };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
+    const data = updateRegraSchema.parse(rawData);
+    return prisma.gamificacaoRegra.update({
+        where: { id },
+        data,
+    });
 }
 
 // ============================================
-// Resgates — Admin Manage
+// Níveis — Admin CRUD
 // ============================================
 
-export async function getResgates(): Promise<ResgateItem[]> {
+export async function getNiveis() {
+    await requireAuth(["ADMIN"]);
+    return prisma.nivelRegra.findMany({
+        orderBy: { ordem: "asc" },
+    });
+}
+
+export async function upsertNivelRegra(rawData: z.infer<typeof nivelSchema>) {
+    await requireAuth(["ADMIN"]);
+    const data = nivelSchema.parse(rawData);
+
+    if (data.id) {
+        // Não permitir deletar o nível base (Bronze)
+        const existing = await prisma.nivelRegra.findUnique({
+            where: { id: data.id },
+        });
+        if (existing && existing.pontos_minimos === 0 && data.pontos_minimos !== 0) {
+            throw new Error("BUSINESS: No se puede cambiar el umbral del nivel base (Bronce).");
+        }
+        return prisma.nivelRegra.update({
+            where: { id: data.id },
+            data,
+        });
+    }
+
+    return prisma.nivelRegra.create({ data });
+}
+
+export async function deleteNivelRegra(id: string) {
+    await requireAuth(["ADMIN"]);
+    const nivel = await prisma.nivelRegra.findUnique({ where: { id } });
+    if (!nivel) throw new Error("BUSINESS: Nível no encontrado.");
+    if (nivel.pontos_minimos === 0) {
+        throw new Error("BUSINESS: No se puede eliminar el nivel base (Bronce).");
+    }
+    return prisma.nivelRegra.delete({ where: { id } });
+}
+
+// ============================================
+// Resgates — Admin Manage (legado)
+// ============================================
+
+export async function getResgates() {
     await requireAuth(["ADMIN"]);
     const resgates = await prisma.resgate.findMany({
         include: { reseller: { select: { name: true } } },
@@ -145,94 +116,9 @@ export async function getResgates(): Promise<ResgateItem[]> {
 export async function atualizarStatusResgate(
     id: string,
     status: "aprovado" | "entregue" | "recusado"
-): Promise<{ success: boolean; error?: string }> {
+) {
     await requireAuth(["ADMIN"]);
-    try {
-        await prisma.resgate.update({ where: { id }, data: { status } });
-        return { success: true };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
-}
-
-// ============================================
-// XP Engine — atribuir pontos
-// ============================================
-
-export async function atribuirXP(
-    resellerId: string,
-    acao: string,
-    descricaoExtra?: string
-): Promise<{ success: boolean; pontos?: number; error?: string }> {
-    await requireAuth(["ADMIN", "COLABORADORA"]);
-    try {
-        // Find active rule for this action
-        const regra = await prisma.gamificacaoRegra.findFirst({
-            where: { acao, ativo: true },
-        });
-
-        if (!regra) return { success: false, error: "Nenhuma regra ativa para esta ação" };
-
-        await prisma.$transaction([
-            // Create points log entry
-            prisma.pontosExtrato.create({
-                data: {
-                    reseller_id: resellerId,
-                    regra_id: regra.id,
-                    pontos: regra.pontos,
-                    descricao: descricaoExtra || regra.descricao,
-                },
-            })
-            // Increment xp_total on reseller removed as column no longer exists
-        ]);
-
-        return { success: true, pontos: regra.pontos };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
-}
-
-// ============================================
-// Reseller: solicitar resgate
-// ============================================
-
-export async function solicitarResgate(data: {
-    resellerId: string;
-    pontos: number;
-    premio: string;
-}): Promise<{ success: boolean; error?: string }> {
-    await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    try {
-        // Mock verification since xp_total is removed
-        const xp_total = 9999;
-
-        if (xp_total < data.pontos) {
-            return { success: false, error: "XP insuficiente" };
-        }
-
-        await prisma.$transaction([
-            prisma.resgate.create({
-                data: {
-                    reseller_id: data.resellerId,
-                    pontos: data.pontos,
-                    premio: data.premio,
-                },
-            }),
-            // Increment/decrement of xp_total removed as column no longer exists
-            // Log negative points
-            prisma.pontosExtrato.create({
-                data: {
-                    reseller_id: data.resellerId,
-                    pontos: -data.pontos,
-                    descricao: `Resgate: ${data.premio}`,
-                },
-            }),
-        ]);
-
-        return { success: true };
-    } catch (err: unknown) {
-        return { success: false, error: err instanceof Error ? err.message : "Erro" };
-    }
+    return prisma.resgate.update({ where: { id }, data: { status } });
 }
 
 // ============================================

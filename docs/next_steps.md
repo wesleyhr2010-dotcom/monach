@@ -66,8 +66,8 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
   - [x] Testes de regressão de segurança em `src/__tests__/security/rbac-regression.test.ts` (11 testes passando).
 - [x] **Proteção de dados sensíveis** — sanitização de logs, criptografia at-rest AES-256-GCM para dados bancários, signed URLs para documentos pessoais (1h TTL), helpers de máscara para UI, e sanitizador de vitrina pública. Ref.: [`sistema/SPEC_SECURITY_DATA_PROTECTION.md`](./sistema/SPEC_SECURITY_DATA_PROTECTION.md).
 - [x] **Onboarding e completude de perfil** da revendedora. Ref.: [`revendedoras/SPEC_ONBOARDING_REVENDEDORA.md`](./revendedoras/SPEC_ONBOARDING_REVENDEDORA.md), [`revendedoras/SPEC_PERFIL.md`](./revendedoras/SPEC_PERFIL.md).
-- [~] **Home do PWA** com métricas reais e maleta ativa. Ref.: [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md).
-- [ ] **Recuperar senha** (reset via SMTP). Ref.: [`revendedoras/SPEC_RECUPERAR_CONTRASENA.md`](./revendedoras/SPEC_RECUPERAR_CONTRASENA.md).
+- [x] **Home do PWA** com métricas reais e maleta ativa. Ref.: [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md).
+- [x] **Recuperar senha** (reset via SMTP). Ref.: [`revendedoras/SPEC_RECUPERAR_CONTRASENA.md`](./revendedoras/SPEC_RECUPERAR_CONTRASENA.md).
 
 ---
 
@@ -75,11 +75,11 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
 
 Itens que aumentam valor do produto depois do ciclo base estar estável.
 
-- [ ] **Motor de gamificação** — pontos por prazo/meta/completude, progressão de níveis, tiers de comissão. Ref.: [`admin/SPEC_ADMIN_GAMIFICACAO.md`](./admin/SPEC_ADMIN_GAMIFICACAO.md), [`revendedoras/SPEC_PROGRESSO.md`](./revendedoras/SPEC_PROGRESSO.md).
+- [x] **Motor de gamificação** — pontos por prazo/meta/completude, progressão de níveis, tiers de comissão. Ref.: [`admin/SPEC_ADMIN_GAMIFICACAO.md`](./admin/SPEC_ADMIN_GAMIFICACAO.md), [`revendedoras/SPEC_PROGRESSO.md`](./revendedoras/SPEC_PROGRESSO.md).
 - [ ] **Brindes** — catálogo admin + resgates + extrato. Ref.: [`admin/SPEC_ADMIN_BRINDES.md`](./admin/SPEC_ADMIN_BRINDES.md), [`revendedoras/SPEC_EXTRATO_BRINDES.md`](./revendedoras/SPEC_EXTRATO_BRINDES.md).
 - [ ] **Gestão de Equipe** no admin (revendedoras + consultoras, vínculos `manager_id`). Ref.: [`admin/SPEC_ADMIN_EQUIPE.md`](./admin/SPEC_ADMIN_EQUIPE.md), [`admin/SPEC_ADMIN_CONSULTORA_PERFIL.md`](./admin/SPEC_ADMIN_CONSULTORA_PERFIL.md).
 - [ ] **Centro de notificações** no PWA + campanhas push no admin. Ref.: [`revendedoras/SPEC_NOTIFICACOES.md`](./revendedoras/SPEC_NOTIFICACOES.md), [`admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`](./admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md), [`prd/PRD_OneSignal_PWA.md`](./prd/PRD_OneSignal_PWA.md).
-- [ ] **Emails transacionais** via Brevo (boas-vindas, reset senha, prazo de maleta, acerto). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).
+- [x] **Emails transacionais** via Brevo (SDK instalado, cliente central `src/lib/emails.ts`, 6 templates criados). Configuração SMTP no Supabase Dashboard ainda pendente (manual). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).
 - [ ] **Cron jobs** (notificação de prazo de maleta etc.) em Supabase Edge Functions. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
 - [ ] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
 - [ ] **Pipeline de Leads** vindos da landing "Seja Revendedora". Ref.: [`admin/SPEC_ADMIN_LEADS.md`](./admin/SPEC_ADMIN_LEADS.md), [`revendedoras/SPEC_SEJA_REVENDEDORA.md`](./revendedoras/SPEC_SEJA_REVENDEDORA.md).

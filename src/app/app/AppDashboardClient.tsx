@@ -94,30 +94,40 @@ export default function AppDashboardClient() {
   }
 
   const maletaAtual =
-    data.historicoMaletas.find((m) => m.status === "ativa") ??
+    data.historicoMaletas.find((m) => m.status === "ativa" || m.status === "atrasada") ??
     data.historicoMaletas[0] ??
     null;
 
   return (
     <div className="flex flex-col">
       {/* Header */}
-      <AppHeader name={data.nome} nivel={data.nivel} notificacoes={0} />
+      <AppHeader
+        name={data.nome}
+        avatarUrl={data.avatarUrl}
+        rank={data.rank}
+        pontos={data.pontosSaldo}
+        notificacoes={0}
+      />
 
       {/* Análisis */}
       <section className="px-5 py-4">
         <SectionHeader title="Análisis" href="/app/desempenho" />
         <div className="grid grid-cols-2 gap-3">
-          <StatCard icon={<ReceiptIcon />} label="Facturado" value={formatCurrency(data.totalVendido)} />
-          <StatCard icon={<TrendingUpIcon />} label="Mi Ganancia" value={formatCurrency(data.comissaoValor)} />
-          <StatCard icon={<PackageIcon />} label="Pzas. vendidas" value={data.totalPecas} />
-          <StatCard icon={<AwardIcon />} label="Puntos" value={data.xpTotal} />
+          <StatCard icon={<ReceiptIcon />} label="Facturado" value={formatCurrency(data.faturamentoMes)} />
+          <StatCard icon={<TrendingUpIcon />} label="Mi Ganancia" value={formatCurrency(data.ganhosMes)} />
+          <StatCard icon={<PackageIcon />} label="Pzas. vendidas" value={data.pecasVendidasMes} />
+          <StatCard icon={<AwardIcon />} label="Puntos" value={data.pontosSaldo} />
         </div>
       </section>
 
       {/* Mis Consignaciones */}
       <section className="px-5 py-4">
         <SectionHeader title="Mis Consignaciones" href="/app/maleta" />
-        <MaletaCard maleta={maletaAtual} totalVendido={data.totalVendido} />
+        <MaletaCard
+          maleta={data.maletaAtiva ?? maletaAtual}
+          tiers={data.commissionInfo.tiers}
+          commissionInfo={data.commissionInfo}
+        />
       </section>
     </div>
   );
