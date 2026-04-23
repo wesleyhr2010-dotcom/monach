@@ -204,7 +204,11 @@ Rotas implementadas em `src/app/admin/`:
   - `/app/maleta/[id]/devolver/` — fluxo multi-step de devolução (4 pasos: resumen, foto, revisión, confirmación) com câmera nativa PWA, compressão de imagem, upload via `/api/upload-r2` e Server Action `submitDevolucao`.
   - Componentes reutilizáveis: `StatusBadge`, `MaletaList`, `MaletaItemRow`, `ActionButton`, `AppPageHeader`, `SummaryCard`, `CommissionCard`, `AlertBanner`, `SummaryRow`, `BottomAction`.
   - Server actions `registrarVenda`, `registrarVendaMultipla`, `submitDevolucao` no `actions-revendedora.ts`.
-  - **Pendente**: home com métricas reais, recuperar senha, catálogo PWA, desempenho.
+  - **Pendente**: desempenho.
+- **Catálogo PWA**:
+  - `/app/catalogo/` — vitrine dos produtos da maleta ativa com busca, filtros por categoria e botão "Compartir" individual (Web Share API).
+  - `/app/catalogo/compartir/` — seleção multi-foto (máx. 10) com grid 3 colunas, checkmark verde, barra inferior sticky com contagem e botão "Compartir". Download das imagens do R2 e compartilhamento via `navigator.share({ files })` com fallback para WhatsApp.
+  - Server Actions: `getCatalogoRevendedora` (itens da maleta ativa com saldo), `registrarPuntosCompartirCatalogo` (gamificação: +50 pts, limite 5x/dia).
 
 ### 6.4 Infraestrutura técnica em operação
 

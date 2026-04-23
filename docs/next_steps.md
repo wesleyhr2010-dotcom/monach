@@ -91,7 +91,7 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [ ] **Cron jobs** (notificação de prazo de maleta etc.) em Supabase Edge Functions. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
 - [ ] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
 - [ ] **Pipeline de Leads** vindos da landing "Seja Revendedora". Ref.: [`admin/SPEC_ADMIN_LEADS.md`](./admin/SPEC_ADMIN_LEADS.md), [`revendedoras/SPEC_SEJA_REVENDEDORA.md`](./revendedoras/SPEC_SEJA_REVENDEDORA.md).
-- [ ] **Catálogo no PWA** da revendedora. Ref.: [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md).
+- [x] **Catálogo no PWA** da revendedora. Ref.: [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md).
 - [ ] **Desempenho da revendedora** (analytics individual). Ref.: [`revendedoras/SPEC_DESEMPENHO.md`](./revendedoras/SPEC_DESEMPENHO.md).
 - [ ] **Dashboard admin** com KPIs globais/grupo. Ref.: [`admin/SPEC_ADMIN_DASHBOARD.md`](./admin/SPEC_ADMIN_DASHBOARD.md).
 - [ ] **Configurações globais** (tiers, níveis, contratos). Ref.: [`admin/SPEC_ADMIN_CONFIG.md`](./admin/SPEC_ADMIN_CONFIG.md).

@@ -1,5 +1,16 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Catálogo PWA (Revendedora)
+
+### Criado
+- **`/app/catalogo/page.tsx`** — vitrine dos produtos da maleta ativa da revendedora logada. Layout seguindo o Paper: header com seta, busca "Buscar en consignación...", chips de categoria (scroll horizontal), grid 2 colunas com imagem, preço (Playfair Display), nome do produto e botão "Compartir" verde. Botão sticky preto "Seleccionar varias fotos" para navegar à tela de multi-seleção.
+- **`/app/catalogo/compartir/page.tsx`** — seleção multi-foto (máx. 10) com grid 3 colunas. Overlay de checkmark verde + borda `#35605A` nas selecionadas. Barra inferior sticky com contagem dinâmica, botão "Cancelar" e "📲 Compartir". Download progressivo das imagens do R2 (`fetch` → `blob` → `File[]`) e compartilhamento via `navigator.share({ files })`. Fallback para WhatsApp com links de texto em dispositivos sem suporte.
+- **Server Actions em `src/app/app/actions-revendedora.ts`**:
+  - `getCatalogoRevendedora` — retorna itens da maleta ativa (`status in [ativa, atrasada]`) com saldo positivo (`quantidade_vendida < quantidade_enviada`), incluindo produto, variante, preço fixado e imagens.
+  - `registrarPuntosCompartirCatalogo` — dispara `awardPoints(resellerId, 'compartilhou_catalogo')` para gamificação (+50 pts, limite 5x/dia).
+
+---
+
 ## 2026-04-23 — Gestão de Equipe: Perfis Detalhados (Admin)
 
 ### Criado

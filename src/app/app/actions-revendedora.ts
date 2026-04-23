@@ -431,3 +431,101 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
         // Best-effort: no fallar la devolución si la notificación falla
     }
 }
+
+// ============================================
+// Catálogo — Itens da maleta ativa
+// ============================================
+
+export async function getCatalogoRevendedora() {
+    const user = await requireAuth(["REVENDEDORA"]);
+    if (!user.profileId) {
+        throw new Error("BUSINESS: Perfil no encontrado.");
+    }
+    const resellerId = user.profileId;
+
+    const maletaAtiva = await prisma.maleta.findFirst({
+        where: {
+            reseller_id: resellerId,
+            status: { in: ["ativa", "atrasada"] },
+        },
+        orderBy: { created_at: "desc" },
+        include: {
+            itens: {
+                where: {
+                    quantidade_vendida: { lt: prisma.maletaItem.fields.quantidade_enviada },
+                },
+                include: {
+                    product_variant: {
+                        include: {
+                            product: {
+                                include: {
+                                    categories: {
+                                        include: { category: true },
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!maletaAtiva) {
+        return { maleta: null, itens: [] };
+    }
+
+    const itens = maletaAtiva.itens
+        .filter((item) => item.quantidade_vendida < item.quantidade_enviada)
+        .map((item) => ({
+            id: item.id,
+            maleta_item_id: item.id,
+            product_variant_id: item.product_variant_id,
+            preco_fixado: Number(item.preco_fixado || 0),
+            quantidade_enviada: item.quantidade_enviada,
+            quantidade_vendida: item.quantidade_vendida,
+            disponivel: item.quantidade_enviada - item.quantidade_vendida,
+            producto: {
+                id: item.product_variant.product.id,
+                name: item.product_variant.product.name,
+                sku: item.product_variant.sku || item.product_variant.product.sku,
+                images: item.product_variant.image_url
+                    ? [item.product_variant.image_url]
+                    : item.product_variant.product.images,
+                category: item.product_variant.product.categories[0]?.category?.name || "",
+            },
+            variante: {
+                id: item.product_variant.id,
+                attribute_name: item.product_variant.attribute_name,
+                attribute_value: item.product_variant.attribute_value,
+            },
+        }));
+
+    return {
+        maleta: {
+            id: maletaAtiva.id,
+            numero: maletaAtiva.numero,
+            status: maletaAtiva.status,
+            data_limite: maletaAtiva.data_limite,
+        },
+        itens,
+    };
+}
+
+// ============================================
+// Gamificação — Compartilhar catálogo
+// ============================================
+
+export async function registrarPuntosCompartirCatalogo() {
+    const user = await requireAuth(["REVENDEDORA"]);
+    if (!user.profileId) return { success: false, error: "Perfil no encontrado" };
+    const resellerId = user.profileId;
+
+    try {
+        await awardPoints(resellerId, "compartilhou_catalogo");
+        return { success: true };
+    } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Erro ao registrar pontos";
+        return { success: false, error: msg };
+    }
+}
