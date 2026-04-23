@@ -17,7 +17,7 @@ const navItems = [
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? "";
 
     if (pathname.startsWith("/app/login") || pathname.startsWith("/app/bienvenida")) {
         return <>{children}</>;

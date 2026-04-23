@@ -15,7 +15,7 @@ export function SearchBar({ defaultValue }: { defaultValue: string }) {
         setValue(newValue);
 
         startTransition(() => {
-            const params = new URLSearchParams(searchParams.toString());
+            const params = new URLSearchParams(searchParams?.toString() ?? "");
             if (newValue) {
                 params.set("search", newValue);
             } else {

@@ -1,5 +1,22 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Fix build Vercel: tipos Next 16, SDK Brevo, paths e prerender
+
+### Renomeado
+- **`src/app/app/progresso/`** → **`src/app/app/progreso/`** (typo de pasta corrigido). `actions.ts` e `page.tsx` movidos via `git mv`. Todos os links do app já apontavam para `/app/progreso/...`; pages `extracto/` e `regalos/` agora encontram o `actions.ts` esperado em `../actions`.
+
+### Corrigido
+- **`src/lib/emails.ts`** — reescrito para a API atual do `@getbrevo/brevo` v4 (`BrevoClient` + `client.transactionalEmails.sendTransacEmail`). A API antiga (`Brevo.TransactionalEmailsApi`, `SendSmtpEmail`) não existe mais no SDK.
+- **`src/app/admin/brindes/SolicitudActions.tsx`** — `../actions` → `./actions`.
+- **`src/app/admin/brindes/page.tsx`** — `AdminPageHeader.action` recebe `ReactNode` (não objeto literal); `AdminEmptyState.icon` recebe `LucideIcon` (componente, não elemento) e usa `action` (não `actionHref`/`actionLabel`).
+- **`src/app/admin/brindes/solicitudes/page.tsx`** — `AdminEmptyState.icon` recebe componente `LucideIcon`.
+- **`src/app/admin/produtos/CategoryFilter.tsx`** e **`SearchBar.tsx`** — `searchParams?.toString() ?? ""` (Next 16: `useSearchParams()` agora retorna `ReadonlyURLSearchParams | null`).
+- **`src/components/admin/BottomNav.tsx`** e **`src/components/app/AppShell.tsx`** — `usePathname() ?? ""` (Next 16: `usePathname()` agora retorna `string | null`).
+- **`src/app/app/bienvenida/page.tsx`** — `let avatarUrl: string | undefined = profile.avatar_url` (tipo explícito para aceitar `undefined`).
+- **`src/app/app/progreso/regalos/page.tsx`** — substituído anti-pattern `useState(() => fetch())` + `if (!mounted) setMounted(true)` (que dispara server actions durante render e quebra o prerender) por um único `useEffect`. Tipos `BrindesData` / `BrindeAtivo` extraídos de `getBrindesAtivos`.
+
+---
+
 ## 2026-04-22 — Sistema de Brindes (Admin + PWA)
 
 ### Criado (Admin)

@@ -1,42 +1,28 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import Link from "next/link";
 import { getBrindesAtivos, canjearRegalo } from "../actions";
 import { Star, Gift } from "lucide-react";
 
+type BrindesData = Awaited<ReturnType<typeof getBrindesAtivos>>;
+type BrindeAtivo = BrindesData["brindes"][number];
+
 export default function RegalosPage() {
-    const [data, setData] = useState<Awaited<ReturnType<typeof getBrindesAtivos>> | null>(null);
+    const [data, setData] = useState<BrindesData | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [modalBrinde, setModalBrinde] = useState<typeof data.brindes[0] | null>(null);
+    const [modalBrinde, setModalBrinde] = useState<BrindeAtivo | null>(null);
     const [isPending, startTransition] = useTransition();
 
-    useState(() => {
+    useEffect(() => {
         getBrindesAtivos()
             .then((d) => { setData(d); setLoading(false); })
             .catch((err: unknown) => {
                 setError(err instanceof Error ? err.message : "Error al cargar regalos.");
                 setLoading(false);
             });
-    });
-
-    // Load on mount
-    useState(() => {
-        // handled above
-    });
-
-    // Use useEffect for initial load
-    const [mounted, setMounted] = useState(false);
-    if (!mounted) {
-        setMounted(true);
-        getBrindesAtivos()
-            .then((d) => { setData(d); setLoading(false); })
-            .catch((err: unknown) => {
-                setError(err instanceof Error ? err.message : "Error al cargar regalos.");
-                setLoading(false);
-            });
-    }
+    }, []);
 
     function handleCanjear() {
         if (!modalBrinde) return;

@@ -1,10 +1,6 @@
-import * as Brevo from "@getbrevo/brevo";
+import { BrevoClient } from "@getbrevo/brevo";
 
-const apiInstance = new Brevo.TransactionalEmailsApi();
-apiInstance.setApiKey(
-  Brevo.TransactionalEmailsApiApiKeys.apiKey,
-  process.env.BREVO_API_KEY!,
-);
+const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY ?? "" });
 
 const FROM = {
   email: process.env.BREVO_FROM_EMAIL ?? "no-reply@monarca.com.py",
@@ -20,14 +16,13 @@ export async function sendEmail({
   subject: string;
   htmlContent: string;
 }) {
-  const sendSmtpEmail = new Brevo.SendSmtpEmail();
-  sendSmtpEmail.sender = FROM;
-  sendSmtpEmail.to = Array.isArray(to) ? to : [to];
-  sendSmtpEmail.subject = subject;
-  sendSmtpEmail.htmlContent = htmlContent;
-
   try {
-    await apiInstance.sendTransacEmail(sendSmtpEmail);
+    await client.transactionalEmails.sendTransacEmail({
+      sender: FROM,
+      to: Array.isArray(to) ? to : [to],
+      subject,
+      htmlContent,
+    });
   } catch (err) {
     // Email não deve bloquear a operação principal
     console.error("[Email Error]", subject, err);

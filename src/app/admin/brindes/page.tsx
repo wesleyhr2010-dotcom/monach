@@ -18,11 +18,26 @@ export default async function BrindesPage() {
         <div className="admin-content">
             <AdminPageHeader
                 title="Brindes y Regalos"
-                action={{
-                    href: "/admin/brindes/nuevo",
-                    label: "Nuevo Brinde",
-                    icon: <Plus size={16} />,
-                }}
+                action={
+                    <Link
+                        href="/admin/brindes/nuevo"
+                        style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 6,
+                            padding: "8px 14px",
+                            background: "#35605A",
+                            color: "#fff",
+                            borderRadius: 8,
+                            fontSize: 13,
+                            fontWeight: 500,
+                            textDecoration: "none",
+                        }}
+                    >
+                        <Plus size={16} />
+                        Nuevo Brinde
+                    </Link>
+                }
             />
 
             {pendentesCount > 0 && (
@@ -57,11 +72,29 @@ export default async function BrindesPage() {
 
             {brindes.length === 0 ? (
                 <AdminEmptyState
-                    icon={<Gift size={40} color="#777" />}
+                    icon={Gift}
                     title="Ningún brinde registrado"
                     description="Crea el primer regalo que las revendedoras podrán canjear con sus puntos."
-                    actionHref="/admin/brindes/nuevo"
-                    actionLabel="Crear Brinde"
+                    action={
+                        <Link
+                            href="/admin/brindes/nuevo"
+                            style={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                gap: 6,
+                                padding: "8px 14px",
+                                background: "#35605A",
+                                color: "#fff",
+                                borderRadius: 8,
+                                fontSize: 13,
+                                fontWeight: 500,
+                                textDecoration: "none",
+                            }}
+                        >
+                            <Plus size={16} />
+                            Crear Brinde
+                        </Link>
+                    }
                 />
             ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>

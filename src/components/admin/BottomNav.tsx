@@ -59,7 +59,7 @@ const navItems = [
 ];
 
 export function BottomNav() {
-    const pathname = usePathname();
+    const pathname = usePathname() ?? "";
 
     return (
         <nav className="admin-bottom-nav">

@@ -2,7 +2,7 @@
 
 import { useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { marcarSeparado, marcarEntregado, cancelarSolicitacion } from "../actions";
+import { marcarSeparado, marcarEntregado, cancelarSolicitacion } from "./actions";
 
 export function SolicitudActions({ id, status }: { id: string; status: string }) {
     const router = useRouter();

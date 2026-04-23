@@ -51,7 +51,7 @@ export default async function SolicitudesPage({ searchParams }: { searchParams: 
 
             {solicitaciones.length === 0 ? (
                 <AdminEmptyState
-                    icon={<Gift size={40} color="#777" />}
+                    icon={Gift}
                     title="Ninguna solicitud"
                     description="No hay solicitudes de canje en este filtro."
                 />

@@ -137,7 +137,7 @@ export default function BienvenidaPage() {
     const handleComplete = async (skipProfile = false, skipPush = false) => {
         setSaving(true);
         try {
-            let avatarUrl = profile.avatar_url;
+            let avatarUrl: string | undefined = profile.avatar_url;
             if (!skipProfile && avatarFile) {
                 avatarUrl = await uploadAvatar();
             }
