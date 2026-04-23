@@ -1,8 +1,16 @@
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/user";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
+    // Evitar loop de redirect na página de login
+    const headersList = await headers();
+    const pathname = headersList.get("x-invoke-path") || headersList.get("x-pathname") || "";
+    if (pathname.startsWith("/admin/login")) {
+        return <>{children}</>;
+    }
+
     const user = await getCurrentUser();
 
     if (!user) {
