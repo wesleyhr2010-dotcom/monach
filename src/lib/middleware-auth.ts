@@ -2,8 +2,12 @@ import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
 export async function updateSession(request: NextRequest) {
+    // Injeta o pathname atual como header para que layouts server-side possam lê-lo
+    const requestHeaders = new Headers(request.headers)
+    requestHeaders.set("x-current-path", request.nextUrl.pathname)
+
     let supabaseResponse = NextResponse.next({
-        request,
+        request: { headers: requestHeaders },
     })
 
     // Create a supabase client to use the cookies

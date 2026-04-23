@@ -3,10 +3,16 @@ import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/user";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
 
+/**
+ * Layout do shell administrativo.
+ * Usa o header x-current-path (injetado pelo middleware) para detectar a rota
+ * de login e evitar o loop de redirecionamento sem exigir autenticação nela.
+ */
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
-    // Evitar loop de redirect na página de login
     const headersList = await headers();
-    const pathname = headersList.get("x-invoke-path") || headersList.get("x-pathname") || "";
+    const pathname = headersList.get("x-current-path") ?? "";
+
+    // A página de login não deve passar pelo guard de autenticação
     if (pathname.startsWith("/admin/login")) {
         return <>{children}</>;
     }

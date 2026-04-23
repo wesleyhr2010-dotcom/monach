@@ -34,8 +34,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" suppressHydrationWarning style={{ overscrollBehavior: "none", overflow: "hidden", height: "100%" }}>
-      <body className="antialiased" style={{ backgroundColor: "#F5F2EF", overscrollBehavior: "none", overflow: "hidden", height: "100%" }}>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className="antialiased" style={{ backgroundColor: "#F5F2EF" }}>
         {children}
       </body>
     </html>
