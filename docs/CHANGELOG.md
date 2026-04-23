@@ -1,5 +1,15 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Fix build Vercel: import quebrado e demo órfão
+
+### Corrigido
+- **`src/app/app/catalogo/compartir/page.tsx`** — import de `getCatalogoRevendedora` e `registrarPuntosCompartirCatalogo` corrigido de `"../actions-revendedora"` para `"../../actions-revendedora"` (a página está dois níveis abaixo de `src/app/app/`, não um). Quebrava o build com `Module not found`.
+
+### Removido
+- **`src/pages/api/paper-mcp-call.ts`** (e diretório `src/pages/` vazio) — arquivo demo órfão do Paper MCP (ferramenta de design), sem relação com Monarca, importando um módulo `../../lib/mcp` inexistente. Quebrava o build após a primeira correção.
+
+---
+
 ## 2026-04-23 — Catálogo PWA (Revendedora)
 
 ### Criado

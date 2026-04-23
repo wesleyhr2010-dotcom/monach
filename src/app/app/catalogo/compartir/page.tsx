@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCatalogoRevendedora, registrarPuntosCompartirCatalogo } from "../actions-revendedora";
+import { getCatalogoRevendedora, registrarPuntosCompartirCatalogo } from "../../actions-revendedora";
 import { ArrowLeft, Check, Share2, X, ImageOff } from "lucide-react";
 
 export const dynamic = "force-dynamic";
