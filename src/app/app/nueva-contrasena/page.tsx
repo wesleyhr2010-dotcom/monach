@@ -16,20 +16,28 @@ export default function NuevaContrasenaPage() {
     const [error, setError] = useState("");
 
     useEffect(() => {
-        // Supabase Auth handles the session from the URL hash automatically.
-        // We just need to ensure the client is initialized.
         const supabase = createBrowserClient(
             process.env.NEXT_PUBLIC_SUPABASE_URL!,
             process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
         );
 
-        // Force session recovery from URL hash on mount
-        supabase.auth.getSession().then(({ data }) => {
-            if (!data.session) {
-                // If no session, the link may have expired or already been used
-                setError("El enlace puede haber vencido. Solicitá uno nuevo.");
-            }
-        });
+        // PKCE flow: trocar code da URL por sessão
+        const url = new URL(window.location.href);
+        const code = url.searchParams.get("code");
+
+        if (code) {
+            supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+                if (error) {
+                    setError("El enlace puede haber vencido. Solicitá uno nuevo.");
+                }
+            });
+        } else {
+            supabase.auth.getSession().then(({ data }) => {
+                if (!data.session) {
+                    setError("El enlace puede haber vencido. Solicitá uno nuevo.");
+                }
+            });
+        }
     }, []);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {

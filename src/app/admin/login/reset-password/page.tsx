@@ -42,11 +42,23 @@ export default function AdminResetPasswordPage() {
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
 
-    supabase.auth.getSession().then(({ data }) => {
-      if (!data.session) {
-        setError(T.errorExpired);
-      }
-    });
+    // PKCE flow: trocar code da URL por sessão
+    const url = new URL(window.location.href);
+    const code = url.searchParams.get("code");
+
+    if (code) {
+      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+        if (error) {
+          setError(T.errorExpired);
+        }
+      });
+    } else {
+      supabase.auth.getSession().then(({ data }) => {
+        if (!data.session) {
+          setError(T.errorExpired);
+        }
+      });
+    }
   }, []);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
