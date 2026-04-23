@@ -1,5 +1,15 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Reset de Senha Admin: Rota de Callback + Preparação SMTP Brevo
+
+### Criado
+- **`src/app/admin/login/reset-password/page.tsx`** — página de definição de nova senha para usuários admin/consultora. Recebe o token de recovery do Supabase Auth via URL hash, valida sessão, permite definir nova senha (mín. 6 caracteres) e redireciona para `/admin` após 2s. Design consistente com o tema dark do admin (`AdminAuthField`, `AdminAuthButton`).
+
+### Contexto
+A configuração do SMTP do Brevo no Supabase Dashboard ainda requer ação manual (acesso ao dashboard necessário). Com a rota de callback criada, o fluxo completo de reset de senha do admin está pronto para receber o SMTP configurado. Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md) §10.
+
+---
+
 ## 2026-04-23 — Gestão de Equipe: Criação via Supabase Auth + Convite por Email
 
 ### Criado

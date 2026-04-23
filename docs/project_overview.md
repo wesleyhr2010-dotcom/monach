@@ -178,7 +178,8 @@ Rotas implementadas em `src/app/admin/`:
 - `consultoras/` — lista com métricas agregadas (faturamento do grupo, comissão, revendedoras ativas); perfil detalhado `/consultoras/[id]` com revendedoras do grupo, KPIs e comissão total. Criação de nova consultora integra Supabase Auth (`auth.admin.createUser`) + envio de convite por email via Brevo.
 - `revendedoras/` — listagem com busca, filtros, vínculo de colaboradora; perfil detalhado `/revendedoras/[id]` com dados de candidatura, documentos, maletas, dados bancários (mascarados), faturamento total/mensal, pontos e nível. Criação de nova revendedora integra Supabase Auth + convite por email.
 - `equipe/` — mantido como legado (redireciona para consultoras).
-- `gamificacao/`, `leads/`, `analytics/`, `relatorios/`, `login/` — páginas placeholder/base.
+- `login/` — página de login admin + recuperação de senha (`/admin/login/recuperar`) + callback de redefinição (`/admin/login/reset-password`).
+- `gamificacao/`, `leads/`, `analytics/`, `relatorios/` — páginas placeholder/base.
 - Server Actions: `actions-products.ts`, `actions-categories.ts`, `actions-maletas.ts`, `actions-equipe.ts`, `actions-gamificacao.ts`, `actions-leads.ts`, `actions-dashboard.ts`, `actions-analytics.ts`.
 - Shell `layout.tsx` admin + `admin.css` + `BottomNav.tsx`.
 
@@ -244,7 +245,7 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Proteção de dados sensíveis | **Funcional** | Criptografia AES-256-GCM via Prisma Client Extension para `DadosBancarios` (campos `alias_ci_ruc`, `alias_valor`, `cuenta`, `ci_ruc`). Upload de documentos para `private/` no R2. Signed URLs de documentos com TTL de 1h + log de auditoria. Helper `sanitizeForLog` para sanitização de PII em logs. Helpers de máscara (`maskAlias`, `maskCuenta`, `maskCI`, `maskEmail`, `maskWhatsApp`). Sanitizador de vitrina pública (`getPublicVitrinaData`). Ref.: `SPEC_SECURITY_DATA_PROTECTION.md`. |
 | Gamificação (motor) | **Funcional** | `awardPoints` respeita tipo (único/diário/mensal/evento), limite diário e flag ativo. 7 regras seedadas. Tela `/app/progresso` mostra tarefas e progresso. Admin pode configurar regras e níveis. |
 | Notificações (OneSignal) | **Parcial** | Wrapper + prompt nativo; campanhas admin e centro de notificações pendentes. |
-| Emails transacionais (Brevo) | **Parcial** | SDK `@getbrevo/brevo` instalado, cliente central `src/lib/emails.ts` e 6 templates criados. Configuração SMTP no Supabase Dashboard (reset/convite) ainda manual. |
+| Emails transacionais (Brevo) | **Parcial** | SDK `@getbrevo/brevo` instalado, cliente central `src/lib/emails.ts`, 7 templates (incluindo convite de usuário). Emails transacionais da aplicação funcionam. Rota de callback `/admin/login/reset-password` criada para reset de senha admin. Configuração SMTP no Supabase Dashboard (reset/convite nativos do Auth) ainda requer ação manual no dashboard. |
 | Testes (Vitest + Playwright) | **Inicial** | Vitest configurado; E2E Playwright a configurar. |
 | Observabilidade (Sentry) | **Não iniciado** | SPEC pronta, integração ausente. |
 
