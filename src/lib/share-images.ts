@@ -42,7 +42,7 @@ export async function downloadImageAsFile(
  */
 export function isShareFilesSupported(): boolean {
     if (typeof navigator === "undefined") return false;
-    return !!(navigator.canShare && navigator.share);
+    return typeof navigator.canShare === "function" && typeof navigator.share === "function";
 }
 
 /**
