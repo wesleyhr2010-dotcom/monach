@@ -67,7 +67,7 @@ const navEntries: (NavItem | NavSection)[] = [
         badge: { text: "SA", variant: "role" },
     },
     {
-        href: "/admin/equipe",
+        href: "/admin/consultoras",
         label: "Consultoras",
         icon: <User size={16} strokeWidth={1.5} />,
     },

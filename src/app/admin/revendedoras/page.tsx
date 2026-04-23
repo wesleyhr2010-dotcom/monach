@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
+import { useState, useEffect, useTransition, useCallback } from "react";
 
 export const dynamic = "force-dynamic";
 import {
@@ -12,6 +12,7 @@ import {
     vincularRevendedora,
 } from "../actions-equipe";
 import type { RevendedoraItem, ColaboradoraItem } from "../actions-equipe";
+import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, UserPlus, Phone, Percent, Trash2, Search, Edit, X } from "lucide-react";
+import { Users, UserPlus, Phone, Percent, Trash2, Search, Edit, X, ArrowRight } from "lucide-react";
 
 export default function RevendedorasPage() {
     const [isPending, startTransition] = useTransition();
@@ -32,17 +33,18 @@ export default function RevendedorasPage() {
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState<string | null>(null);
 
-    useEffect(() => {
-        loadData();
-    }, []);
-
-    async function loadData() {
+    const loadData = useCallback(async () => {
         setLoading(true);
         const [r, c] = await Promise.all([getRevendedoras(), getColaboradoras()]);
         setRevendedoras(r);
         setColaboradoras(c);
         setLoading(false);
-    }
+    }, []);
+
+    useEffect(() => {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
+        loadData();
+    }, [loadData]);
 
     function showMsg(type: "success" | "error", msg: string) {
         if (type === "success") {
@@ -309,6 +311,11 @@ export default function RevendedorasPage() {
                                             </TableCell>
                                             <TableCell>
                                                 <div style={{ display: "flex", gap: "4px" }}>
+                                                    <Button variant="ghost" size="icon" asChild title="Ver perfil">
+                                                        <Link href={`/admin/revendedoras/${r.id}`}>
+                                                            <ArrowRight className="w-4 h-4" />
+                                                        </Link>
+                                                    </Button>
                                                     <Button variant="ghost" size="icon" onClick={() => setEditId(r.id)} title="Editar">
                                                         <Edit className="w-4 h-4" />
                                                     </Button>

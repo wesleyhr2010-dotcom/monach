@@ -175,7 +175,10 @@ Rotas implementadas em `src/app/admin/`:
 - `produtos/` — listagem SSR com paginação, busca, filtro por categoria; formulário novo/editar com `ImageUploader` (upload direto R2), `VariantManager`, `CategorySelect` hierárquico.
 - `categorias/` — árvore com CRUD inline (adicionar pai/filho, editar, deletar em cascata).
 - `maleta/` (incluindo `nova/` e `[id]/conferir/`) — telas refatoradas com tema dark consistente usando design system admin (8 componentes reutilizáveis em `src/components/admin/` + helpers em `src/lib/maleta-helpers.ts`). Tema dark do shadcn/ui mapeado via CSS variables no `.admin-layout`.
-- `equipe/`, `revendedoras/`, `gamificacao/`, `leads/`, `analytics/`, `relatorios/`, `login/` — páginas placeholder/base.
+- `consultoras/` — lista com métricas agregadas (faturamento do grupo, comissão, revendedoras ativas); perfil detalhado `/consultoras/[id]` com revendedoras do grupo, KPIs e comissão total.
+- `revendedoras/` — listagem com busca, filtros, vínculo de colaboradora; perfil detalhado `/revendedoras/[id]` com dados de candidatura, documentos, maletas, dados bancários (mascarados), faturamento total/mensal, pontos e nível.
+- `equipe/` — mantido como legado (redireciona para consultoras).
+- `gamificacao/`, `leads/`, `analytics/`, `relatorios/`, `login/` — páginas placeholder/base.
 - Server Actions: `actions-products.ts`, `actions-categories.ts`, `actions-maletas.ts`, `actions-equipe.ts`, `actions-gamificacao.ts`, `actions-leads.ts`, `actions-dashboard.ts`, `actions-analytics.ts`.
 - Shell `layout.tsx` admin + `admin.css` + `BottomNav.tsx`.
 
@@ -229,7 +232,8 @@ iOS viewport bounce, bottom nav safe-area, OneSignal slidedown → native prompt
 | Site público + catálogo | **Funcional** | Homepage, produto, carrinho, landing de captação rodando em produção interna. |
 | Admin — Produtos e Categorias | **Funcional** | CRUD completo, upload R2, hierarquia. |
 | Admin — Maletas | **Funcional** | Ciclo completo implementado (criar, editar, conferir, fechar, fechar sem comprovante). Telas refatoradas com tema dark consistente + componentes reutilizáveis. Bug de transações Prisma 7 resolvido. |
-| Admin — Equipe / Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
+| Admin — Gestão de Equipe | **Parcial** | Lista de consultoras (`/admin/consultoras`) com métricas agregadas; perfil detalhado de revendedora (`/admin/revendedoras/[id]`) com maletas, pontos, dados bancários, documentos; perfil detalhado de consultora (`/admin/consultoras/[id]`) com grupo e comissões. Criação via Supabase Auth + convite por email e sidebar da consultora ainda pendentes. |
+| Admin — Gamificação / Leads / Analytics / Relatórios | **Stub / placeholder** | Rotas criadas, SPECs prontas, lógica a implementar. |
 | Portal Revendedora (PWA) | **Em desenvolvimento** | Login (com recuperação de senha via email + redefinição), onboarding completo, perfil (resumo/datos/bancario/soporte), maleta (listagem/detalhes/venta/devolução), progresso, vendas iniciados; devolução com câmera + comprovante implementada. **Home com métricas reais do mês, rank, pontos e pills de comissão implementada. Extrato de pontos + catálogo de brindes implementado.** |
 | Vitrina pública `/vitrina/[slug]` | **Não iniciada** | SPEC pronta, rota ausente. |
 | RBAC + RLS | **Funcional — auditoria 2026-04-22 resolvida** | Todas as vulnerabilidades críticas corrigidas: `requireAuth` + ownership check em `devolverMaleta`; removidos exports inseguros de `fecharMaleta`/`conciliarMaleta`; `checkOverdueMaletas` convertida em cron job autenticado; `getActiveResellers`/`getAvailableVariants` protegidos; middleware fail-closed para `userRole=null`; auto-link restrito a `REVENDEDORA`; `assertIsInGroup` aplicado nas actions `/app` para COLABORADORA; `registrarVenda` usa `preco_fixado` do banco. Testes de regressão em `src/__tests__/security/rbac-regression.test.ts`. RLS cobre 23 tabelas. |

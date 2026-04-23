@@ -88,6 +88,8 @@ export interface ColaboradoraItem {
     taxa_comissao: number;
     is_active: boolean;
     revendedorasCount: number;
+    revendedorasAtivas: number;
+    faturamentoGrupo: number;
 }
 
 export interface RevendedoraItem {
@@ -100,6 +102,89 @@ export interface RevendedoraItem {
     taxa_comissao: number;
     is_active: boolean;
     colaboradora: { id: string; name: string } | null;
+}
+
+// Perfil detalhado — Admin
+export interface RevendedoraPerfil {
+    id: string;
+    name: string;
+    slug: string;
+    whatsapp: string;
+    email: string;
+    avatar_url: string;
+    bio: string;
+    taxa_comissao: number;
+    is_active: boolean;
+    perfil_completo: boolean;
+    onboarding_completo: boolean;
+    cedula: string;
+    instagram: string;
+    edad: string;
+    estado_civil: string;
+    hijos: string;
+    empresa: string;
+    informconf: string;
+    endereco_cep: string;
+    endereco_logradouro: string;
+    endereco_numero: string;
+    endereco_complemento: string;
+    endereco_cidade: string;
+    endereco_estado: string;
+    colaboradora: { id: string; name: string } | null;
+    pontos_total: number;
+    nivel: { nome: string; cor: string; pontos_minimos: number } | null;
+    dados_bancarios: {
+        tipo: string;
+        alias_valor: string | null;
+        alias_titular: string | null;
+        alias_ci_ruc: string | null;
+        banco: string | null;
+        cuenta: string | null;
+        titular: string | null;
+        ci_ruc: string | null;
+    } | null;
+    maletas: {
+        id: string;
+        numero: number;
+        status: string;
+        data_envio: string;
+        data_limite: string;
+        valor_total_vendido: number | null;
+        valor_comissao_revendedora: number | null;
+    }[];
+    documentos: {
+        id: string;
+        tipo: string;
+        url: string;
+        status: string;
+        observacao: string;
+        created_at: string;
+    }[];
+}
+
+export interface ConsultoraPerfil {
+    id: string;
+    name: string;
+    slug: string;
+    whatsapp: string;
+    email: string;
+    avatar_url: string;
+    taxa_comissao: number;
+    is_active: boolean;
+    revendedoras: {
+        id: string;
+        name: string;
+        avatar_url: string;
+        is_active: boolean;
+        taxa_comissao: number;
+        faturamento_total: number;
+        maletas_count: number;
+        pontos_total: number;
+    }[];
+    faturamento_grupo_total: number;
+    comissao_grupo_total: number;
+    revendedoras_ativas: number;
+    revendedoras_inativas: number;
 }
 
 // ============================================

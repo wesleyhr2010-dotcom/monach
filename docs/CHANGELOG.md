@@ -1,5 +1,25 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Gestão de Equipe: Perfis Detalhados (Admin)
+
+### Criado
+- **`/admin/consultoras/page.tsx`** — lista separada de consultoras com métricas agregadas (faturamento do grupo, comissão, revendedoras ativas), busca, filtro de status e modal de nova consultora. Server Action `getColaboradoras` atualizada com agregações de `maletas.valor_total_vendido`.
+- **`/admin/consultoras/[id]/page.tsx`** — perfil detalhado da consultora: identidade, taxa de comissão, cards de resumo (revendedoras ativas/inativas, faturamento do grupo, comissão total), tabela de revendedoras do grupo com faturamento individual, pontos e link para perfil. Server Action `getPerfilConsultora`.
+- **`/admin/revendedoras/[id]/page.tsx`** — perfil detalhado da revendedora: identidade com avatar/nome/rank/pontos/comissão, dados de candidatura (cédula, instagram, idade, estado civil, filhos, empresa, informconf), documentos com status, maletas com badge de status, dados bancários mascarados (`maskAlias`, `maskCuenta`), faturamento total/mensal. Server Action `getPerfilRevendedora`.
+- **`src/lib/format.ts`** — utilitários de formatação: `formatGs`, `formatGsCompact`, `formatPct`, `formatDate`, `formatDateMonth`, `formatPhone`.
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts`** — `getColaboradoras` agora agrega faturamento do grupo e conta revendedoras ativas. Adicionadas `getPerfilRevendedora` (com pontos, nível, dados bancários, maletas, documentos) e `getPerfilConsultora` (com revendedoras, faturamento, comissão).
+- **`src/lib/types.ts`** — novos tipos `RevendedoraPerfil`, `ConsultoraPerfil`, e campos `revendedorasAtivas` / `faturamentoGrupo` em `ColaboradoraItem`.
+- **`src/app/admin/layout.tsx`** — sidebar: link "Consultoras" agora aponta para `/admin/consultoras` (em vez de `/admin/equipe`).
+- **`src/app/admin/revendedoras/page.tsx`** — adicionado link "Ver perfil" (ArrowRight) em cada linha da tabela, levando para `/admin/revendedoras/[id]`.
+
+### Pendente (próxima entrega)
+- Criação de consultora/revendedora via Supabase Auth + envio de convite por email (Brevo).
+- Sidebar escopada para COLABORADORA e rotas `/admin/minha-conta`, `/admin/minha-conta/comissoes`.
+
+---
+
 ## 2026-04-22 — Fix build Vercel: tipos Next 16, SDK Brevo, paths e prerender
 
 ### Renomeado
