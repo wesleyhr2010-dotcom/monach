@@ -96,3 +96,116 @@ export async function getRegrasProgresso(): Promise<{
         totalPuntos: totalAggr._sum.pontos ?? 0,
     };
 }
+
+// ============================================
+// Brindes — Revendedora
+// ============================================
+
+export async function getBrindesAtivos() {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    const [brindes, saldoAggr] = await Promise.all([
+        prisma.brinde.findMany({
+            where: { ativo: true },
+            orderBy: { custo_pontos: "asc" },
+        }),
+        prisma.pontosExtrato.aggregate({
+            where: { reseller_id: resellerId },
+            _sum: { pontos: true },
+        }),
+    ]);
+
+    const saldo = saldoAggr._sum.pontos ?? 0;
+
+    return {
+        brindes: brindes.map((b) => ({
+            ...b,
+            disponivel: saldo >= b.custo_pontos && (b.estoque > 0 || b.estoque < 0),
+        })),
+        saldo,
+    };
+}
+
+export async function canjearRegalo(brindeId: string) {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    await prisma.$transaction(async (tx) => {
+        const saldoAggr = await tx.pontosExtrato.aggregate({
+            where: { reseller_id: resellerId },
+            _sum: { pontos: true },
+        });
+        const saldo = saldoAggr._sum.pontos ?? 0;
+
+        const brinde = await tx.brinde.findUniqueOrThrow({
+            where: { id: brindeId },
+        });
+
+        if (!brinde.ativo) {
+            throw new Error("BUSINESS: Este regalo no está disponible.");
+        }
+        if (saldo < brinde.custo_pontos) {
+            throw new Error("BUSINESS: Puntos insuficientes.");
+        }
+        if (brinde.estoque === 0) {
+            throw new Error("BUSINESS: Regalo sin stock disponible.");
+        }
+
+        // Debitar pontos
+        await tx.pontosExtrato.create({
+            data: {
+                reseller_id: resellerId,
+                pontos: -brinde.custo_pontos,
+                descricao: `Canje: ${brinde.nome}`,
+            },
+        });
+
+        // Decrementar stock (se não for ilimitado)
+        if (brinde.estoque > 0) {
+            await tx.brinde.update({
+                where: { id: brindeId },
+                data: { estoque: { decrement: 1 } },
+            });
+        }
+
+        // Criar solicitud
+        await tx.solicitacaoBrinde.create({
+            data: {
+                reseller_id: resellerId,
+                brinde_id: brindeId,
+                pontos_debitados: brinde.custo_pontos,
+            },
+        });
+    });
+
+    return { success: true };
+}
+
+export async function getExtratoPontos(page = 0) {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    const [extrato, saldoAggr, totalCount] = await Promise.all([
+        prisma.pontosExtrato.findMany({
+            where: { reseller_id: resellerId },
+            orderBy: { created_at: "desc" },
+            take: 20,
+            skip: page * 20,
+        }),
+        prisma.pontosExtrato.aggregate({
+            where: { reseller_id: resellerId },
+            _sum: { pontos: true },
+        }),
+        prisma.pontosExtrato.count({
+            where: { reseller_id: resellerId },
+        }),
+    ]);
+
+    return {
+        extrato,
+        saldo: saldoAggr._sum.pontos ?? 0,
+        totalCount,
+        hasMore: (page + 1) * 20 < totalCount,
+    };
+}

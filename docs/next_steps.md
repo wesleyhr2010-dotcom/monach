@@ -76,7 +76,7 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
 Itens que aumentam valor do produto depois do ciclo base estar estável.
 
 - [x] **Motor de gamificação** — pontos por prazo/meta/completude, progressão de níveis, tiers de comissão. Ref.: [`admin/SPEC_ADMIN_GAMIFICACAO.md`](./admin/SPEC_ADMIN_GAMIFICACAO.md), [`revendedoras/SPEC_PROGRESSO.md`](./revendedoras/SPEC_PROGRESSO.md).
-- [ ] **Brindes** — catálogo admin + resgates + extrato. Ref.: [`admin/SPEC_ADMIN_BRINDES.md`](./admin/SPEC_ADMIN_BRINDES.md), [`revendedoras/SPEC_EXTRATO_BRINDES.md`](./revendedoras/SPEC_EXTRATO_BRINDES.md).
+- [x] **Brindes** — catálogo admin + resgates + extrato. Ref.: [`admin/SPEC_ADMIN_BRINDES.md`](./admin/SPEC_ADMIN_BRINDES.md), [`revendedoras/SPEC_EXTRATO_BRINDES.md`](./revendedoras/SPEC_EXTRATO_BRINDES.md).
 - [ ] **Gestão de Equipe** no admin (revendedoras + consultoras, vínculos `manager_id`). Ref.: [`admin/SPEC_ADMIN_EQUIPE.md`](./admin/SPEC_ADMIN_EQUIPE.md), [`admin/SPEC_ADMIN_CONSULTORA_PERFIL.md`](./admin/SPEC_ADMIN_CONSULTORA_PERFIL.md).
 - [ ] **Centro de notificações** no PWA + campanhas push no admin. Ref.: [`revendedoras/SPEC_NOTIFICACOES.md`](./revendedoras/SPEC_NOTIFICACOES.md), [`admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`](./admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md), [`prd/PRD_OneSignal_PWA.md`](./prd/PRD_OneSignal_PWA.md).
 - [x] **Emails transacionais** via Brevo (SDK instalado, cliente central `src/lib/emails.ts`, 6 templates criados). Configuração SMTP no Supabase Dashboard ainda pendente (manual). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).

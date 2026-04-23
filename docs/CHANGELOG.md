@@ -1,5 +1,25 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-22 — Sistema de Brindes (Admin + PWA)
+
+### Criado (Admin)
+- **`src/app/admin/brindes/actions.ts`** — Server Actions completas: `getBrindes`, `criarBrinde`, `atualizarBrinde`, `toggleBrindeAtivo`, `getSolicitacoes`, `marcarSeparado`, `marcarEntregado` (com notificação push), `cancelarSolicitacion` (reembolsa pontos e devolve estoque).
+- **`/admin/brindes/page.tsx`** — lista de brindes com imagem, pontos, estoque e status; alerta de solicitações pendentes.
+- **`/admin/brindes/nuevo/page.tsx`** — formulário para criar brinde com upload de imagem (URL).
+- **`/admin/brindes/[id]/editar/page.tsx`** — formulário para editar brinde.
+- **`/admin/brindes/solicitudes/page.tsx`** — lista de solicitações com filtros (todas/pendiente/separado/entregado) e cards de ação.
+- **`src/components/admin/BrindesBadge.tsx`** — badge dinâmico na sidebar com count de solicitações pendentes.
+
+### Criado (PWA)
+- **`/app/progreso/extracto/page.tsx`** — historial paginado de pontos (ganhos em verde, resgates em vermelho) com saldo atual.
+- **`/app/progreso/regalos/page.tsx`** — catálogo de brindes ativos; botão "Canjear" habilitado apenas se houver saldo e estoque; modal de confirmação com preview do saldo restante.
+- **`src/app/app/progresso/actions.ts`** — `getBrindesAtivos`, `canjearRegalo` (transacional: debita pontos, decrementa estoque, cria solicitação), `getExtratoPontos` (paginado, 20/página).
+
+### Modificado
+- **`src/app/admin/layout.tsx`** — link "Brindes" na sidebar agora mostra badge dinâmico de solicitações pendentes.
+
+---
+
 ## 2026-04-22 — Fix build Vercel: imports quebrados pós-refatoração da gamificação
 
 ### Corrigido

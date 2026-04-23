@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { QueryProvider } from "@/lib/query-provider";
 import { logout } from "@/lib/actions/auth";
 import { BottomNav } from "@/components/admin/BottomNav";
+import { BrindesBadge } from "@/components/admin/BrindesBadge";
 import {
     AlignJustify,
     ArrowLeft,
@@ -29,6 +30,7 @@ type NavItem = {
     icon: React.ReactNode;
     exact?: boolean;
     badge?: { text: string; variant: "count" | "role" };
+    customBadge?: React.ReactNode;
 };
 
 type NavSection = {
@@ -101,6 +103,7 @@ const navEntries: (NavItem | NavSection)[] = [
         href: "/admin/brindes",
         label: "Brindes",
         icon: <Gift size={16} strokeWidth={1.5} />,
+        customBadge: <BrindesBadge />,
     },
 ];
 
@@ -156,6 +159,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             >
                                 {entry.icon}
                                 <span style={{ flex: 1 }}>{entry.label}</span>
+                                {entry.customBadge}
                                 {entry.badge?.variant === "count" && (
                                     <span style={{
                                         background: "#8B1C1C",
