@@ -32,12 +32,25 @@ export async function updateSession(request: NextRequest) {
         }
     )
 
+    const url = request.nextUrl.clone()
+
+    // ============================================
+    // Supabase auth callback fallback
+    // Quando o template/redirect URL do Supabase não está configurado,
+    // o link de recuperação chega como https://dominio/?code=...
+    // Redireciona para o route handler que consegue setar cookies.
+    // ============================================
+    if (url.pathname === "/" && url.searchParams.has("code")) {
+        const callbackUrl = url.clone()
+        callbackUrl.pathname = "/auth/callback"
+        return NextResponse.redirect(callbackUrl)
+    }
+
     // Request the user session from Supabase
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
-    const url = request.nextUrl.clone()
     const isAdminRoute = url.pathname.startsWith("/admin")
     const isAdminLoginPage = url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")
     const isAppRoute = url.pathname.startsWith("/app")

@@ -1,5 +1,25 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Reset de Senha: Fallback de Callback em `/auth/callback` (ignora template/redirect URL do Supabase)
+
+### Problema
+O link do email de recuperação chegava como `https://monarca-six.vercel.app/?code=...` em vez de `/app/nueva-contrasena?code=...` ou `/admin/login/reset-password?code=...`. Causa: template de email no Supabase usa `{{ .SiteURL }}` ou os Redirect URLs não estão na whitelist, então o Supabase ignora o `redirectTo` e cai no Site URL (raiz do domínio).
+
+### Criado
+- **`src/app/auth/callback/route.ts`** — Route Handler que recebe `?code=`, executa `exchangeCodeForSession` (pode setar cookies httpOnly, diferente de Server Components), consulta o `role` em `resellers` e redireciona:
+  - `ADMIN` / `COLABORADORA` → `/admin/login/reset-password`
+  - `REVENDEDORA` (ou perfil ausente) → `/app/nueva-contrasena`
+  - Exchange falho → `/app/login/recuperar-contrasena?error=expired`
+  - Suporta `?next=/caminho` para destino customizado.
+
+### Modificado
+- **`src/lib/middleware-auth.ts`** — detecção precoce: quando a rota é `/` e há `?code=`, redireciona para `/auth/callback?code=...` antes de qualquer outra lógica do middleware.
+
+### Pendente
+- Ação manual no Supabase Dashboard (`Authentication → URL Configuration`): adicionar `https://monarca-six.vercel.app/app/nueva-contrasena` e `https://monarca-six.vercel.app/admin/login/reset-password` à lista de Redirect URLs, e revisar template "Reset Password" para usar `{{ .ConfirmationURL }}`. Essa é a correção na origem; o route handler criado é defesa em profundidade.
+
+---
+
 ## 2026-04-23 — Reset de Senha Admin: Rota de Callback + Preparação SMTP Brevo
 
 ### Criado
