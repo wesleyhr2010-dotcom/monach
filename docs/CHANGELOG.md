@@ -1,5 +1,22 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Fix: TS narrowing e Prisma JSON type bloqueando deploy Vercel
+
+### Contexto
+Build do Vercel falhando com `Type error: Property 'pontos' does not exist on type 'never'` em `src/app/app/actions-revendedora.ts:210`. Raiz: TypeScript não enxerga reatribuição de variável `let` feita dentro de callback assíncrona (`prisma.$transaction`), então narrowa o tipo inicial (`null`) e reduz o branch `if (pontos)` a `never`. Um segundo erro pré-existente em `src/lib/notifications.ts:44` (incompatibilidade entre `DadosNotificacao` e `Prisma.InputJsonValue`) apareceria no próximo build.
+
+### Corrigido
+- **`src/app/app/actions-revendedora.ts`**
+  - `registrarVendaMultipla` — `pontos` agora é o valor de retorno de `prisma.$transaction(...)` em vez de `let` reatribuído dentro da callback.
+  - `registrarVenda` — mesmo padrão: transação retorna `{ pontosVenda, pontosCompleta }`, eliminando o narrowing incorreto.
+- **`src/lib/notifications.ts`** — `dados` passado ao Prisma agora tem cast explícito para `Prisma.InputJsonValue` (importado de `@/generated/prisma/client`), resolvendo o conflito entre o tipo local `DadosNotificacao` (com `[key: string]: unknown`) e o tipo estrito esperado pelo Prisma.
+
+### Impacto
+- `npx tsc --noEmit` limpo em todo o código de produção (erros restantes são apenas em `src/__tests__/*`, fora do bundle do Next.js).
+- Deploy Vercel destravado.
+
+---
+
 ## 2026-04-24 — Centro de Notificações do PWA (`/app/notificaciones`)
 
 ### Contexto

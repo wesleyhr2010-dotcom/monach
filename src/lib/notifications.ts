@@ -1,3 +1,4 @@
+import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { sanitizeForLog } from "@/lib/errors/sanitize-log";
@@ -41,7 +42,7 @@ export async function criarNotificacao(input: CriarNotificacaoInput) {
         tipo: input.tipo,
         titulo: input.titulo,
         mensagem: input.mensagem,
-        dados: input.dados ?? {},
+        dados: (input.dados ?? {}) as Prisma.InputJsonValue,
       },
     });
     return notif;

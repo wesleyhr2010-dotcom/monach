@@ -162,9 +162,8 @@ export async function registrarVendaMultipla(inputData: {
     const resellerId = user.profileId!;
 
     const data = registrarVendaMultiplaSchema.parse(inputData);
-    let pontos: { pontos: number; descricao: string } | null = null;
 
-    await prisma.$transaction(async (tx) => {
+    const pontos = await prisma.$transaction(async (tx) => {
         for (const cartItem of data.itens) {
             const maletaItem = await tx.maletaItem.findFirstOrThrow({
                 where: {
@@ -199,7 +198,7 @@ export async function registrarVendaMultipla(inputData: {
             });
         }
         
-        pontos = await awardPoints(resellerId, 'venda_multipla_maleta', tx);
+        return awardPoints(resellerId, 'venda_multipla_maleta', tx);
     });
 
     if (pontos) {
@@ -304,10 +303,8 @@ export async function registrarVenda(rawInput: {
     const resellerId = user.profileId!;
 
     const input = registrarVendaSchema.parse(rawInput);
-    let pontosVenda: { pontos: number; descricao: string } | null = null;
-    let pontosCompleta: { pontos: number; descricao: string } | null = null;
 
-    await prisma.$transaction(async (tx) => {
+    const { pontosVenda, pontosCompleta } = await prisma.$transaction(async (tx) => {
         const item = await tx.maletaItem.findFirstOrThrow({
             where: {
                 id: input.maleta_item_id,
@@ -340,17 +337,19 @@ export async function registrarVenda(rawInput: {
         });
 
         // Recompensas da gamificação
-        pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
+        const pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
 
         // Verifica bônus de maleta completa
         const allItems = await tx.maletaItem.findMany({
             where: { maleta_id: item.maleta_id },
         });
-        
+
         const todosVendidos = allItems.every(i => i.quantidade_vendida >= i.quantidade_enviada);
-        if (todosVendidos) {
-            pontosCompleta = await awardPoints(resellerId, 'maleta_completa', tx);
-        }
+        const pontosCompleta = todosVendidos
+            ? await awardPoints(resellerId, 'maleta_completa', tx)
+            : null;
+
+        return { pontosVenda, pontosCompleta };
     });
 
     // Notificações de pontos (best-effort fora da tx)
