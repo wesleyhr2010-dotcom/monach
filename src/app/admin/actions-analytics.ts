@@ -2,202 +2,385 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import type { MaletaStatus } from "@/generated/prisma/client";
 
 // ============================================
 // Types
 // ============================================
 
-export interface PeriodCounts {
-    total: number;
-    diretas: number;
-    revendedoras: number;
-    unicos: number;
-    unicos_diretas: number;
-    unicos_revendedoras: number;
+export interface AnalyticsKPIs {
+  maletasAtivas: number;
+  devolvidasMes: number;
+  taxaAtraso: number;
+  ticketMedio: number;
+  revendedorasComMaleta: number;
+  tempoMedioDevolucaoDias: number;
 }
 
-export interface AnalyticsSummary {
-    hoje: PeriodCounts;
-    semana: PeriodCounts;
-    mes: PeriodCounts;
+export interface FluxoDia {
+  dia: string; // YYYY-MM-DD
+  enviadas: number;
+  devolvidas: number;
+  atrasadas: number;
 }
 
-export interface DailyData {
-    date: string;
-    diretas: number;
-    revendedoras: number;
-    unicos_diretas: number;
-    unicos_revendedoras: number;
+export interface DistribuicaoStatus {
+  status: MaletaStatus;
+  count: number;
 }
 
-export interface TopRevendedora {
-    id: string;
-    name: string;
-    avatar_url: string;
-    total_visitas: number;
-    visitantes_unicos: number;
+export interface TopRevendedoraVolume {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  maletasAtivas: number;
+  valorEmMaleta: number;
+  atrasosHistoricos: number;
+  statusAtual: string;
+}
+
+export interface AlertaPrazo {
+  id: string;
+  numero: number;
+  revendedoraNome: string;
+  consultoraNome: string;
+  dataLimite: Date;
+  diasRestantes: number;
+}
+
+export interface ProdutoMaisVendido {
+  id: string;
+  nome: string;
+  unidadesVendidas: number;
+  valorTotal: number;
 }
 
 // ============================================
-// Summary (Cards)
+// Scope Helpers
 // ============================================
 
-export async function getAnalyticsSummary(): Promise<AnalyticsSummary> {
-    await requireAuth(["ADMIN"]);
-    const now = new Date();
-    const startOfDay = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const startOfWeek = new Date(startOfDay);
-    startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+function getMaletaResellerScope(user: Awaited<ReturnType<typeof requireAuth>>) {
+  if (user.role === "ADMIN") return {};
+  return { reseller: { colaboradora_id: user.profileId } };
+}
 
-    const [hoje, semana, mes] = await Promise.all([
-        getCountsForPeriod(startOfDay),
-        getCountsForPeriod(startOfWeek),
-        getCountsForPeriod(startOfMonth),
+function getResellerScope(user: Awaited<ReturnType<typeof requireAuth>>) {
+  if (user.role === "ADMIN") return {};
+  return { colaboradora_id: user.profileId };
+}
+
+function getSinceDate(days: number) {
+  const d = new Date();
+  d.setDate(d.getDate() - days);
+  d.setHours(0, 0, 0, 0);
+  return d;
+}
+
+function startOfMonthDate() {
+  const now = new Date();
+  return new Date(now.getFullYear(), now.getMonth(), 1);
+}
+
+// ============================================
+// KPIs
+// ============================================
+
+export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const scope = getMaletaResellerScope(user);
+  const since = getSinceDate(periodDays);
+  const inicioMes = startOfMonthDate();
+
+  const [ativasAgg, devolvidasMes, atrasadasCount, totalPeriodo, revComMaleta, tempoMedioRaw] =
+    await Promise.all([
+      prisma.maleta.aggregate({
+        where: { ...scope, status: "ativa" },
+        _count: { id: true },
+        _avg: { valor_total_enviado: true },
+      }),
+      prisma.maleta.count({
+        where: { ...scope, status: "concluida", updated_at: { gte: inicioMes } },
+      }),
+      prisma.maleta.count({
+        where: { ...scope, status: "atrasada", created_at: { gte: since } },
+      }),
+      prisma.maleta.count({
+        where: { ...scope, created_at: { gte: since } },
+      }),
+      prisma.maleta.groupBy({
+        by: ["reseller_id"],
+        where: { ...scope, status: "ativa" },
+      }),
+      prisma.$queryRawUnsafe<Array<{ avg_dias: number | null }>>(
+        `SELECT AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 86400.0) as avg_dias
+         FROM maletas
+         WHERE status = 'concluida'
+         AND created_at >= $1
+         ${user.role !== "ADMIN" ? `AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)` : ""}
+        `,
+        since,
+        ...(user.role !== "ADMIN" ? [user.profileId] : [])
+      ),
     ]);
 
-    return { hoje, semana, mes };
+  const taxaAtraso = totalPeriodo > 0 ? (atrasadasCount / totalPeriodo) * 100 : 0;
+
+  return {
+    maletasAtivas: ativasAgg._count.id,
+    devolvidasMes,
+    taxaAtraso: Math.round(taxaAtraso * 10) / 10,
+    ticketMedio: Number(ativasAgg._avg.valor_total_enviado ?? 0),
+    revendedorasComMaleta: revComMaleta.length,
+    tempoMedioDevolucaoDias: Math.round((tempoMedioRaw[0]?.avg_dias ?? 0) * 10) / 10,
+  };
 }
 
-async function getCountsForPeriod(since: Date): Promise<PeriodCounts> {
-    const result = await prisma.$queryRawUnsafe<Array<{
-        total: bigint;
-        diretas: bigint;
-        revendedoras: bigint;
-        unicos: bigint;
-        unicos_diretas: bigint;
-        unicos_revendedoras: bigint;
-    }>>(
-        `SELECT
-            COUNT(*) as total,
-            COUNT(*) FILTER (WHERE reseller_id IS NULL) as diretas,
-            COUNT(*) FILTER (WHERE reseller_id IS NOT NULL) as revendedoras,
-            COUNT(DISTINCT visitor_id) as unicos,
-            COUNT(DISTINCT visitor_id) FILTER (WHERE reseller_id IS NULL) as unicos_diretas,
-            COUNT(DISTINCT visitor_id) FILTER (WHERE reseller_id IS NOT NULL) as unicos_revendedoras
-        FROM analytics_acessos
-        WHERE data_acesso >= $1 AND is_bot = false`,
-        since
-    );
+// ============================================
+// Fluxo de Maletas (série temporal)
+// ============================================
 
-    const row = result[0];
+export async function getAnalyticsFluxoMaletas(periodDays = 30): Promise<FluxoDia[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
+
+  const whereClause =
+    user.role === "ADMIN"
+      ? `created_at >= $1`
+      : `created_at >= $1 AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)`;
+
+  const params = user.role === "ADMIN" ? [since] : [since, user.profileId];
+
+  const rows = await prisma.$queryRawUnsafe<Array<{ dia: Date; enviadas: bigint; devolvidas: bigint; atrasadas: bigint }>>(
+    `SELECT
+       DATE(created_at AT TIME ZONE 'America/Asuncion') AS dia,
+       COUNT(*) FILTER (WHERE status = 'ativa') AS enviadas,
+       COUNT(*) FILTER (WHERE status = 'concluida') AS devolvidas,
+       COUNT(*) FILTER (WHERE status = 'atrasada') AS atrasadas
+     FROM maletas
+     WHERE ${whereClause}
+     GROUP BY dia
+     ORDER BY dia ASC`,
+    ...params
+  );
+
+  // Preencher dias faltantes
+  const result: FluxoDia[] = [];
+  const d = new Date(since);
+  const today = new Date();
+  const rowMap = new Map(rows.map((r) => [r.dia.toISOString().slice(0, 10), r]));
+
+  while (d <= today) {
+    const key = d.toISOString().slice(0, 10);
+    const r = rowMap.get(key);
+    result.push({
+      dia: key,
+      enviadas: Number(r?.enviadas ?? 0),
+      devolvidas: Number(r?.devolvidas ?? 0),
+      atrasadas: Number(r?.atrasadas ?? 0),
+    });
+    d.setDate(d.getDate() + 1);
+  }
+
+  return result;
+}
+
+// ============================================
+// Distribuição por Status
+// ============================================
+
+export async function getAnalyticsDistribuicaoStatus(): Promise<DistribuicaoStatus[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const scope = getMaletaResellerScope(user);
+
+  const rows = await prisma.maleta.groupBy({
+    by: ["status"],
+    where: scope,
+    _count: { id: true },
+  });
+
+  return rows.map((r) => ({
+    status: r.status,
+    count: r._count.id,
+  }));
+}
+
+// ============================================
+// Top Revendedoras por Volume
+// ============================================
+
+export async function getAnalyticsTopRevendedoras(
+  periodDays = 30,
+  limit = 10
+): Promise<TopRevendedoraVolume[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const resellerScope = getResellerScope(user);
+  const since = getSinceDate(periodDays);
+
+  // Buscar revendedoras do escopo com métricas
+  const revendedoras = await prisma.reseller.findMany({
+    where: resellerScope,
+    select: {
+      id: true,
+      name: true,
+      avatar_url: true,
+    },
+  });
+
+  if (revendedoras.length === 0) return [];
+
+  const ids = revendedoras.map((r) => r.id);
+
+  const [maletasAgg, atrasosAgg] = await Promise.all([
+    prisma.maleta.groupBy({
+      by: ["reseller_id", "status"],
+      where: { reseller_id: { in: ids }, created_at: { gte: since } },
+      _count: { id: true },
+      _sum: { valor_total_enviado: true },
+    }),
+    prisma.maleta.groupBy({
+      by: ["reseller_id"],
+      where: { reseller_id: { in: ids }, status: "atrasada" },
+      _count: { id: true },
+    }),
+  ]);
+
+  // Agregar por revendedora
+  const stats = new Map<
+    string,
+    { maletasAtivas: number; valorEmMaleta: number; atrasos: number; hasAtiva: boolean; hasAtrasada: boolean }
+  >();
+
+  for (const row of maletasAgg) {
+    const s = stats.get(row.reseller_id) || { maletasAtivas: 0, valorEmMaleta: 0, atrasos: 0, hasAtiva: false, hasAtrasada: false };
+    if (row.status === "ativa") {
+      s.maletasAtivas += row._count.id;
+      s.hasAtiva = true;
+      s.valorEmMaleta += Number(row._sum.valor_total_enviado ?? 0);
+    }
+    if (row.status === "atrasada") {
+      s.hasAtrasada = true;
+    }
+    stats.set(row.reseller_id, s);
+  }
+
+  for (const row of atrasosAgg) {
+    const s = stats.get(row.reseller_id) || { maletasAtivas: 0, valorEmMaleta: 0, atrasos: 0, hasAtiva: false, hasAtrasada: false };
+    s.atrasos += row._count.id;
+    stats.set(row.reseller_id, s);
+  }
+
+  return revendedoras
+    .map((r) => {
+      const s = stats.get(r.id) || { maletasAtivas: 0, valorEmMaleta: 0, atrasos: 0, hasAtiva: false, hasAtrasada: false };
+      let statusAtual = "Sin maleta";
+      if (s.hasAtrasada) statusAtual = "Atrasada";
+      else if (s.hasAtiva) statusAtual = "Ativa";
+
+      return {
+        id: r.id,
+        name: r.name,
+        avatar_url: r.avatar_url,
+        maletasAtivas: s.maletasAtivas,
+        valorEmMaleta: s.valorEmMaleta,
+        atrasosHistoricos: s.atrasos,
+        statusAtual,
+      };
+    })
+    .sort((a, b) => b.valorEmMaleta - a.valorEmMaleta)
+    .slice(0, limit);
+}
+
+// ============================================
+// Alertas de Prazo (≤ 7 dias)
+// ============================================
+
+export async function getAnalyticsAlertasPrazo(): Promise<AlertaPrazo[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const scope = getMaletaResellerScope(user);
+  const limite = new Date();
+  limite.setDate(limite.getDate() + 7);
+
+  const maletas = await prisma.maleta.findMany({
+    where: {
+      ...scope,
+      status: "ativa",
+      data_limite: { lte: limite },
+    },
+    include: {
+      reseller: {
+        select: {
+          name: true,
+          colaboradora: { select: { name: true } },
+        },
+      },
+    },
+    orderBy: { data_limite: "asc" },
+  });
+
+  const hoje = new Date();
+  hoje.setHours(0, 0, 0, 0);
+
+  return maletas.map((m) => {
+    const diffMs = m.data_limite.getTime() - hoje.getTime();
+    const diasRestantes = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
     return {
-        total: Number(row.total),
-        diretas: Number(row.diretas),
-        revendedoras: Number(row.revendedoras),
-        unicos: Number(row.unicos),
-        unicos_diretas: Number(row.unicos_diretas),
-        unicos_revendedoras: Number(row.unicos_revendedoras),
+      id: m.id,
+      numero: m.numero,
+      revendedoraNome: m.reseller.name,
+      consultoraNome: m.reseller.colaboradora?.name ?? "—",
+      dataLimite: m.data_limite,
+      diasRestantes,
     };
+  });
 }
 
 // ============================================
-// Daily Chart Data (last N days)
+// Produtos Mais Vendidos
 // ============================================
 
-export async function getAnalyticsByDay(days = 30): Promise<DailyData[]> {
-    await requireAuth(["ADMIN"]);
-    const since = new Date();
-    since.setDate(since.getDate() - days);
-    since.setHours(0, 0, 0, 0);
+export async function getAnalyticsProdutosMaisVendidos(
+  periodDays = 30,
+  limit = 10
+): Promise<ProdutoMaisVendido[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
 
-    const rows = await prisma.analyticsAcesso.findMany({
-        where: { data_acesso: { gte: since }, is_bot: false },
-        select: { data_acesso: true, reseller_id: true, visitor_id: true },
-    });
+  const whereClause =
+    user.role === "ADMIN"
+      ? `m.created_at >= $1`
+      : `m.created_at >= $1 AND m.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)`;
 
-    const map = new Map<string, {
-        diretas: number;
-        revendedoras: number;
-        visitors_diretas: Set<string>;
-        visitors_revendedoras: Set<string>;
-    }>();
+  const params = user.role === "ADMIN" ? [since] : [since, user.profileId];
 
-    for (const row of rows) {
-        const dateKey = row.data_acesso.toISOString().slice(0, 10);
-        if (!map.has(dateKey)) {
-            map.set(dateKey, {
-                diretas: 0,
-                revendedoras: 0,
-                visitors_diretas: new Set(),
-                visitors_revendedoras: new Set(),
-            });
-        }
-        const entry = map.get(dateKey)!;
-        if (row.reseller_id) {
-            entry.revendedoras++;
-            if (row.visitor_id) entry.visitors_revendedoras.add(row.visitor_id);
-        } else {
-            entry.diretas++;
-            if (row.visitor_id) entry.visitors_diretas.add(row.visitor_id);
-        }
-    }
+  const rows = await prisma.$queryRawUnsafe<
+    Array<{
+      id: string;
+      nome: string;
+      unidades_vendidas: bigint;
+      valor_total: number | null;
+    }>
+  >(
+    `SELECT
+       p.id,
+       p.name AS nome,
+       SUM(vm.quantidade) AS unidades_vendidas,
+       SUM(vm.quantidade * vm.preco_unitario) AS valor_total
+     FROM vendas_maleta vm
+     JOIN maletas m ON m.id = vm.maleta_id
+     JOIN maleta_itens mi ON mi.id = vm.maleta_item_id
+     JOIN product_variants pv ON pv.id = mi.product_variant_id
+     JOIN products p ON p.id = pv.product_id
+     WHERE ${whereClause}
+     GROUP BY p.id, p.name
+     ORDER BY unidades_vendidas DESC
+     LIMIT ${limit}`,
+    ...params
+  );
 
-    // Fill missing days
-    const result: DailyData[] = [];
-    const d = new Date(since);
-    const today = new Date();
-    while (d <= today) {
-        const key = d.toISOString().slice(0, 10);
-        const entry = map.get(key);
-        result.push({
-            date: key,
-            diretas: entry?.diretas || 0,
-            revendedoras: entry?.revendedoras || 0,
-            unicos_diretas: entry?.visitors_diretas.size || 0,
-            unicos_revendedoras: entry?.visitors_revendedoras.size || 0,
-        });
-        d.setDate(d.getDate() + 1);
-    }
-
-    return result;
-}
-
-// ============================================
-// Top Revendedoras by Access
-// ============================================
-
-export async function getTopRevendedorasByAccess(limit = 10): Promise<TopRevendedora[]> {
-    await requireAuth(["ADMIN"]);
-    const since = new Date();
-    since.setDate(since.getDate() - 30);
-
-    const rows = await prisma.$queryRawUnsafe<Array<{
-        reseller_id: string;
-        total_visitas: bigint;
-        visitantes_unicos: bigint;
-    }>>(
-        `SELECT
-            reseller_id,
-            COUNT(*) as total_visitas,
-            COUNT(DISTINCT visitor_id) as visitantes_unicos
-        FROM analytics_acessos
-        WHERE data_acesso >= $1 AND is_bot = false AND reseller_id IS NOT NULL
-        GROUP BY reseller_id
-        ORDER BY total_visitas DESC
-        LIMIT $2`,
-        since,
-        limit
-    );
-
-    if (rows.length === 0) return [];
-
-    const resellerIds = rows.map((r) => r.reseller_id);
-    const resellers = await prisma.reseller.findMany({
-        where: { id: { in: resellerIds } },
-        select: { id: true, name: true, avatar_url: true },
-    });
-
-    const resellerMap = new Map(resellers.map((r) => [r.id, r]));
-
-    return rows.map((row) => {
-        const r = resellerMap.get(row.reseller_id) || { id: row.reseller_id, name: "—", avatar_url: "" };
-        return {
-            id: r.id,
-            name: r.name,
-            avatar_url: r.avatar_url,
-            total_visitas: Number(row.total_visitas),
-            visitantes_unicos: Number(row.visitantes_unicos),
-        };
-    });
+  return rows.map((r) => ({
+    id: r.id,
+    nome: r.nome,
+    unidadesVendidas: Number(r.unidades_vendidas),
+    valorTotal: Number(r.valor_total ?? 0),
+  }));
 }

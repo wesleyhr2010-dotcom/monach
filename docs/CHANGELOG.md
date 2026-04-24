@@ -1,5 +1,34 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Analytics do Grupo (`/admin/analytics`)
+
+### Contexto
+A rota `/admin/analytics` existia como placeholder de analytics de tráfego web (page views). A SPEC `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` define um dashboard operacional de maletas e desempenho de revendedoras, com escopo RBAC para consultoras (apenas seu grupo). Reescrita completa para atender à SPEC.
+
+### Adicionado
+- **`src/app/admin/actions-analytics.ts`** — Server Actions refatoradas para analytics operacional de maletas:
+  - `getAnalyticsKPIs(periodDays)` — 6 KPIs: maletas ativas, devolvidas no mês, taxa de atraso, ticket médio, revendedoras com maleta, tempo médio de devolução.
+  - `getAnalyticsFluxoMaletas(periodDays)` — série temporal por dia (enviadas/devolvidas/atrasadas) com preenchimento de dias faltantes.
+  - `getAnalyticsDistribuicaoStatus()` — contagem por status para donut chart.
+  - `getAnalyticsTopRevendedoras(periodDays, limit)` — ranking por volume (valor em maleta ativa), com badge de status.
+  - `getAnalyticsAlertasPrazo()` — maletas ativas com prazo ≤ 7 dias, com cálculo de dias restantes.
+  - `getAnalyticsProdutosMaisVendidos(periodDays, limit)` — ranking por unidades vendidas com valor total.
+  - Filtro de escopo RBAC em todas as actions: `ADMIN` vê tudo; `COLABORADORA` vê apenas maletas/revendedoras do seu grupo (`reseller.colaboradora_id`).
+- **`src/app/admin/analytics/page.tsx`** — Server Component com layout responsivo em cards e grids:
+  - Header com seletor de período (7d/30d/3m/12m) via query params.
+  - 6 cards de KPIs (`AdminStatCard`).
+  - Gráfico de fluxo de maletas (barras empilhadas CSS).
+  - Donut SVG de distribuição por status.
+  - Tabela de top revendedoras com avatar, valor e status.
+  - Tabela de alertas de prazo com link direto para a maleta.
+  - Tabela de produtos mais vendidos com barra de progresso relativa.
+
+### Modificado
+- **`docs/next_steps.md`** — item "Analytics do Grupo filtrado para consultora" marcado como `[x]`.
+- **`docs/project_overview.md`** — status de Analytics atualizado para **Funcional**; Gamificação/Leads/Relatórios mantidos como stub.
+
+---
+
 ## 2026-04-24 — Menu "Más" do PWA (`/app/mais`)
 
 ### Contexto
