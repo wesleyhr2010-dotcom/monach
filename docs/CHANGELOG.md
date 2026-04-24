@@ -1,5 +1,30 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Observabilidade do convite no cadastro admin (traceId por etapa)
+
+### Problema
+Sem rastreio detalhado, ficava difícil identificar por que o convite de consultora/revendedora não chegava (sem evidência clara se falhava na criação do usuário, geração do link, Brevo ou fallback).
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts`**
+  - Adicionado logging estruturado com `traceId` para cada criação:
+    - `[Convite][Start]`
+    - `[Convite][CreateUser][Success|Error]`
+    - `[Convite][GenerateLink][Success|Error]`
+    - `[Convite][Brevo][Success|Error]`
+    - `[Convite][Fallback][Success|Error]`
+    - `[Convite][Done]`
+  - Logs sensíveis passam por `safeLogError` (sanitização).
+
+- **`src/lib/emails.ts`**
+  - `sendEmail` agora registra início/sucesso com `traceId`.
+  - Em erro, registra payload sanitizado e relança exceção com `traceId` para correlação.
+
+### Efeito
+Agora é possível identificar com precisão em logs onde o fluxo quebra e qual caminho foi usado (Brevo ou fallback Supabase SMTP).
+
+---
+
 ## 2026-04-23 — Fix envio no cadastro admin: fallback automático via Supabase SMTP
 
 ### Problema

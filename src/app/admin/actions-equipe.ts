@@ -7,6 +7,7 @@ import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { createServerClient } from "@/lib/supabase";
 import { emailConviteUsuario } from "@/lib/email-templates/convite-usuario";
+import { safeLogError } from "@/lib/errors/sanitize-log";
 import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 
@@ -30,6 +31,15 @@ async function criarUsuarioAuthEEnviarConvite(params: {
   tipo: "consultora" | "revendedora";
 }): Promise<{ authUserId: string; actionLink: string | null }> {
   const supabaseAdmin = createServerClient();
+  const traceId = crypto.randomUUID().slice(0, 8);
+
+  console.info("[Convite][Start]", {
+    traceId,
+    tipo: params.tipo,
+    hasSiteUrl: Boolean(process?.env?.NEXT_PUBLIC_SITE_URL),
+    hasVercelUrl: Boolean(process?.env?.NEXT_PUBLIC_VERCEL_URL),
+    hasBrevoApiKey: Boolean(process?.env?.BREVO_API_KEY),
+  });
 
   // 1. Criar usuário no Supabase Auth
   const tempPassword = crypto.randomUUID();
@@ -40,6 +50,11 @@ async function criarUsuarioAuthEEnviarConvite(params: {
   });
 
   if (authError) {
+    safeLogError("[Convite][CreateUser][Error]", {
+      traceId,
+      tipo: params.tipo,
+      message: authError.message,
+    });
     if (authError.message.toLowerCase().includes("already") || authError.message.toLowerCase().includes("registered")) {
       throw new Error("BUSINESS: Este correo ya está registrado en el sistema.");
     }
@@ -51,6 +66,11 @@ async function criarUsuarioAuthEEnviarConvite(params: {
   }
 
   const authUserId = authData.user.id;
+  console.info("[Convite][CreateUser][Success]", {
+    traceId,
+    tipo: params.tipo,
+    authUserIdPrefix: authUserId.slice(0, 8),
+  });
 
   // 2. Gerar token de recovery e montar link direto para /auth/callback
   // Usar hashed_token + verifyOtp (no route handler) em vez do action_link
@@ -68,7 +88,17 @@ async function criarUsuarioAuthEEnviarConvite(params: {
   }
 
   if (linkError) {
-    console.error("[Convite] generateLink error:", linkError.message);
+    safeLogError("[Convite][GenerateLink][Error]", {
+      traceId,
+      tipo: params.tipo,
+      message: linkError.message,
+    });
+  } else {
+    console.info("[Convite][GenerateLink][Success]", {
+      traceId,
+      tipo: params.tipo,
+      hasActionLink: Boolean(actionLink),
+    });
   }
 
   // 3. Enviar email de convite com senha temporária + link de redefinição
@@ -80,8 +110,17 @@ async function criarUsuarioAuthEEnviarConvite(params: {
       senhaTemporaria: tempPassword,
       tipo: params.tipo,
     });
+    console.info("[Convite][Brevo][Success]", {
+      traceId,
+      tipo: params.tipo,
+      hasActionLink: Boolean(actionLink),
+    });
   } catch (emailErr) {
-    console.error("[Convite Email] Falha ao enviar convite:", emailErr);
+    safeLogError("[Convite][Brevo][Error]", {
+      traceId,
+      tipo: params.tipo,
+      error: emailErr as Record<string, unknown>,
+    });
 
     // Fallback: dispara email de reset via Supabase SMTP (mesmo canal que já funciona
     // no fluxo de recuperação de senha). Assim a consultora recebe ao menos o link.
@@ -93,11 +132,26 @@ async function criarUsuarioAuthEEnviarConvite(params: {
     });
 
     if (resetError) {
-      console.error("[Convite Email Fallback] Falha no resetPasswordForEmail:", resetError.message);
+      safeLogError("[Convite][Fallback][Error]", {
+        traceId,
+        tipo: params.tipo,
+        message: resetError.message,
+        redirectTo,
+      });
     } else {
-      console.error("[Convite Email Fallback] Reset enviado via Supabase SMTP para:", params.email);
+      console.info("[Convite][Fallback][Success]", {
+        traceId,
+        tipo: params.tipo,
+        redirectTo,
+      });
     }
   }
+
+  console.info("[Convite][Done]", {
+    traceId,
+    tipo: params.tipo,
+    hasActionLink: Boolean(actionLink),
+  });
 
   return { authUserId, actionLink };
 }
