@@ -1,5 +1,22 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Fix: migration de notificações aplicada no banco
+
+### Contexto
+Runtime em `/app/mais` falhava em `getContagemNaoLidas()` com `PrismaClientKnownRequestError`: a tabela `public.notificacoes` não existia no banco conectado pela aplicação, apesar de o model `Notificacao` e a migration já existirem no repositório.
+
+### Corrigido
+- **Banco Supabase** — aplicada a migration `20260424000000_add_notificacoes`, criando a tabela `notificacoes`, índices e FK para `resellers`.
+- **Histórico Prisma** — reconciliada a migration `20260422000000_add_onboarding_completo` como aplicada, porque a coluna `resellers.onboarding_completo` já existia no banco.
+- **`prisma.config.ts`** — Prisma CLI agora carrega `.env.local` antes de `.env`, alinhando `prisma migrate status/deploy` com o ambiente local do Next.js.
+
+### Validação
+- `npx prisma migrate status` retorna `Database schema is up to date!`.
+- `prisma.notificacao.count()` retorna `0` sem erro.
+- `npm test` passa com 47 testes.
+
+---
+
 ## 2026-04-24 — Fix: TS narrowing e Prisma JSON type bloqueando deploy Vercel
 
 ### Contexto
