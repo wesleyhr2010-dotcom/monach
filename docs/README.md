@@ -131,6 +131,7 @@ Desktop em espanhol paraguaio. Consultora (`COLABORADORA`) compartilha o mesmo p
 | [`sistema/SPEC_DEPLOY_STRATEGY.md`](./sistema/SPEC_DEPLOY_STRATEGY.md) | CI/CD, ambientes e rollback |
 | [`sistema/SPEC_MIGRATIONS_SEED.md`](./sistema/SPEC_MIGRATIONS_SEED.md) | Prisma Migrate, seed e backups |
 | [`sistema/SPEC_ENVIRONMENT_VARIABLES.md`](./sistema/SPEC_ENVIRONMENT_VARIABLES.md) | Variáveis de ambiente por contexto |
+| [`sistema/SPEC_DOMAIN_MIGRATION.md`](./sistema/SPEC_DOMAIN_MIGRATION.md) | Checklist de migração para o domínio oficial `monarcasemijoyas.com.py` |
 
 ### 5.6 Design
 
