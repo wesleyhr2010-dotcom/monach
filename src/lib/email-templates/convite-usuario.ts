@@ -3,10 +3,11 @@ import { sendEmail } from "../emails";
 export async function emailConviteUsuario(params: {
   email: string;
   nome: string;
-  linkDefinirSenha: string;
+  linkDefinirSenha: string | null;
+  senhaTemporaria: string;
   tipo: "consultora" | "revendedora";
 }) {
-  const { email, nome, linkDefinirSenha, tipo } = params;
+  const { email, nome, linkDefinirSenha, senhaTemporaria, tipo } = params;
 
   const titulo = tipo === "consultora"
     ? "💼 ¡Bienvenida al equipo! — Monarca Semijoyas"
@@ -20,7 +21,14 @@ export async function emailConviteUsuario(params: {
     ? "Definir mi contraseña →"
     : "Crear mi contraseña →";
 
-  const portalUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${tipo === "consultora" ? "/admin/login" : "/app/login"}`;
+  let baseUrl =
+    process?.env?.NEXT_PUBLIC_SITE_URL ??
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ??
+    "http://localhost:3000";
+  baseUrl = baseUrl.includes("http") ? baseUrl : `https://${baseUrl}`;
+  baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
+  const portalUrl = `${baseUrl}${tipo === "consultora" ? "/admin/login" : "/app/login"}`;
+  const resetUrl = linkDefinirSenha ?? `${baseUrl}/auth/callback`;
 
   await sendEmail({
     to: { email, name: nome },
@@ -29,8 +37,13 @@ export async function emailConviteUsuario(params: {
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
         <h2 style="color: #35605a;">${subtitulo}</h2>
         <p>Hola <strong>${nome}</strong>,</p>
-        <p>Tu cuenta en Monarca Semijoyas ya está lista. Hacé clic abajo para definir tu contraseña y empezar:</p>
-        <a href="${linkDefinirSenha}"
+        <p>Tu cuenta en Monarca Semijoyas ya está lista.</p>
+        <p>Usá esta contraseña temporal para tu primer acceso:</p>
+        <div style="background:#f7f8f8; border:1px solid #dfe5e4; border-radius:8px; padding:12px 16px; margin:12px 0 18px;">
+          <span style="font-family: monospace; font-size: 16px; letter-spacing: 1px;">${senhaTemporaria}</span>
+        </div>
+        <p>Después, hacé clic abajo para redefinir tu contraseña de forma segura:</p>
+        <a href="${resetUrl}"
            style="display: inline-block; background: #35605a; color: white;
                   padding: 12px 28px; border-radius: 6px; text-decoration: none; margin: 16px 0;">
           ${ctaTexto}

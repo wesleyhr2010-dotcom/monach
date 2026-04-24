@@ -11,8 +11,18 @@ import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 
 // ============================================
-// Helper: criar usuário no Supabase Auth + enviar convite
+// Helper: criar usuário no Supabase Auth + enviar convite por email
 // ============================================
+
+function getBaseUrl(): string {
+  let url =
+    process?.env?.NEXT_PUBLIC_SITE_URL ??
+    process?.env?.NEXT_PUBLIC_VERCEL_URL ??
+    "http://localhost:3000";
+  url = url.includes("http") ? url : `https://${url}`;
+  url = url.endsWith("/") ? url.slice(0, -1) : url;
+  return url;
+}
 
 async function criarUsuarioAuthEEnviarConvite(params: {
   email: string;
@@ -53,28 +63,25 @@ async function criarUsuarioAuthEEnviarConvite(params: {
 
   let actionLink: string | null = null;
   if (!linkError && linkData?.properties?.hashed_token) {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
-    if (siteUrl) {
-      actionLink = `${siteUrl}/auth/callback?token_hash=${linkData.properties.hashed_token}&type=recovery`;
-    }
+    const siteUrl = getBaseUrl();
+    actionLink = `${siteUrl}/auth/callback?token_hash=${linkData.properties.hashed_token}&type=recovery`;
   }
 
   if (linkError) {
     console.error("[Convite] generateLink error:", linkError.message);
   }
 
-  // 3. Enviar email de convite (não bloqueia se falhar)
-  if (actionLink) {
-    try {
-      await emailConviteUsuario({
-        email: params.email,
-        nome: params.nome,
-        linkDefinirSenha: actionLink,
-        tipo: params.tipo,
-      });
-    } catch (emailErr) {
-      console.error("[Convite Email] Falha ao enviar convite:", emailErr);
-    }
+  // 3. Enviar email de convite com senha temporária + link de redefinição
+  try {
+    await emailConviteUsuario({
+      email: params.email,
+      nome: params.nome,
+      linkDefinirSenha: actionLink,
+      senhaTemporaria: tempPassword,
+      tipo: params.tipo,
+    });
+  } catch (emailErr) {
+    console.error("[Convite Email] Falha ao enviar convite:", emailErr);
   }
 
   return { authUserId, actionLink };
@@ -178,7 +185,7 @@ export async function criarColaboradora(formData: FormData): Promise<{ success: 
             avatar_url = await uploadAvatar(avatarFile, slug);
         }
 
-        // 1. Criar no Supabase Auth + enviar convite
+        // 1. Criar no Supabase Auth + enviar convite por email
         const { authUserId } = await criarUsuarioAuthEEnviarConvite({
             email,
             nome: name,
@@ -242,7 +249,7 @@ export async function criarRevendedora(formData: FormData): Promise<{ success: b
             avatar_url = await uploadAvatar(avatarFile, slug);
         }
 
-        // 1. Criar no Supabase Auth + enviar convite
+        // 1. Criar no Supabase Auth + enviar convite por email
         const { authUserId } = await criarUsuarioAuthEEnviarConvite({
             email,
             nome: name,
@@ -539,4 +546,3 @@ export async function getPerfilConsultora(id: string): Promise<ConsultoraPerfil 
         revendedoras_inativas: revendedoras.filter((r) => !r.is_active).length,
     };
 }
-

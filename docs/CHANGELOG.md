@@ -1,5 +1,67 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Fix convite no cadastro admin: enviar senha temporária + link de redefinição
+
+### Problema
+No cadastro de consultora/revendedora pelo admin, o envio de convite podia não acontecer quando `NEXT_PUBLIC_SITE_URL` estava ausente. Nesse cenário, o link de redefinição ficava `null` e o envio era pulado.
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts`**
+  - Adicionado `getBaseUrl()` com fallback robusto: `NEXT_PUBLIC_SITE_URL` → `NEXT_PUBLIC_VERCEL_URL` → `http://localhost:3000`.
+  - `criarUsuarioAuthEEnviarConvite` agora monta `actionLink` com essa base e **sempre tenta enviar** o convite.
+  - Convite passa a receber `senhaTemporaria` (a mesma criada no `auth.admin.createUser`).
+
+- **`src/lib/email-templates/convite-usuario.ts`**
+  - Template atualizado para incluir:
+    - senha temporária no corpo do email;
+    - botão com link de redefinição (`/auth/callback?...`) quando disponível;
+    - fallback de URL base sem depender exclusivamente de `NEXT_PUBLIC_SITE_URL`.
+
+### Efeito
+Ao criar conta pelo admin, o usuário recebe automaticamente email com senha temporária e link para redefinir a senha.
+
+---
+
+## 2026-04-23 — Execução operacional do `CLAUDE.md` (validação e correções de lint em pontos críticos)
+
+### Objetivo
+Executar o checklist mínimo definido em `CLAUDE.md` para validar o estado real do repositório: leitura dos arquivos canônicos, execução de `lint`/`test` e correções cirúrgicas apenas nos erros críticos encontrados durante a verificação.
+
+### Verificado
+- Leitura dos contextos obrigatórios concluída:
+  - `docs/project_overview.md`
+  - `docs/next_steps.md`
+  - `docs/README.md`
+- `npm test` passou integralmente: **42/42 testes**.
+- `npm run lint` continua falhando por dívida técnica pré-existente em múltiplos módulos fora do escopo da intervenção pontual (ex.: `lib/mcp/*`, `scripts/*`, e alguns arquivos de `src/app/*`).
+
+### Modificado
+- **`eslint.config.mjs`**
+  - Adicionado ignore de `.claude/**` para evitar que worktrees efêmeros internos contaminem o resultado do lint do repositório principal.
+
+- **`src/app/carrinho/page.tsx`**
+  - Removido padrão que fazia `setState` síncrono dentro de `useEffect`.
+  - Estado inicial do carrinho agora é carregado no initializer do `useState`; sincronização passa a acontecer apenas por evento (`CART_UPDATED_EVENT`).
+
+- **`src/components/CartDrawer.tsx`**
+  - Removido padrão de sincronização com `setState` direto dentro de efeitos.
+  - Atualização passou a ser dirigida por versionamento de evento do carrinho, evitando erro de regra `react-hooks/set-state-in-effect`.
+
+- **`src/components/onesignal/OneSignalWrapper.tsx`**
+  - Substituídos usos de `any` por tipagem segura.
+  - `showLog` convertido para `useCallback`.
+  - Logs dentro do efeito movidos para agendamento assíncrono (`queueMicrotask`) para evitar `setState` síncrono no corpo do `useEffect`.
+
+- **`src/__tests__/app/maleta-actions.test.ts`**
+  - Removido cast com `any` no mock de transaction, adequando ao lint de TypeScript estrito.
+
+### Resultado prático
+- Correções locais aplicadas sem ampliar escopo funcional.
+- Testes continuam verdes após as mudanças.
+- Lint global ainda requer uma força-tarefa dedicada de saneamento para zerar os erros históricos remanescentes.
+
+---
+
 ## 2026-04-23 — Convite de usuário: link de definição de senha usa `/auth/callback` + verifyOtp
 
 ### Problema
