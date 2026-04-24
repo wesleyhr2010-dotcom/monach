@@ -38,9 +38,13 @@ export async function updateSession(request: NextRequest) {
     // Supabase auth callback fallback
     // Quando o template/redirect URL do Supabase não está configurado,
     // o link de recuperação chega como https://dominio/?code=...
+    // ou https://dominio/?token_hash=...&type=recovery.
     // Redireciona para o route handler que consegue setar cookies.
     // ============================================
-    if (url.pathname === "/" && url.searchParams.has("code")) {
+    if (
+        url.pathname === "/" &&
+        (url.searchParams.has("code") || url.searchParams.has("token_hash"))
+    ) {
         const callbackUrl = url.clone()
         callbackUrl.pathname = "/auth/callback"
         return NextResponse.redirect(callbackUrl)
