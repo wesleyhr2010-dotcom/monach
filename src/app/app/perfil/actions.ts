@@ -196,3 +196,51 @@ export async function getPerfilCompleto() {
         pontos: totalPontos._sum.pontos ?? 0,
     };
 }
+
+// ============================================
+// Preferencias de Notificaciones Push
+// ============================================
+
+export async function getPreferenciasNotificaciones() {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    const prefs = await prisma.notificacaoPreferencia.findUnique({
+        where: { reseller_id: resellerId },
+    });
+
+    return {
+        nova_maleta: prefs?.nova_maleta ?? true,
+        prazo_proximo: prefs?.prazo_proximo ?? true,
+        maleta_atrasada: prefs?.maleta_atrasada ?? true,
+        acerto_confirmado: prefs?.acerto_confirmado ?? true,
+        brinde_entregue: prefs?.brinde_entregue ?? true,
+        pontos_ganhos: prefs?.pontos_ganhos ?? false,
+    };
+}
+
+const preferenciasSchema = z.object({
+    nova_maleta: z.boolean(),
+    prazo_proximo: z.boolean(),
+    maleta_atrasada: z.boolean(),
+    acerto_confirmado: z.boolean(),
+    brinde_entregue: z.boolean(),
+    pontos_ganhos: z.boolean(),
+});
+
+export async function actualizarPreferenciasNotificaciones(
+    data: z.infer<typeof preferenciasSchema>
+) {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    const parsed = preferenciasSchema.parse(data);
+
+    await prisma.notificacaoPreferencia.upsert({
+        where: { reseller_id: resellerId },
+        create: { reseller_id: resellerId, ...parsed },
+        update: parsed,
+    });
+
+    return { success: true };
+}

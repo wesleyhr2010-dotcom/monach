@@ -1,5 +1,24 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Remoção dos logs temporários de diagnóstico de convite
+
+### Contexto
+Após validar o fluxo de criação de consultora/revendedora e identificar a causa de ambiente na Vercel, os logs temporários com `traceId` não são mais necessários em runtime.
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts`**
+  - Removidos logs estruturados temporários do fluxo de convite (`[Convite][Start|...|Done]`).
+  - Mantidos apenas logs mínimos de erro para falhas de `generateLink`, envio de convite e fallback.
+
+- **`src/lib/emails.ts`**
+  - Removidos logs temporários de início/sucesso/erro por envio (`[Email][Brevo][...]`).
+  - Mantida validação de `BREVO_API_KEY` e propagação de erro quando o envio falhar.
+
+### Efeito
+Fluxo funcional preservado com menos ruído em logs de produção.
+
+---
+
 ## 2026-04-23 — Observabilidade do convite no cadastro admin (traceId por etapa)
 
 ### Problema
