@@ -1,5 +1,44 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Menu "Más" do PWA (`/app/mais`)
+
+### Contexto
+Implementação do hub de navegação secundária acessado pela aba "Más" do bottom nav, substituindo `/app/perfil` como porta de entrada para configurações e áreas secundárias.
+
+### Criado
+- **`src/app/app/mais/page.tsx`** — Server Component que monta o hub com 3 grupos (Mi Cuenta, Actividad, Soporte) + botão de logout. Fetches leves: `slug` da revendedora (para vitrina pública) e contagem de documentos pendentes (badge dot).
+- **`src/components/app/MenuHeader.tsx`** — cabeçalho genérico com back, título uppercase e slot de ícone à direita (client component).
+- **`src/components/app/MenuSectionCard.tsx`** — card branco com label uppercase e lista de itens.
+- **`src/components/app/MenuRow.tsx`** — linha clicável com ícone, texto, chevron, variantes (`default` / `accent-green`), suporte a link externo e badge dot.
+- **`src/components/app/LogoutButton.tsx`** — client component que chama `OneSignal.logout()` antes de `logoutApp()`, prevenindo vazamento de `external_id` entre sessões.
+
+### Modificado
+- **`src/app/globals.css`** — adicionados 12 tokens app-* ao `@theme inline` (`app-bg`, `app-card-bg`, `app-card-border`, `app-divider`, `app-icon-bg`, `app-primary`, `app-text`, `app-muted`, `app-accent-green-bg`, `app-accent-green`, `app-danger-bg`, `app-danger-border`, `app-danger`).
+- **`docs/design-system/tokens.md`** — documentados os novos tokens App PWA.
+- **`src/components/app/AppBottomNav.tsx`** — aba "Más" agora fica ativa também em rotas `/app/perfil*` (perfil é subárea de "Mi Cuenta").
+- **`src/components/app/AppShell.tsx`** — sidebar desktop sincronizada com a mesma regra de ativação para `/app/mais` + `/app/perfil*`.
+- **`docs/next_steps.md`** — item "Menu 'Más' do PWA" marcado como `[x]`.
+
+---
+
+## 2026-04-24 — SPEC do Menu "Más" e padrões de front-end no CLAUDE.md
+
+### Contexto
+Formalização do design do hub `/app/mais` (aba "Más" do bottom nav) capturado no Paper (artboard `Menu` / `1G-0`) e consagração de três regras obrigatórias para qualquer trabalho de front-end no projeto.
+
+### Adicionado
+- **`docs/revendedoras/SPEC_MENU_MAS.md`** — nova SPEC do hub de navegação `/app/mais` com mapa de destinos, layout (referência Paper), moléculas a criar (`MenuHeader`, `MenuSectionCard`, `MenuRow`, `LogoutButton`), tokens de cor, regras de ativação do bottom nav e edge cases.
+- **`docs/README.md`** — índice atualizado para incluir `SPEC_MENU_MAS.md` na seção 3.
+- **`docs/next_steps.md`** — novo item "Menu 'Más' do PWA" em Prioridade Média.
+
+### Modificado
+- **`CLAUDE.md`** — nova seção §3.1 "Front-end: Paper-first, modular e com design system" tornando obrigatório: (1) consultar Paper MCP antes de qualquer UI, (2) reaproveitar componentes React do design system, (3) não hard-codear valores — usar tokens. Nova seção §3.2 consagrando `git push` padrão para remote `client` (monarcasemijoyas/monarca.git). Checklist de entrega §4 atualizado.
+
+### Efeito
+Qualquer nova tela do PWA agora tem um padrão único e auditável: design validado no Paper → componentes modulares reaproveitados → tokens do design system → push no repo do cliente.
+
+---
+
 ## 2026-04-23 — Remoção dos logs temporários de diagnóstico de convite
 
 ### Contexto

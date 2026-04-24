@@ -19,7 +19,12 @@ export function AppBottomNav() {
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4">
       <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
-          const active = exact ? pathname === href : pathname.startsWith(href);
+          let active: boolean;
+          if (href === "/app/mais") {
+            active = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil");
+          } else {
+            active = exact ? pathname === href : pathname.startsWith(href);
+          }
           return (
             <Link
               key={href}

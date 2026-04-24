@@ -15,6 +15,21 @@ Colors
 - warning: #F59E0B
 - error: #EF4444
 
+App PWA (monarca)
+- appBg: #F5F2EF
+- appCardBg: #FFFFFF
+- appCardBorder: #EBEBEB
+- appDivider: #F5F2EF
+- appIconBg: #F5F2EF
+- appPrimary: #35605A
+- appText: #1A1A1A
+- appMuted: #B4ABA2
+- appAccentGreenBg: #E8F5E9
+- appAccentGreen: #1F7A4A
+- appDangerBg: #FFF5F5
+- appDangerBorder: #FFCDD2
+- appDanger: #D32F2F
+
 Typography
 - Font family: Raleway, System Sans-Serif
 - Font sizes: h1 32px, h2 28px, h3 22px, body 16px, caption 12px

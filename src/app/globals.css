@@ -18,6 +18,21 @@
   --font-raleway: 'Raleway', sans-serif;
   --font-playfair: 'Playfair Display', serif;
 
+  /* ---- App PWA Tokens ---- */
+  --color-app-bg: #F5F2EF;
+  --color-app-card-bg: #FFFFFF;
+  --color-app-card-border: #EBEBEB;
+  --color-app-divider: #F5F2EF;
+  --color-app-icon-bg: #F5F2EF;
+  --color-app-primary: #35605A;
+  --color-app-text: #1A1A1A;
+  --color-app-muted: #B4ABA2;
+  --color-app-accent-green-bg: #E8F5E9;
+  --color-app-accent-green: #1F7A4A;
+  --color-app-danger-bg: #FFF5F5;
+  --color-app-danger-border: #FFCDD2;
+  --color-app-danger: #D32F2F;
+
   /* ---- Shadcn/UI Design Tokens ---- */
   --color-border: #e5e7eb;
   --color-input: #e5e7eb;

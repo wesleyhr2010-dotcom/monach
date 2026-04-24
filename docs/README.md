@@ -53,6 +53,7 @@ PWA mobile-first em espanhol paraguaio.
 | [`revendedoras/SPEC_ONBOARDING_REVENDEDORA.md`](./revendedoras/SPEC_ONBOARDING_REVENDEDORA.md) | Primeiro acesso e completude de perfil |
 | [`revendedoras/SPEC_SEJA_REVENDEDORA.md`](./revendedoras/SPEC_SEJA_REVENDEDORA.md) | Landing pública para captação de leads |
 | [`revendedoras/SPEC_HOME.md`](./revendedoras/SPEC_HOME.md) | Dashboard home com métricas e maleta ativa |
+| [`revendedoras/SPEC_MENU_MAS.md`](./revendedoras/SPEC_MENU_MAS.md) | Hub de navegação `/app/mais` (Más Opciones) |
 | [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md) | Catálogo de produtos |
 | [`revendedoras/SPEC_MALETA.md`](./revendedoras/SPEC_MALETA.md) | Maleta em consignação (ciclo de vida) |
 | [`revendedoras/SPEC_DEVOLUCAO.md`](./revendedoras/SPEC_DEVOLUCAO.md) | Devolução com comprovante |

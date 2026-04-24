@@ -40,9 +40,14 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
                 <nav className="flex-1 p-4 flex flex-col gap-1">
                     {navItems.map((item) => {
-                        const isActive = item.exact
-                            ? pathname === item.href
-                            : pathname.startsWith(item.href);
+                        let isActive: boolean;
+                        if (item.href === "/app/mais") {
+                            isActive = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil");
+                        } else {
+                            isActive = item.exact
+                                ? pathname === item.href
+                                : pathname.startsWith(item.href);
+                        }
                         return (
                             <Link
                                 key={item.href}

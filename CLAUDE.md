@@ -72,16 +72,51 @@ Regras:
 - **Valores de maleta fechada são imutáveis** (snapshots). Nunca recalcular depois do fechamento.
 - **Nunca vazar PII em logs.** Usar helper de sanitização.
 
+## 3.1 Front-end: Paper-first, modular e com design system
+
+Estas regras são **obrigatórias** para qualquer criação ou alteração de UI no projeto.
+
+### Paper é a fonte visual de verdade
+- **Sempre consultar o MCP do Paper antes de implementar qualquer tela, componente ou ajuste visual.** Antes de escrever JSX/CSS, use as tools `mcp__plugin_paper-desktop_paper__*` para abrir o artboard relevante, extrair `get_jsx`, `get_computed_styles`, `get_screenshot` e tokens.
+- Se o usuário passar um link do Paper (`app.paper.design/file/.../{pageId}/{nodeId}`), inspecionar o node antes de propor implementação.
+- Se o design **não existir no Paper**, pausar e perguntar antes de "inventar" layout. Nunca criar tela sem referência visual aprovada.
+- Cores e medidas extraídas do Paper **nunca** entram hard-coded no código de produção: convertem-se em tokens (ver §Design system).
+
+### Modularidade obrigatória
+- **Toda tela é composta por módulos React reutilizáveis.** Nada de componentes monolíticos de uso único.
+- Antes de criar um componente, procurar em `src/components/app/*` e `src/components/admin/*` algo reaproveitável. Se algo similar existir, estender em vez de duplicar.
+- Novas moléculas/organismos vão para `src/components/{scope}/` com props bem definidas e exemplos de uso na SPEC correspondente.
+- Átomos visuais (badge, pill, row, card) devem ser genéricos o suficiente para 2+ telas antes de serem promovidos.
+
+### Design system primeiro
+- Usar sempre tokens definidos em [`docs/design-system/tokens.md`](./docs/design-system/tokens.md) e CSS variables do projeto (`--app-*`, `--admin-*`). Se precisar de um valor que ainda não existe, **adicionar o token antes de usá-lo** — não hard-codear hex/px.
+- Tipografia, espaçamentos, radii, sombras e cores seguem o DS. Raleway é a família padrão do PWA.
+- Se um novo padrão visual surgir do Paper (ex.: variante de card), registrar em [`docs/sistema/SPEC_DESIGN_MODULES.md`](./docs/sistema/SPEC_DESIGN_MODULES.md) na mesma PR.
+
+### Checklist obrigatório antes de commitar front-end
+1. Conferi o artboard correspondente no Paper via MCP.
+2. Reaproveitei componentes existentes (ou justifiquei no PR por que criei novos).
+3. Usei tokens do design system (zero hex/px mágicos no JSX).
+4. SPEC da feature referencia o artboard do Paper e lista os componentes tocados.
+
+## 3.2 Git — remote padrão
+
+- **`git push` padrão vai para o remote `client`** (`https://github.com/monarcasemijoyas/monarca.git`). É o repositório oficial do cliente Monarca.
+- Usar `git push client <branch>` explicitamente. O remote `origin` (fork pessoal do dev) só é usado quando o próprio desenvolvedor pedir, nunca por default.
+- `main` → deploy Vercel em produção. Não forçar push em `main` sem autorização explícita.
+
 ## 4. Antes de concluir qualquer entrega
 
 Checklist mínimo:
 
 1. Código segue a SPEC relevante em `docs/`.
-2. `npm run lint` e `npm test` passam.
-3. `docs/next_steps.md` atualizado (itens marcados, novos itens criados se houver).
-4. `docs/project_overview.md` atualizado se o estado do sistema mudou.
-5. `docs/CHANGELOG.md` tem entrada datada se a mudança é relevante.
-6. Commit message no padrão convencional (`feat:`, `fix:`, `docs:`, `chore:`).
+2. Se houve mudança de UI: Paper MCP consultado + componentes reaproveitados + tokens do design system (ver §3.1).
+3. `npm run lint` e `npm test` passam.
+4. `docs/next_steps.md` atualizado (itens marcados, novos itens criados se houver).
+5. `docs/project_overview.md` atualizado se o estado do sistema mudou.
+6. `docs/CHANGELOG.md` tem entrada datada se a mudança é relevante.
+7. Commit message no padrão convencional (`feat:`, `fix:`, `docs:`, `chore:`).
+8. `git push client <branch>` (remote `client` = repo Monarca).
 
 ---
 
