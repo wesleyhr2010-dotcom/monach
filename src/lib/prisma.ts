@@ -8,6 +8,9 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { withEncryptionExtension } from "./prisma/encrypt-middleware";
 
+// Force recompilation after adding Notificacao model (build cache invalidation)
+const __prismaSchemaVersion = "2026-04-24-notificacao";
+
 function createPrismaClient() {
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
