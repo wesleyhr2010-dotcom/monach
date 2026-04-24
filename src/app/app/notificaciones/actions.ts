@@ -32,6 +32,11 @@ export async function getNotificacoes(): Promise<NotificacaoGrupo> {
   const user = await requireAuth(["REVENDEDORA"]);
   const resellerId = user.profileId!;
 
+  if (!("notificacao" in prisma)) {
+    console.error("[getNotificacoes] prisma.notificacao is undefined");
+    return { hoy: [], ayer: [], anteriores: [] };
+  }
+
   const rows = await prisma.notificacao.findMany({
     where: { reseller_id: resellerId },
     orderBy: { created_at: "desc" },
@@ -72,6 +77,11 @@ export async function marcarComoLida(notificacaoId: string) {
   const user = await requireAuth(["REVENDEDORA"]);
   const resellerId = user.profileId!;
 
+  if (!("notificacao" in prisma)) {
+    console.error("[marcarComoLida] prisma.notificacao is undefined");
+    throw new Error("BUSINESS: Sistema de notificaciones no disponible.");
+  }
+
   // Ownership check: só marca como lida se pertencer ao usuário
   const notif = await prisma.notificacao.findFirst({
     where: { id: notificacaoId, reseller_id: resellerId },
@@ -93,6 +103,12 @@ export async function marcarComoLida(notificacaoId: string) {
 export async function getContagemNaoLidas(): Promise<number> {
   const user = await requireAuth(["REVENDEDORA"]);
   const resellerId = user.profileId!;
+
+  // Fallback seguro se o model ainda não estiver disponível no Prisma Client
+  if (!("notificacao" in prisma)) {
+    console.error("[getContagemNaoLidas] prisma.notificacao is undefined — schema may not be generated yet");
+    return 0;
+  }
 
   const count = await prisma.notificacao.count({
     where: { reseller_id: resellerId, lida: false },
