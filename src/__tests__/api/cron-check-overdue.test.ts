@@ -7,11 +7,21 @@ import { GET } from "@/app/api/cron/check-overdue-maletas/route";
 // Ref: docs/sistema/SPEC_CRON_JOBS.md
 // ============================================
 
+// Mock notificações para evitar deps de OneSignal / preferências
+vi.mock("@/lib/notifications", () => ({
+    notificarRevendedora: vi.fn().mockResolvedValue(null),
+}));
+
 // Mock prisma para não depender de banco em testes de auth
 vi.mock("@/lib/prisma", () => ({
     prisma: {
         maleta: {
-            updateMany: vi.fn().mockResolvedValue({ count: 5 }),
+            findMany: vi.fn().mockResolvedValue([]),
+            updateMany: vi.fn().mockResolvedValue({ count: 0 }),
+        },
+        notificacao: {
+            count: vi.fn().mockResolvedValue(0),
+            create: vi.fn().mockResolvedValue({}),
         },
     },
 }));

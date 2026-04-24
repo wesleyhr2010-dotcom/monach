@@ -42,7 +42,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     {navItems.map((item) => {
                         let isActive: boolean;
                         if (item.href === "/app/mais") {
-                            isActive = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil");
+                            isActive = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones");
                         } else {
                             isActive = item.exact
                                 ? pathname === item.href

@@ -6,6 +6,7 @@ import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
+import { notificarRevendedora } from "@/lib/notifications";
 
 function getMonthBounds() {
     const now = new Date();
@@ -161,6 +162,7 @@ export async function registrarVendaMultipla(inputData: {
     const resellerId = user.profileId!;
 
     const data = registrarVendaMultiplaSchema.parse(inputData);
+    let pontos: { pontos: number; descricao: string } | null = null;
 
     await prisma.$transaction(async (tx) => {
         for (const cartItem of data.itens) {
@@ -197,8 +199,18 @@ export async function registrarVendaMultipla(inputData: {
             });
         }
         
-        await awardPoints(resellerId, 'venda_multipla_maleta', tx);
+        pontos = await awardPoints(resellerId, 'venda_multipla_maleta', tx);
     });
+
+    if (pontos) {
+        await notificarRevendedora({
+            reseller_id: resellerId,
+            tipo: "pontos_ganhos",
+            titulo: "¡Puntos ganados!",
+            mensagem: `¡Ganaste ${pontos.pontos} puntos! ${pontos.descricao}`,
+            dados: { pontos: pontos.pontos, motivo: pontos.descricao },
+        });
+    }
 
     return { success: true };
 }
@@ -292,6 +304,8 @@ export async function registrarVenda(rawInput: {
     const resellerId = user.profileId!;
 
     const input = registrarVendaSchema.parse(rawInput);
+    let pontosVenda: { pontos: number; descricao: string } | null = null;
+    let pontosCompleta: { pontos: number; descricao: string } | null = null;
 
     await prisma.$transaction(async (tx) => {
         const item = await tx.maletaItem.findFirstOrThrow({
@@ -326,7 +340,7 @@ export async function registrarVenda(rawInput: {
         });
 
         // Recompensas da gamificação
-        await awardPoints(resellerId, 'venda_maleta', tx);
+        pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
 
         // Verifica bônus de maleta completa
         const allItems = await tx.maletaItem.findMany({
@@ -335,9 +349,29 @@ export async function registrarVenda(rawInput: {
         
         const todosVendidos = allItems.every(i => i.quantidade_vendida >= i.quantidade_enviada);
         if (todosVendidos) {
-            await awardPoints(resellerId, 'maleta_completa', tx);
+            pontosCompleta = await awardPoints(resellerId, 'maleta_completa', tx);
         }
     });
+
+    // Notificações de pontos (best-effort fora da tx)
+    if (pontosVenda) {
+        await notificarRevendedora({
+            reseller_id: resellerId,
+            tipo: "pontos_ganhos",
+            titulo: "¡Puntos ganados!",
+            mensagem: `¡Ganaste ${pontosVenda.pontos} puntos! ${pontosVenda.descricao}`,
+            dados: { pontos: pontosVenda.pontos, motivo: pontosVenda.descricao },
+        });
+    }
+    if (pontosCompleta) {
+        await notificarRevendedora({
+            reseller_id: resellerId,
+            tipo: "pontos_ganhos",
+            titulo: "¡Puntos ganados!",
+            mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
+            dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
+        });
+    }
 
     return { success: true };
 }

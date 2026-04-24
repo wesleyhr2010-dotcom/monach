@@ -123,6 +123,11 @@ export type SolicitacaoBrinde = Prisma.SolicitacaoBrindeModel
  */
 export type NotificacaoPreferencia = Prisma.NotificacaoPreferenciaModel
 /**
+ * Model Notificacao
+ * 
+ */
+export type Notificacao = Prisma.NotificacaoModel
+/**
  * Model AnalyticsAcesso
  * 
  */

@@ -1,5 +1,43 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Centro de Notificações do PWA (`/app/notificaciones`)
+
+### Contexto
+A SPEC `SPEC_NOTIFICACOES.md` previa um histórico persistente de notificações para a revendedora, agrupado por dia, além das preferências de push (já entregue). Esta entrega implementa a tela de centro de notificações, a tabela de persistência, o helper central de notificações e a instrumentação de todas as ações geradoras definidas na SPEC.
+
+### Criado
+- **`prisma/schema.prisma`** — model `Notificacao` (campos: id, reseller_id, tipo, titulo, mensagem, dados JSON, lida, created_at) + relação em `Reseller` + índices.
+- **`prisma/migrations/20260424000000_add_notificacoes/migration.sql`** — migration manual para criação da tabela `notificacoes`.
+- **`src/lib/notifications.ts`** — helper central:
+  - `criarNotificacao()` — persiste no banco (best-effort, nunca falha o fluxo principal).
+  - `podeEnviarPush()` — verifica `NotificacaoPreferencia` do revendedor para o tipo; defaults da SPEC (`pontos_ganhos` = OFF, demais = ON).
+  - `enviarPushSePermitido()` — envia push via OneSignal apenas se preferência ativa.
+  - `notificarRevendedora()` — combina persistência + push condicional.
+- **`src/app/app/notificaciones/actions.ts`** — Server Actions:
+  - `getNotificacoes()` — retorna notificações do usuário logado agrupadas em `hoy`, `ayer`, `anteriores`.
+  - `marcarComoLida(notificacaoId)` — ownership check antes de atualizar `lida = true`.
+  - `getContagemNaoLidas()` — contagem de notificações não lidas (para badge).
+- **`src/app/app/notificaciones/page.tsx`** — Server Component que busca dados e delega renderização ao `NotificacionesList`.
+- **`src/components/app/NotificacionesList.tsx`** — Client Component com `useOptimistic` para marcação como lida, agrupamento por data e estado vazio.
+- **`src/components/app/NotificacionItem.tsx`** — card de notificação com ícone mapeado por tipo (lucide-react), título, mensagem, hora, CTA com link e dot de não lida interativo.
+
+### Instrumentado (criação de notificações em ações existentes)
+- **`src/app/admin/actions-maletas.ts`** — `criarMaleta` dispara `nova_maleta`; `conferirEFecharMaleta` dispara `acerto_confirmado` (com comissão formatada) e `pontos_ganhos` (devolucao_prazo / maleta_completa).
+- **`src/app/app/actions-revendedora.ts`** — `registrarVenda` e `registrarVendaMultipla` disparam `pontos_ganhos` após a transaction (capturando retorno de `awardPoints`).
+- **`src/lib/gamificacao.ts`** — `awardPoints` agora retorna `{ pontos, descricao } | null`, permitindo que quem chame dispare notificações.
+- **`src/app/api/cron/check-overdue-maletas/route.ts`** — expandido para além de `updateMany`:
+  - Busca maletas que ficaram atrasadas → notifica `maleta_atrasada` por maleta.
+  - Busca maletas com prazo em ≤ 2 dias → notifica `prazo_proximo` com deduplicação (só notifica se não houver notificação do mesmo tipo para a mesma maleta nas últimas 24h).
+
+### Modificado
+- **`src/app/app/mais/page.tsx`** — adicionado link "Centro de Notificaciones" com badge de não lidas; renomeado link de preferências para "Config. Notificaciones Push".
+- **`src/components/app/AppBottomNav.tsx`** e **`src/components/app/AppShell.tsx`** — aba "Más" ativa também em `/app/notificaciones*`.
+- **`src/__tests__/api/cron-check-overdue.test.ts`** — mocks atualizados para cobrir `findMany`, `notificacao.count/create` e `notificarRevendedora`.
+- **`docs/next_steps.md`** — item "Histórico persistente de notificações no PWA" marcado como `[x]`.
+- **`docs/project_overview.md`** — Portal Revendedora atualizado com descrição do Centro de Notificações; status refletindo a entrega.
+
+---
+
 ## 2026-04-24 — Analytics do Grupo (`/admin/analytics`)
 
 ### Contexto

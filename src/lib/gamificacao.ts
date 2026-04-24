@@ -100,14 +100,14 @@ export async function awardPoints(
     ExtendedPrismaClient,
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
   >
-) {
+): Promise<{ pontos: number; descricao: string } | null> {
   const db = tx || prisma;
 
   const regra = await db.gamificacaoRegra.findUnique({
     where: { acao },
   });
 
-  if (!regra || !regra.ativo || regra.pontos <= 0) return;
+  if (!regra || !regra.ativo || regra.pontos <= 0) return null;
 
   const now = new Date();
 
@@ -116,7 +116,7 @@ export async function awardPoints(
     const existing = await db.pontosExtrato.count({
       where: { reseller_id: resellerId, regra_id: regra.id },
     });
-    if (existing > 0) return;
+    if (existing > 0) return null;
   }
 
   // Tipo 'diario' — respeita limite diário
@@ -129,7 +129,7 @@ export async function awardPoints(
         created_at: { gte: startOfDay },
       },
     });
-    if (countToday >= regra.limite_diario) return;
+    if (countToday >= regra.limite_diario) return null;
   }
 
   // Tipo 'mensal' — só permite 1 vez por mês
@@ -142,7 +142,7 @@ export async function awardPoints(
         created_at: { gte: startOfMonth },
       },
     });
-    if (countMonth > 0) return;
+    if (countMonth > 0) return null;
   }
 
   await db.pontosExtrato.create({
@@ -153,4 +153,6 @@ export async function awardPoints(
       descricao: regra.nome,
     },
   });
+
+  return { pontos: regra.pontos, descricao: regra.nome };
 }

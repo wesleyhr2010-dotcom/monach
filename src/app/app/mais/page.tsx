@@ -5,6 +5,7 @@ import { MenuHeader } from "@/components/app/MenuHeader";
 import { MenuSectionCard } from "@/components/app/MenuSectionCard";
 import { MenuRow } from "@/components/app/MenuRow";
 import { LogoutButton } from "@/components/app/LogoutButton";
+import { getContagemNaoLidas } from "@/app/app/notificaciones/actions";
 import {
   UserCog,
   Bell,
@@ -14,6 +15,7 @@ import {
   Share2,
   MessageCircle,
   BookOpen,
+  Inbox,
 } from "lucide-react";
 
 const ICON_PROPS = { size: 16, strokeWidth: 1.5 } as const;
@@ -22,7 +24,7 @@ export default async function MaisPage() {
   const user = await requireAuth(["REVENDEDORA"]);
   const resellerId = user.profileId!;
 
-  const [reseller, pendingDocs] = await Promise.all([
+  const [reseller, pendingDocs, unreadCount] = await Promise.all([
     prisma.reseller.findUnique({
       where: { id: resellerId },
       select: { slug: true },
@@ -30,6 +32,7 @@ export default async function MaisPage() {
     prisma.resellerDocumento.count({
       where: { reseller_id: resellerId, status: "pendente" },
     }),
+    getContagemNaoLidas(),
   ]);
 
   if (!reseller) {
@@ -45,8 +48,14 @@ export default async function MaisPage() {
         <MenuSectionCard label="Mi Cuenta">
           <MenuRow icon={<UserCog {...ICON_PROPS} />} label="Editar Perfil" href="/app/perfil" />
           <MenuRow
+            icon={<Inbox {...ICON_PROPS} />}
+            label="Centro de Notificaciones"
+            href="/app/notificaciones"
+            dot={unreadCount > 0}
+          />
+          <MenuRow
             icon={<Bell {...ICON_PROPS} />}
-            label="Notificaciones"
+            label="Config. Notificaciones Push"
             href="/app/perfil/notificaciones"
           />
           <MenuRow

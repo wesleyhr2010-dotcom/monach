@@ -7,6 +7,7 @@ export type { MaletaListItem, MaletaDetail, MaletaItemDetail } from "@/lib/types
 import { mapMaletaToListItem, mapMaletaToDetail } from "@/lib/mappers/maleta.mapper";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { awardPoints } from "@/lib/gamificacao";
+import { notificarRevendedora } from "@/lib/notifications";
 import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validators/maleta.schema";
 import { requireAuth } from "@/lib/user";
 import type { Role } from "@/lib/user";
@@ -271,6 +272,15 @@ export async function criarMaleta(
                 `${reseller.name}, se te envió una nueva consignación. ¡Revisa las semijoyas y plazos!`
             ).catch((err: unknown) => console.error("[Push] Falha no disparo:", err));
         }
+
+        await notificarRevendedora({
+            reseller_id: resellerId,
+            tipo: "nova_maleta",
+            titulo: "Nueva consignación asignada",
+            mensagem: `Consig. #${maleta.numero} lista para retirar.`,
+            dados: { cta_url: `/app/maleta/${maleta.id}`, maleta_id: maleta.id },
+            auth_user_id: reseller?.auth_user_id,
+        });
 
         return { success: true, id: maleta.id };
     } catch (err: unknown) {
@@ -591,10 +601,14 @@ export async function conferirEFecharMaleta(
         await prisma.$transaction(ops);
 
         // 4. Gamification — on-time return? (outside transaction — best-effort)
+        let pontosDevolucao: { pontos: number; descricao: string } | null = null;
+        let pontosCompleta: { pontos: number; descricao: string } | null = null;
+
         if (new Date() <= maleta.data_limite) {
-            awardPoints(maleta.reseller.id, "devolucao_prazo").catch((err: unknown) =>
-                console.error("[Gamificação] Falha ao atribuir XP devolucao_prazo:", err)
-            );
+            pontosDevolucao = await awardPoints(maleta.reseller.id, "devolucao_prazo").catch((err: unknown) => {
+                console.error("[Gamificação] Falha ao atribuir XP devolucao_prazo:", err);
+                return null;
+            });
         }
 
         // 5. Gamification — 100% sold?
@@ -602,9 +616,10 @@ export async function conferirEFecharMaleta(
             ? (valorTotalVendido / valorTotalEnviado) * 100
             : 0;
         if (percentualVendido >= 100) {
-            awardPoints(maleta.reseller.id, "maleta_completa").catch((err: unknown) =>
-                console.error("[Gamificação] Falha ao atribuir XP maleta_completa:", err)
-            );
+            pontosCompleta = await awardPoints(maleta.reseller.id, "maleta_completa").catch((err: unknown) => {
+                console.error("[Gamificação] Falha ao atribuir XP maleta_completa:", err);
+                return null;
+            });
         }
 
         // 6. Push notification (outside transaction — best-effort)
@@ -614,6 +629,43 @@ export async function conferirEFecharMaleta(
                 "✅ Consignación cerrada",
                 "Tu consignación fue conferida y cerrada exitosamente. Habla con tu consultora sobre el pago."
             ).catch((err: unknown) => console.error("[Push] Falha:", err));
+        }
+
+        const comissaoStr = new Intl.NumberFormat("es-PY", {
+            style: "currency",
+            currency: "PYG",
+            maximumFractionDigits: 0,
+        }).format(comissaoRevendedora);
+
+        await notificarRevendedora({
+            reseller_id: maleta.reseller.id,
+            tipo: "acerto_confirmado",
+            titulo: "Acerto confirmado",
+            mensagem: `¡Listo! Tu consig. #${maleta.numero} fue confirmada. Comisión: ${comissaoStr}.`,
+            dados: { cta_url: `/app/maleta/${maleta.id}`, maleta_id: maleta.id },
+            auth_user_id: maleta.reseller.auth_user_id,
+        });
+
+        // Notificações de pontos (best-effort)
+        if (pontosDevolucao) {
+            await notificarRevendedora({
+                reseller_id: maleta.reseller.id,
+                tipo: "pontos_ganhos",
+                titulo: "¡Puntos ganados!",
+                mensagem: `¡Ganaste ${pontosDevolucao.pontos} puntos! ${pontosDevolucao.descricao}`,
+                dados: { pontos: pontosDevolucao.pontos, motivo: pontosDevolucao.descricao },
+                auth_user_id: maleta.reseller.auth_user_id,
+            });
+        }
+        if (pontosCompleta) {
+            await notificarRevendedora({
+                reseller_id: maleta.reseller.id,
+                tipo: "pontos_ganhos",
+                titulo: "¡Puntos ganados!",
+                mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
+                dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
+                auth_user_id: maleta.reseller.auth_user_id,
+            });
         }
 
         return { success: true };

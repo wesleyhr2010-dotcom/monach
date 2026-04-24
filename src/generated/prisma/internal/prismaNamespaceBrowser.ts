@@ -72,6 +72,7 @@ export const ModelName = {
   Brinde: 'Brinde',
   SolicitacaoBrinde: 'SolicitacaoBrinde',
   NotificacaoPreferencia: 'NotificacaoPreferencia',
+  Notificacao: 'Notificacao',
   AnalyticsAcesso: 'AnalyticsAcesso',
   AnalyticsDiario: 'AnalyticsDiario',
   RevendedoraLead: 'RevendedoraLead'
@@ -409,6 +410,20 @@ export const NotificacaoPreferenciaScalarFieldEnum = {
 } as const
 
 export type NotificacaoPreferenciaScalarFieldEnum = (typeof NotificacaoPreferenciaScalarFieldEnum)[keyof typeof NotificacaoPreferenciaScalarFieldEnum]
+
+
+export const NotificacaoScalarFieldEnum = {
+  id: 'id',
+  reseller_id: 'reseller_id',
+  tipo: 'tipo',
+  titulo: 'titulo',
+  mensagem: 'mensagem',
+  dados: 'dados',
+  lida: 'lida',
+  created_at: 'created_at'
+} as const
+
+export type NotificacaoScalarFieldEnum = (typeof NotificacaoScalarFieldEnum)[keyof typeof NotificacaoScalarFieldEnum]
 
 
 export const AnalyticsAcessoScalarFieldEnum = {

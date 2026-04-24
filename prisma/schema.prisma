@@ -103,6 +103,7 @@ model Reseller {
   documentos             ResellerDocumento[]
   dados_bancarios        DadosBancarios?
   notif_preferencias     NotificacaoPreferencia?
+  notificacoes           Notificacao[]
   solicitacoes_brinde    SolicitacaoBrinde[]
   vendas                 VendaMaleta[]
   leads_atribuidos       RevendedoraLead[]      @relation("LeadsAtribuidos")
@@ -505,6 +506,24 @@ model NotificacaoPreferencia {
   reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
 
   @@map("notificacao_preferencias")
+}
+
+model Notificacao {
+  id          String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  reseller_id String   @db.Uuid
+  tipo        String
+  titulo      String
+  mensagem    String
+  dados       Json     @default("{}")
+  lida        Boolean  @default(false)
+  created_at  DateTime @default(now()) @db.Timestamptz()
+
+  reseller Reseller @relation(fields: [reseller_id], references: [id], onDelete: Cascade)
+
+  @@index([reseller_id])
+  @@index([created_at])
+  @@index([lida])
+  @@map("notificacoes")
 }
 
 // ============================================

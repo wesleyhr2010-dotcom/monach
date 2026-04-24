@@ -423,6 +423,7 @@ export type ResellerWhereInput = {
   documentos?: Prisma.ResellerDocumentoListRelationFilter
   dados_bancarios?: Prisma.XOR<Prisma.DadosBancariosNullableScalarRelationFilter, Prisma.DadosBancariosWhereInput> | null
   notif_preferencias?: Prisma.XOR<Prisma.NotificacaoPreferenciaNullableScalarRelationFilter, Prisma.NotificacaoPreferenciaWhereInput> | null
+  notificacoes?: Prisma.NotificacaoListRelationFilter
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeListRelationFilter
   vendas?: Prisma.VendaMaletaListRelationFilter
   leads_atribuidos?: Prisma.RevendedoraLeadListRelationFilter
@@ -470,6 +471,7 @@ export type ResellerOrderByWithRelationInput = {
   documentos?: Prisma.ResellerDocumentoOrderByRelationAggregateInput
   dados_bancarios?: Prisma.DadosBancariosOrderByWithRelationInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaOrderByWithRelationInput
+  notificacoes?: Prisma.NotificacaoOrderByRelationAggregateInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeOrderByRelationAggregateInput
   vendas?: Prisma.VendaMaletaOrderByRelationAggregateInput
   leads_atribuidos?: Prisma.RevendedoraLeadOrderByRelationAggregateInput
@@ -520,6 +522,7 @@ export type ResellerWhereUniqueInput = Prisma.AtLeast<{
   documentos?: Prisma.ResellerDocumentoListRelationFilter
   dados_bancarios?: Prisma.XOR<Prisma.DadosBancariosNullableScalarRelationFilter, Prisma.DadosBancariosWhereInput> | null
   notif_preferencias?: Prisma.XOR<Prisma.NotificacaoPreferenciaNullableScalarRelationFilter, Prisma.NotificacaoPreferenciaWhereInput> | null
+  notificacoes?: Prisma.NotificacaoListRelationFilter
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeListRelationFilter
   vendas?: Prisma.VendaMaletaListRelationFilter
   leads_atribuidos?: Prisma.RevendedoraLeadListRelationFilter
@@ -640,6 +643,7 @@ export type ResellerCreateInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -686,6 +690,7 @@ export type ResellerUncheckedCreateInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -732,6 +737,7 @@ export type ResellerUpdateInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -778,6 +784,7 @@ export type ResellerUncheckedUpdateInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -1218,6 +1225,20 @@ export type ResellerUpdateOneRequiredWithoutNotif_preferenciasNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutNotif_preferenciasInput, Prisma.ResellerUpdateWithoutNotif_preferenciasInput>, Prisma.ResellerUncheckedUpdateWithoutNotif_preferenciasInput>
 }
 
+export type ResellerCreateNestedOneWithoutNotificacoesInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutNotificacoesInput, Prisma.ResellerUncheckedCreateWithoutNotificacoesInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutNotificacoesInput
+  connect?: Prisma.ResellerWhereUniqueInput
+}
+
+export type ResellerUpdateOneRequiredWithoutNotificacoesNestedInput = {
+  create?: Prisma.XOR<Prisma.ResellerCreateWithoutNotificacoesInput, Prisma.ResellerUncheckedCreateWithoutNotificacoesInput>
+  connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutNotificacoesInput
+  upsert?: Prisma.ResellerUpsertWithoutNotificacoesInput
+  connect?: Prisma.ResellerWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ResellerUpdateToOneWithWhereWithoutNotificacoesInput, Prisma.ResellerUpdateWithoutNotificacoesInput>, Prisma.ResellerUncheckedUpdateWithoutNotificacoesInput>
+}
+
 export type ResellerCreateNestedOneWithoutAnalytics_acessosInput = {
   create?: Prisma.XOR<Prisma.ResellerCreateWithoutAnalytics_acessosInput, Prisma.ResellerUncheckedCreateWithoutAnalytics_acessosInput>
   connectOrCreate?: Prisma.ResellerCreateOrConnectWithoutAnalytics_acessosInput
@@ -1306,6 +1327,7 @@ export type ResellerCreateWithoutRevendedoras_sob_mimInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -1351,6 +1373,7 @@ export type ResellerUncheckedCreateWithoutRevendedoras_sob_mimInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -1401,6 +1424,7 @@ export type ResellerCreateWithoutColaboradoraInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -1446,6 +1470,7 @@ export type ResellerUncheckedCreateWithoutColaboradoraInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -1512,6 +1537,7 @@ export type ResellerUpdateWithoutRevendedoras_sob_mimInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -1557,6 +1583,7 @@ export type ResellerUncheckedUpdateWithoutRevendedoras_sob_mimInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -1654,6 +1681,7 @@ export type ResellerCreateWithoutDocumentosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -1699,6 +1727,7 @@ export type ResellerUncheckedCreateWithoutDocumentosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -1760,6 +1789,7 @@ export type ResellerUpdateWithoutDocumentosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -1805,6 +1835,7 @@ export type ResellerUncheckedUpdateWithoutDocumentosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -1850,6 +1881,7 @@ export type ResellerCreateWithoutDados_bancariosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -1895,6 +1927,7 @@ export type ResellerUncheckedCreateWithoutDados_bancariosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -1956,6 +1989,7 @@ export type ResellerUpdateWithoutDados_bancariosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -2001,6 +2035,7 @@ export type ResellerUncheckedUpdateWithoutDados_bancariosInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -2046,6 +2081,7 @@ export type ResellerCreateWithoutReseller_productsInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -2091,6 +2127,7 @@ export type ResellerUncheckedCreateWithoutReseller_productsInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -2152,6 +2189,7 @@ export type ResellerUpdateWithoutReseller_productsInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -2197,6 +2235,7 @@ export type ResellerUncheckedUpdateWithoutReseller_productsInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -2242,6 +2281,7 @@ export type ResellerCreateWithoutMaletasInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -2287,6 +2327,7 @@ export type ResellerUncheckedCreateWithoutMaletasInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -2348,6 +2389,7 @@ export type ResellerUpdateWithoutMaletasInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -2393,6 +2435,7 @@ export type ResellerUncheckedUpdateWithoutMaletasInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -2439,6 +2482,7 @@ export type ResellerCreateWithoutVendasInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
@@ -2484,6 +2528,7 @@ export type ResellerUncheckedCreateWithoutVendasInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
@@ -2545,6 +2590,7 @@ export type ResellerUpdateWithoutVendasInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
@@ -2590,6 +2636,7 @@ export type ResellerUncheckedUpdateWithoutVendasInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
@@ -2634,6 +2681,7 @@ export type ResellerCreateWithoutPontos_extratoInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -2679,6 +2727,7 @@ export type ResellerUncheckedCreateWithoutPontos_extratoInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -2740,6 +2789,7 @@ export type ResellerUpdateWithoutPontos_extratoInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -2785,6 +2835,7 @@ export type ResellerUncheckedUpdateWithoutPontos_extratoInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -2830,6 +2881,7 @@ export type ResellerCreateWithoutResgatesInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -2875,6 +2927,7 @@ export type ResellerUncheckedCreateWithoutResgatesInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -2936,6 +2989,7 @@ export type ResellerUpdateWithoutResgatesInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -2981,6 +3035,7 @@ export type ResellerUncheckedUpdateWithoutResgatesInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -3027,6 +3082,7 @@ export type ResellerCreateWithoutSolicitacoes_brindeInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
 }
@@ -3072,6 +3128,7 @@ export type ResellerUncheckedCreateWithoutSolicitacoes_brindeInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
 }
@@ -3133,6 +3190,7 @@ export type ResellerUpdateWithoutSolicitacoes_brindeInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
 }
@@ -3178,6 +3236,7 @@ export type ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
 }
@@ -3222,6 +3281,7 @@ export type ResellerCreateWithoutNotif_preferenciasInput = {
   analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -3267,6 +3327,7 @@ export type ResellerUncheckedCreateWithoutNotif_preferenciasInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -3328,6 +3389,7 @@ export type ResellerUpdateWithoutNotif_preferenciasInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -3373,6 +3435,207 @@ export type ResellerUncheckedUpdateWithoutNotif_preferenciasInput = {
   analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerCreateWithoutNotificacoesInput = {
+  id?: string
+  auth_user_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  onboarding_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  colaboradora?: Prisma.ResellerCreateNestedOneWithoutRevendedoras_sob_mimInput
+  revendedoras_sob_mim?: Prisma.ResellerCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerUncheckedCreateWithoutNotificacoesInput = {
+  id?: string
+  auth_user_id?: string | null
+  colaboradora_id?: string | null
+  name: string
+  email?: string
+  whatsapp: string
+  avatar_url?: string
+  bio?: string
+  slug: string
+  role?: $Enums.UserRole
+  taxa_comissao?: runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: string
+  endereco_logradouro?: string
+  endereco_numero?: string
+  endereco_complemento?: string
+  endereco_cidade?: string
+  endereco_estado?: string
+  cedula?: string
+  instagram?: string
+  edad?: string
+  estado_civil?: string
+  hijos?: string
+  empresa?: string
+  informconf?: string
+  is_active?: boolean
+  perfil_completo?: boolean
+  onboarding_completo?: boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Date | string
+  updated_at?: Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedCreateNestedManyWithoutColaboradoraInput
+  reseller_products?: Prisma.ResellerProductUncheckedCreateNestedManyWithoutResellerInput
+  maletas?: Prisma.MaletaUncheckedCreateNestedManyWithoutResellerInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutResellerInput
+  resgates?: Prisma.ResgateUncheckedCreateNestedManyWithoutResellerInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedCreateNestedManyWithoutResellerInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedCreateNestedManyWithoutResellerInput
+  documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
+  vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
+}
+
+export type ResellerCreateOrConnectWithoutNotificacoesInput = {
+  where: Prisma.ResellerWhereUniqueInput
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutNotificacoesInput, Prisma.ResellerUncheckedCreateWithoutNotificacoesInput>
+}
+
+export type ResellerUpsertWithoutNotificacoesInput = {
+  update: Prisma.XOR<Prisma.ResellerUpdateWithoutNotificacoesInput, Prisma.ResellerUncheckedUpdateWithoutNotificacoesInput>
+  create: Prisma.XOR<Prisma.ResellerCreateWithoutNotificacoesInput, Prisma.ResellerUncheckedCreateWithoutNotificacoesInput>
+  where?: Prisma.ResellerWhereInput
+}
+
+export type ResellerUpdateToOneWithWhereWithoutNotificacoesInput = {
+  where?: Prisma.ResellerWhereInput
+  data: Prisma.XOR<Prisma.ResellerUpdateWithoutNotificacoesInput, Prisma.ResellerUncheckedUpdateWithoutNotificacoesInput>
+}
+
+export type ResellerUpdateWithoutNotificacoesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  colaboradora?: Prisma.ResellerUpdateOneWithoutRevendedoras_sob_mimNestedInput
+  revendedoras_sob_mim?: Prisma.ResellerUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
+  vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
+  leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
+}
+
+export type ResellerUncheckedUpdateWithoutNotificacoesInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  auth_user_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  colaboradora_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
+  whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  avatar_url?: Prisma.StringFieldUpdateOperationsInput | string
+  bio?: Prisma.StringFieldUpdateOperationsInput | string
+  slug?: Prisma.StringFieldUpdateOperationsInput | string
+  role?: Prisma.EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+  taxa_comissao?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
+  endereco_cep?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_logradouro?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_numero?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_complemento?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_cidade?: Prisma.StringFieldUpdateOperationsInput | string
+  endereco_estado?: Prisma.StringFieldUpdateOperationsInput | string
+  cedula?: Prisma.StringFieldUpdateOperationsInput | string
+  instagram?: Prisma.StringFieldUpdateOperationsInput | string
+  edad?: Prisma.StringFieldUpdateOperationsInput | string
+  estado_civil?: Prisma.StringFieldUpdateOperationsInput | string
+  hijos?: Prisma.StringFieldUpdateOperationsInput | string
+  empresa?: Prisma.StringFieldUpdateOperationsInput | string
+  informconf?: Prisma.StringFieldUpdateOperationsInput | string
+  is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  revendedoras_sob_mim?: Prisma.ResellerUncheckedUpdateManyWithoutColaboradoraNestedInput
+  reseller_products?: Prisma.ResellerProductUncheckedUpdateManyWithoutResellerNestedInput
+  maletas?: Prisma.MaletaUncheckedUpdateManyWithoutResellerNestedInput
+  pontos_extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutResellerNestedInput
+  resgates?: Prisma.ResgateUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_acessos?: Prisma.AnalyticsAcessoUncheckedUpdateManyWithoutResellerNestedInput
+  analytics_diario?: Prisma.AnalyticsDiarioUncheckedUpdateManyWithoutResellerNestedInput
+  documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
+  dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
+  notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -3418,6 +3681,7 @@ export type ResellerCreateWithoutAnalytics_acessosInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -3463,6 +3727,7 @@ export type ResellerUncheckedCreateWithoutAnalytics_acessosInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -3524,6 +3789,7 @@ export type ResellerUpdateWithoutAnalytics_acessosInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -3569,6 +3835,7 @@ export type ResellerUncheckedUpdateWithoutAnalytics_acessosInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -3614,6 +3881,7 @@ export type ResellerCreateWithoutAnalytics_diarioInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadCreateNestedManyWithoutColaboradoraInput
@@ -3659,6 +3927,7 @@ export type ResellerUncheckedCreateWithoutAnalytics_diarioInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedCreateNestedManyWithoutColaboradoraInput
@@ -3720,6 +3989,7 @@ export type ResellerUpdateWithoutAnalytics_diarioInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -3765,6 +4035,7 @@ export type ResellerUncheckedUpdateWithoutAnalytics_diarioInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -3811,6 +4082,7 @@ export type ResellerCreateWithoutLeads_atribuidosInput = {
   documentos?: Prisma.ResellerDocumentoCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaCreateNestedManyWithoutResellerInput
 }
@@ -3856,6 +4128,7 @@ export type ResellerUncheckedCreateWithoutLeads_atribuidosInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedCreateNestedManyWithoutResellerInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedCreateNestedOneWithoutResellerInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedCreateNestedOneWithoutResellerInput
+  notificacoes?: Prisma.NotificacaoUncheckedCreateNestedManyWithoutResellerInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedCreateNestedManyWithoutResellerInput
   vendas?: Prisma.VendaMaletaUncheckedCreateNestedManyWithoutResellerInput
 }
@@ -3917,6 +4190,7 @@ export type ResellerUpdateWithoutLeads_atribuidosInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
 }
@@ -3962,6 +4236,7 @@ export type ResellerUncheckedUpdateWithoutLeads_atribuidosInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
 }
@@ -4038,6 +4313,7 @@ export type ResellerUpdateWithoutColaboradoraInput = {
   documentos?: Prisma.ResellerDocumentoUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUpdateManyWithoutColaboradoraNestedInput
@@ -4083,6 +4359,7 @@ export type ResellerUncheckedUpdateWithoutColaboradoraInput = {
   documentos?: Prisma.ResellerDocumentoUncheckedUpdateManyWithoutResellerNestedInput
   dados_bancarios?: Prisma.DadosBancariosUncheckedUpdateOneWithoutResellerNestedInput
   notif_preferencias?: Prisma.NotificacaoPreferenciaUncheckedUpdateOneWithoutResellerNestedInput
+  notificacoes?: Prisma.NotificacaoUncheckedUpdateManyWithoutResellerNestedInput
   solicitacoes_brinde?: Prisma.SolicitacaoBrindeUncheckedUpdateManyWithoutResellerNestedInput
   vendas?: Prisma.VendaMaletaUncheckedUpdateManyWithoutResellerNestedInput
   leads_atribuidos?: Prisma.RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraNestedInput
@@ -4134,6 +4411,7 @@ export type ResellerCountOutputType = {
   analytics_acessos: number
   analytics_diario: number
   documentos: number
+  notificacoes: number
   solicitacoes_brinde: number
   vendas: number
   leads_atribuidos: number
@@ -4148,6 +4426,7 @@ export type ResellerCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensio
   analytics_acessos?: boolean | ResellerCountOutputTypeCountAnalytics_acessosArgs
   analytics_diario?: boolean | ResellerCountOutputTypeCountAnalytics_diarioArgs
   documentos?: boolean | ResellerCountOutputTypeCountDocumentosArgs
+  notificacoes?: boolean | ResellerCountOutputTypeCountNotificacoesArgs
   solicitacoes_brinde?: boolean | ResellerCountOutputTypeCountSolicitacoes_brindeArgs
   vendas?: boolean | ResellerCountOutputTypeCountVendasArgs
   leads_atribuidos?: boolean | ResellerCountOutputTypeCountLeads_atribuidosArgs
@@ -4222,6 +4501,13 @@ export type ResellerCountOutputTypeCountDocumentosArgs<ExtArgs extends runtime.T
 /**
  * ResellerCountOutputType without action
  */
+export type ResellerCountOutputTypeCountNotificacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.NotificacaoWhereInput
+}
+
+/**
+ * ResellerCountOutputType without action
+ */
 export type ResellerCountOutputTypeCountSolicitacoes_brindeArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   where?: Prisma.SolicitacaoBrindeWhereInput
 }
@@ -4283,6 +4569,7 @@ export type ResellerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   documentos?: boolean | Prisma.Reseller$documentosArgs<ExtArgs>
   dados_bancarios?: boolean | Prisma.Reseller$dados_bancariosArgs<ExtArgs>
   notif_preferencias?: boolean | Prisma.Reseller$notif_preferenciasArgs<ExtArgs>
+  notificacoes?: boolean | Prisma.Reseller$notificacoesArgs<ExtArgs>
   solicitacoes_brinde?: boolean | Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>
   vendas?: boolean | Prisma.Reseller$vendasArgs<ExtArgs>
   leads_atribuidos?: boolean | Prisma.Reseller$leads_atribuidosArgs<ExtArgs>
@@ -4403,6 +4690,7 @@ export type ResellerInclude<ExtArgs extends runtime.Types.Extensions.InternalArg
   documentos?: boolean | Prisma.Reseller$documentosArgs<ExtArgs>
   dados_bancarios?: boolean | Prisma.Reseller$dados_bancariosArgs<ExtArgs>
   notif_preferencias?: boolean | Prisma.Reseller$notif_preferenciasArgs<ExtArgs>
+  notificacoes?: boolean | Prisma.Reseller$notificacoesArgs<ExtArgs>
   solicitacoes_brinde?: boolean | Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>
   vendas?: boolean | Prisma.Reseller$vendasArgs<ExtArgs>
   leads_atribuidos?: boolean | Prisma.Reseller$leads_atribuidosArgs<ExtArgs>
@@ -4429,6 +4717,7 @@ export type $ResellerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     documentos: Prisma.$ResellerDocumentoPayload<ExtArgs>[]
     dados_bancarios: Prisma.$DadosBancariosPayload<ExtArgs> | null
     notif_preferencias: Prisma.$NotificacaoPreferenciaPayload<ExtArgs> | null
+    notificacoes: Prisma.$NotificacaoPayload<ExtArgs>[]
     solicitacoes_brinde: Prisma.$SolicitacaoBrindePayload<ExtArgs>[]
     vendas: Prisma.$VendaMaletaPayload<ExtArgs>[]
     leads_atribuidos: Prisma.$RevendedoraLeadPayload<ExtArgs>[]
@@ -4869,6 +5158,7 @@ export interface Prisma__ResellerClient<T, Null = never, ExtArgs extends runtime
   documentos<T extends Prisma.Reseller$documentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$documentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$ResellerDocumentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   dados_bancarios<T extends Prisma.Reseller$dados_bancariosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$dados_bancariosArgs<ExtArgs>>): Prisma.Prisma__DadosBancariosClient<runtime.Types.Result.GetResult<Prisma.$DadosBancariosPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   notif_preferencias<T extends Prisma.Reseller$notif_preferenciasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$notif_preferenciasArgs<ExtArgs>>): Prisma.Prisma__NotificacaoPreferenciaClient<runtime.Types.Result.GetResult<Prisma.$NotificacaoPreferenciaPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  notificacoes<T extends Prisma.Reseller$notificacoesArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$notificacoesArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$NotificacaoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   solicitacoes_brinde<T extends Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$solicitacoes_brindeArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SolicitacaoBrindePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   vendas<T extends Prisma.Reseller$vendasArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$vendasArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VendaMaletaPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   leads_atribuidos<T extends Prisma.Reseller$leads_atribuidosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Reseller$leads_atribuidosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$RevendedoraLeadPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -5573,6 +5863,30 @@ export type Reseller$notif_preferenciasArgs<ExtArgs extends runtime.Types.Extens
    */
   include?: Prisma.NotificacaoPreferenciaInclude<ExtArgs> | null
   where?: Prisma.NotificacaoPreferenciaWhereInput
+}
+
+/**
+ * Reseller.notificacoes
+ */
+export type Reseller$notificacoesArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Notificacao
+   */
+  select?: Prisma.NotificacaoSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Notificacao
+   */
+  omit?: Prisma.NotificacaoOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.NotificacaoInclude<ExtArgs> | null
+  where?: Prisma.NotificacaoWhereInput
+  orderBy?: Prisma.NotificacaoOrderByWithRelationInput | Prisma.NotificacaoOrderByWithRelationInput[]
+  cursor?: Prisma.NotificacaoWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.NotificacaoScalarFieldEnum | Prisma.NotificacaoScalarFieldEnum[]
 }
 
 /**
