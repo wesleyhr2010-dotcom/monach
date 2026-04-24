@@ -56,7 +56,10 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     const isAdminRoute = url.pathname.startsWith("/admin")
-    const isAdminLoginPage = url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")
+    const isAdminResetPage = url.pathname.startsWith("/admin/login/reset-password")
+    const isAdminLoginPage =
+        (url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")) &&
+        !isAdminResetPage
     const isAppRoute = url.pathname.startsWith("/app")
     const isAppLoginPage = url.pathname.startsWith("/app/login")
     const isAppResetPage = url.pathname.startsWith("/app/nueva-contrasena")
