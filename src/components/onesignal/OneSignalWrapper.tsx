@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import OneSignal from "react-onesignal";
 import { createBrowserClient } from "@supabase/ssr";
 
@@ -9,36 +9,43 @@ export default function OneSignalWrapper() {
     const isDev = process.env.NODE_ENV === "development";
     const [debugMsg, setDebugMsg] = useState<string | null>(null);
 
-    const showLog = (msg: string) => {
+    const showLog = useCallback((msg: string) => {
         if (!isDev) return;
         setDebugMsg((prev) => (prev ? `${prev}\n${msg}` : msg));
-    };
+    }, [isDev]);
+
+    const scheduleLog = useCallback((msg: string) => {
+        queueMicrotask(() => {
+            showLog(msg);
+        });
+    }, [showLog]);
 
     useEffect(() => {
-
-
         if (initialized.current) return;
 
         const appId = process.env.NEXT_PUBLIC_ONESIGNAL_APP_ID;
         if (!appId) {
-            showLog("❌ NEXT_PUBLIC_ONESIGNAL_APP_ID ausente!");
+            scheduleLog("❌ NEXT_PUBLIC_ONESIGNAL_APP_ID ausente!");
             return;
         }
-        showLog(`AppID: ${appId.substring(0, 8)}...`);
+        scheduleLog(`AppID: ${appId.substring(0, 8)}...`);
 
         // Detectar modo standalone (PWA instalado)
+        const maybeStandaloneNavigator = navigator as Navigator & {
+            standalone?: boolean;
+        };
         const isStandalone =
             window.matchMedia("(display-mode: standalone)").matches ||
-            (navigator as any).standalone === true;
+            maybeStandaloneNavigator.standalone === true;
 
         if (!isStandalone) {
-            showLog("⚠️ Modo browser — OneSignal só funciona na PWA instalada.");
+            scheduleLog("⚠️ Modo browser — OneSignal só funciona na PWA instalada.");
             return;
         }
 
         const initOneSignal = async () => {
             try {
-                showLog("[1] Iniciando OneSignal.init...");
+                scheduleLog("[1] Iniciando OneSignal.init...");
 
                 await OneSignal.init({
                     appId,
@@ -47,7 +54,7 @@ export default function OneSignalWrapper() {
                     serviceWorkerPath: "/OneSignalSDKWorker.js",
                 });
 
-                showLog("[2] ✅ Init OK.");
+                scheduleLog("[2] ✅ Init OK.");
                 initialized.current = true;
 
                 // ─── Vincular device ao usuário Supabase ANTES do prompt ───
@@ -57,9 +64,9 @@ export default function OneSignalWrapper() {
                 );
 
                 const loginUser = async (userId: string) => {
-                    showLog(`[3] Login OneSignal: ${userId.substring(0, 12)}...`);
+                    scheduleLog(`[3] Login OneSignal: ${userId.substring(0, 12)}...`);
                     await OneSignal.login(userId);
-                    showLog("[3b] ✅ Login OK! external_id vinculado.");
+                    scheduleLog("[3b] ✅ Login OK! external_id vinculado.");
                 };
 
                 const { data: { session } } = await supabase.auth.getSession();
@@ -67,8 +74,8 @@ export default function OneSignalWrapper() {
                 if (session?.user?.id) {
                     await loginUser(session.user.id);
                 } else {
-                    showLog("[?] Sessão não encontrada. Aguardando...");
-                    supabase.auth.onAuthStateChange(async (_event: any, currentSession: any) => {
+                    scheduleLog("[?] Sessão não encontrada. Aguardando...");
+                    supabase.auth.onAuthStateChange(async (_event, currentSession) => {
                         if (currentSession?.user?.id) {
                             await loginUser(currentSession.user.id);
                         }
@@ -76,27 +83,28 @@ export default function OneSignalWrapper() {
                 }
 
                 // ─── Pedir permissão de push (nativo do iOS, sem banner) ───
-                showLog("[4] Pedindo permissão nativa...");
+                scheduleLog("[4] Pedindo permissão nativa...");
                 const permission = await OneSignal.Notifications.requestPermission();
-                showLog(`[4b] ✅ Permissão: ${permission}`);
+                scheduleLog(`[4b] ✅ Permissão: ${permission}`);
 
                 // Checar se está inscrito
                 const isPushEnabled = await OneSignal.User.PushSubscription.optedIn;
                 const pushId = await OneSignal.User.PushSubscription.id;
-                showLog(`[5] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || 'null'}...`);
+                scheduleLog(`[5] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || "null"}...`);
 
                 if (!permission && !isPushEnabled) {
-                    showLog("⚠️ Push negado. Vá em Ajustes → Notificações → Monarca e ative.");
+                    scheduleLog("⚠️ Push negado. Vá em Ajustes → Notificações → Monarca e ative.");
                 }
-            } catch (err: any) {
+            } catch (err: unknown) {
                 console.error("[OneSignal] Erro:", err);
-                showLog(`❌ ERRO: ${err?.message || String(err)}`);
+                const message = err instanceof Error ? err.message : String(err);
+                scheduleLog(`❌ ERRO: ${message}`);
             }
         };
 
-        showLog("🟢 PWA Standalone. Iniciando...");
+        scheduleLog("🟢 PWA Standalone. Iniciando...");
         initOneSignal();
-    }, []);
+    }, [scheduleLog]);
 
     if (isDev && debugMsg) {
         return (

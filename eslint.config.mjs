@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Ephemeral Claude worktrees should not affect repository lint health.
+    ".claude/**",
   ]),
 ]);
 

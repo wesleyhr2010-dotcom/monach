@@ -22,25 +22,18 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
-    const [items, setItems] = useState<CartItem[]>([]);
-    const [total, setTotal] = useState(0);
-
-    // Sync cart state
-    function syncCart() {
-        setItems(getCart());
-        setTotal(getCartTotal());
-    }
+    const [cartVersion, setCartVersion] = useState(0);
+    // Trigger recalculation when the external cart store changes.
+    void cartVersion;
+    const items: CartItem[] = getCart();
+    const total = getCartTotal();
 
     useEffect(() => {
-        syncCart();
-        window.addEventListener(CART_UPDATED_EVENT, syncCart);
-        return () => window.removeEventListener(CART_UPDATED_EVENT, syncCart);
+        const handleCartUpdated = () => setCartVersion((prev) => prev + 1);
+
+        window.addEventListener(CART_UPDATED_EVENT, handleCartUpdated);
+        return () => window.removeEventListener(CART_UPDATED_EVENT, handleCartUpdated);
     }, []);
-
-    // Also sync when drawer opens
-    useEffect(() => {
-        if (isOpen) syncCart();
-    }, [isOpen]);
 
     function handleCheckout() {
         if (items.length === 0) return;

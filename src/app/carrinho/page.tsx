@@ -20,18 +20,17 @@ import { STORE_CONFIG, buildWhatsAppUrl } from "@/lib/config";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export default function CarrinhoPage() {
-    const [items, setItems] = useState<CartItem[]>([]);
-    const [total, setTotal] = useState(0);
-
-    function syncCart() {
-        setItems(getCart());
-        setTotal(getCartTotal());
-    }
+    const [items, setItems] = useState<CartItem[]>(() => getCart());
+    const [total, setTotal] = useState(() => getCartTotal());
 
     useEffect(() => {
-        syncCart();
-        window.addEventListener(CART_UPDATED_EVENT, syncCart);
-        return () => window.removeEventListener(CART_UPDATED_EVENT, syncCart);
+        const handleCartUpdated = () => {
+            setItems(getCart());
+            setTotal(getCartTotal());
+        };
+
+        window.addEventListener(CART_UPDATED_EVENT, handleCartUpdated);
+        return () => window.removeEventListener(CART_UPDATED_EVENT, handleCartUpdated);
     }, []);
 
     function handleCheckout() {

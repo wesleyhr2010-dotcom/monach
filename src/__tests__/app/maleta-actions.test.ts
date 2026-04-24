@@ -5,7 +5,9 @@ vi.mock("@/lib/prisma", () => ({
   prisma: {
     $transaction: vi.fn(async (callback) => {
       // Simula a transaction repassando o prisma mockado
-      return typeof callback === "function" ? callback(global as any) : {};
+      return typeof callback === "function"
+        ? callback(global as unknown as Record<string, unknown>)
+        : {};
     }),
   }
 }));
