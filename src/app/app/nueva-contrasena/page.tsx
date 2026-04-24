@@ -8,11 +8,13 @@ import { PasswordField } from "@/components/ui/PasswordField";
 import { PrimaryButton } from "@/components/ui/PrimaryButton";
 
 type FormState = "idle" | "loading" | "success";
+type VerifyState = "verifying" | "verified" | "error";
 
 export default function NuevaContrasenaPage() {
     const [password, setPassword] = useState("");
     const [confirm, setConfirm] = useState("");
     const [state, setState] = useState<FormState>("idle");
+    const [verifyState, setVerifyState] = useState<VerifyState>("verifying");
     const [error, setError] = useState("");
 
     useEffect(() => {
@@ -26,15 +28,26 @@ export default function NuevaContrasenaPage() {
         const code = url.searchParams.get("code");
 
         if (code) {
-            supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+            supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
                 if (error) {
+                    console.error("[NuevaContrasena] exchangeCodeForSession error:", error.message);
+                    setVerifyState("error");
+                    setError(`El enlace puede haber vencido. (${error.message})`);
+                } else if (data.session) {
+                    console.log("[NuevaContrasena] Session established via PKCE");
+                    setVerifyState("verified");
+                } else {
+                    setVerifyState("error");
                     setError("El enlace puede haber vencido. Solicitá uno nuevo.");
                 }
             });
         } else {
             supabase.auth.getSession().then(({ data }) => {
                 if (!data.session) {
+                    setVerifyState("error");
                     setError("El enlace puede haber vencido. Solicitá uno nuevo.");
+                } else {
+                    setVerifyState("verified");
                 }
             });
         }
@@ -64,8 +77,9 @@ export default function NuevaContrasenaPage() {
         const { error: updateError } = await supabase.auth.updateUser({ password });
 
         if (updateError) {
+            console.error("[NuevaContrasena] updateUser error:", updateError.message);
             setState("idle");
-            setError("Error al actualizar. El enlace puede haber vencido.");
+            setError(`Error: ${updateError.message}`);
             return;
         }
 
@@ -132,6 +146,12 @@ export default function NuevaContrasenaPage() {
                         </div>
                     )}
 
+                    {verifyState === "verifying" && (
+                        <p className="text-[13px] text-[#6A9A8A] text-center">
+                            Verificando enlace...
+                        </p>
+                    )}
+
                     <PasswordField
                         id="password"
                         label="Nueva contraseña"
@@ -139,7 +159,7 @@ export default function NuevaContrasenaPage() {
                         autoComplete="new-password"
                         value={password}
                         onChange={(e) => { setPassword(e.target.value); setError(""); }}
-                        disabled={state === "loading"}
+                        disabled={state === "loading" || verifyState !== "verified"}
                     />
 
                     <PasswordField
@@ -149,13 +169,14 @@ export default function NuevaContrasenaPage() {
                         autoComplete="new-password"
                         value={confirm}
                         onChange={(e) => { setConfirm(e.target.value); setError(""); }}
-                        disabled={state === "loading"}
+                        disabled={state === "loading" || verifyState !== "verified"}
                     />
 
                     <PrimaryButton
                         label="Guardar nueva contraseña"
                         loadingLabel="Guardando..."
                         loading={state === "loading"}
+                        disabled={state === "loading" || verifyState !== "verified"}
                     />
                 </form>
 

@@ -7,6 +7,7 @@ import { AdminAuthField } from "@/components/admin/auth/AdminAuthField";
 import { AdminAuthButton } from "@/components/admin/auth/AdminAuthButton";
 
 type FormState = "idle" | "loading" | "success";
+type VerifyState = "verifying" | "verified" | "error";
 
 const T = {
   heading: "Restablecer contraseña",
@@ -34,6 +35,7 @@ const CheckIcon = () => (
 
 export default function AdminResetPasswordPage() {
   const [state, setState] = useState<FormState>("idle");
+  const [verifyState, setVerifyState] = useState<VerifyState>("verifying");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -47,15 +49,26 @@ export default function AdminResetPasswordPage() {
     const code = url.searchParams.get("code");
 
     if (code) {
-      supabase.auth.exchangeCodeForSession(code).then(({ error }) => {
+      supabase.auth.exchangeCodeForSession(code).then(({ data, error }) => {
         if (error) {
+          console.error("[ResetPassword] exchangeCodeForSession error:", error.message);
+          setVerifyState("error");
+          setError(`${T.errorExpired} (${error.message})`);
+        } else if (data.session) {
+          console.log("[ResetPassword] Session established via PKCE");
+          setVerifyState("verified");
+        } else {
+          setVerifyState("error");
           setError(T.errorExpired);
         }
       });
     } else {
       supabase.auth.getSession().then(({ data }) => {
         if (!data.session) {
+          setVerifyState("error");
           setError(T.errorExpired);
+        } else {
+          setVerifyState("verified");
         }
       });
     }
@@ -89,8 +102,9 @@ export default function AdminResetPasswordPage() {
     const { error: updateError } = await supabase.auth.updateUser({ password });
 
     if (updateError) {
+      console.error("[ResetPassword] updateUser error:", updateError.message);
       setState("idle");
-      setError(T.errorUpdate);
+      setError(`Error: ${updateError.message}`);
       return;
     }
 
@@ -201,6 +215,15 @@ export default function AdminResetPasswordPage() {
         noValidate
         style={{ width: "100%", maxWidth: "420px" }}
       >
+        {/* Verifying */}
+        {verifyState === "verifying" && (
+          <div style={{ marginBottom: "24px", textAlign: "center" }}>
+            <p style={{ fontFamily: "var(--font-raleway, 'Raleway', sans-serif)", fontSize: "14px", color: "#6A9A8A" }}>
+              Verificando enlace...
+            </p>
+          </div>
+        )}
+
         {/* Header */}
         <div style={{ marginBottom: "40px", display: "flex", flexDirection: "column", gap: "8px" }}>
           <h1
@@ -262,7 +285,7 @@ export default function AdminResetPasswordPage() {
             placeholder={T.placeholder}
             autoComplete="new-password"
             required
-            disabled={state === "loading"}
+            disabled={state === "loading" || verifyState !== "verified"}
           />
           <AdminAuthField
             id="confirm"
@@ -271,12 +294,12 @@ export default function AdminResetPasswordPage() {
             placeholder={T.placeholder}
             autoComplete="new-password"
             required
-            disabled={state === "loading"}
+            disabled={state === "loading" || verifyState !== "verified"}
           />
         </div>
 
         {/* Submit */}
-        <AdminAuthButton type="submit" loading={state === "loading"} disabled={state === "loading"}>
+        <AdminAuthButton type="submit" loading={state === "loading"} disabled={state === "loading" || verifyState !== "verified"}>
           {state === "loading" ? T.submitting : T.submit}
         </AdminAuthButton>
 
