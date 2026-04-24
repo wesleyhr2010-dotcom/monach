@@ -1,22 +1,42 @@
 # Changelog — Monarca Semijoyas
 
-## 2026-04-23 — Reset de Senha: Fallback de Callback em `/auth/callback` (ignora template/redirect URL do Supabase)
+## 2026-04-23 — Reset de Senha: Callback `/auth/callback` + roteamento por role + suporte a `token_hash` (verifyOtp)
 
 ### Problema
-O link do email de recuperação chegava como `https://monarca-six.vercel.app/?code=...` em vez de `/app/nueva-contrasena?code=...` ou `/admin/login/reset-password?code=...`. Causa: template de email no Supabase usa `{{ .SiteURL }}` ou os Redirect URLs não estão na whitelist, então o Supabase ignora o `redirectTo` e cai no Site URL (raiz do domínio).
+Três problemas encadeados no fluxo de recuperação de senha, resolvidos em sequência:
+
+1. **Link caía na raiz do domínio.** O email chegava como `https://monarca-six.vercel.app/?code=...` em vez de `/app/nueva-contrasena?code=...` ou `/admin/login/reset-password?code=...`. Causa: template de email no Supabase usa `{{ .SiteURL }}` ou os Redirect URLs não estão na whitelist, então o Supabase ignora o `redirectTo` e cai no Site URL (raiz do domínio).
+2. **PKCE `code_verifier` não encontrado.** Após rotear `?code=` para o callback, `exchangeCodeForSession` falhava com `PKCE code verifier not found in storage` sempre que o usuário abria o email em um navegador/dispositivo diferente daquele que iniciou o reset (ou com cookies limpos, aba anônima etc.). O fluxo PKCE exige o verifier armazenado no mesmo browser que iniciou o reset.
+3. **Sessão estabelecida pulava a tela de definir senha.** Com o callback funcionando, o middleware tratava toda rota sob `/admin/login/` como login page e, para usuário já logado, redirecionava para `/admin`. Resultado: ADMIN caía direto no painel sem passar pelo formulário de nova senha.
 
 ### Criado
-- **`src/app/auth/callback/route.ts`** — Route Handler que recebe `?code=`, executa `exchangeCodeForSession` (pode setar cookies httpOnly, diferente de Server Components), consulta o `role` em `resellers` e redireciona:
-  - `ADMIN` / `COLABORADORA` → `/admin/login/reset-password`
-  - `REVENDEDORA` (ou perfil ausente) → `/app/nueva-contrasena`
-  - Exchange falho → `/app/login/recuperar-contrasena?error=expired`
-  - Suporta `?next=/caminho` para destino customizado.
+- **`src/app/auth/callback/route.ts`** — Route Handler único que processa callbacks de auth e decide o destino por role:
+  - **Aceita dois fluxos**:
+    - `?token_hash=...&type=recovery` → `supabase.auth.verifyOtp()` (recomendado, não depende de storage local — funciona cross-device).
+    - `?code=...` → `supabase.auth.exchangeCodeForSession()` (fallback PKCE).
+  - **Roteamento por role** (consulta `resellers.role`):
+    - `ADMIN` / `COLABORADORA` → `/admin/login/reset-password`.
+    - `REVENDEDORA` (ou perfil ausente) → `/app/nueva-contrasena`.
+  - **Falhas** (token/code inválido, expirado, sessão não criada) → `/app/login/recuperar-contrasena?error=expired`.
+  - Suporta `?next=/caminho` para destino customizado (whitelistado para caminhos relativos).
+  - Executa em Route Handler porque Server Components não podem setar cookies httpOnly de sessão.
 
 ### Modificado
-- **`src/lib/middleware-auth.ts`** — detecção precoce: quando a rota é `/` e há `?code=`, redireciona para `/auth/callback?code=...` antes de qualquer outra lógica do middleware.
+- **`src/lib/middleware-auth.ts`**:
+  - Detecção precoce na raiz: quando `url.pathname === "/"` e há `?code=` ou `?token_hash=`, redireciona para `/auth/callback?...` antes de qualquer outra lógica do middleware.
+  - `/admin/login/reset-password` removido da condição `isAdminLoginPage` — assim permanece acessível mesmo com sessão ativa (necessário porque o callback estabelece sessão antes de chegar na página).
 
-### Pendente
-- Ação manual no Supabase Dashboard (`Authentication → URL Configuration`): adicionar `https://monarca-six.vercel.app/app/nueva-contrasena` e `https://monarca-six.vercel.app/admin/login/reset-password` à lista de Redirect URLs, e revisar template "Reset Password" para usar `{{ .ConfirmationURL }}`. Essa é a correção na origem; o route handler criado é defesa em profundidade.
+### Pendente (ação manual no Supabase Dashboard)
+- **`Authentication → Email Templates → Reset Password`**: trocar o corpo para usar o fluxo OTP (token_hash), que não depende de PKCE verifier e funciona em qualquer dispositivo:
+  ```html
+  <h2>Restablecer contraseña</h2>
+  <p><a href="{{ .SiteURL }}/auth/callback?token_hash={{ .TokenHash }}&type=recovery">Restablecer contraseña</a></p>
+  ```
+- **`Authentication → URL Configuration`**: garantir que **Site URL** aponta para o domínio atual (`https://monarca-six.vercel.app` enquanto Vercel preview; depois `https://monarcasemijoyas.com.py`) e que `https://<dominio>/auth/callback` está na whitelist de Redirect URLs.
+
+### Verificado
+- ✅ Fluxo testado manualmente em produção: link de recovery → callback → tela de nova senha (admin/revendedora) → senha atualizada com sucesso.
+- ✅ Lint e typecheck sem erros nos arquivos modificados.
 
 ---
 
