@@ -1,5 +1,22 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Convite de usuário: link de definição de senha usa `/auth/callback` + verifyOtp
+
+### Problema
+`criarColaboradora` e `criarRevendedora` montavam o link de convite via `supabaseAdmin.auth.admin.generateLink({ type: "recovery", options: { redirectTo } })` com `redirectTo` hardcoded para `/app/nueva-contrasena` (errado para consultora). O `action_link` retornado também usa fluxo PKCE — exige `code_verifier` no mesmo navegador que iniciou o pedido, o que nunca existe no fluxo de convite (o request parte do admin, não do convidado). Resultado: link falhava com `PKCE code verifier not found in storage`.
+
+### Modificado
+- **`src/app/admin/actions-equipe.ts` (`criarUsuarioAuthEEnviarConvite`)**:
+  - Remove o `redirectTo` hardcoded.
+  - Passa a usar `linkData.properties.hashed_token` para montar manualmente um link para `/auth/callback?token_hash=...&type=recovery`.
+  - O route handler faz `verifyOtp` (não depende de PKCE verifier), estabelece sessão, consulta `resellers.role` e encaminha consultora → `/admin/login/reset-password` e revendedora → `/app/nueva-contrasena` automaticamente.
+  - Log explícito se `generateLink` falhar.
+
+### Efeito
+Consultoras e revendedoras recém-cadastradas recebem agora um link de convite que funciona cross-device e cai na tela certa conforme o role, sem precisar de whitelist adicional no Supabase além de `/auth/callback`.
+
+---
+
 ## 2026-04-23 — Reset de Senha: Callback `/auth/callback` + roteamento por role + suporte a `token_hash` (verifyOtp)
 
 ### Problema

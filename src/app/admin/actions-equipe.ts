@@ -42,17 +42,25 @@ async function criarUsuarioAuthEEnviarConvite(params: {
 
   const authUserId = authData.user.id;
 
-  // 2. Gerar link de definição de senha
-  const redirectTo = `${process.env.NEXT_PUBLIC_SITE_URL}/app/nueva-contrasena`;
+  // 2. Gerar token de recovery e montar link direto para /auth/callback
+  // Usar hashed_token + verifyOtp (no route handler) em vez do action_link
+  // padrão evita o fluxo PKCE — que exige code_verifier no mesmo navegador
+  // e falha quando o usuário abre o email em outro dispositivo.
   const { data: linkData, error: linkError } = await supabaseAdmin.auth.admin.generateLink({
     type: "recovery",
     email: params.email,
-    options: { redirectTo },
   });
 
   let actionLink: string | null = null;
-  if (!linkError && linkData?.properties?.action_link) {
-    actionLink = linkData.properties.action_link;
+  if (!linkError && linkData?.properties?.hashed_token) {
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
+    if (siteUrl) {
+      actionLink = `${siteUrl}/auth/callback?token_hash=${linkData.properties.hashed_token}&type=recovery`;
+    }
+  }
+
+  if (linkError) {
+    console.error("[Convite] generateLink error:", linkError.message);
   }
 
   // 3. Enviar email de convite (não bloqueia se falhar)
