@@ -133,6 +133,7 @@ Desktop em espanhol paraguaio. Consultora (`COLABORADORA`) compartilha o mesmo p
 | [`sistema/SPEC_ENVIRONMENT_VARIABLES.md`](./sistema/SPEC_ENVIRONMENT_VARIABLES.md) | Variáveis de ambiente por contexto |
 | [`sistema/SPEC_DOMAIN_MIGRATION.md`](./sistema/SPEC_DOMAIN_MIGRATION.md) | Checklist de migração para o domínio oficial `monarcasemijoyas.com.py` |
 | [`sistema/SPEC_CAPACITOR_MIGRATION.md`](./sistema/SPEC_CAPACITOR_MIGRATION.md) | Migração futura do PWA para app nativo via Capacitor (iOS + Android) |
+| [`sistema/SPEC_OFFLINE_SYNC.md`](./sistema/SPEC_OFFLINE_SYNC.md) | Modo offline do PWA — outbox, sync, resolução de conflitos, idempotência |
 
 ### 5.6 Design
 

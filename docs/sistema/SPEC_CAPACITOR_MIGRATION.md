@@ -13,7 +13,8 @@
 1. **Resolver a limitação de deep links no PWA** — links `https://monarcasemijoyas.com.py/app/...` (recuperação de senha, convite, push notification click) devem abrir o app instalado, não o navegador. PWAs iOS não conseguem interceptar links; PWAs Android conseguem apenas parcialmente com `launch_handler` em Android 12+. Capacitor resolve em ambas as plataformas via Universal Links (iOS) e App Links (Android).
 2. **Elevar a percepção de produto** — estar na App Store e Google Play com ícone próprio aumenta credibilidade e facilita divulgação.
 3. **Liberar capacidades nativas** — push native do OneSignal (melhor entrega que Web Push, especialmente iOS), câmera nativa (melhor UX na devolução), biometria, haptics, compartilhamento nativo.
-4. **Manter um único código-fonte** — o app Capacitor carrega o Next.js hospedado na Vercel; zero fork de código.
+4. **Viabilizar modo offline robusto** — storage SQLite com SQLCipher (vs IndexedDB limitado do PWA), garantia de persistência em iOS (sem purga automática), background sync quando volta a ficar online. Ver [`SPEC_OFFLINE_SYNC.md`](./SPEC_OFFLINE_SYNC.md) — Fase 4.
+5. **Manter um único código-fonte** — o app Capacitor carrega o Next.js hospedado na Vercel; zero fork de código.
 
 ---
 
@@ -280,3 +281,4 @@ Se for decidido prosseguir, adicionar itens acionáveis em `docs/next_steps.md` 
 - [`SPEC_EMAILS.md`](./SPEC_EMAILS.md) — templates usam `{{ .SiteURL }}/auth/callback?token_hash=...`, compatíveis com deep link.
 - `src/app/auth/callback/route.ts` — já faz o roteamento correto por role; servirá tanto para browser quanto para WebView.
 - [`revendedoras/SPEC_NOTIFICACOES.md`](../revendedoras/SPEC_NOTIFICACOES.md) — OneSignal já integrado; extensão para native é incremental.
+- [`SPEC_OFFLINE_SYNC.md`](./SPEC_OFFLINE_SYNC.md) — o modo offline ganha qualidade significativa com Capacitor (SQLite + background sync); Fase 4 da roadmap offline depende desta SPEC.
