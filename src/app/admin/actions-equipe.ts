@@ -82,6 +82,21 @@ async function criarUsuarioAuthEEnviarConvite(params: {
     });
   } catch (emailErr) {
     console.error("[Convite Email] Falha ao enviar convite:", emailErr);
+
+    // Fallback: dispara email de reset via Supabase SMTP (mesmo canal que já funciona
+    // no fluxo de recuperação de senha). Assim a consultora recebe ao menos o link.
+    const redirectPath = params.tipo === "consultora" ? "/admin/login/reset-password" : "/app/nueva-contrasena";
+    const redirectTo = `${getBaseUrl()}${redirectPath}`;
+
+    const { error: resetError } = await supabaseAdmin.auth.resetPasswordForEmail(params.email, {
+      redirectTo,
+    });
+
+    if (resetError) {
+      console.error("[Convite Email Fallback] Falha no resetPasswordForEmail:", resetError.message);
+    } else {
+      console.error("[Convite Email Fallback] Reset enviado via Supabase SMTP para:", params.email);
+    }
   }
 
   return { authUserId, actionLink };

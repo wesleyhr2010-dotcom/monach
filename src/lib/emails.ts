@@ -16,15 +16,14 @@ export async function sendEmail({
   subject: string;
   htmlContent: string;
 }) {
-  try {
-    await client.transactionalEmails.sendTransacEmail({
-      sender: FROM,
-      to: Array.isArray(to) ? to : [to],
-      subject,
-      htmlContent,
-    });
-  } catch (err) {
-    // Email não deve bloquear a operação principal
-    console.error("[Email Error]", subject, err);
+  if (!process.env.BREVO_API_KEY) {
+    throw new Error("BREVO_API_KEY não configurada no ambiente.");
   }
+
+  await client.transactionalEmails.sendTransacEmail({
+    sender: FROM,
+    to: Array.isArray(to) ? to : [to],
+    subject,
+    htmlContent,
+  });
 }

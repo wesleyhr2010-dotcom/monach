@@ -1,5 +1,24 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-23 — Fix envio no cadastro admin: fallback automático via Supabase SMTP
+
+### Problema
+No cadastro de consultora/revendedora, o envio por Brevo podia falhar silenciosamente (sem bloquear operação e sem feedback claro), resultando em usuário criado no Auth/Prisma mas sem email de convite recebido.
+
+### Modificado
+- **`src/lib/emails.ts`**
+  - `sendEmail` deixou de engolir erro silencioso.
+  - Agora valida `BREVO_API_KEY` e lança erro quando o envio falha.
+
+- **`src/app/admin/actions-equipe.ts`**
+  - Mantido envio principal por template de convite (senha temporária + link).
+  - Adicionado fallback automático: se o envio por Brevo falhar, dispara `supabaseAdmin.auth.resetPasswordForEmail(...)` com `redirectTo` adequado por role (`/admin/login/reset-password` ou `/app/nueva-contrasena`), usando o mesmo canal SMTP já validado no fluxo de recuperação de senha.
+
+### Efeito
+Ao criar conta pelo admin, o sistema tenta o convite completo; se houver falha no provedor transacional, garante ao menos o envio do link de redefinição por Supabase SMTP.
+
+---
+
 ## 2026-04-23 — Fix convite no cadastro admin: enviar senha temporária + link de redefinição
 
 ### Problema
