@@ -75,7 +75,9 @@ export const ModelName = {
   Notificacao: 'Notificacao',
   AnalyticsAcesso: 'AnalyticsAcesso',
   AnalyticsDiario: 'AnalyticsDiario',
-  RevendedoraLead: 'RevendedoraLead'
+  RevendedoraLead: 'RevendedoraLead',
+  NotificacaoTemplate: 'NotificacaoTemplate',
+  NotificacaoLog: 'NotificacaoLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -476,6 +478,32 @@ export const RevendedoraLeadScalarFieldEnum = {
 } as const
 
 export type RevendedoraLeadScalarFieldEnum = (typeof RevendedoraLeadScalarFieldEnum)[keyof typeof RevendedoraLeadScalarFieldEnum]
+
+
+export const NotificacaoTemplateScalarFieldEnum = {
+  id: 'id',
+  tipo: 'tipo',
+  titulo_es: 'titulo_es',
+  body_es: 'body_es',
+  ativo: 'ativo',
+  updated_at: 'updated_at'
+} as const
+
+export type NotificacaoTemplateScalarFieldEnum = (typeof NotificacaoTemplateScalarFieldEnum)[keyof typeof NotificacaoTemplateScalarFieldEnum]
+
+
+export const NotificacaoLogScalarFieldEnum = {
+  id: 'id',
+  tipo: 'tipo',
+  reseller_ids: 'reseller_ids',
+  total_enviado: 'total_enviado',
+  total_falha: 'total_falha',
+  onesignal_id: 'onesignal_id',
+  payload: 'payload',
+  created_at: 'created_at'
+} as const
+
+export type NotificacaoLogScalarFieldEnum = (typeof NotificacaoLogScalarFieldEnum)[keyof typeof NotificacaoLogScalarFieldEnum]
 
 
 export const SortOrder = {

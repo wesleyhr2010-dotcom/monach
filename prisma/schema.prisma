@@ -602,3 +602,32 @@ model RevendedoraLead {
   @@index([created_at])
   @@map("revendedora_leads")
 }
+
+// ============================================
+// Módulo 9 — Templates e Logs de Notificações Push
+// ============================================
+
+model NotificacaoTemplate {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tipo      String   @unique
+  titulo_es String
+  body_es   String
+  ativo     Boolean  @default(true)
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  @@map("notificacao_templates")
+}
+
+model NotificacaoLog {
+  id            String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tipo          String
+  reseller_ids  String[]
+  total_enviado Int
+  total_falha   Int      @default(0)
+  onesignal_id  String?
+  payload       Json
+  created_at    DateTime @default(now()) @db.Timestamptz()
+
+  @@map("notificacao_logs")
+  @@index([tipo, created_at])
+}

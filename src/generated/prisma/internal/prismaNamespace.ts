@@ -408,7 +408,9 @@ export const ModelName = {
   Notificacao: 'Notificacao',
   AnalyticsAcesso: 'AnalyticsAcesso',
   AnalyticsDiario: 'AnalyticsDiario',
-  RevendedoraLead: 'RevendedoraLead'
+  RevendedoraLead: 'RevendedoraLead',
+  NotificacaoTemplate: 'NotificacaoTemplate',
+  NotificacaoLog: 'NotificacaoLog'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -424,7 +426,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "reseller" | "resellerDocumento" | "contrato" | "dadosBancarios" | "product" | "productVariant" | "category" | "productCategory" | "resellerProduct" | "maleta" | "maletaItem" | "vendaMaleta" | "estoqueMovimento" | "gamificacaoRegra" | "pontosExtrato" | "nivelRegra" | "commissionTier" | "resgate" | "brinde" | "solicitacaoBrinde" | "notificacaoPreferencia" | "notificacao" | "analyticsAcesso" | "analyticsDiario" | "revendedoraLead"
+    modelProps: "reseller" | "resellerDocumento" | "contrato" | "dadosBancarios" | "product" | "productVariant" | "category" | "productCategory" | "resellerProduct" | "maleta" | "maletaItem" | "vendaMaleta" | "estoqueMovimento" | "gamificacaoRegra" | "pontosExtrato" | "nivelRegra" | "commissionTier" | "resgate" | "brinde" | "solicitacaoBrinde" | "notificacaoPreferencia" | "notificacao" | "analyticsAcesso" | "analyticsDiario" | "revendedoraLead" | "notificacaoTemplate" | "notificacaoLog"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -2278,6 +2280,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    NotificacaoTemplate: {
+      payload: Prisma.$NotificacaoTemplatePayload<ExtArgs>
+      fields: Prisma.NotificacaoTemplateFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotificacaoTemplateFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotificacaoTemplateFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        findFirst: {
+          args: Prisma.NotificacaoTemplateFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotificacaoTemplateFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        findMany: {
+          args: Prisma.NotificacaoTemplateFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>[]
+        }
+        create: {
+          args: Prisma.NotificacaoTemplateCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        createMany: {
+          args: Prisma.NotificacaoTemplateCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotificacaoTemplateCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>[]
+        }
+        delete: {
+          args: Prisma.NotificacaoTemplateDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        update: {
+          args: Prisma.NotificacaoTemplateUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        deleteMany: {
+          args: Prisma.NotificacaoTemplateDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotificacaoTemplateUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotificacaoTemplateUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>[]
+        }
+        upsert: {
+          args: Prisma.NotificacaoTemplateUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoTemplatePayload>
+        }
+        aggregate: {
+          args: Prisma.NotificacaoTemplateAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotificacaoTemplate>
+        }
+        groupBy: {
+          args: Prisma.NotificacaoTemplateGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificacaoTemplateGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotificacaoTemplateCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificacaoTemplateCountAggregateOutputType> | number
+        }
+      }
+    }
+    NotificacaoLog: {
+      payload: Prisma.$NotificacaoLogPayload<ExtArgs>
+      fields: Prisma.NotificacaoLogFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.NotificacaoLogFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.NotificacaoLogFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        findFirst: {
+          args: Prisma.NotificacaoLogFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.NotificacaoLogFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        findMany: {
+          args: Prisma.NotificacaoLogFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>[]
+        }
+        create: {
+          args: Prisma.NotificacaoLogCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        createMany: {
+          args: Prisma.NotificacaoLogCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.NotificacaoLogCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>[]
+        }
+        delete: {
+          args: Prisma.NotificacaoLogDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        update: {
+          args: Prisma.NotificacaoLogUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        deleteMany: {
+          args: Prisma.NotificacaoLogDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.NotificacaoLogUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.NotificacaoLogUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>[]
+        }
+        upsert: {
+          args: Prisma.NotificacaoLogUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$NotificacaoLogPayload>
+        }
+        aggregate: {
+          args: Prisma.NotificacaoLogAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateNotificacaoLog>
+        }
+        groupBy: {
+          args: Prisma.NotificacaoLogGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificacaoLogGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.NotificacaoLogCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.NotificacaoLogCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -2701,6 +2851,32 @@ export const RevendedoraLeadScalarFieldEnum = {
 export type RevendedoraLeadScalarFieldEnum = (typeof RevendedoraLeadScalarFieldEnum)[keyof typeof RevendedoraLeadScalarFieldEnum]
 
 
+export const NotificacaoTemplateScalarFieldEnum = {
+  id: 'id',
+  tipo: 'tipo',
+  titulo_es: 'titulo_es',
+  body_es: 'body_es',
+  ativo: 'ativo',
+  updated_at: 'updated_at'
+} as const
+
+export type NotificacaoTemplateScalarFieldEnum = (typeof NotificacaoTemplateScalarFieldEnum)[keyof typeof NotificacaoTemplateScalarFieldEnum]
+
+
+export const NotificacaoLogScalarFieldEnum = {
+  id: 'id',
+  tipo: 'tipo',
+  reseller_ids: 'reseller_ids',
+  total_enviado: 'total_enviado',
+  total_falha: 'total_falha',
+  onesignal_id: 'onesignal_id',
+  payload: 'payload',
+  created_at: 'created_at'
+} as const
+
+export type NotificacaoLogScalarFieldEnum = (typeof NotificacaoLogScalarFieldEnum)[keyof typeof NotificacaoLogScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -3013,6 +3189,8 @@ export type GlobalOmitConfig = {
   analyticsAcesso?: Prisma.AnalyticsAcessoOmit
   analyticsDiario?: Prisma.AnalyticsDiarioOmit
   revendedoraLead?: Prisma.RevendedoraLeadOmit
+  notificacaoTemplate?: Prisma.NotificacaoTemplateOmit
+  notificacaoLog?: Prisma.NotificacaoLogOmit
 }
 
 /* Types for Logging */

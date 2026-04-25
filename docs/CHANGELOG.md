@@ -1,24 +1,31 @@
 # Changelog — Monarca Semijoyas
 
-## 2026-04-24 — Admin AlertBell (sininho de devoluções pendentes)
+## 2026-04-24 — Configuração de Notificações Push no Admin (`/admin/config/notif-push`)
 
 ### Contexto
-A `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` §3 previa um widget persistente no header admin para alertar sobre maletas em `aguardando_revisao`, permitindo acesso rápido à conferência.
+A `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` §2 previa um painel para SUPER_ADMIN configurar templates de push notifications, testar a integração OneSignal e visualizar histórico de envios.
 
 ### Criado
-- **`src/components/admin/AdminAlertBell.tsx`** — Client Component com ícone de sininho (Lucide), badge vermelho com contagem, drawer custom que desliza da direita. Lista maletas pendentes com link direto para `/admin/maleta/[id]/conferir`. Polling a cada 30s para manter contagem atualizada.
-- **`src/app/api/admin/alertas/count/route.ts`** — API route autenticada (`getCurrentUser` + `getResellerScope`). Retorna contagem de maletas `aguardando_revisao` filtrada por escopo (ADMIN vê tudo, COLABORADORA vê apenas seu grupo).
-- **`src/app/api/admin/alertas/maletas/route.ts`** — API route autenticada. Retorna lista de maletas pendentes com `numero`, `revendedoraNome` e `dataDevolucao`.
+- **`prisma/schema.prisma`** — models `NotificacaoTemplate` (tipo único, título, corpo, ativo) e `NotificacaoLog` (tipo, destinatários, total enviado/falha, payload JSON, onesignal_id). Sincronizado no banco via `prisma db push`.
+- **`src/app/admin/config/notif-push/actions.ts`** — Server Actions:
+  - `getNotificacaoTemplates()` — seed-on-read de 7 templates default (prazo D-3/D-1, maleta atrasada, devolução admin, nova maleta, brinde, pontos).
+  - `updateNotificacaoTemplate()` — edita título, corpo e estado.
+  - `toggleNotificacaoTemplate()` — ativa/desativa template.
+  - `enviarPushTeste()` — envia push para o admin logado via OneSignal API, registra no log.
+  - `getNotificacaoLogs()` — lista últimos 50 envios.
+- **`src/app/admin/config/notif-push/NotifPushClient.tsx`** — Client Component com 3 seções:
+  1. **Status da Integração** — card com indicador visual (conectado/desconectado), App ID mascarado e botão "Enviar prueba".
+  2. **Templates** — tabela com tipo, título, preview da mensagem, toggle ativo/inativo e botão de edição. Modal de edição com Dialog do shadcn/ui.
+  3. **Historial** — tabela de logs com data, tipo, enviadas, fallos e badge de estado.
+- **`src/app/admin/config/notif-push/page.tsx`** — Server Component (SUPER_ADMIN only) que busca templates e logs via SSR.
 
 ### Modificado
-- **`src/app/admin/layout.tsx`** — busca contagem inicial via Prisma (SSR) e passa ao `AdminLayoutClient`.
-- **`src/components/admin/AdminLayoutClient.tsx`** — recebe `alertCount` e renderiza `<AdminAlertBell>` em posição sticky no topo direito da área main.
-- **`docs/next_steps.md`** — item "Admin AlertBell" marcado como concluído.
-- **`docs/project_overview.md`** — status de Notificações atualizado para refletir AlertBell implementado.
+- **`docs/next_steps.md`** — item marcado como concluído.
+- **`docs/project_overview.md`** — status de Notificações atualizado.
 
 ### Validação
 - `npm test` passa (47 testes).
-- Erros de lint/typecheck restantes são pré-existentes (fora do escopo desta entrega).
+- `npx tsc --noEmit` limpo em código de produção.
 
 ---
 

@@ -142,3 +142,13 @@ export type AnalyticsDiario = Prisma.AnalyticsDiarioModel
  * 
  */
 export type RevendedoraLead = Prisma.RevendedoraLeadModel
+/**
+ * Model NotificacaoTemplate
+ * 
+ */
+export type NotificacaoTemplate = Prisma.NotificacaoTemplateModel
+/**
+ * Model NotificacaoLog
+ * 
+ */
+export type NotificacaoLog = Prisma.NotificacaoLogModel
