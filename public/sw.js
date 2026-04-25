@@ -1,12 +1,15 @@
 // ============================================
-// Monarca Semijoias — Service Worker (PWA Cache)
+// Monarca Semijoias — Service Worker (PWA Cache + OneSignal Push)
 // ============================================
-// NOTA: O OneSignal usa seu próprio SW em /OneSignalSDKWorker.js
+// iOS PWA aceita apenas UM service worker por scope. Por isso este arquivo
+// importa o SDK do OneSignal e também faz o cache do app — evita o conflito
+// que impedia a criação da push subscription no iOS.
+
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
 
 // Cache-first para assets estáticos, network-first para API
 
-
-const CACHE_NAME = "monarca-v2";
+const CACHE_NAME = "monarca-v3";
 const STATIC_ASSETS = ["/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {

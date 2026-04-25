@@ -51,7 +51,9 @@ export default function OneSignalWrapper() {
                     appId,
                     allowLocalhostAsSecureOrigin: process.env.NODE_ENV === "development",
                     serviceWorkerParam: { scope: "/" },
-                    serviceWorkerPath: "/OneSignalSDKWorker.js",
+                    // Compartilha o mesmo SW do PWA (public/sw.js importa o script da OneSignal).
+                    // iOS PWA só permite um SW por scope — usar paths diferentes quebra a subscription.
+                    serviceWorkerPath: "/sw.js",
                 });
 
                 scheduleLog("[2] ✅ Init OK.");
