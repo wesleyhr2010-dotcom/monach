@@ -94,7 +94,11 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [x] **Configurar SMTP do Brevo no Supabase Dashboard** — concluído em 2026-04-23. Credenciais SMTP do Brevo configuradas no Supabase Dashboard (host `smtp-relay.brevo.com`, port `587`, user e senha SMTP). Reset de senha, convite por email e magic links do Supabase Auth agora saem via Brevo. Rota de callback `/admin/login/reset-password` criada. Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md) §10.
 - [ ] **Padronizar layout/branding dos emails transacionais** — revisar e unificar os templates de: recuperação de senha, convite de nova consultora, convite de nova revendedora e demais emails operacionais. Entregáveis: identidade visual consistente, copy final em espanhol paraguaio, componentes reutilizáveis de template e checklist de QA (cliente desktop/mobile + spam). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).
 - [ ] **Cron jobs** (notificação de prazo de maleta etc.) em Supabase Edge Functions. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
-- [ ] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
+- [x] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
+  - [x] Indicadores na lista `/admin/revendedoras` — badges "Doc pendiente", "Acerto aguardando", "OK" com contagens em tempo real.
+  - [x] Tela `/admin/revendedoras/[id]/documentos` — preview da imagem, status, botões Aprovar/Rechazar com observação obrigatória, histórico de documentos.
+  - [x] Server Actions `aprovarDocumento` e `rejeitarDocumento` com validação Zod, RBAC (`requireAuth` + `assertIsInGroup`), notificação push via `notificarRevendedora` (`documento_aprovado` / `documento_reprovado`).
+  - [x] Link "Gestionar" no perfil da revendedora para a nova tela de documentos.
 - [ ] **Pipeline de Leads** vindos da landing "Seja Revendedora". Ref.: [`admin/SPEC_ADMIN_LEADS.md`](./admin/SPEC_ADMIN_LEADS.md), [`revendedoras/SPEC_SEJA_REVENDEDORA.md`](./revendedoras/SPEC_SEJA_REVENDEDORA.md).
 - [x] **Catálogo no PWA** da revendedora. Ref.: [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md).
   - [x] Página `/app/catalogo` — grid com produtos da maleta ativa, busca e filtro por categoria

@@ -102,6 +102,8 @@ export interface RevendedoraItem {
     taxa_comissao: number;
     is_active: boolean;
     colaboradora: { id: string; name: string } | null;
+    documentos_pendentes: number;
+    maletas_aguardando_revisao: number;
 }
 
 // Perfil detalhado — Admin

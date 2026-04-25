@@ -20,7 +20,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, UserPlus, Phone, Percent, Trash2, Search, Edit, X, ArrowRight } from "lucide-react";
+import { Users, UserPlus, Phone, Percent, Trash2, Search, Edit, X, ArrowRight, AlertTriangle, Clock, CheckCircle2 } from "lucide-react";
 
 export default function RevendedorasPage() {
     const [isPending, startTransition] = useTransition();
@@ -269,7 +269,29 @@ export default function RevendedorasPage() {
                                                             r.name.charAt(0).toUpperCase()
                                                         )}
                                                     </div>
-                                                    <span style={{ fontWeight: 500, fontSize: "14px" }}>{r.name}</span>
+                                                    <div>
+                                                        <span style={{ fontWeight: 500, fontSize: "14px" }}>{r.name}</span>
+                                                        <div style={{ display: "flex", gap: "6px", marginTop: "4px", flexWrap: "wrap" }}>
+                                                            {r.documentos_pendentes > 0 && (
+                                                                <span className="admin-badge" style={{ background: "rgba(250, 204, 21, 0.12)", color: "#facc15", fontSize: "10px", padding: "2px 8px" }}>
+                                                                    <AlertTriangle className="w-3 h-3" style={{ display: "inline", verticalAlign: "middle", marginRight: "2px" }} />
+                                                                    Doc pendiente
+                                                                </span>
+                                                            )}
+                                                            {r.maletas_aguardando_revisao > 0 && (
+                                                                <span className="admin-badge" style={{ background: "rgba(96, 165, 250, 0.12)", color: "#60a5fa", fontSize: "10px", padding: "2px 8px" }}>
+                                                                    <Clock className="w-3 h-3" style={{ display: "inline", verticalAlign: "middle", marginRight: "2px" }} />
+                                                                    Acerto aguardando
+                                                                </span>
+                                                            )}
+                                                            {r.documentos_pendentes === 0 && r.maletas_aguardando_revisao === 0 && (
+                                                                <span className="admin-badge" style={{ background: "rgba(74, 222, 128, 0.12)", color: "#4ade80", fontSize: "10px", padding: "2px 8px" }}>
+                                                                    <CheckCircle2 className="w-3 h-3" style={{ display: "inline", verticalAlign: "middle", marginRight: "2px" }} />
+                                                                    OK
+                                                                </span>
+                                                            )}
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </TableCell>
                                             <TableCell style={{ fontSize: "13px" }}>

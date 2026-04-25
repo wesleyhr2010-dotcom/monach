@@ -163,6 +163,30 @@ export async function getRevendedoras(): Promise<RevendedoraItem[]> {
         },
     });
 
+    const ids = data.map((r) => r.id);
+
+    const [docCounts, maletaCounts] = await Promise.all([
+        prisma.resellerDocumento.groupBy({
+            by: ["reseller_id"],
+            where: {
+                reseller_id: { in: ids },
+                status: { in: ["pendente", "em_analise"] },
+            },
+            _count: { id: true },
+        }),
+        prisma.maleta.groupBy({
+            by: ["reseller_id"],
+            where: {
+                reseller_id: { in: ids },
+                status: "aguardando_revisao",
+            },
+            _count: { id: true },
+        }),
+    ]);
+
+    const docMap = new Map(docCounts.map((d) => [d.reseller_id, d._count.id]));
+    const maletaMap = new Map(maletaCounts.map((m) => [m.reseller_id, m._count.id]));
+
     return data.map((r) => ({
         id: r.id,
         name: r.name,
@@ -173,6 +197,8 @@ export async function getRevendedoras(): Promise<RevendedoraItem[]> {
         taxa_comissao: Number(r.taxa_comissao),
         is_active: r.is_active,
         colaboradora: r.colaboradora ? { id: r.colaboradora.id, name: r.colaboradora.name } : null,
+        documentos_pendentes: docMap.get(r.id) || 0,
+        maletas_aguardando_revisao: maletaMap.get(r.id) || 0,
     }));
 }
 

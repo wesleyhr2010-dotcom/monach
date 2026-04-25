@@ -1,5 +1,35 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Documentos e Acertos no Admin
+
+### Contexto
+A `SPEC_ADMIN_DOCUMENTOS_ACERTOS.md` previa a centralização da aprovação/rejeição de documentos (CI) enviados pelas revendedoras e indicadores de acerto no admin.
+
+### Criado
+- **`src/app/admin/revendedoras/[id]/documentos/actions.ts`** — Server Actions:
+  - `getDocumentosRevendedora(id)` — lista documentos da revendedora com RBAC (`assertIsInGroup` para COLABORADORA).
+  - `aprovarDocumento(documentoId)` — atualiza status para `aprovado`, dispara notificação push `documento_aprovado`.
+  - `rejeitarDocumento(documentoId, observacao)` — valida observação obrigatória via Zod, atualiza status para `rejeitado`, dispara notificação push `documento_reprovado`.
+- **`src/app/admin/revendedoras/[id]/documentos/page.tsx`** — Client Component com:
+  - Preview da imagem do documento (ou link para download).
+  - Badge de status (Pendente / Em Análise / Aprovado / Rejeitado).
+  - Botões "Aprobar" e "Rechazar" (este último exige campo de observação).
+  - Histórico de documentos anteriores.
+  - Toast de sucesso/erro.
+
+### Modificado
+- **`src/lib/types.ts`** — `RevendedoraItem` agora inclui `documentos_pendentes` e `maletas_aguardando_revisao`.
+- **`src/app/admin/actions-equipe.ts`** — `getRevendedoras` agrega contagens de documentos pendentes (`status in [pendente, em_analise]`) e maletas aguardando revisão via `groupBy` do Prisma.
+- **`src/app/admin/revendedoras/page.tsx`** — badges de atenção na lista: "Doc pendiente" (amarelo), "Acerto aguardando" (azul), "OK" (verde).
+- **`src/app/admin/revendedoras/[id]/page.tsx`** — link "Gestionar →" na seção Documentos apontando para a nova tela.
+- **`docs/next_steps.md`** — item marcado como concluído.
+- **`docs/project_overview.md`** — nova linha "Admin — Documentos e Acertos" marcada como funcional.
+
+### Validação
+- `npx tsc --noEmit` limpo em código de produção (erros pré-existentes em testes e outras páginas não afetados).
+
+---
+
 ## 2026-04-24 — Configuração de Notificações Push no Admin (`/admin/config/notif-push`)
 
 ### Contexto

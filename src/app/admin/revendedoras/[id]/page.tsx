@@ -229,9 +229,14 @@ export default function RevendedoraPerfilPage() {
                     {/* Documentos */}
                     <Card>
                         <CardContent style={{ padding: "24px" }}>
-                            <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "16px" }}>
-                                Documentos
-                            </h3>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
+                                <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>
+                                    Documentos
+                                </h3>
+                                <Link href={`/admin/revendedoras/${perfil.id}/documentos`} style={{ fontSize: "12px", color: "var(--admin-accent)", textDecoration: "none" }}>
+                                    Gestionar →
+                                </Link>
+                            </div>
                             {perfil.documentos.length === 0 ? (
                                 <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhum documento enviado</p>
                             ) : (
