@@ -82,19 +82,13 @@ export default function OneSignalWrapper() {
                     });
                 }
 
-                // ─── Pedir permissão de push (nativo do iOS, sem banner) ───
-                scheduleLog("[4] Pedindo permissão nativa...");
-                const permission = await OneSignal.Notifications.requestPermission();
-                scheduleLog(`[4b] ✅ Permissão: ${permission}`);
-
-                // Checar se está inscrito
+                // No iOS PWA, Notification.requestPermission() só pode ser chamada uma vez por origem
+                // e exige user gesture. Chamar aqui (no init automático) consome essa chance e a prompt
+                // nunca mais aparece. A ativação fica em /app/perfil/notificaciones, dentro de um onClick.
                 const isPushEnabled = await OneSignal.User.PushSubscription.optedIn;
                 const pushId = await OneSignal.User.PushSubscription.id;
-                scheduleLog(`[5] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || "null"}...`);
-
-                if (!permission && !isPushEnabled) {
-                    scheduleLog("⚠️ Push negado. Vá em Ajustes → Notificações → Monarca e ative.");
-                }
+                scheduleLog(`[4] Push ativo: ${isPushEnabled} | ID: ${pushId?.substring(0, 12) || "null"}...`);
+                scheduleLog(`[4b] Permission atual: ${typeof Notification !== "undefined" ? Notification.permission : "n/a"}`);
             } catch (err: unknown) {
                 console.error("[OneSignal] Erro:", err);
                 const message = err instanceof Error ? err.message : String(err);

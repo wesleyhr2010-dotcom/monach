@@ -160,29 +160,48 @@ export default function PreferenciasNotificacionesForm({
     };
 
     const handleEnablePush = async () => {
+        // No iOS PWA a prompt nativa só aparece dentro do mesmo "user gesture" do click.
+        // Por isso disparamos Notification.requestPermission() ANTES de qualquer await,
+        // setState ou navegação por wrapper do OneSignal — caso contrário o iOS perde o gesto.
         setPushError(null);
+        const initialPermission = typeof Notification !== "undefined" ? Notification.permission : "denied";
+
+        let permissionPromise: Promise<NotificationPermission> | null = null;
+        if (initialPermission === "default" && typeof Notification !== "undefined" && Notification.requestPermission) {
+            try {
+                permissionPromise = Notification.requestPermission();
+            } catch (err) {
+                console.error("[push] Notification.requestPermission threw:", err);
+            }
+        }
+
         setIsToggling(true);
         try {
             const OneSignal = (window as unknown as { OneSignal?: OneSignalLike }).OneSignal;
             if (!OneSignal?.User?.PushSubscription) {
-                setPushError("Instala la app (Compartir → Añadir a pantalla de inicio) para activar los avisos push.");
+                setPushError("Instalá la app (Compartir → Añadir a pantalla de inicio) para activar los avisos push.");
                 return;
             }
-            // Permission padrão -> dispara prompt nativa. iOS resolve assim que o usuário decide,
-            // mas pode ficar pendente se a prompt for fechada por gesto/background. Timeout salva o estado.
-            const initialPermission = typeof Notification !== "undefined" ? Notification.permission : "denied";
-            if (initialPermission === "default" && OneSignal.Notifications?.requestPermission) {
-                await withTimeout(OneSignal.Notifications.requestPermission(), 30_000, "requestPermission");
+
+            if (permissionPromise) {
+                const result = await withTimeout(permissionPromise, 30_000, "requestPermission");
+                if (result === "timeout") {
+                    setPushError("La ventana de permisos no respondió. Cerrá la app y volvé a abrirla.");
+                    return;
+                }
             }
+
             const afterPromptPermission = typeof Notification !== "undefined" ? Notification.permission : initialPermission;
             if (afterPromptPermission === "granted" && OneSignal.User.PushSubscription.optIn) {
                 await withTimeout(OneSignal.User.PushSubscription.optIn(), 15_000, "optIn");
             }
+
             await refreshPushState();
+
             if (afterPromptPermission === "denied") {
-                setPushError("Tu teléfono bloqueó los avisos. Ve a Ajustes → Notificaciones → Monarca y actívalas.");
+                setPushError("Tu teléfono bloqueó los avisos. Ve a Ajustes → Notificaciones → Monarca y actívalas. Si no aparece la app, eliminá la PWA y reinstalala desde Compartir.");
             } else if (afterPromptPermission === "default") {
-                setPushError("No se pudo completar la activación. Cierra la app, vuelve a abrirla e intenta de nuevo.");
+                setPushError("iOS no mostró la ventana de permisos. Eliminá la PWA de la pantalla de inicio y volvé a instalarla — así iOS resetea el estado de avisos.");
             }
         } catch (err) {
             console.error("[push] handleEnablePush error:", err);
