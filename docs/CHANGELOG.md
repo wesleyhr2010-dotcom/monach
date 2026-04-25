@@ -1,5 +1,27 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — Admin AlertBell (sininho de devoluções pendentes)
+
+### Contexto
+A `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` §3 previa um widget persistente no header admin para alertar sobre maletas em `aguardando_revisao`, permitindo acesso rápido à conferência.
+
+### Criado
+- **`src/components/admin/AdminAlertBell.tsx`** — Client Component com ícone de sininho (Lucide), badge vermelho com contagem, drawer custom que desliza da direita. Lista maletas pendentes com link direto para `/admin/maleta/[id]/conferir`. Polling a cada 30s para manter contagem atualizada.
+- **`src/app/api/admin/alertas/count/route.ts`** — API route autenticada (`getCurrentUser` + `getResellerScope`). Retorna contagem de maletas `aguardando_revisao` filtrada por escopo (ADMIN vê tudo, COLABORADORA vê apenas seu grupo).
+- **`src/app/api/admin/alertas/maletas/route.ts`** — API route autenticada. Retorna lista de maletas pendentes com `numero`, `revendedoraNome` e `dataDevolucao`.
+
+### Modificado
+- **`src/app/admin/layout.tsx`** — busca contagem inicial via Prisma (SSR) e passa ao `AdminLayoutClient`.
+- **`src/components/admin/AdminLayoutClient.tsx`** — recebe `alertCount` e renderiza `<AdminAlertBell>` em posição sticky no topo direito da área main.
+- **`docs/next_steps.md`** — item "Admin AlertBell" marcado como concluído.
+- **`docs/project_overview.md`** — status de Notificações atualizado para refletir AlertBell implementado.
+
+### Validação
+- `npm test` passa (47 testes).
+- Erros de lint/typecheck restantes são pré-existentes (fora do escopo desta entrega).
+
+---
+
 ## 2026-04-24 — Fix: migration de notificações aplicada no banco
 
 ### Contexto

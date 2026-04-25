@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { getCurrentUser } from "@/lib/user";
+import { getResellerScope } from "@/lib/auth/get-reseller-scope";
+import { prisma } from "@/lib/prisma";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
 
 /**
@@ -32,5 +34,18 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         redirect("/app");
     }
 
-    return <AdminLayoutClient userRole={user.role}>{children}</AdminLayoutClient>;
+    // Contagem inicial de devoluções pendentes (SSR, sem waterfall)
+    const scope = getResellerScope(user);
+    const alertCount = await prisma.maleta.count({
+        where: {
+            ...scope,
+            status: "aguardando_revisao",
+        },
+    });
+
+    return (
+        <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
+            {children}
+        </AdminLayoutClient>
+    );
 }

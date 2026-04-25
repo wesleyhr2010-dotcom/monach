@@ -6,6 +6,7 @@ import { QueryProvider } from "@/lib/query-provider";
 import { logout } from "@/lib/actions/auth";
 import { BottomNav } from "@/components/admin/BottomNav";
 import { BrindesBadge } from "@/components/admin/BrindesBadge";
+import { AdminAlertBell } from "@/components/admin/AdminAlertBell";
 import type { Role } from "@/lib/user";
 import {
     AlignJustify,
@@ -138,9 +139,10 @@ const allNavEntries: (NavItem | NavSection)[] = [
 interface AdminLayoutClientProps {
     children: React.ReactNode;
     userRole: Role;
+    alertCount: number;
 }
 
-export default function AdminLayoutClient({ children, userRole }: AdminLayoutClientProps) {
+export default function AdminLayoutClient({ children, userRole, alertCount }: AdminLayoutClientProps) {
     const pathname = usePathname();
 
     if (pathname?.startsWith("/admin/login")) {
@@ -255,7 +257,23 @@ export default function AdminLayoutClient({ children, userRole }: AdminLayoutCli
                 </div>
             </aside>
 
-            <main className="admin-main">
+            <main className="admin-main" style={{ position: "relative" }}>
+                {/* AlertBell fixo no topo direito — visível em todas as telas admin */}
+                <div
+                    style={{
+                        position: "sticky",
+                        top: 0,
+                        zIndex: 40,
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        padding: "12px 24px",
+                        pointerEvents: "none",
+                    }}
+                >
+                    <div style={{ pointerEvents: "auto" }}>
+                        <AdminAlertBell initialCount={alertCount} userRole={userRole} />
+                    </div>
+                </div>
                 <QueryProvider>
                     {children}
                 </QueryProvider>
