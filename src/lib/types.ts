@@ -137,7 +137,7 @@ export interface RevendedoraPerfil {
     endereco_complemento: string;
     endereco_cidade: string;
     endereco_estado: string;
-    colaboradora: { id: string; name: string } | null;
+    colaboradora: { id: string; name: string; avatar_url?: string | null } | null;
     pontos_total: number;
     nivel: { nome: string; cor: string; pontos_minimos: number } | null;
     dados_bancarios: {

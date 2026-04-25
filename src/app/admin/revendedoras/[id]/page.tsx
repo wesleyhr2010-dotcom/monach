@@ -1,42 +1,88 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { getPerfilRevendedora } from "../../actions-equipe";
 import type { RevendedoraPerfil } from "@/lib/types";
-import { formatGs, formatGsCompact, formatPct, formatDate, formatPhone } from "@/lib/format";
-import { maskAlias, maskCuenta, maskCI } from "@/lib/data-protection/mask-utils";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-    ArrowLeft,
     MessageCircle,
-    Phone,
-    MapPin,
-    Instagram,
-    Briefcase,
+    UserCog,
+    Ban,
     FileText,
-    CreditCard,
-    TrendingUp,
-    Package,
-    Award,
-    AlertTriangle,
-    CheckCircle2,
-    Clock,
-    XCircle,
-    ExternalLink,
+    ArrowRight,
+    Check,
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-const statusMap: Record<string, { label: string; color: string; bg: string; icon: React.ReactNode }> = {
-    ativa: { label: "ATIVA", color: "#4ade80", bg: "rgba(74, 222, 128, 0.12)", icon: <CheckCircle2 className="w-3 h-3" /> },
-    atrasada: { label: "ATRASADA", color: "#facc15", bg: "rgba(250, 204, 21, 0.12)", icon: <AlertTriangle className="w-3 h-3" /> },
-    aguardando_revisao: { label: "AG. REVISÃO", color: "#60a5fa", bg: "rgba(96, 165, 250, 0.12)", icon: <Clock className="w-3 h-3" /> },
-    concluida: { label: "CONCLUÍDA", color: "#888888", bg: "rgba(136, 136, 136, 0.12)", icon: <CheckCircle2 className="w-3 h-3" /> },
-};
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+const avatarColors = [
+    "#35605A", "#7C3A2D", "#2D5A7C", "#5A2D7C", "#7C5A2D", "#2D7C5A", "#3A2D7C", "#7C2D5A",
+];
+
+function getAvatarColor(name: string) {
+    let hash = 0;
+    for (let i = 0; i < name.length; i++) hash = name.charCodeAt(i) + ((hash << 5) - hash);
+    return avatarColors[Math.abs(hash) % avatarColors.length];
+}
+
+function getInitials(name: string) {
+    return name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+}
+
+function formatGsCompact(value: number): string {
+    if (value >= 1_000_000) return `G$ ${(value / 1_000_000).toFixed(1).replace(/\.0$/, "")}M`;
+    if (value >= 1_000) return `G$ ${(value / 1_000).toFixed(1).replace(/\.0$/, "")}K`;
+    return `G$ ${value}`;
+}
+
+function formatDateShort(dateStr: string) {
+    return new Date(dateStr).toLocaleDateString("es-PY", {
+        day: "2-digit", month: "short",
+    });
+}
+
+// ─── Components ──────────────────────────────────────────────────────────────
+
+function MaletaStatusBadge({ status }: { status: string }) {
+    const configs: Record<string, { bg: string; color: string; label: string }> = {
+        ativa: { bg: "#1C3A35", color: "#4ADE80", label: "ATIVA" },
+        atrasada: { bg: "#3A1C1C", color: "#E05555", label: "ATRASADA" },
+        aguardando_revisao: { bg: "#3A3A1C", color: "#FACC15", label: "AG. REVISÃO" },
+        concluida: { bg: "#1A2A20", color: "#52B788", label: "CONCLUÍDA" },
+    };
+    const cfg = configs[status] || configs.ativa;
+    return (
+        <span style={{
+            display: "inline-block", padding: "2px 9px", borderRadius: "10px",
+            fontSize: "10px", fontWeight: 600, lineHeight: "12px",
+            background: cfg.bg, color: cfg.color,
+        }}>
+            {cfg.label}
+        </span>
+    );
+}
+
+function DocStatusBadge({ status }: { status: string }) {
+    const isAprovado = status === "aprovado";
+    return (
+        <span style={{
+            display: "inline-flex", alignItems: "center", gap: "3px",
+            padding: "2px 9px", borderRadius: "10px",
+            fontSize: "10px", fontWeight: 600, lineHeight: "12px",
+            background: isAprovado ? "#1A2A20" : "#2A1F0A",
+            color: isAprovado ? "#52B788" : "#D4A017",
+            border: isAprovado ? "none" : "1px solid #3A2A0A",
+        }}>
+            {isAprovado ? "APROVADO" : "PENDENTE"} {isAprovado && <Check className="w-3 h-3" />}
+        </span>
+    );
+}
+
+// ─── Page ────────────────────────────────────────────────────────────────────
 
 export default function RevendedoraPerfilPage() {
     const params = useParams();
@@ -58,7 +104,7 @@ export default function RevendedoraPerfilPage() {
     if (loading) {
         return (
             <div className="admin-content">
-                <div className="text-center py-20 text-muted-foreground">Carregando perfil...</div>
+                <div className="text-center py-20 text-muted-foreground">Cargando perfil...</div>
             </div>
         );
     }
@@ -66,12 +112,13 @@ export default function RevendedoraPerfilPage() {
     if (!perfil) {
         return (
             <div className="admin-content">
-                <div className="text-center py-20 text-muted-foreground">Revendedora não encontrada</div>
+                <div className="text-center py-20 text-muted-foreground">Revendedora no encontrada</div>
             </div>
         );
     }
 
-    const avatarIniciais = perfil.name.split(" ").map((n) => n[0]).slice(0, 2).join("").toUpperCase();
+    const avatarColor = getAvatarColor(perfil.name);
+    const colabColor = perfil.colaboradora ? getAvatarColor(perfil.colaboradora.name) : "#555";
     const faturamentoTotal = perfil.maletas.reduce((s, m) => s + (m.valor_total_vendido || 0), 0);
     const faturamentoMes = perfil.maletas
         .filter((m) => {
@@ -81,300 +128,399 @@ export default function RevendedoraPerfilPage() {
         })
         .reduce((s, m) => s + (m.valor_total_vendido || 0), 0);
 
+    // Documentos por tipo
+    const docCI = perfil.documentos.find((d) => d.tipo === "ci");
+    const docContrato = perfil.documentos.find((d) => d.tipo === "contrato");
+    const docManual = perfil.documentos.find((d) => d.tipo === "manual");
+
     return (
         <>
-            {/* Header */}
-            <header className="admin-header">
-                <div>
-                    <div style={{ fontSize: "11px", color: "var(--admin-text-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>
-                        <Link href="/admin/revendedoras" style={{ color: "inherit", textDecoration: "none" }}>
-                            ADMIN / REVENDEDORAS
-                        </Link>{" "}
-                        / {perfil.name.toUpperCase()}
-                    </div>
-                    <h1>Perfil da Revendedora</h1>
+            {/* ── Header ─────────────────────────────────────────────────── */}
+            <header style={{
+                padding: "28px 36px 20px", borderBottom: "1px solid #222222",
+            }}>
+                {/* Breadcrumb */}
+                <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
+                    <Link href="/admin/revendedoras" style={{ color: "#444444", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
+                        ADMIN
+                    </Link>
+                    <span style={{ color: "#333333", fontSize: "11px" }}>/</span>
+                    <Link href="/admin/revendedoras" style={{ color: "#444444", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
+                        REVENDEDORAS
+                    </Link>
+                    <span style={{ color: "#333333", fontSize: "11px" }}>/</span>
+                    <span style={{ color: "#666666", fontSize: "11px", letterSpacing: "0.12em" }}>{perfil.name.toUpperCase()}</span>
                 </div>
-                <div style={{ display: "flex", gap: "8px" }}>
-                    <Button variant="outline" size="sm" asChild>
-                        <a href={`https://wa.me/${perfil.whatsapp.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer">
-                            <MessageCircle className="w-4 h-4 mr-2" /> WhatsApp
+
+                {/* Title + Actions */}
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                    <h1 style={{
+                        color: "#E8E8E8", fontSize: "20px", lineHeight: "24px",
+                        fontFamily: "'Playfair Display', system-ui, serif", margin: 0,
+                    }}>
+                        Perfil da Revendedora
+                    </h1>
+                    <div style={{ display: "flex", gap: "8px" }}>
+                        {/* WhatsApp */}
+                        <a
+                            href={`https://wa.me/${perfil.whatsapp.replace(/\D/g, "")}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{
+                                display: "inline-flex", alignItems: "center", gap: "6px",
+                                padding: "7px 14px", borderRadius: "6px",
+                                background: "#1A2A20", border: "1px solid #2D6A4F",
+                                color: "#52B788", fontSize: "12px", fontWeight: 600,
+                                textDecoration: "none",
+                            }}
+                        >
+                            <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                         </a>
-                    </Button>
-                    <Button variant="outline" size="sm">
-                        Alterar Consultora
-                    </Button>
-                    <Button variant="destructive" size="sm">
-                        {perfil.is_active ? "Desativar Conta" : "Reativar Conta"}
-                    </Button>
+                        {/* Alterar Consultora */}
+                        <button style={{
+                            display: "inline-flex", alignItems: "center", gap: "6px",
+                            padding: "7px 14px", borderRadius: "6px",
+                            background: "#1E1E1E", border: "1px solid #2A2A2A",
+                            color: "#888888", fontSize: "12px", fontWeight: 500,
+                            cursor: "pointer",
+                        }}>
+                            <UserCog className="w-3.5 h-3.5" /> Alterar Consultora
+                        </button>
+                        {/* Desativar */}
+                        <button style={{
+                            display: "inline-flex", alignItems: "center", gap: "6px",
+                            padding: "7px 14px", borderRadius: "6px",
+                            background: "#1E1E1E", border: "1px solid #3A1515",
+                            color: "#E05555", fontSize: "12px", fontWeight: 500,
+                            cursor: "pointer",
+                        }}>
+                            <Ban className="w-3.5 h-3.5" /> Desativar Conta
+                        </button>
+                    </div>
                 </div>
             </header>
 
-            <div className="admin-content">
-                {/* Identity Card */}
-                <Card>
-                    <CardContent style={{ padding: "24px" }}>
-                        <div style={{ display: "flex", alignItems: "flex-start", gap: "20px", flexWrap: "wrap" }}>
-                            <div style={{
-                                width: 72, height: 72, borderRadius: "50%",
-                                background: "linear-gradient(135deg, #35605a, #2a4d48)",
-                                color: "white", display: "flex", alignItems: "center",
-                                justifyContent: "center", fontSize: "22px", fontWeight: 700,
-                                overflow: "hidden", flexShrink: 0,
+            <div className="admin-content" style={{ padding: "24px 36px" }}>
+                {/* ── Identity Card ────────────────────────────────────────── */}
+                <div style={{
+                    display: "flex", alignItems: "center", gap: "24px",
+                    padding: "24px", background: "#171717",
+                    border: "1px solid #2A2A2A", borderRadius: "10px",
+                }}>
+                    {/* Avatar */}
+                    <div style={{
+                        width: "64px", height: "64px", borderRadius: "50%",
+                        background: "#2A3A30", border: "2px solid #2D6A4F",
+                        color: "#52B788", display: "flex", alignItems: "center", justifyContent: "center",
+                        fontSize: "22px", fontWeight: 700, flexShrink: 0,
+                        overflow: "hidden",
+                    }}>
+                        {perfil.avatar_url ? (
+                            <img src={perfil.avatar_url} alt={perfil.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                            getInitials(perfil.name)
+                        )}
+                    </div>
+
+                    {/* Info */}
+                    <div style={{ flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "6px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <span style={{ color: "#E8E8E8", fontSize: "17px", fontWeight: 700 }}>{perfil.name}</span>
+                            {perfil.nivel && (
+                                <span style={{
+                                    padding: "3px 10px", borderRadius: "20px",
+                                    background: "#2D6A4F", color: "#D8F3DC",
+                                    fontSize: "10px", fontWeight: 700, letterSpacing: "0.06em",
+                                }}>
+                                    {perfil.nivel.nome.toUpperCase()}
+                                </span>
+                            )}
+                            {perfil.documentos_pendentes > 0 && (
+                                <span style={{
+                                    padding: "3px 10px", borderRadius: "20px",
+                                    background: "#252525", color: "#888888",
+                                    border: "1px solid #333333",
+                                    fontSize: "10px", fontWeight: 500,
+                                }}>
+                                    CI PENDENTE
+                                </span>
+                            )}
+                        </div>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "#555555", fontSize: "12px" }}>
+                            <span>{perfil.email || "—"}</span>
+                            <span style={{ color: "#333333" }}>·</span>
+                            <span>CI: {perfil.cedula || "—"}</span>
+                            <span style={{ color: "#333333" }}>·</span>
+                            <span>{perfil.whatsapp}</span>
+                            <span style={{ color: "#333333" }}>·</span>
+                            <span>{[perfil.endereco_cidade, perfil.endereco_estado].filter(Boolean).join(" / ") || "—"}</span>
+                        </div>
+                    </div>
+
+                    {/* Stats */}
+                    <div style={{
+                        display: "flex", flexShrink: 0, paddingLeft: "24px",
+                        borderLeft: "1px solid #252525",
+                    }}>
+                        {/* Pontos */}
+                        <div style={{
+                            display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
+                            paddingInline: "20px", borderRight: "1px solid #252525",
+                        }}>
+                            <span style={{ color: "#E8E8E8", fontSize: "18px", fontWeight: 700 }}>
+                                {perfil.pontos_total.toLocaleString("es-PY")}
+                            </span>
+                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>PONTOS</span>
+                        </div>
+                        {/* Comissão */}
+                        <div style={{
+                            display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
+                            paddingInline: "20px", borderRight: "1px solid #252525",
+                        }}>
+                            <span style={{ color: "#52B788", fontSize: "18px", fontWeight: 700 }}>
+                                {perfil.taxa_comissao}%
+                            </span>
+                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>COMISSÃO</span>
+                        </div>
+                        {/* Consultora */}
+                        <div style={{
+                            display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
+                            paddingInline: "20px",
+                        }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                                <div style={{
+                                    width: "22px", height: "22px", borderRadius: "50%",
+                                    background: "#2A3A30", color: "#52B788",
+                                    display: "flex", alignItems: "center", justifyContent: "center",
+                                    fontSize: "8px", fontWeight: 700, flexShrink: 0,
+                                }}>
+                                    {perfil.colaboradora ? getInitials(perfil.colaboradora.name).slice(0, 2) : "—"}
+                                </div>
+                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 600 }}>
+                                    {perfil.colaboradora ? `M. ${perfil.colaboradora.name.split(" ").pop()}` : "—"}
+                                </span>
+                            </div>
+                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>CONSULTORA</span>
+                        </div>
+                    </div>
+                </div>
+
+                {/* ── Grid ─────────────────────────────────────────────────── */}
+                <div style={{ display: "flex", gap: "16px", marginTop: "16px" }}>
+                    {/* ── Left Column ────────────────────────────────────── */}
+                    <div style={{ flex: "1.1 1 0%", display: "flex", flexDirection: "column", gap: "16px" }}>
+                        {/* Dados de Candidatura */}
+                        <div style={{
+                            padding: "20px 24px", background: "#171717",
+                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                        }}>
+                            <h3 style={{
+                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "16px",
                             }}>
-                                {perfil.avatar_url ? (
-                                    <img src={perfil.avatar_url} alt={perfil.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                ) : (
-                                    avatarIniciais
-                                )}
-                            </div>
-                            <div style={{ flex: 1, minWidth: 240 }}>
-                                <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap", marginBottom: "6px" }}>
-                                    <h2 style={{ fontSize: "18px", fontWeight: 600, margin: 0 }}>{perfil.name}</h2>
-                                    {perfil.nivel && (
-                                        <Badge style={{ background: perfil.nivel.cor + "20", color: perfil.nivel.cor, border: "none" }}>
-                                            {perfil.nivel.nome.toUpperCase()}
-                                        </Badge>
-                                    )}
-                                    <span className="admin-badge" style={{
-                                        background: perfil.is_active ? "rgba(74, 222, 128, 0.12)" : "rgba(136, 136, 136, 0.12)",
-                                        color: perfil.is_active ? "#4ade80" : "#888",
-                                    }}>
-                                        {perfil.is_active ? "ATIVA" : "INATIVA"}
-                                    </span>
-                                    {perfil.perfil_completo && (
-                                        <span className="admin-badge" style={{ background: "rgba(96, 165, 250, 0.12)", color: "#60a5fa" }}>
-                                            PERFIL COMPLETO
-                                        </span>
-                                    )}
-                                </div>
-                                <div style={{ display: "flex", gap: "16px", flexWrap: "wrap", color: "var(--admin-text-muted)", fontSize: "13px" }}>
-                                    <span>{perfil.email || "—"}</span>
-                                    <span>CI: {perfil.cedula || "—"}</span>
-                                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                                        <Phone className="w-3 h-3" /> {formatPhone(perfil.whatsapp)}
-                                    </span>
-                                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                                        <MapPin className="w-3 h-3" />
-                                        {[perfil.endereco_cidade, perfil.endereco_estado].filter(Boolean).join(" / ") || "—"}
-                                    </span>
-                                </div>
-                            </div>
-                            <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
-                                <div style={{ textAlign: "center" }}>
-                                    <div style={{ fontSize: "22px", fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>
-                                        {perfil.pontos_total.toLocaleString("es-PY")}
+                                DADOS DE CANDIDATURA
+                            </h3>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: "16px 0" }}>
+                                {[
+                                    { label: "CÉDULA", value: perfil.cedula || "—" },
+                                    { label: "INSTAGRAM", value: perfil.instagram ? `@${perfil.instagram}` : "—" },
+                                    { label: "EDAD", value: perfil.edad ? `${perfil.edad} años` : "—" },
+                                    { label: "ESTADO CIVIL", value: perfil.estado_civil || "—" },
+                                    { label: "HIJOS", value: perfil.hijos || "—" },
+                                    { label: "EMPRESA", value: perfil.empresa || "—" },
+                                ].map((item) => (
+                                    <div key={item.label} style={{ flex: "0 0 33.33%", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                        <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>{item.label}</span>
+                                        <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>{item.value}</span>
                                     </div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>Pontos</div>
-                                </div>
-                                <div style={{ textAlign: "center" }}>
-                                    <div style={{ fontSize: "22px", fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "#4ade80" }}>
-                                        {formatPct(perfil.taxa_comissao)}
-                                    </div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>Comissão</div>
-                                </div>
-                                <div style={{ textAlign: "center" }}>
-                                    <div style={{ fontSize: "14px", fontWeight: 600 }}>
-                                        {perfil.colaboradora?.name || "—"}
-                                    </div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>Consultora</div>
+                                ))}
+                                <div style={{ flex: "0 0 100%", display: "flex", flexDirection: "column", gap: "4px" }}>
+                                    <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>INFORMCONF</span>
+                                    <span style={{ color: "#52B788", fontSize: "13px", fontWeight: 500 }}>
+                                        {perfil.informconf || "Sin deudas registradas al momento de la solicitud"}
+                                    </span>
                                 </div>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
 
-                {/* Grid */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(360px, 1fr))", gap: "24px" }}>
-                    {/* Dados de Candidatura */}
-                    <Card>
-                        <CardContent style={{ padding: "24px" }}>
-                            <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "16px" }}>
-                                Dados de Candidatura
-                            </h3>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px" }}>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Cédula</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.cedula || "—"}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Instagram</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.instagram ? `@${perfil.instagram}` : "—"}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Edad</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.edad ? `${perfil.edad} años` : "—"}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Estado Civil</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.estado_civil || "—"}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Hijos</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.hijos || "—"}</div>
-                                </div>
-                                <div>
-                                    <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Empresa</div>
-                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.empresa || "—"}</div>
-                                </div>
-                            </div>
-                            <div style={{ marginTop: "12px" }}>
-                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Informconf</div>
-                                <div style={{ fontSize: "13px", color: perfil.informconf ? "var(--admin-text)" : "var(--admin-text-muted)" }}>
-                                    {perfil.informconf || "Sin deudas registradas al momento de la solicitud"}
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Documentos */}
-                    <Card>
-                        <CardContent style={{ padding: "24px" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-                                <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>
-                                    Documentos
+                        {/* Maletas */}
+                        <div style={{
+                            padding: "20px 24px", background: "#161616",
+                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                        }}>
+                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
+                                <h3 style={{
+                                    color: "#555555", fontSize: "11px", fontWeight: 600,
+                                    letterSpacing: "0.12em", lineHeight: "14px",
+                                }}>
+                                    MALETAS
                                 </h3>
-                                <Link href={`/admin/revendedoras/${perfil.id}/documentos`} style={{ fontSize: "12px", color: "var(--admin-accent)", textDecoration: "none" }}>
-                                    Gestionar →
-                                </Link>
-                            </div>
-                            {perfil.documentos.length === 0 ? (
-                                <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhum documento enviado</p>
-                            ) : (
-                                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                    {perfil.documentos.map((doc) => (
-                                        <div key={doc.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <FileText className="w-4 h-4 text-muted-foreground" />
-                                                <span style={{ fontSize: "14px" }}>
-                                                    {doc.tipo === "ci" ? "Identidad CI / DNI" : doc.tipo === "contrato" ? "Contrato de Consignación" : doc.tipo}
-                                                </span>
-                                            </div>
-                                            <span className="admin-badge" style={{
-                                                background: doc.status === "aprovado" ? "rgba(74, 222, 128, 0.12)" : doc.status === "pendente" ? "rgba(250, 204, 21, 0.12)" : "rgba(136, 136, 136, 0.12)",
-                                                color: doc.status === "aprovado" ? "#4ade80" : doc.status === "pendente" ? "#facc15" : "#888",
-                                            }}>
-                                                {doc.status.toUpperCase()}
-                                            </span>
-                                        </div>
-                                    ))}
-                                </div>
-                            )}
-                        </CardContent>
-                    </Card>
-
-                    {/* Maletas */}
-                    <Card>
-                        <CardContent style={{ padding: "24px" }}>
-                            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-                                <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>
-                                    Maletas
-                                </h3>
-                                <Link href={`/admin/maleta?reseller=${perfil.id}`} style={{ fontSize: "12px", color: "var(--admin-accent)", textDecoration: "none" }}>
+                                <Link href={`/admin/maleta?reseller=${perfil.id}`} style={{ color: "#2D6A4F", fontSize: "11px", fontWeight: 500, textDecoration: "none" }}>
                                     Ver todas →
                                 </Link>
                             </div>
-                            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                 {perfil.maletas.length === 0 ? (
-                                    <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhuma maleta</p>
+                                    <p style={{ color: "#555555", fontSize: "13px" }}>Nenhuma maleta</p>
                                 ) : (
-                                    perfil.maletas.slice(0, 5).map((m) => {
-                                        const st = statusMap[m.status] || statusMap.concluida;
-                                        return (
-                                            <div key={m.id} style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: "12px" }}>
-                                                <div>
-                                                    <div style={{ fontSize: "14px", fontWeight: 500 }}>
-                                                        #{m.numero} <span style={{ color: "var(--admin-text-muted)" }}>Maleta</span>
-                                                    </div>
-                                                    <div style={{ fontSize: "11px", color: "var(--admin-text-muted)" }}>
-                                                        {m.status === "ativa" ? `Vence ${formatDate(m.data_limite)}` : `Finalizada ${formatDate(m.data_envio)}`}
-                                                    </div>
-                                                </div>
-                                                <span className="admin-badge" style={{ background: st.bg, color: st.color }}>
-                                                    {st.label}
+                                    perfil.maletas.slice(0, 5).map((m) => (
+                                        <div key={m.id} style={{
+                                            display: "flex", alignItems: "center", justifyContent: "space-between",
+                                            padding: "10px 12px", background: "#161616", borderRadius: "7px",
+                                        }}>
+                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <span style={{ color: "#888888", fontSize: "12px", fontWeight: 600 }}>
+                                                    #{m.numero}
+                                                </span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    Maleta #{m.numero}
                                                 </span>
                                             </div>
-                                        );
-                                    })
+                                            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                                <span style={{ color: "#555555", fontSize: "11px" }}>
+                                                    {m.status === "ativa" || m.status === "atrasada"
+                                                        ? `Vence ${formatDateShort(m.data_limite)}`
+                                                        : `Finalizada ${formatDateShort(m.data_envio)}`
+                                                    }
+                                                </span>
+                                                <MaletaStatusBadge status={m.status} />
+                                            </div>
+                                        </div>
+                                    ))
                                 )}
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
+                    </div>
 
-                    {/* Dados Bancários */}
-                    <Card>
-                        <CardContent style={{ padding: "24px" }}>
-                            <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "16px" }}>
-                                Dados Bancários
+                    {/* ── Right Column ───────────────────────────────────── */}
+                    <div style={{ width: "340px", flexShrink: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
+                        {/* Documentos */}
+                        <div style={{
+                            padding: "20px 24px", background: "#171717",
+                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                        }}>
+                            <h3 style={{
+                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
+                            }}>
+                                DOCUMENTOS
+                            </h3>
+                            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+                                {[
+                                    { label: "Identidad CI / DNI", doc: docCI },
+                                    { label: "Manual de Conducta", doc: docManual },
+                                    { label: "Contrato de Consignação", doc: docContrato },
+                                ].map((item) => (
+                                    <div key={item.label} style={{
+                                        display: "flex", alignItems: "center", justifyContent: "space-between",
+                                        padding: "10px 12px", background: "#161616", borderRadius: "7px",
+                                    }}>
+                                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                                            <FileText className="w-3.5 h-3.5" style={{ color: "#555555", flexShrink: 0 }} />
+                                            <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>{item.label}</span>
+                                        </div>
+                                        <DocStatusBadge status={item.doc?.status || "pendente"} />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Dados Bancários */}
+                        <div style={{
+                            padding: "20px 24px", background: "#171717",
+                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                        }}>
+                            <h3 style={{
+                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
+                            }}>
+                                DADOS BANCÁRIOS
                             </h3>
                             {perfil.dados_bancarios ? (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                                    <div>
-                                        <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Tipo</div>
-                                        <div style={{ fontSize: "14px", fontWeight: 500 }}>
+                                    <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                        <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TIPO</span>
+                                        <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
                                             {perfil.dados_bancarios.tipo === "alias" ? "Bancard — Alias" : "Cuenta Bancaria"}
-                                        </div>
+                                        </span>
                                     </div>
                                     {perfil.dados_bancarios.tipo === "alias" ? (
                                         <>
-                                            <div>
-                                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Alias</div>
-                                                <div style={{ fontSize: "14px", fontWeight: 500, color: "var(--admin-accent)" }}>
-                                                    {maskAlias(perfil.dados_bancarios.alias_valor || "")}
-                                                </div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>ALIAS</span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    {perfil.dados_bancarios.alias_valor || "—"}
+                                                </span>
                                             </div>
-                                            <div>
-                                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Titular</div>
-                                                <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.dados_bancarios.alias_titular || "—"}</div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    {perfil.dados_bancarios.alias_titular || "—"}
+                                                </span>
                                             </div>
                                         </>
                                     ) : (
                                         <>
-                                            <div>
-                                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Banco</div>
-                                                <div style={{ fontSize: "14px", fontWeight: 500 }}>{perfil.dados_bancarios.banco || "—"}</div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>BANCO</span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    {perfil.dados_bancarios.banco || "—"}
+                                                </span>
                                             </div>
-                                            <div>
-                                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Cuenta</div>
-                                                <div style={{ fontSize: "14px", fontWeight: 500 }}>{maskCuenta(perfil.dados_bancarios.cuenta || "")}</div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>CUENTA</span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    {perfil.dados_bancarios.cuenta || "—"}
+                                                </span>
+                                            </div>
+                                            <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
+                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
+                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                    {perfil.dados_bancarios.titular || "—"}
+                                                </span>
                                             </div>
                                         </>
                                     )}
                                 </div>
                             ) : (
-                                <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhum dado bancário cadastrado</p>
+                                <p style={{ color: "#555555", fontSize: "13px" }}>Nenhum dado bancário cadastrado</p>
                             )}
-                        </CardContent>
-                    </Card>
-                </div>
+                        </div>
 
-                {/* Faturamento Card (full width) */}
-                <Card>
-                    <CardContent style={{ padding: "24px" }}>
-                        <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "16px" }}>
-                            Faturamento
-                        </h3>
-                        <div style={{ display: "flex", gap: "40px", flexWrap: "wrap" }}>
-                            <div>
-                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Total Acumulado</div>
-                                <div style={{ fontSize: "28px", fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>
-                                    {formatGsCompact(faturamentoTotal)}
+                        {/* Faturamento */}
+                        <div style={{
+                            padding: "20px 24px", background: "#171717",
+                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                        }}>
+                            <h3 style={{
+                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
+                            }}>
+                                FATURAMENTO
+                            </h3>
+                            <div style={{ display: "flex" }}>
+                                <div style={{
+                                    flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "4px",
+                                    paddingRight: "16px", borderRight: "1px solid #252525",
+                                }}>
+                                    <span style={{ color: "#E8E8E8", fontSize: "17px", fontWeight: 700 }}>
+                                        {formatGsCompact(faturamentoTotal)}
+                                    </span>
+                                    <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>TOTAL ACUMULADO</span>
                                 </div>
-                            </div>
-                            <div>
-                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Este Mês</div>
-                                <div style={{ fontSize: "28px", fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "var(--admin-accent)" }}>
-                                    {formatGsCompact(faturamentoMes)}
-                                </div>
-                            </div>
-                            <div>
-                                <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "4px" }}>Maletas Fechadas</div>
-                                <div style={{ fontSize: "28px", fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>
-                                    {perfil.maletas.filter((m) => m.status === "concluida").length}
+                                <div style={{
+                                    flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "4px",
+                                    paddingLeft: "16px",
+                                }}>
+                                    <span style={{ color: "#52B788", fontSize: "17px", fontWeight: 700 }}>
+                                        {formatGsCompact(faturamentoMes)}
+                                    </span>
+                                    <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>ESTE MÊS</span>
                                 </div>
                             </div>
                         </div>
-                    </CardContent>
-                </Card>
+                    </div>
+                </div>
             </div>
         </>
     );

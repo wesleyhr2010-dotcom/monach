@@ -1,5 +1,32 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — UI: Perfil da Revendedora no Admin (Paper)
+
+### Contexto
+Atualização da tela `/admin/revendedoras/[id]` para seguir fielmente o design do artboard "Admin Revendedora — Perfil" (`4RE-0`) do Paper.
+
+### Modificado
+- **`src/app/admin/revendedoras/[id]/page.tsx`** — reescrita completa com layout do Paper:
+  - **Header** com breadcrumb "ADMIN / REVENDEDORAS / {NOME}", título "Perfil da Revendedora" (Playfair Display), botões: WhatsApp (verde), Alterar Consultora (cinza), Desativar Conta (vermelho).
+  - **Card de identidade** — avatar grande (64px) com borda verde (`#2D6A4F`), nome, badges de nível (DIAMANTE VIP) e "CI PENDENTE" quando aplicável, dados de contato (email · CI · WhatsApp · Cidade) em `#555555`.
+  - **Stats** — Pontos (cinza), Comissão% (verde `#52B788`), Consultora (avatar mini 22px + nome abreviado), separados por bordas `#252525`.
+  - **Grid de 2 colunas**:
+    - **Esquerda (maior)**:
+      - *Dados de Candidatura* — grid 3 colunas (Cédula, Instagram, Edad, Estado Civil, Hijos, Empresa) + Informconf em verde.
+      - *Maletas* — lista com `#numero`, nome, data de vencimento/finalização, badge de status (ATIVA/ATRASADA/CONCLUÍDA/AG. REVISÃO), link "Ver todas →".
+    - **Direita (340px)**:
+      - *Documentos* — lista com ícone de arquivo, nome, badge PENDENTE (amarelo `#D4A017`) ou APROVADO (verde `#52B788` com ✓).
+      - *Dados Bancários* — tipo, alias/cuenta, titular.
+      - *Faturamento* — Total Acumulado (cinza) / Este Mês (verde `#52B788`), separados por borda, fonte 17px bold.
+  - Todas as cores e medidas extraídas diretamente do Paper (nenhum valor hard-coded sem referência).
+- **`src/app/admin/actions-equipe.ts`** — `getPerfilRevendedora` inclui `colaboradora.avatar_url`.
+- **`src/lib/types.ts`** — `RevendedoraPerfil.colaboradora` inclui `avatar_url`.
+
+### Validação
+- `npx tsc --noEmit` limpo em código de produção.
+
+---
+
 ## 2026-04-24 — UI: Lista de Revendedoras no Admin (Paper)
 
 ### Contexto

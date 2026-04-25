@@ -434,7 +434,7 @@ export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfi
     const r = await prisma.reseller.findUnique({
         where: { id, role: "REVENDEDORA" },
         include: {
-            colaboradora: { select: { id: true, name: true } },
+            colaboradora: { select: { id: true, name: true, avatar_url: true } },
             dados_bancarios: true,
             maletas: {
                 orderBy: { created_at: "desc" },
@@ -502,7 +502,7 @@ export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfi
         endereco_complemento: r.endereco_complemento,
         endereco_cidade: r.endereco_cidade,
         endereco_estado: r.endereco_estado,
-        colaboradora: r.colaboradora ? { id: r.colaboradora.id, name: r.colaboradora.name } : null,
+        colaboradora: r.colaboradora ? { id: r.colaboradora.id, name: r.colaboradora.name, avatar_url: r.colaboradora.avatar_url } : null,
         pontos_total: pontosAgg._sum.pontos || 0,
         nivel: nivel || null,
         dados_bancarios: r.dados_bancarios
