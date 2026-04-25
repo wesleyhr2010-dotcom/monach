@@ -235,7 +235,7 @@ export default function RevendedoraPerfilPage() {
                                     {perfil.nivel.nome.toUpperCase()}
                                 </span>
                             )}
-                            {perfil.documentos_pendentes > 0 && (
+                            {perfil.documentos.some((d) => d.status === "pendente" || d.status === "em_analise") && (
                                 <span style={{
                                     padding: "3px 10px", borderRadius: "20px",
                                     background: "#252525", color: "#888888",
