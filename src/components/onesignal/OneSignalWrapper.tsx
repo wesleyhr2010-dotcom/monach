@@ -17,6 +17,7 @@ export default function OneSignalWrapper() {
     const scheduleLog = useCallback((msg: string) => {
         queueMicrotask(() => {
             showLog(msg);
+            console.log(`[push-init] ${msg}`);
         });
     }, [showLog]);
 
@@ -38,13 +39,36 @@ export default function OneSignalWrapper() {
             window.matchMedia("(display-mode: standalone)").matches ||
             maybeStandaloneNavigator.standalone === true;
 
-        if (!isStandalone) {
-            scheduleLog("⚠️ Modo browser — OneSignal só funciona na PWA instalada.");
-            return;
-        }
-
         const initOneSignal = async () => {
             try {
+                // STEP 0: registrar /sw.js manualmente. ServiceWorkerRegistration estava órfão
+                // (componente existia mas não era importado em layout nenhum), então o SW nunca
+                // ficava ativo — por isso a push subscription não era criada.
+                if ("serviceWorker" in navigator) {
+                    try {
+                        scheduleLog("[0] Registrando /sw.js...");
+                        const reg = await navigator.serviceWorker.register("/sw.js", { scope: "/" });
+                        scheduleLog(`[0b] SW registrado. scope=${reg.scope}`);
+                        await navigator.serviceWorker.ready;
+                        scheduleLog("[0c] ✅ SW ready (active).");
+                    } catch (swErr) {
+                        const msg = swErr instanceof Error ? swErr.message : String(swErr);
+                        scheduleLog(`❌ Falha ao registrar SW: ${msg}`);
+                        console.error("[push-init] SW register failed:", swErr);
+                        return;
+                    }
+                } else {
+                    scheduleLog("⚠️ navigator.serviceWorker indisponível.");
+                    return;
+                }
+
+                if (!isStandalone) {
+                    scheduleLog("⚠️ Modo browser — push só funciona na PWA instalada (iOS exige standalone).");
+                    // SW já está registrado; quando instalar como PWA, ele estará pronto.
+                    initialized.current = true;
+                    return;
+                }
+
                 scheduleLog("[1] Iniciando OneSignal.init...");
 
                 await OneSignal.init({
@@ -55,8 +79,7 @@ export default function OneSignalWrapper() {
                     // iOS PWA só permite um SW por scope — usar paths diferentes quebra a subscription.
                     serviceWorkerPath: "/sw.js",
                 });
-
-                scheduleLog("[2] ✅ Init OK.");
+                scheduleLog("[2] ✅ OneSignal.init OK.");
                 initialized.current = true;
 
                 // ─── Vincular device ao usuário Supabase ANTES do prompt ───
