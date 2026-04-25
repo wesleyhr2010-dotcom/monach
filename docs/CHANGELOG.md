@@ -1,5 +1,50 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-25 — Fix push: idioma `en` obrigatório + reativação dentro da PWA
+
+### Contexto
+Campanhas e push de teste do admin estavam falhando com `OneSignal 400: Message Notifications must have Any/English language content`. Em paralelo, no PWA iOS o estado "push desactivado" era um dead-end ("activalas en ajustes") — mas no iOS, se o usuário nunca decidiu sobre a prompt ou a app não aparece em Ajustes ainda, o único caminho é uma ação dentro do app.
+
+### Criado/Modificado
+- **`src/app/admin/config/notif-push/actions.ts`**:
+  - `headings`/`contents` agora incluem fallback `en` além de `es` (regra do OneSignal: toda notificação precisa de idioma "Any/English"). Aplicado em `enviarPushTeste` e `enviarCampanhaPush`.
+  - Helper `formatOneSignalErrors()` traduz `invalid_external_user_ids`/`invalid_aliases` em mensagem clara.
+  - `enviarCampanhaPush` agora usa `data.recipients` da resposta do OneSignal (verdade) em vez de contar o batch inteiro como enviado quando o response era 200 com 0 recipients.
+  - Mensagem segmentada: enviado / sem suscripción ativa no OneSignal / sem dispositivo vinculado, com `Detalle:` do erro real do OneSignal quando `totalEnviado === 0`.
+- **`src/components/app/PreferenciasNotificacionesForm.tsx`** — refatoração do bloco "Estado del push":
+  - Combina `Notification.permission` + `OneSignal.User.PushSubscription.optedIn` em 5 estados: `granted-on`, `granted-off`, `default`, `denied`, `unsupported`.
+  - Botão "Activar notificaciones" dentro do app: chama `requestPermission()` se `default`, `optIn()` se `granted-off`. Destrava casos iOS em que a entrada da PWA não aparece em Ajustes ainda.
+  - Botão "Desactivar en este dispositivo" via `optOut()` quando `granted-on`.
+  - Texto explicativo só aparece em `denied` (caminho real: Ajustes → Notificaciones → Monarca, ou reinstalar PWA).
+- **`docs/revendedoras/SPEC_NOTIFICACOES.md`** — nova seção "Estado del push en el dispositivo" com a tabela dos 5 estados e a justificativa de por que precisa de botão dentro do app no iOS.
+
+### Validação
+- `npx eslint` e `npx tsc --noEmit` passam nos arquivos editados.
+- Teste manual no painel admin: OneSignal agora aceita o payload (sem 400 de idioma); quando recipient não tem subscription, mensagem mostra "sin suscripción activa en OneSignal" + detalhe.
+
+---
+
+## 2026-04-25 — Campanhas Push em Massa no Admin
+
+### Contexto
+O item pendente "Campanhas push em massa" do épico de Notificações Push foi implementado, fechando o ciclo de configuração e disparo de notificações no admin.
+
+### Criado/Modificado
+- **`src/app/admin/config/notif-push/actions.ts`** — novas Server Actions:
+  - `getRevendedorasParaCampanha(filtro)` — lista revendedoras filtradas por escopo RBAC (ADMIN vê todas, COLABORADORA vê apenas seu grupo). Filtros: `todas`, `com_maleta_ativa`, `sem_maleta`, `onboarding_incompleto`.
+  - `enviarCampanhaPush(resellerIds, titulo, mensagem)` — envia push via OneSignal em batches de 2000 `external_id`s, valida escopo para COLABORADORA, registra em `NotificacaoLog`.
+- **`src/app/admin/config/notif-push/NotifPushClient.tsx`** — nova seção "Campaña Push en Masa" (collapsible):
+  - Filtros de segmento com botões toggle.
+  - Lista selecionável de revendedoras com checkbox (select all/none), indicador de maleta ativa e aviso "Sin push" quando `auth_user_id` é null.
+  - Campos de título e mensagem com contagem de selecionadas no botão de envio.
+  - Estados de loading e feedback de sucesso/erro.
+
+### Validação
+- `npx eslint` passa sem warnings nos arquivos editados.
+- `npx tsc --noEmit` sem erros nos arquivos editados.
+
+---
+
 ## 2026-04-24 — UI: Perfil da Revendedora no Admin (Paper)
 
 ### Contexto

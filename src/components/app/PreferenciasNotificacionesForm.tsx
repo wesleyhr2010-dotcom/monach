@@ -105,25 +105,99 @@ export default function PreferenciasNotificacionesForm({
     const [prefs, setPrefs] = useState<PreferenciasNotificaciones>(initialPrefs);
     const [optimisticPrefs, setOptimisticPrefs] = useOptimistic(prefs);
     const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
-    const [pushStatus, setPushStatus] = useState<"active" | "inactive" | "unsupported">("unsupported");
+    const [permission, setPermission] = useState<NotificationPermission | "unsupported">("unsupported");
+    const [optedIn, setOptedIn] = useState<boolean>(false);
+    const [isToggling, setIsToggling] = useState(false);
+    const [pushError, setPushError] = useState<string | null>(null);
 
-    // Detectar status do OneSignal
-    useEffect(() => {
-        const checkPush = async () => {
-            try {
-                const OneSignal = (window as unknown as Record<string, unknown>).OneSignal;
-                if (!OneSignal) {
-                    setPushStatus("unsupported");
-                    return;
-                }
-                const optedIn = await (OneSignal as { User?: { PushSubscription?: { optedIn?: boolean } } }).User?.PushSubscription?.optedIn;
-                setPushStatus(optedIn ? "active" : "inactive");
-            } catch {
-                setPushStatus("unsupported");
-            }
+    type OneSignalLike = {
+        Notifications?: {
+            requestPermission?: () => Promise<boolean>;
+            permission?: boolean;
         };
-        checkPush();
+        User?: {
+            PushSubscription?: {
+                optedIn?: boolean | Promise<boolean>;
+                optIn?: () => Promise<void>;
+                optOut?: () => Promise<void>;
+            };
+        };
+    };
+
+    const refreshPushState = useCallback(async () => {
+        try {
+            if (typeof Notification === "undefined") {
+                setPermission("unsupported");
+                return;
+            }
+            setPermission(Notification.permission);
+            const OneSignal = (window as unknown as { OneSignal?: OneSignalLike }).OneSignal;
+            const sub = OneSignal?.User?.PushSubscription;
+            if (sub && "optedIn" in sub) {
+                const v = await Promise.resolve(sub.optedIn);
+                setOptedIn(Boolean(v));
+            } else {
+                setOptedIn(false);
+            }
+        } catch {
+            // mantém último estado conhecido
+        }
     }, []);
+
+    useEffect(() => {
+        refreshPushState();
+    }, [refreshPushState]);
+
+    const handleEnablePush = async () => {
+        setPushError(null);
+        setIsToggling(true);
+        try {
+            const OneSignal = (window as unknown as { OneSignal?: OneSignalLike }).OneSignal;
+            if (!OneSignal?.User?.PushSubscription) {
+                setPushError("Instala la app (Compartir → Añadir a pantalla de inicio) para activar los avisos push.");
+                return;
+            }
+            if (typeof Notification !== "undefined" && Notification.permission === "default") {
+                await OneSignal.Notifications?.requestPermission?.();
+            }
+            if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+                await OneSignal.User.PushSubscription.optIn?.();
+            }
+            await refreshPushState();
+            if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+                setPushError("Tu teléfono bloqueó los avisos. Ve a Ajustes → Notificaciones → Monarca y actívalas.");
+            }
+        } catch (err) {
+            setPushError(err instanceof Error ? err.message : "No se pudo activar el push.");
+        } finally {
+            setIsToggling(false);
+        }
+    };
+
+    const handleDisablePush = async () => {
+        setPushError(null);
+        setIsToggling(true);
+        try {
+            const OneSignal = (window as unknown as { OneSignal?: OneSignalLike }).OneSignal;
+            await OneSignal?.User?.PushSubscription?.optOut?.();
+            await refreshPushState();
+        } catch (err) {
+            setPushError(err instanceof Error ? err.message : "No se pudo desactivar el push.");
+        } finally {
+            setIsToggling(false);
+        }
+    };
+
+    const pushUiState: "unsupported" | "default" | "denied" | "granted-off" | "granted-on" =
+        permission === "unsupported"
+            ? "unsupported"
+            : permission === "denied"
+                ? "denied"
+                : permission === "default"
+                    ? "default"
+                    : optedIn
+                        ? "granted-on"
+                        : "granted-off";
 
     const saveToServer = useCallback(
         async (next: PreferenciasNotificaciones) => {
@@ -203,28 +277,81 @@ export default function PreferenciasNotificacionesForm({
 
             {/* Status do push */}
             <div className="px-4 pb-4">
-                <div className="flex items-center gap-3 px-4 py-3.5 bg-white rounded-xl">
-                    <Bell className="w-5 h-5 text-[#917961] shrink-0" />
-                    <div className="flex-1">
-                        <p className="text-sm font-medium text-[#1A1A1A]">Estado del push</p>
-                        <p className="text-xs text-[#6b7280] mt-0.5">
-                            {pushStatus === "active" && "Notificaciones activas en este dispositivo"}
-                            {pushStatus === "inactive" && "Notificaciones desactivadas. Actívalas en ajustes."}
-                            {pushStatus === "unsupported" && "Solo disponible en la app instalada (PWA)."}
-                        </p>
+                <div className="flex flex-col gap-3 px-4 py-3.5 bg-white rounded-xl">
+                    <div className="flex items-center gap-3">
+                        <Bell className="w-5 h-5 text-[#917961] shrink-0" />
+                        <div className="flex-1">
+                            <p className="text-sm font-medium text-[#1A1A1A]">Estado del push</p>
+                            <p className="text-xs text-[#6b7280] mt-0.5">
+                                {pushUiState === "granted-on" && "Notificaciones activas en este dispositivo."}
+                                {pushUiState === "granted-off" && "Permiso concedido, pero los avisos están pausados."}
+                                {pushUiState === "default" && "Aún no decidiste sobre los avisos en este dispositivo."}
+                                {pushUiState === "denied" && "Tu teléfono bloqueó los avisos para esta app."}
+                                {pushUiState === "unsupported" && "Solo disponible en la app instalada (PWA). Toca Compartir → Añadir a pantalla de inicio."}
+                            </p>
+                        </div>
+                        <span
+                            className="inline-flex items-center gap-1 text-xs font-medium shrink-0"
+                            style={{ color: pushUiState === "granted-on" ? "#2E5A4C" : "#6b7280" }}
+                        >
+                            {pushUiState === "granted-on" && (
+                                <>
+                                    <Check className="w-3.5 h-3.5" /> Activo
+                                </>
+                            )}
+                            {(pushUiState === "granted-off" || pushUiState === "default") && "Inactivo"}
+                            {pushUiState === "denied" && "Bloqueado"}
+                            {pushUiState === "unsupported" && "N/A"}
+                        </span>
                     </div>
-                    <span
-                        className="inline-flex items-center gap-1 text-xs font-medium shrink-0"
-                        style={{ color: pushStatus === "active" ? "#2E5A4C" : "#6b7280" }}
-                    >
-                        {pushStatus === "active" && (
-                            <>
-                                <Check className="w-3.5 h-3.5" /> Activo
-                            </>
-                        )}
-                        {pushStatus === "inactive" && "Inactivo"}
-                        {pushStatus === "unsupported" && "N/A"}
-                    </span>
+
+                    {(pushUiState === "default" || pushUiState === "granted-off") && (
+                        <button
+                            type="button"
+                            onClick={handleEnablePush}
+                            disabled={isToggling}
+                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2E5A4C] px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-60"
+                        >
+                            {isToggling ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Activando...
+                                </>
+                            ) : (
+                                "Activar notificaciones"
+                            )}
+                        </button>
+                    )}
+
+                    {pushUiState === "granted-on" && (
+                        <button
+                            type="button"
+                            onClick={handleDisablePush}
+                            disabled={isToggling}
+                            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#E8E2D6] bg-white px-4 py-2.5 text-sm font-medium text-[#1A1A1A] transition-colors disabled:opacity-60"
+                        >
+                            {isToggling ? (
+                                <>
+                                    <Loader2 className="w-4 h-4 animate-spin" />
+                                    Procesando...
+                                </>
+                            ) : (
+                                "Desactivar en este dispositivo"
+                            )}
+                        </button>
+                    )}
+
+                    {pushUiState === "denied" && (
+                        <div className="rounded-lg bg-[#F5F2EF] px-3 py-2.5 text-xs text-[#1A1A1A] leading-relaxed">
+                            Para reactivarlos, abrí <strong>Ajustes</strong> del teléfono → <strong>Notificaciones</strong> → <strong>Monarca</strong> y permití los avisos. Si no aparece la app en la lista, eliminá la PWA de la pantalla de inicio y volvé a instalarla desde Compartir.
+                        </div>
+                    )}
+
+                    {pushError && (
+                        <div className="rounded-lg bg-[#FDECEC] px-3 py-2 text-xs text-[#9A2A2A]">
+                            {pushError}
+                        </div>
+                    )}
                 </div>
             </div>
 

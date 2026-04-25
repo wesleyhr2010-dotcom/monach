@@ -1,10 +1,14 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 import {
   updateNotificacaoTemplate,
   toggleNotificacaoTemplate,
   enviarPushTeste,
+  getRevendedorasParaCampanha,
+  enviarCampanhaPush,
+  type RevendedoraCampanha,
+  type FiltroCampanha,
 } from "./actions";
 import {
   Dialog,
@@ -32,9 +36,10 @@ const TIPO_LABELS: Record<string, string> = {
   maleta_atrasada: "Maleta atrasada",
   maleta_devolvida_admin: "Devolución recibida (admin)",
   nova_maleta_revendedora: "Nova maleta (revendedora)",
-  brinde_disponivel: "Brinde aprovado",
+  brinde_disponivel: "Brinde aprobado",
   pontos_concedidos: "Puntos ganhos",
   teste: "Prueba",
+  campanha_manual: "Campaña manual",
 };
 
 export default function NotifPushClient({ templates: initialTemplates, logs, isConfigured, appId }: NotifPushClientProps) {
@@ -44,6 +49,24 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
   const [isPendingTest, startTest] = useTransition();
   const [isPendingToggle, startToggle] = useTransition();
   const [isPendingSave, startSave] = useTransition();
+
+  // Campanha push em massa
+  const [campanhaFiltro, setCampanhaFiltro] = useState<FiltroCampanha>("todas");
+  const [revendedoras, setRevendedoras] = useState<RevendedoraCampanha[]>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [campanhaTitulo, setCampanhaTitulo] = useState("");
+  const [campanhaMensagem, setCampanhaMensagem] = useState("");
+  const [isLoadingRevendedoras, startLoadRevendedoras] = useTransition();
+  const [isSendingCampanha, startSendCampanha] = useTransition();
+  const [campanhaResult, setCampanhaResult] = useState<{ type: "success" | "error"; message: string } | null>(null);
+  const [showCampanhaSection, setShowCampanhaSection] = useState(false);
+
+  useEffect(() => {
+    if (showCampanhaSection && revendedoras.length === 0) {
+      handleLoadRevendedoras("todas");
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showCampanhaSection]);
 
   async function handleToggle(id: string, current: boolean) {
     startToggle(async () => {
@@ -71,6 +94,51 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
     startTest(async () => {
       const result = await enviarPushTeste();
       setTestStatus({ type: result.success ? "success" : "error", message: result.message });
+    });
+  }
+
+  function handleLoadRevendedoras(filtro: FiltroCampanha) {
+    startLoadRevendedoras(async () => {
+      const lista = await getRevendedorasParaCampanha(filtro);
+      setRevendedoras(lista);
+      setSelectedIds(new Set(lista.map((r) => r.id)));
+      setCampanhaResult(null);
+    });
+  }
+
+  function toggleSelection(id: string) {
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleAll() {
+    if (selectedIds.size === revendedoras.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(revendedoras.map((r) => r.id)));
+    }
+  }
+
+  function handleSendCampanha() {
+    if (selectedIds.size === 0) {
+      setCampanhaResult({ type: "error", message: "Selecciona al menos una revendedora." });
+      return;
+    }
+    if (!campanhaTitulo.trim() || !campanhaMensagem.trim()) {
+      setCampanhaResult({ type: "error", message: "Título y mensaje son obligatorios." });
+      return;
+    }
+    startSendCampanha(async () => {
+      const result = await enviarCampanhaPush(Array.from(selectedIds), campanhaTitulo, campanhaMensagem);
+      setCampanhaResult({ type: result.success ? "success" : "error", message: result.message });
+      if (result.success) {
+        setCampanhaTitulo("");
+        setCampanhaMensagem("");
+      }
     });
   }
 
@@ -230,6 +298,190 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
               </tbody>
             </table>
           </div>
+        </div>
+
+        {/* Seção D: Campanha Push em Massa */}
+        <div className="admin-card" style={{ marginBottom: "24px" }}>
+          <h3
+            style={{
+              fontSize: "15px",
+              fontWeight: 600,
+              marginBottom: "16px",
+              display: "flex",
+              alignItems: "center",
+              gap: "8px",
+              cursor: "pointer",
+            }}
+            onClick={() => setShowCampanhaSection((s) => !s)}
+          >
+            <Send size={16} color="#35605A" />
+            Campaña Push en Masa
+            <span style={{ marginLeft: "auto", fontSize: "12px", color: "var(--admin-text-muted)" }}>
+              {showCampanhaSection ? "Ocultar ▲" : "Mostrar ▼"}
+            </span>
+          </h3>
+
+          {showCampanhaSection && (
+            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+              {/* Filtro de destinatários */}
+              <div>
+                <label className="admin-label">Destinatarios</label>
+                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap", marginTop: "6px" }}>
+                  {[
+                    { value: "todas", label: "Todas activas" },
+                    { value: "com_maleta_ativa", label: "Con maleta activa" },
+                    { value: "sem_maleta", label: "Sin maleta" },
+                    { value: "onboarding_incompleto", label: "Onboarding incompleto" },
+                  ].map((opt) => (
+                    <button
+                      key={opt.value}
+                      type="button"
+                      onClick={() => {
+                        setCampanhaFiltro(opt.value as FiltroCampanha);
+                        handleLoadRevendedoras(opt.value as FiltroCampanha);
+                      }}
+                      disabled={isLoadingRevendedoras}
+                      style={{
+                        padding: "6px 12px",
+                        borderRadius: "var(--admin-radius)",
+                        border: "1px solid var(--admin-border)",
+                        background: campanhaFiltro === opt.value ? "#35605A" : "var(--admin-surface)",
+                        color: campanhaFiltro === opt.value ? "#fff" : "var(--admin-text)",
+                        fontSize: "13px",
+                        cursor: "pointer",
+                        opacity: isLoadingRevendedoras ? 0.6 : 1,
+                      }}
+                    >
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Lista de revendedoras */}
+              {revendedoras.length > 0 && (
+                <div
+                  style={{
+                    maxHeight: "280px",
+                    overflowY: "auto",
+                    border: "1px solid var(--admin-border)",
+                    borderRadius: "var(--admin-radius)",
+                    background: "var(--admin-bg)",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "8px",
+                      padding: "8px 12px",
+                      borderBottom: "1px solid var(--admin-border)",
+                      position: "sticky",
+                      top: 0,
+                      background: "var(--admin-bg)",
+                      zIndex: 1,
+                    }}
+                  >
+                    <input
+                      type="checkbox"
+                      checked={selectedIds.size === revendedoras.length && revendedoras.length > 0}
+                      onChange={toggleAll}
+                      style={{ cursor: "pointer" }}
+                    />
+                    <span style={{ fontSize: "12px", fontWeight: 600 }}>
+                      {selectedIds.size} de {revendedoras.length} seleccionadas
+                    </span>
+                  </div>
+                  {revendedoras.map((r) => (
+                    <label
+                      key={r.id}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
+                        padding: "8px 12px",
+                        borderBottom: "1px solid var(--admin-border)",
+                        cursor: "pointer",
+                        opacity: r.auth_user_id ? 1 : 0.5,
+                      }}
+                      title={r.auth_user_id ? "" : "Sin dispositivo vinculado — no recibirá push"}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={selectedIds.has(r.id)}
+                        onChange={() => toggleSelection(r.id)}
+                      />
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: "13px", fontWeight: 500, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                          {r.name}
+                        </div>
+                        <div style={{ fontSize: "11px", color: "var(--admin-text-muted)" }}>
+                          {r.whatsapp}
+                          {r.hasMaletaAtiva && (
+                            <span style={{ marginLeft: "8px", color: "#4ADE80", fontWeight: 600 }}>● Maleta activa</span>
+                          )}
+                        </div>
+                      </div>
+                      {!r.auth_user_id && (
+                        <span style={{ fontSize: "10px", color: "#E05C5C", fontWeight: 600 }}>Sin push</span>
+                      )}
+                    </label>
+                  ))}
+                </div>
+              )}
+
+              {revendedoras.length === 0 && !isLoadingRevendedoras && (
+                <div className="admin-empty" style={{ padding: "16px" }}>
+                  <p style={{ fontSize: "13px" }}>No hay revendedoras en este filtro.</p>
+                </div>
+              )}
+
+              {/* Mensagem */}
+              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <div>
+                  <label className="admin-label">Título</label>
+                  <input
+                    className="admin-input"
+                    value={campanhaTitulo}
+                    onChange={(e) => setCampanhaTitulo(e.target.value)}
+                    placeholder="Ej: ¡Nueva colección disponible!"
+                    maxLength={120}
+                  />
+                </div>
+                <div>
+                  <label className="admin-label">Mensaje</label>
+                  <textarea
+                    className="admin-textarea"
+                    value={campanhaMensagem}
+                    onChange={(e) => setCampanhaMensagem(e.target.value)}
+                    placeholder="Ej: Ya podés ver los nuevos artículos en tu catálogo..."
+                    maxLength={500}
+                    rows={3}
+                  />
+                </div>
+              </div>
+
+              {campanhaResult && (
+                <div
+                  className={`admin-alert ${campanhaResult.type === "success" ? "admin-alert-success" : "admin-alert-error"}`}
+                >
+                  {campanhaResult.message}
+                </div>
+              )}
+
+              <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                <button
+                  onClick={handleSendCampanha}
+                  disabled={isSendingCampanha || selectedIds.size === 0}
+                  className="admin-btn admin-btn-primary admin-btn-sm"
+                  style={{ opacity: isSendingCampanha || selectedIds.size === 0 ? 0.6 : 1 }}
+                >
+                  <Send size={14} />
+                  {isSendingCampanha ? "Enviando..." : `Enviar campaña (${selectedIds.size})`}
+                </button>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Variables legend */}

@@ -273,6 +273,22 @@ await prisma.notificacaoPreferencia.upsert({
 - `NotificacionesPrefsPage` — **Client Component** (toggles interactivos)
 - `PreferenciasForm` — **Client Component** (form con `useOptimistic`)
 
+### Estado del push en el dispositivo
+
+A tela combina o estado do permission do navegador (`Notification.permission`) com o `OneSignal.User.PushSubscription.optedIn` em 5 estados visíveis. Cada estado tem CTA dentro do app — nunca apenas "vai em ajustes" como dead-end:
+
+| Estado | Permission | optedIn | UI | Ação |
+|---|---|---|---|---|
+| `granted-on` | granted | true | "Activo" + descrição | Botão "Desactivar en este dispositivo" → `OneSignal.User.PushSubscription.optOut()` |
+| `granted-off` | granted | false | "Inactivo" + "Permiso concedido, pero los avisos están pausados." | Botão "Activar notificaciones" → `optIn()` |
+| `default` | default | — | "Inactivo" + "Aún no decidiste sobre los avisos en este dispositivo." | Botão "Activar notificaciones" → `OneSignal.Notifications.requestPermission()` (dispara prompt nativa do iOS/Android) |
+| `denied` | denied | — | "Bloqueado" + caixa explicativa | Sem botão. Texto: "Ajustes → Notificaciones → Monarca; si no aparece, eliminá la PWA y volvé a instalarla." |
+| `unsupported` | — (sem `Notification`) | — | "N/A" + "Solo disponible en la app instalada (PWA)." | Sem botão. Instrução para "Compartir → Añadir a pantalla de inicio". |
+
+**Por que tem botão dentro do app (regra iOS):** após o usuário tocar "No permitir" na prompt nativa, `requestPermission()` resolve direto como `denied` e a única reativação é via Ajustes do iOS. Mas se o usuário **nunca decidiu** (estado `default`, comum quando fechou o app antes da prompt) ou **revogou só no OneSignal** (estado `granted-off`, comum após logout/login), o app reativa sem precisar de Ajustes. Sem este botão, o usuário fica preso achando que a única saída é Ajustes — onde a entrada da app pode nem aparecer ainda.
+
+**Componente:** `PreferenciasNotificacionesForm.tsx` — `refreshPushState()` lê os dois sinais ao montar e após cada ação; `handleEnablePush` é idempotente (chama `requestPermission` se `default`, `optIn` se `granted`).
+
 ### Componentes del Centro
 - `NotificacionesPage` — Server Component (historial paginado)
 - `NotificacionItem` — Server Component (ícono + texto + CTA)
