@@ -48,6 +48,10 @@ const DEFAULT_TEMPLATES: Array<Pick<NotificacaoTemplate, "tipo" | "titulo_es" | 
 ];
 
 async function seedTemplatesIfEmpty(): Promise<void> {
+  if (!("notificacaoTemplate" in prisma)) {
+    console.error("[seedTemplatesIfEmpty] prisma.notificacaoTemplate is undefined — schema may not be generated yet");
+    return;
+  }
   const count = await prisma.notificacaoTemplate.count();
   if (count === 0) {
     await prisma.notificacaoTemplate.createMany({
@@ -63,6 +67,10 @@ async function seedTemplatesIfEmpty(): Promise<void> {
 
 export async function getNotificacaoTemplates(): Promise<NotificacaoTemplate[]> {
   await requireAuth(["ADMIN"]);
+  if (!("notificacaoTemplate" in prisma)) {
+    console.error("[getNotificacaoTemplates] prisma.notificacaoTemplate is undefined");
+    return [];
+  }
   await seedTemplatesIfEmpty();
   return prisma.notificacaoTemplate.findMany({
     orderBy: { tipo: "asc" },
@@ -74,6 +82,9 @@ export async function updateNotificacaoTemplate(
   data: { titulo_es: string; body_es: string; ativo: boolean }
 ): Promise<NotificacaoTemplate> {
   await requireAuth(["ADMIN"]);
+  if (!("notificacaoTemplate" in prisma)) {
+    throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
+  }
   return prisma.notificacaoTemplate.update({
     where: { id },
     data: {
@@ -86,6 +97,9 @@ export async function updateNotificacaoTemplate(
 
 export async function toggleNotificacaoTemplate(id: string, ativo: boolean): Promise<NotificacaoTemplate> {
   await requireAuth(["ADMIN"]);
+  if (!("notificacaoTemplate" in prisma)) {
+    throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
+  }
   return prisma.notificacaoTemplate.update({
     where: { id },
     data: { ativo },
@@ -130,20 +144,24 @@ export async function enviarPushTeste(): Promise<{ success: boolean; message: st
 
     const data = await res.json();
 
-    // Registrar no log
-    await prisma.notificacaoLog.create({
-      data: {
-        tipo: "teste",
-        reseller_ids: [user.profileId ?? user.id],
-        total_enviado: 1,
-        onesignal_id: data.id,
-        payload: {
-          app_id: appId,
-          target: user.id,
-          headings: "✅ Notificación de prueba",
-        } as Prisma.InputJsonValue,
-      },
-    });
+    // Registrar no log (skip se model ainda não disponível no client)
+    if ("notificacaoLog" in prisma) {
+      await prisma.notificacaoLog.create({
+        data: {
+          tipo: "teste",
+          reseller_ids: [user.profileId ?? user.id],
+          total_enviado: 1,
+          onesignal_id: data.id,
+          payload: {
+            app_id: appId,
+            target: user.id,
+            headings: "✅ Notificación de prueba",
+          } as Prisma.InputJsonValue,
+        },
+      });
+    } else {
+      console.error("[enviarPushTeste] prisma.notificacaoLog is undefined — skipping log entry");
+    }
 
     return { success: true, message: "Notificación de prueba enviada correctamente." };
   } catch (error) {
@@ -169,6 +187,10 @@ export async function getNotificacaoLogs(
   limit = 50
 ): Promise<NotificacaoLogItem[]> {
   await requireAuth(["ADMIN"]);
+  if (!("notificacaoLog" in prisma)) {
+    console.error("[getNotificacaoLogs] prisma.notificacaoLog is undefined");
+    return [];
+  }
   return prisma.notificacaoLog.findMany({
     where: tipo ? { tipo } : undefined,
     orderBy: { created_at: "desc" },
