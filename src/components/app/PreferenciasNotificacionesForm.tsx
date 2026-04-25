@@ -148,6 +148,17 @@ export default function PreferenciasNotificacionesForm({
         refreshPushState();
     }, [refreshPushState]);
 
+    const withTimeout = <T,>(p: Promise<T> | undefined, ms: number, label: string): Promise<T | "timeout"> => {
+        if (!p) return Promise.resolve("timeout");
+        return Promise.race<T | "timeout">([
+            p,
+            new Promise<"timeout">((resolve) => setTimeout(() => {
+                console.warn(`[push] ${label} timed out after ${ms}ms`);
+                resolve("timeout");
+            }, ms)),
+        ]);
+    };
+
     const handleEnablePush = async () => {
         setPushError(null);
         setIsToggling(true);
@@ -157,17 +168,24 @@ export default function PreferenciasNotificacionesForm({
                 setPushError("Instala la app (Compartir → Añadir a pantalla de inicio) para activar los avisos push.");
                 return;
             }
-            if (typeof Notification !== "undefined" && Notification.permission === "default") {
-                await OneSignal.Notifications?.requestPermission?.();
+            // Permission padrão -> dispara prompt nativa. iOS resolve assim que o usuário decide,
+            // mas pode ficar pendente se a prompt for fechada por gesto/background. Timeout salva o estado.
+            const initialPermission = typeof Notification !== "undefined" ? Notification.permission : "denied";
+            if (initialPermission === "default" && OneSignal.Notifications?.requestPermission) {
+                await withTimeout(OneSignal.Notifications.requestPermission(), 30_000, "requestPermission");
             }
-            if (typeof Notification !== "undefined" && Notification.permission === "granted") {
-                await OneSignal.User.PushSubscription.optIn?.();
+            const afterPromptPermission = typeof Notification !== "undefined" ? Notification.permission : initialPermission;
+            if (afterPromptPermission === "granted" && OneSignal.User.PushSubscription.optIn) {
+                await withTimeout(OneSignal.User.PushSubscription.optIn(), 15_000, "optIn");
             }
             await refreshPushState();
-            if (typeof Notification !== "undefined" && Notification.permission === "denied") {
+            if (afterPromptPermission === "denied") {
                 setPushError("Tu teléfono bloqueó los avisos. Ve a Ajustes → Notificaciones → Monarca y actívalas.");
+            } else if (afterPromptPermission === "default") {
+                setPushError("No se pudo completar la activación. Cierra la app, vuelve a abrirla e intenta de nuevo.");
             }
         } catch (err) {
+            console.error("[push] handleEnablePush error:", err);
             setPushError(err instanceof Error ? err.message : "No se pudo activar el push.");
         } finally {
             setIsToggling(false);
@@ -179,9 +197,12 @@ export default function PreferenciasNotificacionesForm({
         setIsToggling(true);
         try {
             const OneSignal = (window as unknown as { OneSignal?: OneSignalLike }).OneSignal;
-            await OneSignal?.User?.PushSubscription?.optOut?.();
+            if (OneSignal?.User?.PushSubscription?.optOut) {
+                await withTimeout(OneSignal.User.PushSubscription.optOut(), 15_000, "optOut");
+            }
             await refreshPushState();
         } catch (err) {
+            console.error("[push] handleDisablePush error:", err);
             setPushError(err instanceof Error ? err.message : "No se pudo desactivar el push.");
         } finally {
             setIsToggling(false);
