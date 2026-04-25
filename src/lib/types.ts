@@ -101,7 +101,12 @@ export interface RevendedoraItem {
     avatar_url: string;
     taxa_comissao: number;
     is_active: boolean;
-    colaboradora: { id: string; name: string } | null;
+    colaboradora: { id: string; name: string; avatar_url?: string | null } | null;
+    cedula?: string | null;
+    faturamento_total?: number;
+    maleta_status?: string | null;
+    doc_ci_status?: string | null;
+    doc_contrato_status?: string | null;
     documentos_pendentes: number;
     maletas_aguardando_revisao: number;
 }

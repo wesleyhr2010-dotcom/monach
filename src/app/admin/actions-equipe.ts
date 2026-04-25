@@ -149,7 +149,15 @@ export async function getColaboradoras(): Promise<ColaboradoraItem[]> {
 // List Revendedoras
 // ============================================
 
-export async function getRevendedoras(): Promise<RevendedoraItem[]> {
+export interface RevendedoraListItem extends RevendedoraItem {
+    cedula: string | null;
+    faturamento_total: number;
+    maleta_status: string | null;
+    doc_ci_status: string | null;
+    doc_contrato_status: string | null;
+}
+
+export async function getRevendedoras(): Promise<RevendedoraListItem[]> {
     const user = await requireAuth(["ADMIN", "COLABORADORA"]);
     const where: Record<string, unknown> = { role: "REVENDEDORA" };
     if (user.role === "COLABORADORA" && user.profileId) {
@@ -159,47 +167,52 @@ export async function getRevendedoras(): Promise<RevendedoraItem[]> {
         where,
         orderBy: { name: "asc" },
         include: {
-            colaboradora: { select: { id: true, name: true } },
+            colaboradora: { select: { id: true, name: true, avatar_url: true } },
+            maletas: {
+                orderBy: { created_at: "desc" },
+                select: {
+                    status: true,
+                    valor_total_vendido: true,
+                },
+            },
+            documentos: {
+                orderBy: { created_at: "desc" },
+                select: {
+                    tipo: true,
+                    status: true,
+                },
+            },
         },
     });
 
-    const ids = data.map((r) => r.id);
+    return data.map((r) => {
+        const maletaAtiva = r.maletas.find((m) => m.status === "ativa" || m.status === "atrasada");
+        const faturamentoTotal = r.maletas
+            .filter((m) => m.status === "concluida")
+            .reduce((s, m) => s + Number(m.valor_total_vendido || 0), 0);
 
-    const [docCounts, maletaCounts] = await Promise.all([
-        prisma.resellerDocumento.groupBy({
-            by: ["reseller_id"],
-            where: {
-                reseller_id: { in: ids },
-                status: { in: ["pendente", "em_analise"] },
-            },
-            _count: { id: true },
-        }),
-        prisma.maleta.groupBy({
-            by: ["reseller_id"],
-            where: {
-                reseller_id: { in: ids },
-                status: "aguardando_revisao",
-            },
-            _count: { id: true },
-        }),
-    ]);
+        const docCI = r.documentos.find((d) => d.tipo === "ci");
+        const docContrato = r.documentos.find((d) => d.tipo === "contrato");
 
-    const docMap = new Map(docCounts.map((d) => [d.reseller_id, d._count.id]));
-    const maletaMap = new Map(maletaCounts.map((m) => [m.reseller_id, m._count.id]));
-
-    return data.map((r) => ({
-        id: r.id,
-        name: r.name,
-        slug: r.slug,
-        whatsapp: r.whatsapp,
-        email: r.email,
-        avatar_url: r.avatar_url,
-        taxa_comissao: Number(r.taxa_comissao),
-        is_active: r.is_active,
-        colaboradora: r.colaboradora ? { id: r.colaboradora.id, name: r.colaboradora.name } : null,
-        documentos_pendentes: docMap.get(r.id) || 0,
-        maletas_aguardando_revisao: maletaMap.get(r.id) || 0,
-    }));
+        return {
+            id: r.id,
+            name: r.name,
+            slug: r.slug,
+            whatsapp: r.whatsapp,
+            email: r.email,
+            avatar_url: r.avatar_url,
+            taxa_comissao: Number(r.taxa_comissao),
+            is_active: r.is_active,
+            colaboradora: r.colaboradora ? { id: r.colaboradora.id, name: r.colaboradora.name, avatar_url: r.colaboradora.avatar_url } : null,
+            cedula: r.cedula,
+            faturamento_total: faturamentoTotal,
+            maleta_status: maletaAtiva ? maletaAtiva.status : (r.maletas.length > 0 ? "sem_maleta" : null),
+            doc_ci_status: docCI ? docCI.status : null,
+            doc_contrato_status: docContrato ? docContrato.status : null,
+            documentos_pendentes: r.documentos.filter((d) => ["pendente", "em_analise"].includes(d.status)).length,
+            maletas_aguardando_revisao: r.maletas.filter((m) => m.status === "aguardando_revisao").length,
+        };
+    });
 }
 
 // ============================================

@@ -1,5 +1,28 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-24 — UI: Lista de Revendedoras no Admin (Paper)
+
+### Contexto
+Atualização da tela `/admin/revendedoras` para seguir fielmente o design do artboard "Admin Revendedoras — Lista" (`3XX-0`) do Paper.
+
+### Modificado
+- **`src/app/admin/revendedoras/page.tsx`** — reescrita completa com layout do Paper:
+  - Header com breadcrumb "ADMIN / REVENDEDORAS", título, badges "X ativas" (verde) e "X pendentes" (amarelo), botão "Nova revendedora".
+  - Barra de filtros: busca por nome/CI/email, dropdowns Status/Consultora/Docs, botão Exportar.
+  - Tabela customizada com colunas: Revendedora (avatar + nome + badge CI pendente + email/CI), Consultora (avatar mini + nome), Maleta (badge Ativa/Atrasada/Sem maleta), Documentos (CI ✓, Contrato ✓), Faturamento (Playfair Display, compacto G$ XXM), Status (Ativa/Inativa), ação (seta).
+  - Cores fieis ao design: fundo de linha `#141A12`, badges com `#1C3A35` + `#4ADE80`, texto `#DDDDDD` / `#555555`.
+  - Footer com contagem total e paginação (visual).
+- **`src/app/admin/actions-equipe.ts`** — `getRevendedoras` estendida para incluir:
+  - `cedula`, `faturamento_total` (soma de maletas concluídas), `maleta_status` (ativa/atrasada/sem_maleta).
+  - `doc_ci_status`, `doc_contrato_status` (último documento de cada tipo).
+  - `colaboradora.avatar_url` para avatar mini na tabela.
+- **`src/lib/types.ts`** — `RevendedoraItem` estendido com campos novos.
+
+### Validação
+- `npx tsc --noEmit` limpo em código de produção.
+
+---
+
 ## 2026-04-24 — Documentos e Acertos no Admin
 
 ### Contexto
