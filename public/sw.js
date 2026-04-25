@@ -5,11 +5,11 @@
 // importa o SDK do OneSignal e também faz o cache do app — evita o conflito
 // que impedia a criação da push subscription no iOS.
 
-importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js");
+importScripts("https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.sw.js?v=20260425");
 
 // Cache-first para assets estáticos, network-first para API
 
-const CACHE_NAME = "monarca-v3";
+const CACHE_NAME = "monarca-v4";
 const STATIC_ASSETS = ["/icons/icon-192.png", "/icons/icon-512.png"];
 
 self.addEventListener("install", (event) => {

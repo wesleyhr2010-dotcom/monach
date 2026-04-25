@@ -41,6 +41,47 @@ export default function OneSignalWrapper() {
 
         const initOneSignal = async () => {
             try {
+                // STEP -1: limpeza one-shot de cache antigo do OneSignal. O IndexedDB do SDK
+                // guarda chrome_web_origin localmente. Quando o domínio do app muda no dashboard,
+                // o cache local segue apontando pro domínio antigo (ex.: monach.vercel.app) e o
+                // init falha com "Can only be used on: ...". Esta limpeza roda uma vez por device.
+                const RESET_KEY = "monarca:onesignal-reset:v1";
+                if (typeof localStorage !== "undefined" && !localStorage.getItem(RESET_KEY)) {
+                    try {
+                        scheduleLog("[-1] Limpando cache OneSignal (one-shot)...");
+                        if (typeof indexedDB !== "undefined") {
+                            const dbsToWipe = ["ONE_SIGNAL_SDK_DB", "ONE_SIGNAL_LEGACY_DB", "OneSignalSDKDb"];
+                            await Promise.all(
+                                dbsToWipe.map((name) =>
+                                    new Promise<void>((resolve) => {
+                                        try {
+                                            const req = indexedDB.deleteDatabase(name);
+                                            req.onsuccess = () => resolve();
+                                            req.onerror = () => resolve();
+                                            req.onblocked = () => resolve();
+                                        } catch {
+                                            resolve();
+                                        }
+                                    })
+                                )
+                            );
+                        }
+                        if ("serviceWorker" in navigator) {
+                            const regs = await navigator.serviceWorker.getRegistrations();
+                            await Promise.all(regs.map((r) => r.unregister().catch(() => false)));
+                            scheduleLog(`[-1b] ${regs.length} SW(s) antigo(s) desregistrado(s).`);
+                        }
+                        if ("caches" in self) {
+                            const keys = await caches.keys();
+                            await Promise.all(keys.map((k) => caches.delete(k)));
+                            scheduleLog(`[-1c] ${keys.length} Cache Storage(s) limpo(s).`);
+                        }
+                        localStorage.setItem(RESET_KEY, String(Date.now()));
+                    } catch (resetErr) {
+                        console.warn("[push-init] Reset cache falhou:", resetErr);
+                    }
+                }
+
                 // STEP 0: registrar /sw.js manualmente. ServiceWorkerRegistration estava órfão
                 // (componente existia mas não era importado em layout nenhum), então o SW nunca
                 // ficava ativo — por isso a push subscription não era criada.
