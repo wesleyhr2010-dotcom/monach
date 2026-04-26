@@ -1,0 +1,5 @@
+# Configuração mínima do Supabase para Edge Functions
+# Projeto: Monarca Semijoyas
+# Ref: docs/sistema/SPEC_CRON_JOBS.md
+
+project_id = "amlwwakxpungeqpiyxwr"

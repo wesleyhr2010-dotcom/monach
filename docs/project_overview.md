@@ -229,7 +229,7 @@ Rotas implementadas em `src/app/admin/`:
 - **Banco**: Prisma com schema em `prisma/schema.prisma`, migrations aplicadas, seed de gamificação (`seed-gamificacao.ts`).
 - **Uploads**: APIs `src/app/api/` incluindo `/api/upload-r2` (upload autenticado para R2 com validação de path, tipo e tamanho) + integração Cloudflare R2 via `@aws-sdk/client-s3` (bucket `fotos-monarca`).
 - **PWA**: Serwist (`sw.ts`, `manifest.ts`, `ServiceWorkerRegistration.tsx`), OneSignal (`OneSignalWrapper.tsx`).
-- **Cron**: `src/app/api/cron/`.
+- **Cron**: Edge Functions em `supabase/functions/` agendadas via `pg_cron` (check-maleta-prazo, marcar-maletas-atrasadas, agrega-analytics-diario).
 - **Tracking**: `src/app/api/track/` + `AnalyticsTracker.tsx`.
 - **Export**: `src/app/api/export/`.
 - **RLS**: Script consolidado `scripts/rls-policies.sql` com policies para 23 tabelas (resellers, maletas, maleta_itens, vendas_maleta, pontos_extrato, reseller_documentos, datos_bancarios, notificacao_preferencias, solicitacoes_brinde, resgates, analytics_acessos, analytics_diario, revendedora_leads, gamificacao_regras, nivel_regras, commission_tiers, brindes, contratos, categories, products, product_variants, reseller_products, estoque_movimentos).

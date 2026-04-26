@@ -95,7 +95,12 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [x] **Emails transacionais** via Brevo (SDK instalado, cliente central `src/lib/emails.ts`, 6 templates criados). Configuração SMTP no Supabase Dashboard ainda pendente (manual). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).
 - [x] **Configurar SMTP do Brevo no Supabase Dashboard** — concluído em 2026-04-23. Credenciais SMTP do Brevo configuradas no Supabase Dashboard (host `smtp-relay.brevo.com`, port `587`, user e senha SMTP). Reset de senha, convite por email e magic links do Supabase Auth agora saem via Brevo. Rota de callback `/admin/login/reset-password` criada. Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md) §10.
 - [ ] **Padronizar layout/branding dos emails transacionais** — revisar e unificar os templates de: recuperação de senha, convite de nova consultora, convite de nova revendedora e demais emails operacionais. Entregáveis: identidade visual consistente, copy final em espanhol paraguaio, componentes reutilizáveis de template e checklist de QA (cliente desktop/mobile + spam). Ref.: [`sistema/SPEC_EMAILS.md`](./sistema/SPEC_EMAILS.md).
-- [ ] **Cron jobs** (notificação de prazo de maleta etc.) em Supabase Edge Functions. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
+- [x] **Cron jobs** (notificação de prazo de maleta etc.) em Supabase Edge Functions. Ref.: [`sistema/SPEC_CRON_JOBS.md`](./sistema/SPEC_CRON_JOBS.md).
+  - [x] Edge Function `check-maleta-prazo` — notifica D-3/D-1 com deduplicação, templates e preferências
+  - [x] Edge Function `marcar-maletas-atrasadas` — transição `ativa → atrasada` + notificação
+  - [x] Edge Function `agrega-analytics-diario` — agregação de analytics do dia anterior
+  - [x] SQL de setup `scripts/setup-cron-jobs.sql` com schedules `pg_cron`
+  - [x] Removidos Route Handlers antigos em `src/app/api/cron/`
 - [x] **Documentos e acertos** no admin. Ref.: [`admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md`](./admin/SPEC_ADMIN_DOCUMENTOS_ACERTOS.md).
   - [x] Indicadores na lista `/admin/revendedoras` — badges "Doc pendiente", "Acerto aguardando", "OK" com contagens em tempo real.
   - [x] Tela `/admin/revendedoras/[id]/documentos` — preview da imagem, status, botões Aprovar/Rechazar com observação obrigatória, histórico de documentos.

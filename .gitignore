@@ -26,10 +26,14 @@ yarn-error.log*
 # local env files
 .env*.local
 .env
+**/.env
 env
 
 # claude
 .claude/worktrees/
+
+# supabase cli temp files
+supabase/.temp/
 
 # local-only dev files
 src/pages/api/paper-mcp-call.ts

@@ -1,5 +1,26 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-26 — Migração de Cron Jobs para Supabase Edge Functions
+
+### Contexto
+Os cron jobs de notificação de prazo (`check-overdue-maletas`) e agregação de analytics (`aggregate-analytics`) rodavam como Next.js Route Handlers (`src/app/api/cron/*`), o que criava dependência do ambiente Vercel para tarefas agendadas e dificultava manutenção. A SPEC `SPEC_CRON_JOBS.md` definia a arquitetura correta em Supabase Edge Functions + `pg_cron`.
+
+### Criado/Modificado
+- **`supabase/functions/check-maleta-prazo/index.ts`** — Edge Function que notifica revendedoras com maleta vencendo em 2 dias (D-3) ou 1 dia (D-1). Inclui deduplicação por 24h, respeito a `notificacao_preferencias`, busca de `notificacao_templates` com substituição de variáveis (`{maleta_id}`, `{dias_restantes}`, `{nome_revendedora}`) e fallback para textos default.
+- **`supabase/functions/marcar-maletas-atrasadas/index.ts`** — Edge Function que transiciona `ativa → atrasada` e notifica revendedoras afetadas, com as mesmas garantias de templates e preferências.
+- **`supabase/functions/agrega-analytics-diario/index.ts`** — Edge Function que agrega `analytics_acessos` do dia anterior em `analytics_diario`, com cálculo de timezone `America/Asuncion` e upsert por `(data, reseller_id, tipo)`.
+- **`supabase/functions/_shared/notifications.ts`** — helpers compartilhados: `substituirVariaveis`, `buscarTemplate`, `podeEnviarPush`, `criarNotificacao`, `enviarPushOneSignal`, `notificarRevendedora`.
+- **`scripts/setup-cron-jobs.sql`** — script SQL idempotente para configurar `pg_cron`: cria stored procedure `aggregate_yesterday_analytics()`, remove jobs antigos e agenda os 3 novos jobs (`check-maleta-prazo` às 12:00 UTC, `marcar-maletas-atrasadas` às 05:00 UTC, `agrega-analytics-diario` às 07:00 UTC).
+- **`.env.local.example`** — adicionadas `NEXT_PUBLIC_ONESIGNAL_APP_ID` e `ONESIGNAL_REST_API_KEY`.
+- **Removidos** — `src/app/api/cron/check-overdue-maletas/route.ts`, `src/app/api/cron/aggregate-analytics/route.ts` e `src/__tests__/api/cron-check-overdue.test.ts` (obsoletos após migração).
+
+### Validação
+- Estrutura de arquivos segue a SPEC `SPEC_CRON_JOBS.md`.
+- Cada Edge Function é idempotente (deduplicação por notificação ou upsert).
+- Preferências de push (`notificacao_preferencias`) e templates (`notificacao_templates`) são consultados antes de qualquer envio.
+
+---
+
 ## 2026-04-25 — Fix push: idioma `en` obrigatório + reativação dentro da PWA
 
 ### Contexto
