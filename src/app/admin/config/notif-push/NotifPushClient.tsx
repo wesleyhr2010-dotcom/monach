@@ -484,22 +484,6 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
           )}
         </div>
 
-        {/* Variables legend */}
-        <div
-          style={{
-            fontSize: "12px",
-            color: "var(--admin-text-muted)",
-            marginBottom: "24px",
-            padding: "12px 16px",
-            background: "var(--admin-bg)",
-            borderRadius: "var(--admin-radius)",
-            border: "1px solid var(--admin-border)",
-          }}
-        >
-          <strong style={{ color: "var(--admin-text)" }}>Variables disponibles:</strong>{" "}
-          {"{maleta_id}"} {"{dias_restantes}"} {"{nome_revendedora}"} {"{pontos}"}
-        </div>
-
         {/* Seção C: Histórico */}
         <div className="admin-card">
           <h3
