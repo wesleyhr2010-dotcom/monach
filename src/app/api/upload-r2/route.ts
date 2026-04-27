@@ -138,15 +138,24 @@ export async function POST(request: NextRequest) {
     const r2 = createR2Client();
     const buffer = Buffer.from(await file.arrayBuffer());
 
-    await r2.send(
-      new PutObjectCommand({
-        Bucket: R2_BUCKET,
-        Key: key,
-        Body: buffer,
-        ContentType: file.type,
-        CacheControl: "public, max-age=31536000",
-      })
-    );
+    try {
+      await r2.send(
+        new PutObjectCommand({
+          Bucket: R2_BUCKET,
+          Key: key,
+          Body: buffer,
+          ContentType: file.type,
+          CacheControl: "public, max-age=31536000",
+        })
+      );
+    } catch (r2Error: unknown) {
+      const r2Msg = r2Error instanceof Error ? r2Error.message : String(r2Error);
+      console.error("[upload-r2] R2 Error:", r2Msg, "| Key:", key, "| Bucket:", R2_BUCKET, "| Account:", process.env.R2_ACCOUNT_ID);
+      return NextResponse.json(
+        { error: `Error de acceso al almacenamiento: ${r2Msg}. Verifique las credenciales de R2.` },
+        { status: 500 }
+      );
+    }
 
     const publicUrl = `${process.env.NEXT_PUBLIC_R2_PUBLIC_DOMAIN}/${key}`;
     return NextResponse.json({ url: publicUrl });
