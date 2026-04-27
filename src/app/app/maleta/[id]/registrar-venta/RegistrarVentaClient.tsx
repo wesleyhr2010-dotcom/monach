@@ -1,11 +1,11 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { registrarVenda } from "@/app/app/actions-revendedora";
 import { ActionButton } from "@/components/app/ActionButton";
 import { BottomAction } from "@/components/app/AppPageShell";
+import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
 type ItemDisponivel = {
   id: string;
@@ -67,11 +67,15 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
     <div className="flex flex-col min-h-full bg-[#F5F2EF] relative">
       {/* Header */}
       <div className="flex items-center pt-6 pb-4 gap-4 bg-[#F5F2EF] px-5 sticky top-0 z-10">
-        <Link href={`/app/maleta/${maletaId}`} className="shrink-0">
+        <TransitionLink
+          href={`/app/maleta/${maletaId}`}
+          pattern="modal-close"
+          className="shrink-0"
+        >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="m15 18-6-6 6-6" />
           </svg>
-        </Link>
+        </TransitionLink>
         <span
           className="tracking-[0.5px] uppercase text-[#1A1A1A] font-bold text-sm leading-[18px] m-0"
           style={{ fontFamily: "var(--font-raleway)" }}

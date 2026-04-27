@@ -52,6 +52,20 @@ Breakpoints
 - md: 1024px
 - xl: 1440px
 
+Motion (transições entre telas — PWA `/app/*`)
+> Ver [`sistema/SPEC_TRANSICOES_TELAS.md`](../sistema/SPEC_TRANSICOES_TELAS.md) para a aplicação de cada token.
+
+- --motion-duration-fast: 180ms        (crossfade entre tabs do bottom nav, fade de logout)
+- --motion-duration-base: 280ms        (push / pop horizontal padrão)
+- --motion-duration-modal: 320ms       (modal sheet — subir/descer)
+- --motion-duration-hero: 360ms        (shared element / hero transition)
+- --motion-duration-reduced: 100ms     (fallback quando prefers-reduced-motion: reduce)
+- --motion-ease-standard: cubic-bezier(0.32, 0.72, 0, 1)   (push/pop, modal sheet — curva iOS-like)
+- --motion-ease-emphasized: cubic-bezier(0.2, 0, 0, 1)     (shared element, ênfase)
+- --motion-ease-linear: linear                              (crossfade puro)
+- --motion-sheet-dim: rgba(0, 0, 0, 0.16)                   (fundo dim atrás do modal sheet)
+- --motion-sheet-handle-bg: var(--app-divider)              (handle do modal sheet)
+
 Como usar CSS Variables
 - Carregar design-system/css/design-system.css para disponibilizar variáveis CSS, como --ds-color-primary, --ds-radius-md, etc.
 - Em componentes, use as classes ds-btn, ds-input, ds-card, etc., que já utilizam as variáveis.

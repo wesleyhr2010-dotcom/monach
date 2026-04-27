@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getCatalogoRevendedora } from "../actions-revendedora";
+import { useTransitionRouter } from "@/components/app/transitions/useTransitionRouter";
 import { formatGs } from "@/lib/format";
 import { Search, Share2, ArrowLeft, ImageOff } from "lucide-react";
 import {
@@ -35,6 +36,7 @@ interface CatalogoItem {
 
 export default function CatalogoPage() {
     const router = useRouter();
+    const transitionRouter = useTransitionRouter();
     const [itens, setItens] = useState<CatalogoItem[]>([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
@@ -207,7 +209,7 @@ export default function CatalogoPage() {
             {itens.length > 0 && (
                 <div className="sticky bottom-[calc(59px+env(safe-area-inset-bottom)+8px)] left-0 right-0 px-4 z-40">
                     <button
-                        onClick={() => router.push("/app/catalogo/compartir")}
+                        onClick={() => transitionRouter.pushSheet("/app/catalogo/compartir")}
                         className="w-full py-3.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2 shadow-lg"
                         style={{
                             background: "#1A1A1A",

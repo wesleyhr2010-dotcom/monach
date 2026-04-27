@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { ChevronLeft } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
+import { TransitionLink } from "./transitions/TransitionLink";
+import type { VtPattern } from "./transitions/viewTransition";
 
 interface PageHeaderProps {
   title: string;
@@ -10,15 +11,23 @@ interface PageHeaderProps {
   badge?: string;
   badgeDetail?: string;
   backHref?: string;
+  backPattern?: VtPattern;
 }
 
-export function AppPageHeader({ title, subtitle, badge, badgeDetail, backHref }: PageHeaderProps) {
+export function AppPageHeader({
+  title,
+  subtitle,
+  badge,
+  badgeDetail,
+  backHref,
+  backPattern = "pop",
+}: PageHeaderProps) {
   return (
     <div className="flex items-center pt-6 pb-4 gap-4 bg-[#F5F2EF] px-5 sticky top-0 z-10">
       {backHref && (
-        <Link href={backHref} className="shrink-0">
+        <TransitionLink href={backHref} pattern={backPattern} className="shrink-0">
           <ChevronLeft size={24} stroke="#1A1A1A" strokeWidth={1.5} />
-        </Link>
+        </TransitionLink>
       )}
       <div className="flex flex-col grow min-w-0">
         <span

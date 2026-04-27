@@ -1,7 +1,7 @@
 "use client";
 
-import Link from "next/link";
 import { StatusBadge, STATUS_CONFIG, type MaletaStatus } from "./StatusBadge";
+import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
 type MaletaListItem = {
   id: string;
@@ -42,10 +42,13 @@ export function MaletaListItemCard({ maleta }: MaletaListItemCardProps) {
     : statusConfig.text;
 
   return (
-    <Link href={`/app/maleta/${maleta.id}`} className="block">
+    <TransitionLink href={`/app/maleta/${maleta.id}`} pattern="hero" className="block">
       <div
         className="flex flex-col rounded-2xl gap-3 bg-[#EBEBEB] p-4 border-2 border-solid"
-        style={{ borderColor }}
+        style={{
+          borderColor,
+          viewTransitionName: `maleta-${maleta.id}`,
+        } as React.CSSProperties}
       >
         <div className="flex justify-between items-center">
           <span
@@ -71,7 +74,7 @@ export function MaletaListItemCard({ maleta }: MaletaListItemCardProps) {
           </span>
         </div>
       </div>
-    </Link>
+    </TransitionLink>
   );
 }
 

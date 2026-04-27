@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
 import { MaletaItemRow, type MaletaItem } from "@/components/app/MaletaItemRow";
 import { StatusBadge } from "@/components/app/StatusBadge";
 import { ActionButton } from "@/components/app/ActionButton";
 import { SummaryCard, BottomAction } from "@/components/app/AppPageShell";
+import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
 function formatCurrency(value: number): string {
   return `G$ ${value.toLocaleString("es-PY")}`;
@@ -39,13 +39,16 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
 
   return (
     <div className="flex flex-col min-h-full bg-[#F5F2EF] relative">
-      {/* Header */}
-      <div className="flex items-center pt-6 pb-4 gap-4 bg-[#F5F2EF] px-5 sticky top-0 z-10">
-        <Link href="/app/maleta" className="shrink-0">
+      {/* Header — view-transition-name deve coincidir com o card na lista (shared element) */}
+      <div
+        className="flex items-center pt-6 pb-4 gap-4 bg-[#F5F2EF] px-5 sticky top-0 z-10"
+        style={{ viewTransitionName: `maleta-${maleta.id}` } as React.CSSProperties}
+      >
+        <TransitionLink href="/app/maleta" pattern="pop" className="shrink-0">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="m15 18-6-6 6-6" />
           </svg>
-        </Link>
+        </TransitionLink>
         <div className="flex flex-col grow min-w-0">
           <span
             className="tracking-[0.5px] uppercase text-[#1A1A1A] font-bold text-sm leading-[18px] m-0 truncate"
@@ -78,9 +81,13 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
           value={formatCurrency(maleta.totalVendido)}
         />
 
-        {/* Registrar Venta button */}
+        {/* Registrar Venta button — abre como modal sheet */}
         {canReturn && (
-          <Link href={`/app/maleta/${maleta.id}/registrar-venta`} className="block">
+          <TransitionLink
+            href={`/app/maleta/${maleta.id}/registrar-venta`}
+            pattern="modal"
+            className="block"
+          >
             <div className="flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-[#35605A] shadow-[0_4px_12px_rgba(53,96,90,0.2)]">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <line x1="12" y1="5" x2="12" y2="19" />
@@ -93,7 +100,7 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
                 Registrar Venta
               </span>
             </div>
-          </Link>
+          </TransitionLink>
         )}
 
         {/* Artículos header */}
@@ -114,10 +121,14 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
         </div>
       </div>
 
-      {/* Bottom: Devolver button */}
+      {/* Bottom: Devolver button — abre como modal sheet */}
       {canReturn && (
         <BottomAction>
-          <Link href={`/app/maleta/${maleta.id}/devolver`} className="w-full">
+          <TransitionLink
+            href={`/app/maleta/${maleta.id}/devolver`}
+            pattern="modal"
+            className="w-full"
+          >
             <ActionButton
               variant="outline"
               label="Devolver Consignación"
@@ -129,7 +140,7 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
                 </svg>
               }
             />
-          </Link>
+          </TransitionLink>
         </BottomAction>
       )}
     </div>

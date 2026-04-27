@@ -125,6 +125,7 @@ export default function DevolverClient({
         <AppPageHeader
           title={isReadOnly ? "Estado de Devolución" : "¡Devolución Enviada!"}
           backHref={`/app/maleta/${maleta.id}`}
+          backPattern="modal-close"
         />
 
         <div className="flex flex-col items-center justify-center flex-1 gap-6 text-center mt-8">
@@ -189,6 +190,7 @@ export default function DevolverClient({
           title={`Devolver Consig. #${maleta.numero}`}
           subtitle={maleta.data_limite ? `Vencimiento: ${formatDate(new Date(maleta.data_limite))}` : undefined}
           backHref={`/app/maleta/${maleta.id}`}
+          backPattern="modal-close"
         />
 
         <div className="flex flex-col px-5 gap-5 pb-[120px]">
@@ -283,6 +285,7 @@ export default function DevolverClient({
         <AppPageHeader
           title="Foto del Comprobante"
           backHref={`/app/maleta/${maleta.id}`}
+          backPattern="modal-close"
         />
 
         <div className="flex flex-col px-5 gap-5 pb-[120px]">
@@ -393,6 +396,7 @@ export default function DevolverClient({
       <AppPageHeader
         title="Revisión Final"
         backHref={`/app/maleta/${maleta.id}`}
+        backPattern="modal-close"
       />
 
       <div className="flex flex-col px-5 gap-5 pb-[140px]">

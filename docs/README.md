@@ -141,6 +141,7 @@ Desktop em espanhol paraguaio. Consultora (`COLABORADORA`) compartilha o mesmo p
 | SPEC | Descrição |
 |------|-----------|
 | [`sistema/SPEC_DESIGN_MODULES.md`](./sistema/SPEC_DESIGN_MODULES.md) | Átomos, moléculas e organismos do PWA |
+| [`sistema/SPEC_TRANSICOES_TELAS.md`](./sistema/SPEC_TRANSICOES_TELAS.md) | Transições entre telas no PWA (View Transitions API + padrões push/pop/sheet/crossfade/hero) |
 | [`design-system/README.md`](./design-system/README.md) | Visão geral do design system |
 | [`design-system/tokens.md`](./design-system/tokens.md) | Tokens de cor, tipografia e espaçamento |
 | [`design-system/DESIGN_SYSTEM.md`](./design-system/DESIGN_SYSTEM.md) | Referência consolidada |

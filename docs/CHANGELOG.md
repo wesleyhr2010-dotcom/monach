@@ -1,5 +1,109 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-26 — View Transitions funcionando no PWA (animações entre telas)
+
+### Contexto
+Corrigido o bloqueio ativo das animações de transição no PWA da revendedora. A infraestrutura estava completa desde o mesmo dia (ver entrada anterior), mas as animações não eram visíveis devido a um **deadlock no `startViewTransition`**: o callback async aguardava `notifyAppRouteCommit()` do `useLayoutEffect`, mas o React 19 + App Router segurava o commit da navegação até o callback resolver. Resultado: `TimeoutError` no DOM e tela travada no loading.
+
+### Corrigido
+
+**`src/components/app/transitions/viewTransition.ts`**
+- Reescrito `runViewTransition` com callback **async** + `notifyAppRouteCommit()` + **timeout de segurança**.
+- Estratégia:
+  1. `startCommitWait()` cria uma Promise com timeout (3s dev / 1.5s prod).
+  2. `document.startViewTransition(async () => { navigate(); await commitPromise; })`
+  3. Browser captura snapshot "old" → React renderiza nova rota → `useLayoutEffect` dispara `notifyAppRouteCommit()` → Promise resolve → browser captura snapshot "new" → animação CSS rola.
+  4. Se `notifyAppRouteCommit()` não for chamado a tempo, o timeout resolve automaticamente — evita deadlock/travamento.
+- Removido o `startTransition()` do React do interior do callback (não é necessário e causa problemas com prioridade).
+- `notifyAppRouteCommit()` exportado como no-op deprecado para compatibilidade de imports externos.
+
+**`src/components/app/transitions/AppTransitionProvider.tsx`**
+- Adicionado `useLayoutEffect(() => { notifyAppRouteCommit(); })` sem dependências — dispara imediatamente após cada commit do DOM, liberando o snapshot "new".
+- Removido o `useLayoutEffect` anterior que comparava `pathname` (causava race condition).
+
+**`src/components/app/transitions/TransitionLink.tsx`**
+- Simplificado: exporta apenas o componente + tipo `VtPattern`.
+- Remove reexportação de `clearVtPattern`/`setVtPattern` que confundia o cache do Turbopack.
+
+**`src/components/app/transitions/useTransitionRouter.ts`**
+- `withTransition()` continua usando `runViewTransition()` — nenhuma mudança na API pública.
+
+### Testes — 42 passando (`src/__tests__/app/transitions/`)
+- `startViewTransition.test.ts` — 7 testes (era 4): inclui teste de timeout de segurança e fallback quando `startViewTransition` falha.
+- `setVtPattern.test.ts` — 10 testes: atualizado para importar de `viewTransition.ts` diretamente.
+- `useTransitionRouter.test.ts` — 11 testes: comportamento inalterado.
+- `isModalRoute.test.ts` — 14 testes: comportamento inalterado.
+
+### Estado atual
+Animações visuais funcionando em todas as navegações do PWA:
+- **Crossfade** entre tabs da bottom nav (Início ↔ Catálogo ↔ Maleta ↔ Más) — ~250ms
+- **Slide-up** ao abrir modais (Registrar Venta, Devolver, Compartir) — ~320ms
+- **Slide horizontal** ao entrar/sair de detalhe (push/pop) — ~280ms
+- **Shared element** (hero) da lista de maletas para o detalhe — ~360ms
+- **Popstate** (botão voltar do browser/Android) detecta modal vs. histórico comum e aplica `modal-close` ou `pop`.
+
+---
+
+## 2026-04-26 — Infraestrutura de View Transitions (animações entre telas do PWA)
+
+### Contexto
+A SPEC [`sistema/SPEC_TRANSICOES_TELAS.md`](./sistema/SPEC_TRANSICOES_TELAS.md) define 5 padrões de transição para o PWA da revendedora (`/app/*`): push/pop horizontal, crossfade entre tabs, modal sheet e shared element. O objetivo é dar sensação de app nativo. Todo o código de infraestrutura foi implementado, mas a animação visual ainda não está funcional no browser (diagnóstico pendente — ver `next_steps.md`).
+
+### Criado
+
+**Tokens de movimento (`docs/design-system/tokens.md` e `src/app/globals.css`)**
+- 10 tokens `--motion-*`: `duration-fast` (180ms), `duration-base` (280ms), `duration-modal` (320ms), `duration-hero` (360ms), `duration-reduced` (100ms), `ease-standard`, `ease-emphasized`, `ease-linear`, `sheet-dim`, `sheet-handle-bg`.
+- Keyframes CSS: `vt-slide-out-left`, `vt-slide-in-right`, `vt-slide-out-right`, `vt-slide-in-left`, `vt-slide-up`, `vt-slide-down`.
+- Regras `::view-transition-old/new(page)` para cada padrão: `html.vt-push`, `html.vt-pop`, `html.vt-crossfade`, `html.vt-modal`, `html.vt-modal-close`, `html.vt-hero`.
+- Classes `.vt-page` e `.vt-nav` para `view-transition-name` via CSS (mais confiável que inline style no React).
+- `@media (prefers-reduced-motion: reduce)` — substitui slides por crossfade ≤ 100ms.
+
+**`src/components/app/transitions/TransitionLink.tsx`**
+- Componente `TransitionLink` que envolve `next/link`, intercepta cliques, seta a classe de direção (`vt-push`, `vt-crossfade`, `vt-modal`, etc.) e chama `document.startViewTransition(() => startTransition(() => router.push(href)))`.
+- Exports: `setVtPattern(pattern)`, `clearVtPattern()`, `VtPattern` type.
+- Telemetria DEV: `performance.mark("vt:start")` no click + `console.debug("[VT] iniciando transição...")` com padrão e destino.
+- Feature flag `NEXT_PUBLIC_VIEW_TRANSITIONS=off` bypassa a transição.
+
+**`src/components/app/transitions/useTransitionRouter.ts`**
+- Hook `useTransitionRouter()` para navegação programática com padrão correto.
+- Métodos: `push(href, pattern?)`, `back(currentPath?)`, `pushSheet(href)`, `pushHero(href)`.
+- `isModalRoute(path)` e `MODAL_ROUTE_PATTERNS` exportados para uso e teste.
+- Detecta automaticamente rotas modais (`/registrar-venta`, `/devolver`, `/catalogo/compartir`) e usa `modal`/`modal-close`.
+
+**`src/components/app/transitions/AppTransitionProvider.tsx`**
+- Provider client component no `AppShell` que: limpa classes VT após cada navegação (`useEffect` no `usePathname`), trata botão voltar do browser (`popstate` → seta `vt-pop` ou `vt-modal-close`), emite telemetria DEV via `navigation.addEventListener("navigate")` quando disponível.
+
+**Layouts de modal sheet**
+- `src/app/app/maleta/[id]/registrar-venta/layout.tsx`
+- `src/app/app/maleta/[id]/devolver/layout.tsx`
+- `src/app/app/catalogo/compartir/layout.tsx`
+- Cada um adiciona handle visual (barra 36×4px) no topo do sheet.
+
+**Testes — 39 passando (`src/__tests__/app/transitions/`)**
+- `setVtPattern.test.ts` — 10 testes: classe correta p/ cada padrão, remoção das anteriores.
+- `isModalRoute.test.ts` — 14 testes: todas as rotas modal e não-modal.
+- `startViewTransition.test.ts` — 4 testes: flag off, browser sem suporte, integração com `@view-transition: auto`.
+- `useTransitionRouter.test.ts` — 11 testes: push/modal/pop/modal-close, pushSheet, pushHero, flag off.
+
+### Modificado
+
+- **`src/components/app/AppShell.tsx`** — `AppTransitionProvider` envolve o layout; `<main>` usa classe `vt-page` (remove inline `viewTransitionName`); sidebar desktop usa `TransitionLink pattern="crossfade"`.
+- **`src/components/app/AppBottomNav.tsx`** — links usam `TransitionLink pattern="crossfade"`; `<nav>` usa classe `vt-nav`.
+- **`src/components/app/MaletaList.tsx`** — `MaletaListItemCard` usa `TransitionLink pattern="hero"` e `view-transition-name: maleta-${id}` (shared element).
+- **`src/app/app/maleta/[id]/MaletaDetailClient.tsx`** — header com `view-transition-name: maleta-${id}` (par do shared element); botão "Registrar Venta" usa `TransitionLink pattern="modal"`; botão "Devolver" usa `TransitionLink pattern="modal"`; botão voltar usa `TransitionLink pattern="pop"`.
+- **`src/app/app/catalogo/page.tsx`** — botão "Seleccionar varias fotos" usa `useTransitionRouter().pushSheet()`.
+- **`src/app/app/maleta/loading.tsx`** e **`src/app/app/maleta/[id]/loading.tsx`** — **removidos**. `loading.tsx` causava o skeleton ser capturado pelo `startViewTransition` como "nova página", tornando a animação invisível.
+
+### Tentativas de correção da animação (não resolvidas)
+1. `@view-transition { navigation: auto }` no CSS — não disparou com soft navigation do Next.js App Router.
+2. `startViewTransition(() => flushSync(() => router.push()))` — `flushSync` causa conflito com React 19 concurrent mode.
+3. `startViewTransition(() => startTransition(() => router.push()))` — produz erro de hidratação por cache stale; após `rm -rf .next` ainda sem animação visível.
+
+### Estado atual
+Infraestrutura completa e testada. Animações não visíveis. Diagnóstico e correção registrados em `next_steps.md` como bloqueio ativo.
+
+---
+
 ## 2026-04-26 — Migração de Cron Jobs para Supabase Edge Functions
 
 ### Contexto

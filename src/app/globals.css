@@ -140,3 +140,135 @@ img {
 .admin-layout * {
   border-color: var(--color-border);
 }
+
+/* ================================================================
+   View Transitions — classes estáticas para view-transition-name.
+   Usar classes CSS em vez de inline style garante que o browser
+   receba a propriedade mesmo que React não a reconheça no style={}.
+   ================================================================ */
+.vt-page { view-transition-name: page; }
+.vt-nav  { view-transition-name: bottom-nav; }
+
+/* ================================================================
+   Motion tokens — PWA /app/* View Transitions (SPEC_TRANSICOES_TELAS)
+   ================================================================ */
+:root {
+  --motion-duration-fast:    180ms;
+  --motion-duration-base:    280ms;
+  --motion-duration-modal:   320ms;
+  --motion-duration-hero:    360ms;
+  --motion-duration-reduced: 100ms;
+  --motion-ease-standard:    cubic-bezier(0.32, 0.72, 0, 1);
+  --motion-ease-emphasized:  cubic-bezier(0.2, 0, 0, 1);
+  --motion-ease-linear:      linear;
+  --motion-sheet-dim:        rgba(0, 0, 0, 0.16);
+  --motion-sheet-handle-bg:  var(--color-app-divider, #F5F2EF);
+}
+
+/* --- Keyframes --- */
+@keyframes vt-slide-out-left {
+  to { transform: translateX(-30%); opacity: 0.7; }
+}
+@keyframes vt-slide-in-right {
+  from { transform: translateX(100%); }
+}
+@keyframes vt-slide-out-right {
+  to { transform: translateX(100%); }
+}
+@keyframes vt-slide-in-left {
+  from { transform: translateX(-30%); opacity: 0.7; }
+}
+@keyframes vt-slide-up {
+  from { transform: translateY(100%); }
+}
+@keyframes vt-slide-down {
+  to { transform: translateY(100%); }
+}
+@keyframes vt-fade-out {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* --- Garantir que pseudo-elements de transição não fiquem invisíveis --- */
+::view-transition-old(page),
+::view-transition-new(page) {
+  mix-blend-mode: normal;
+}
+
+/* --- Push horizontal (drill-down) --- */
+html.vt-push::view-transition-old(page) {
+  animation: vt-slide-out-left var(--motion-duration-base) var(--motion-ease-standard) both;
+}
+html.vt-push::view-transition-new(page) {
+  animation: vt-slide-in-right var(--motion-duration-base) var(--motion-ease-standard) both;
+}
+
+/* --- Pop horizontal (voltar) --- */
+html.vt-pop::view-transition-old(page) {
+  animation: vt-slide-out-right var(--motion-duration-base) var(--motion-ease-standard) both;
+}
+html.vt-pop::view-transition-new(page) {
+  animation: vt-slide-in-left var(--motion-duration-base) var(--motion-ease-standard) both;
+}
+
+/* --- Crossfade (troca de tabs) — keyframes explícitos para garantir visibilidade --- */
+html.vt-crossfade::view-transition-old(page) {
+  animation: vt-fade-out 250ms ease both;
+}
+html.vt-crossfade::view-transition-new(page) {
+  animation: vt-fade-in 250ms ease both;
+}
+
+/* --- Modal sheet (sobe de baixo) --- */
+html.vt-modal::view-transition-old(page) {
+  animation: none;
+  opacity: 0.84;
+}
+html.vt-modal::view-transition-new(page) {
+  animation: vt-slide-up var(--motion-duration-modal) var(--motion-ease-standard) both;
+}
+
+/* --- Modal close (desce ao fechar) --- */
+html.vt-modal-close::view-transition-old(page) {
+  animation: vt-slide-down var(--motion-duration-modal) var(--motion-ease-standard) both;
+}
+html.vt-modal-close::view-transition-new(page) {
+  animation: none;
+  opacity: 0.84;
+}
+
+/* --- Bottom nav estável (não pisca entre rotas) --- */
+::view-transition-old(bottom-nav),
+::view-transition-new(bottom-nav) {
+  animation: none;
+}
+
+/* --- Hero / shared element: crossfade rápido com keyframes explícitos --- */
+html.vt-hero::view-transition-old(page) {
+  animation: vt-fade-out calc(var(--motion-duration-hero) / 2) ease both;
+}
+html.vt-hero::view-transition-new(page) {
+  animation: vt-fade-in calc(var(--motion-duration-hero) / 2) ease both;
+}
+
+/* --- Reduced motion: troca slides por fade curto --- */
+@media (prefers-reduced-motion: reduce) {
+  html.vt-push::view-transition-old(page),
+  html.vt-push::view-transition-new(page),
+  html.vt-pop::view-transition-old(page),
+  html.vt-pop::view-transition-new(page),
+  html.vt-modal::view-transition-new(page),
+  html.vt-modal-close::view-transition-old(page) {
+    animation-name: none !important;
+    animation-duration: var(--motion-duration-reduced) !important;
+  }
+  html.vt-modal::view-transition-old(page),
+  html.vt-modal-close::view-transition-new(page) {
+    animation: none;
+    opacity: 1;
+  }
+}

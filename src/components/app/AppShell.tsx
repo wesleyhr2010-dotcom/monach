@@ -1,12 +1,13 @@
 "use client";
 
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { LayoutGrid, Store, Briefcase, LayoutTemplate, LogOut } from "lucide-react";
 import { logoutApp } from "@/lib/actions/auth";
 import OneSignalWrapper from "@/components/onesignal/OneSignalWrapper";
 import { AppBottomNav } from "@/components/app/AppBottomNav";
 import { LogoMonarca } from "@/components/LogoMonarca";
+import { AppTransitionProvider } from "@/components/app/transitions/AppTransitionProvider";
+import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
 const navItems = [
     { href: "/app", label: "Início", icon: <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />, exact: true },
@@ -24,6 +25,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
 
     return (
+        <AppTransitionProvider>
         <div className="flex bg-[#F5F2EF] text-[#1A1A1A] font-sans"
             style={{ position: "fixed", inset: 0, overflow: "hidden", paddingTop: "env(safe-area-inset-top)", overscrollBehavior: "none" }}>
             <OneSignalWrapper />
@@ -49,9 +51,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                                 : pathname.startsWith(item.href);
                         }
                         return (
-                            <Link
+                            <TransitionLink
                                 key={item.href}
                                 href={item.href}
+                                pattern="crossfade"
                                 className={`flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium transition-colors ${isActive
                                     ? "bg-[#2E5A4C]/10 text-[#2E5A4C]"
                                     : "text-[#6b7280] hover:bg-[#F5F0E8] hover:text-[#1f2937]"
@@ -59,7 +62,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                             >
                                 {item.icon}
                                 <span>{item.label}</span>
-                            </Link>
+                            </TransitionLink>
                         );
                     })}
                 </nav>
@@ -73,9 +76,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </div>
             </aside>
 
-            {/* Main — scroll container */}
+            {/* Main — vt-page aplica view-transition-name: page via CSS */}
             <main
-                className="flex-1 md:ml-[260px] overflow-y-auto"
+                className="flex-1 md:ml-[260px] overflow-y-auto vt-page"
                 style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "none" }}
             >
                 {children}
@@ -86,8 +89,9 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 />
             </main>
 
-            {/* Bottom nav (mobile) — floating pill */}
+            {/* Bottom nav (mobile) — floating pill; view-transition-name garante estabilidade */}
             <AppBottomNav />
         </div>
+    </AppTransitionProvider>
     );
 }

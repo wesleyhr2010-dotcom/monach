@@ -129,6 +129,9 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 - [ ] **Estratégia de cache e revalidação** — `revalidateTag` por entidade. Ref.: [`sistema/SPEC_CACHING_STRATEGY.md`](./sistema/SPEC_CACHING_STRATEGY.md).
 - [ ] **Error handling centralizado** (ActionResult + mensagens). Ref.: [`sistema/SPEC_ERROR_HANDLING.md`](./sistema/SPEC_ERROR_HANDLING.md).
 - [ ] **Skeleton / empty / error states** consistentes. Ref.: [`sistema/SPEC_SKELETON_EMPTY_STATES.md`](./sistema/SPEC_SKELETON_EMPTY_STATES.md).
+- [x] **Transições entre telas no PWA — sensação de app nativo** — infraestrutura e animações funcionando. Ref.: [`sistema/SPEC_TRANSICOES_TELAS.md`](./sistema/SPEC_TRANSICOES_TELAS.md), CHANGELOG 2026-04-26.
+  - [x] Crossfade entre tabs (~250ms), slide-up modal (~320ms), push/pop horizontal (~280ms), shared element hero (~360ms).
+  - [x] Mecanismo `notifyAppRouteCommit()` + `useLayoutEffect` + timeout de segurança resolve o deadlock entre `startViewTransition` e React 19 App Router.
 - [ ] **Testes E2E com Playwright** — golden paths (login → maleta → venda → devolução). Ref.: [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md).
 - [ ] **Observabilidade** — Sentry + logs estruturados + alertas. Ref.: [`sistema/SPEC_LOGGING_MONITORING.md`](./sistema/SPEC_LOGGING_MONITORING.md).
 - [ ] **Rate limiting** nos endpoints sensíveis (Upstash Redis). Ref.: [`sistema/SPEC_SECURITY_API_ENDPOINTS.md`](./sistema/SPEC_SECURITY_API_ENDPOINTS.md).
