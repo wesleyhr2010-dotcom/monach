@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ArrowLeft, Camera, Save } from "lucide-react";
+import { ArrowLeft, Camera, Save, ImageIcon } from "lucide-react";
 import { getPerfilCompleto, actualizarPerfilRevendedora } from "../actions";
 
 export default function EditarDatosPage() {
     const router = useRouter();
+    const cameraInputRef = useRef<HTMLInputElement>(null);
+    const galleryInputRef = useRef<HTMLInputElement>(null);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState("");
@@ -60,12 +62,22 @@ export default function EditarDatosPage() {
 
     const uploadAvatar = async (): Promise<string | undefined> => {
         if (!avatarFile) return form.avatar_url || undefined;
+
         const fd = new FormData();
         fd.append("file", avatarFile);
-        fd.append("path", `resellers/${form.name.replace(/\s+/g, "_")}/avatar.webp`);
+        // Usar timestamp para evitar conflito de cache e nome estável
+        const timestamp = Date.now();
+        const safeName = form.name.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 30) || "user";
+        fd.append("key", `resellers/${safeName}_${timestamp}/avatar.webp`);
+
         const res = await fetch("/api/upload-r2", { method: "POST", body: fd });
         const data = await res.json();
-        return data.url || undefined;
+
+        if (!res.ok || !data.url) {
+            throw new Error(data.error || "Error al subir la foto. Intente nuevamente.");
+        }
+
+        return data.url;
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -116,14 +128,51 @@ export default function EditarDatosPage() {
 
                 {/* Avatar */}
                 <div className="flex flex-col items-center">
-                    <label className="relative w-24 h-24 rounded-full bg-[#F5F0E8] flex items-center justify-center overflow-hidden cursor-pointer border-2 border-dashed border-[#D1C7B7]">
+                    <div className="relative w-24 h-24 rounded-full bg-[#F5F0E8] flex items-center justify-center overflow-hidden border-2 border-dashed border-[#D1C7B7]">
                         {avatarPreview ? (
                             <Image src={avatarPreview} alt="Avatar" fill className="object-cover" />
                         ) : (
                             <Camera className="w-8 h-8 text-[#917961]" />
                         )}
-                        <input type="file" accept="image/*" capture="user" className="hidden" onChange={handleAvatarChange} />
-                    </label>
+                    </div>
+
+                    {/* Botões de ação */}
+                    <div className="flex gap-2 mt-3">
+                        <button
+                            type="button"
+                            onClick={() => cameraInputRef.current?.click()}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5F0E8] text-[#35605A] text-xs font-medium active:scale-95 transition-transform"
+                        >
+                            <Camera className="w-3.5 h-3.5" />
+                            Cámara
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => galleryInputRef.current?.click()}
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5F0E8] text-[#35605A] text-xs font-medium active:scale-95 transition-transform"
+                        >
+                            <ImageIcon className="w-3.5 h-3.5" />
+                            Galería
+                        </button>
+                    </div>
+
+                    {/* Inputs invisíveis */}
+                    <input
+                        ref={cameraInputRef}
+                        type="file"
+                        accept="image/*"
+                        capture="environment"
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                    />
+                    <input
+                        ref={galleryInputRef}
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={handleAvatarChange}
+                    />
+
                     <span className="text-xs text-[#6b7280] mt-2">Foto de perfil</span>
                 </div>
 

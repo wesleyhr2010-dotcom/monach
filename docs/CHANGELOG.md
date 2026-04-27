@@ -34,6 +34,10 @@ Corrigido o bloqueio ativo das animações de transição no PWA da revendedora.
 - `useTransitionRouter.test.ts` — 11 testes: comportamento inalterado.
 - `isModalRoute.test.ts` — 14 testes: comportamento inalterado.
 
+### Bugfixes
+- **Upload de avatar — foto não salvava no banco** — a página enviava `path` no FormData mas a API `/api/upload-r2` esperava `key`. O upload retornava erro 400 silenciosamente, `data.url` era `undefined`, e o avatar nunca persistia. Corrigido para enviar `key` com timestamp no path. Adicionado tratamento de erro explícito no upload.
+- **Avatar — galeria não aparecia no PWA** — o input tinha `capture="user"` que força a câmera frontal e esconde a galeria no iOS/Android. Agora há dois botões separados: "Cámara" (com `capture="environment"`) e "Galería" (sem capture), dando controle total ao usuário.
+
 ### Melhorias de UX
 - **`TransitionLink` — feedback de toque instantâneo** — estado `pressed` controlado por `onPointerDown` (antes do `onClick`) + classe CSS `.transition-link-pressed` com `scale(0.92)` e `opacity(0.7)`. Micro-delay de 60ms antes de iniciar `startViewTransition` para dar tempo do browser pintar o estado visual antes de congelar o DOM.
 
