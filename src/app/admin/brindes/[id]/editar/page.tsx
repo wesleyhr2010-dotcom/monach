@@ -6,7 +6,7 @@ export const metadata = {
     title: "Editar Brinde — Monarca Admin",
 };
 
-export default async function EditarBrindePage({ params }: { params: Promise<{ id: string }> } | { params: { id: string } }) {
+export default async function EditarBrindePage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
     const brinde = await getBrindeById(id);
 
