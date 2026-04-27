@@ -75,7 +75,7 @@ export default function BienvenidaPage() {
     const [pontosGanados, setPontosGanados] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
-    const [profile, setProfile] = useState({ whatsapp: "", avatar_url: "" });
+    const [profile, setProfile] = useState({ id: "", whatsapp: "", avatar_url: "" });
     const [avatarPreview, setAvatarPreview] = useState("");
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
     const cameraInputRef = useRef<HTMLInputElement>(null);
@@ -88,6 +88,11 @@ export default function BienvenidaPage() {
         getOnboardingStatus()
             .then((status) => {
                 setName(status.name);
+                setProfile({
+                    id: status.id,
+                    whatsapp: status.whatsapp || "",
+                    avatar_url: status.avatar_url || "",
+                });
                 // Se já tem maletas ou onboarding completo, redirecionar
                 if (status.hasMaletas || status.onboarding_completo) {
                     router.replace("/app");
@@ -131,8 +136,7 @@ export default function BienvenidaPage() {
         const formData = new FormData();
         formData.append("file", avatarFile);
         const timestamp = Date.now();
-        const safeName = name.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 30) || "user";
-        formData.append("key", `resellers/${safeName}_${timestamp}/avatar.webp`);
+        formData.append("key", `resellers/${profile.id}/${timestamp}_avatar.webp`);
         const res = await fetch("/api/upload-r2", { method: "POST", body: formData });
         const data = await res.json();
         if (!res.ok || !data.url) {

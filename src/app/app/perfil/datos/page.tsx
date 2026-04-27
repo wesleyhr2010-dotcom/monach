@@ -16,6 +16,7 @@ export default function EditarDatosPage() {
     const [success, setSuccess] = useState(false);
     const [avatarPreview, setAvatarPreview] = useState("");
     const [avatarFile, setAvatarFile] = useState<File | null>(null);
+    const [resellerId, setResellerId] = useState("");
     const [form, setForm] = useState({
         name: "",
         whatsapp: "",
@@ -31,6 +32,7 @@ export default function EditarDatosPage() {
     useEffect(() => {
         getPerfilCompleto()
             .then((p) => {
+                setResellerId(p.id);
                 setForm({
                     name: p.name,
                     whatsapp: p.whatsapp,
@@ -65,10 +67,9 @@ export default function EditarDatosPage() {
 
         const fd = new FormData();
         fd.append("file", avatarFile);
-        // Usar timestamp para evitar conflito de cache e nome estável
+        // Usar resellerId + timestamp para path único e autorizado pela API
         const timestamp = Date.now();
-        const safeName = form.name.replace(/[^a-zA-Z0-9]/g, "_").substring(0, 30) || "user";
-        fd.append("key", `resellers/${safeName}_${timestamp}/avatar.webp`);
+        fd.append("key", `resellers/${resellerId}/${timestamp}_avatar.webp`);
 
         const res = await fetch("/api/upload-r2", { method: "POST", body: fd });
         const data = await res.json();

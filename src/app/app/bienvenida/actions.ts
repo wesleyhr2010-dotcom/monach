@@ -103,6 +103,7 @@ export async function completeOnboarding(
 }
 
 export async function getOnboardingStatus(): Promise<{
+    id: string;
     name: string;
     onboarding_completo: boolean;
     hasMaletas: boolean;
@@ -134,6 +135,7 @@ export async function getOnboardingStatus(): Promise<{
     });
 
     return {
+        id: resellerId,
         name: reseller.name,
         onboarding_completo: reseller.onboarding_completo,
         hasMaletas: reseller._count.maletas > 0,

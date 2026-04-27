@@ -30,9 +30,14 @@ function validateFile(file: File): void {
   }
 }
 
-async function validateKey(key: string, userId: string, role?: string): Promise<void> {
+async function validateKey(key: string, userId: string, resellerId: string, role?: string): Promise<void> {
   // Revendedoras solo pueden subir a su propio espacio, comprovantes de sus maletas o documentos privados
-  const resellerPaths = [`resellers/${userId}/`, `comprovantes/`, `private/resellers/`];
+  const resellerPaths = [
+    `resellers/${userId}/`,
+    `resellers/${resellerId}/`,
+    `comprovantes/`,
+    `private/resellers/`,
+  ];
   const adminPaths = ["products/", "brindes/", "contratos/", "private/"];
 
   const isAdmin = role === "ADMIN" || role === "COLABORADORA";
@@ -90,11 +95,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    // Buscar role del usuario
+    // Buscar role e id del usuario
     const reseller = await prisma.reseller.findFirst({
       where: { auth_user_id: user.id },
-      select: { role: true },
+      select: { id: true, role: true },
     });
+
+    if (!reseller) {
+      return NextResponse.json({ error: "Perfil no encontrado" }, { status: 403 });
+    }
 
     // 2. Parsear FormData
     const formData = await request.formData();
@@ -115,7 +124,7 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Validar key (solo paths permitidos para el user)
-    await validateKey(key, user.id, reseller?.role);
+    await validateKey(key, user.id, reseller.id, reseller.role);
 
     // 5. Validar tipo y tamaño
     try {

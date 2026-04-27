@@ -37,6 +37,7 @@ Corrigido o bloqueio ativo das animações de transição no PWA da revendedora.
 ### Bugfixes
 - **Upload de avatar — foto não salvava no banco** — a página enviava `path` no FormData mas a API `/api/upload-r2` esperava `key`. O upload retornava erro 400 silenciosamente, `data.url` era `undefined`, e o avatar nunca persistia. Corrigido para enviar `key` com timestamp no path. Adicionado tratamento de erro explícito no upload.
 - **Avatar — galeria não aparecia no PWA** — o input tinha `capture="user"` que força a câmera frontal e esconde a galeria no iOS/Android. Agora há dois botões separados: "Cámara" (com `capture="environment"`) e "Galería" (sem capture), dando controle total ao usuário.
+- **Avatar — path não autorizado pela API** — a validação da API `/api/upload-r2` só aceitava `resellers/${auth_user_id}/`, mas o client enviava `resellers/${nome}_${timestamp}/`. Corrigido para aceitar também `resellers/${resellerId}/` (ID do Prisma), que é o que o client tem acesso. Atualizado `getPerfilCompleto`, `getOnboardingStatus`, `/app/perfil/datos/page.tsx` e `/app/bienvenida/page.tsx` para usar `resellerId` no path.
 
 ### Melhorias de UX
 - **`TransitionLink` — feedback de toque instantâneo** — estado `pressed` controlado por `onPointerDown` (antes do `onClick`) + classe CSS `.transition-link-pressed` com `scale(0.92)` e `opacity(0.7)`. Micro-delay de 60ms antes de iniciar `startViewTransition` para dar tempo do browser pintar o estado visual antes de congelar o DOM.
