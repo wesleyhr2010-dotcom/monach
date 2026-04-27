@@ -255,6 +255,13 @@ html.vt-hero::view-transition-new(page) {
   animation: vt-fade-in calc(var(--motion-duration-hero) / 2) ease both;
 }
 
+/* --- Pressed state para TransitionLink (feedback de toque) --- */
+.transition-link-pressed {
+  transform: scale(0.92);
+  opacity: 0.7;
+  transition: transform 80ms ease, opacity 80ms ease;
+}
+
 /* --- Reduced motion: troca slides por fade curto --- */
 @media (prefers-reduced-motion: reduce) {
   html.vt-push::view-transition-old(page),

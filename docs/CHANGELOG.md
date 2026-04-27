@@ -34,6 +34,9 @@ Corrigido o bloqueio ativo das animações de transição no PWA da revendedora.
 - `useTransitionRouter.test.ts` — 11 testes: comportamento inalterado.
 - `isModalRoute.test.ts` — 14 testes: comportamento inalterado.
 
+### Melhorias de UX
+- **`TransitionLink` — feedback de toque instantâneo** — estado `pressed` controlado por `onPointerDown` (antes do `onClick`) + classe CSS `.transition-link-pressed` com `scale(0.92)` e `opacity(0.7)`. Micro-delay de 60ms antes de iniciar `startViewTransition` para dar tempo do browser pintar o estado visual antes de congelar o DOM.
+
 ### Estado atual
 Animações visuais funcionando em todas as navegações do PWA:
 - **Crossfade** entre tabs da bottom nav (Início ↔ Catálogo ↔ Maleta ↔ Más) — ~250ms
