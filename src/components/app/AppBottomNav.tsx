@@ -30,15 +30,19 @@ export function AppBottomNav() {
               key={href}
               href={href}
               pattern="crossfade"
-              className="flex flex-col items-center gap-1 min-w-[52px] py-2"
+              className="flex flex-col items-center gap-1 min-w-[52px] py-2 select-none"
             >
               <Icon
                 size={24}
                 strokeWidth={1.5}
-                stroke={active ? "#35605A" : "#B4ABA2"}
+                className="transition-all duration-200 ease-out"
+                style={{
+                  color: active ? "#35605A" : "#B4ABA2",
+                  transform: active ? "translateY(-2px)" : "translateY(0)",
+                }}
               />
               <span
-                className="text-[10px] font-medium leading-3 tracking-[0.2px]"
+                className="text-[10px] font-medium leading-3 tracking-[0.2px] transition-colors duration-200"
                 style={{
                   fontFamily: "var(--font-raleway)",
                   color: active ? "#35605A" : "#B4ABA2",
@@ -46,9 +50,16 @@ export function AppBottomNav() {
               >
                 {label}
               </span>
-              {active && (
-                <div className="w-1 h-1 rounded-full bg-[#35605A]" />
-              )}
+              {/* Dot sempre presente — evita layout shift e permite animar */}
+              <div
+                className="rounded-full bg-[#35605A] transition-all duration-200 ease-out"
+                style={{
+                  width: active ? 4 : 0,
+                  height: active ? 4 : 0,
+                  opacity: active ? 1 : 0,
+                  transform: active ? "scale(1)" : "scale(0)",
+                }}
+              />
             </TransitionLink>
           );
         })}
