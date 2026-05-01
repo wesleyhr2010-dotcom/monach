@@ -24,22 +24,52 @@ export async function getDashboardCompleto() {
     const resellerId = user.profileId;
     const { start, end } = getMonthBounds();
 
-    const reseller = await prisma.reseller.findUnique({
-        where: { id: resellerId },
-        select: { name: true, avatar_url: true },
-    });
+    // Todas as queries em paralelo — evita waterfall sequencial
+    const [reseller, vendasMes, pontosAggr, maletaAtiva, maletas, rank, allTiers] =
+        await Promise.all([
+            prisma.reseller.findUnique({
+                where: { id: resellerId },
+                select: { name: true, avatar_url: true },
+            }),
+            prisma.vendaMaleta.findMany({
+                where: {
+                    reseller_id: resellerId,
+                    created_at: { gte: start, lt: end },
+                },
+                select: { quantidade: true, preco_unitario: true },
+            }),
+            prisma.pontosExtrato.aggregate({
+                where: { reseller_id: resellerId },
+                _sum: { pontos: true },
+            }),
+            prisma.maleta.findFirst({
+                where: {
+                    reseller_id: resellerId,
+                    status: { in: ["ativa", "atrasada"] },
+                },
+                orderBy: { created_at: "desc" },
+                select: { id: true, status: true, data_limite: true },
+            }),
+            prisma.maleta.findMany({
+                where: { reseller_id: resellerId },
+                include: {
+                    itens: {
+                        select: {
+                            quantidade_enviada: true,
+                            quantidade_vendida: true,
+                        },
+                    },
+                },
+                orderBy: { created_at: "desc" },
+            }),
+            getRankAtual(resellerId),
+            prisma.commissionTier.findMany({
+                where: { ativo: true },
+                orderBy: { min_sales_value: "asc" },
+            }),
+        ]);
 
-    // Métricas do mês civil vigente
-    const vendasMes = await prisma.vendaMaleta.findMany({
-        where: {
-            reseller_id: resellerId,
-            created_at: { gte: start, lt: end },
-        },
-        select: {
-            quantidade: true,
-            preco_unitario: true,
-        },
-    });
+    const pontosSaldo = pontosAggr._sum.pontos ?? 0;
 
     const faturamentoMes = vendasMes.reduce(
         (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
@@ -47,40 +77,8 @@ export async function getDashboardCompleto() {
     );
     const pecasVendidasMes = vendasMes.reduce((sum, v) => sum + v.quantidade, 0);
 
-    // Pontos históricos totais
-    const pontosAggr = await prisma.pontosExtrato.aggregate({
-        where: { reseller_id: resellerId },
-        _sum: { pontos: true },
-    });
-    const pontosSaldo = pontosAggr._sum.pontos ?? 0;
-
-    // Maleta ativa
-    const maletaAtiva = await prisma.maleta.findFirst({
-        where: {
-            reseller_id: resellerId,
-            status: { in: ["ativa", "atrasada"] },
-        },
-        orderBy: { created_at: "desc" },
-        select: {
-            id: true,
-            status: true,
-            data_limite: true,
-        },
-    });
-
-    // Todas as maletas para histórico rápido
-    const maletas = await prisma.maleta.findMany({
-        where: { reseller_id: resellerId },
-        include: {
-            itens: {
-                select: {
-                    quantidade_enviada: true,
-                    quantidade_vendida: true,
-                },
-            },
-        },
-        orderBy: { created_at: "desc" },
-    });
+    const commissionInfo = await computeCommissionPct(faturamentoMes);
+    const ganhosMes = faturamentoMes * ((commissionInfo.tierAtual?.pct ?? 0) / 100);
 
     const historicoMaletas = maletas.map((m) => ({
         id: m.id,
@@ -89,17 +87,6 @@ export async function getDashboardCompleto() {
         totalItens: m.itens.reduce((acc, item) => acc + item.quantidade_enviada, 0),
         vendidos: m.itens.reduce((acc, item) => acc + item.quantidade_vendida, 0),
     }));
-
-    const [rank, commissionInfo, allTiers] = await Promise.all([
-        getRankAtual(resellerId),
-        computeCommissionPct(faturamentoMes),
-        prisma.commissionTier.findMany({
-            where: { ativo: true },
-            orderBy: { min_sales_value: "asc" },
-        }),
-    ]);
-
-    const ganhosMes = faturamentoMes * ((commissionInfo.tierAtual?.pct ?? 0) / 100);
 
     const tiers = allTiers.map((t) => ({
         pct: Number(t.pct),

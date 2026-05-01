@@ -8,8 +8,9 @@ export type { VtPattern } from "./viewTransition";
 
 /** Delay em ms antes de iniciar a transição. Dá tempo do browser
  *  pintar o estado visual de "pressed" (scale + opacity) antes de
- *  o startViewTransition congelar o DOM. */
-const PRESSED_FEEDBACK_MS = 60;
+ *  o startViewTransition congelar o DOM.
+ *  Mantido mínimo (10ms) para não adicionar latência perceptível. */
+const PRESSED_FEEDBACK_MS = 10;
 
 type TransitionLinkProps = Omit<AnchorHTMLAttributes<HTMLAnchorElement>, "href"> & {
   href: string;
