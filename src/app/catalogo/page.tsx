@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR — página pública, cachear por 60s
 import Link from "next/link";
 import { getCatalogProducts, getAllCategories } from "@/app/actions";
 import ProductCard from "@/components/ProductCard";

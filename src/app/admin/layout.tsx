@@ -34,6 +34,24 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         redirect("/app");
     }
 
+    // COLABORADORA não acessa rotas exclusivas de ADMIN
+    if (user.role === "COLABORADORA") {
+        const restrictedPaths = [
+            "/admin/productos",
+            "/admin/gamificacion",
+            "/admin/brindes",
+            "/admin/commission-tiers",
+            "/admin/contratos",
+            "/admin/equipo/consultoras",
+        ];
+        const isRestricted = restrictedPaths.some((path) =>
+            pathname === path || pathname.startsWith(path + "/")
+        );
+        if (isRestricted) {
+            redirect("/admin");
+        }
+    }
+
     // Contagem inicial de devoluções pendentes (SSR, sem waterfall)
     const scope = getResellerScope(user);
     const alertCount = await prisma.maleta.count({

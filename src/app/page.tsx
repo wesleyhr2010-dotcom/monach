@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR — página pública, cachear por 60s
 import HeroBanner from "@/components/HeroBanner";
 import ValueProps from "@/components/ValueProps";
 import CategoryTabs from "@/components/CategoryTabs";

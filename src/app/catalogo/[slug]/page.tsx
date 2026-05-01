@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR — página pública, cachear por 60s
 import Image from "next/image";
 import Link from "next/link";
 import { getResellerBySlug, getResellerCatalogProducts } from "@/app/actions";

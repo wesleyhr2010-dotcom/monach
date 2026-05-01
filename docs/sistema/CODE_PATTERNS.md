@@ -211,3 +211,53 @@ export default async function ProductGrid() {
     return <div>{products.map(p => <ProductCard key={p.id} {...p} />)}</div>;
 }
 ```
+
+---
+
+## Performance Patterns
+
+### Auth: sempre usar `getCurrentUser()` (cached)
+
+```ts
+// ✅ Correto — deduplica via React.cache()
+import { getCurrentUser } from "@/lib/user";
+
+export default async function AdminPage() {
+    const user = await getCurrentUser(); // 1ª chamada: executa
+    const data = await someAction();      // internamente chama getCurrentUser → usa cache
+    // ...
+}
+
+// ❌ Errado — bypassa o cache, cria nova conexão
+const supabase = await createSupabaseSSRClient();
+const { data: { user } } = await supabase.auth.getUser();
+```
+
+### Middleware: sem query ao banco
+
+```ts
+// ✅ Middleware apenas refresca token e redireciona
+export async function updateSession(request: NextRequest) {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user && isProtectedRoute) redirect("/login");
+    return supabaseResponse;
+}
+
+// ❌ Nunca fazer isso no middleware
+await supabase.from('resellers').select('role').eq('auth_user_id', user.id);
+await prisma.reseller.findUnique({ where: { auth_user_id: user.id } });
+```
+
+### Rotas: ISR para público, force-dynamic para autenticado
+
+```ts
+// ✅ Página pública — ISR com revalidação
+export const revalidate = 60;
+
+// ✅ Página autenticada — sempre fresco
+export const dynamic = "force-dynamic";
+
+// ❌ Nunca usar force-dynamic em página pública sem motivo
+export const dynamic = "force-dynamic"; // em homepage ou catálogo
+```
+

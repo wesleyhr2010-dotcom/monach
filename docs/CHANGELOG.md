@@ -1,5 +1,38 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-04-30 — Performance: eliminação de gargalos de auth, middleware e cache
+
+### Contexto
+Sistema apresentava lentidão perceptível em toda navegação — links do PWA e carregamento do admin demoravam entre 1-3s. Diagnóstico identificou 3 causas acumulativas, todas corrigidas nesta entrega.
+
+### Corrigido
+
+**`src/lib/user.ts`** — `getCurrentUser` envolvido com `React.cache()`
+- Chamadas múltiplas no mesmo request (middleware → layout → page → server actions) agora executam **1 única query** ao Supabase Auth + Prisma, eliminando ~800ms de overhead redundante no admin dashboard.
+
+**`src/lib/middleware-auth.ts`** — query ao banco removida do middleware
+- O middleware fazia `supabase.from('resellers').select('role, is_active')` em **cada request** (~150ms). Agora apenas refresca o token JWT e redireciona não-autenticados.
+- Verificação de role/is_active movida para o layout do admin (via `getCurrentUser` cached) e server actions (via `requireAuth`).
+
+**`src/app/admin/layout.tsx`** — restrições de COLABORADORA movidas do middleware
+- Adicionada verificação de rotas restritas para COLABORADORA (`/admin/productos`, `/admin/gamificacion`, etc.) que antes vivia no middleware.
+
+**Páginas públicas — ISR com `revalidate: 60`**
+- Homepage (`/`), catálogo (`/catalogo`), catálogo da revendedora (`/catalogo/[slug]`), produto (`/produto/[slug]`) trocaram de `force-dynamic` para ISR.
+- Resultado: páginas públicas servidas do cache, revalidadas a cada 60s.
+
+**`src/lib/prisma.ts`** — pool com limites
+- Adicionados `max: 10`, `idleTimeoutMillis: 30000`, `connectionTimeoutMillis: 5000` ao pool do `pg`.
+- Removido log de diagnóstico de models que executava em produção a cada cold start.
+
+### Documentação
+- **`CLAUDE.md`** — nova seção §3.3 "Performance — Regras obrigatórias" com 5 regras de prevenção de regressão.
+- **`docs/sistema/CODE_PATTERNS.md`** — nova seção "Performance Patterns" com exemplos do/don't.
+- **`docs/sistema/SPEC_CACHING_STRATEGY.md`** — §5 atualizado para documentar `getCurrentUser` como já implementado com `cache()`; §8 reescrito com tabela completa de ISR vs force-dynamic por rota.
+
+---
+
+
 ## 2026-04-26 — View Transitions funcionando no PWA (animações entre telas)
 
 ### Contexto

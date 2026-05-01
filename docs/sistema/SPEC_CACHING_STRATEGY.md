@@ -212,10 +212,20 @@ export const getCommissionTiers = unstable_cache(
 
 ## 5. Deduplicação por Request (React `cache()`)
 
-Para queries que aparecem em múltiplos Server Components na mesma página:
+Funções que aparecem em múltiplos Server Components na mesma página são envolvidas com `cache()` do React:
 
 ```ts
-// src/lib/queries/get-reseller.ts
+// src/lib/user.ts — JÁ IMPLEMENTADO
+import { cache } from 'react';
+
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
+  // Supabase auth + Prisma query
+  // Chamada 7x na mesma renderização → 1 única query ao banco
+});
+```
+
+```ts
+// src/lib/queries/get-reseller.ts — exemplo para futuras queries
 import { cache } from 'react';
 
 export const getResellerProfile = cache(async (resellerId: string) => {
@@ -264,16 +274,31 @@ NEXT_PRIVATE_DEBUG_CACHE=1 npm run dev
 
 ---
 
-## 8. Dados Estáticos (Full Route Cache)
+## 8. Estratégia por Tipo de Rota
 
-Rotas que podem ser completamente estáticas (geradas em build time):
+### ISR (Incremental Static Regeneration) — `revalidate: 60`
+
+Páginas públicas sem dados de usuário autenticado:
 
 | Rota | Estratégia | Nota |
 |------|-----------|------|
+| `/` (homepage) | `revalidate: 60` | Produtos e categorias do storefront |
+| `/catalogo` | `revalidate: 60` | Catálogo geral com filtros |
+| `/catalogo/[slug]` | `revalidate: 60` | Catálogo da revendedora |
+| `/produto/[slug]` | `revalidate: 60` | Detalhe de produto |
+| `/vitrina/[slug]` | `revalidate: 60` | Vitrina pública |
 | `/app/login` | Estática | Sem dados dinâmicos |
-| `/app/progreso` (layout) | Estática | Conteúdo explicativo fixo |
 
-Rotas que precisam ser dinâmicas (`force-dynamic`):
-- `/app` (dashboard) — dados da revendedora logada
-- `/app/maleta` — maleta ativa em tempo real
-- `/admin/*` — dados em tempo real para admin
+### Force-dynamic — dados em tempo real
+
+Páginas autenticadas com dados voláteis:
+
+| Rota | Motivo |
+|------|--------|
+| `/app/*` (dashboard, maleta) | Dados da revendedora logada |
+| `/admin/*` | Dados em tempo real para admin/colaboradora |
+
+### Middleware
+
+- **NÃO faz query ao banco.** Apenas refresca token JWT e redireciona não-autenticados.
+- Verificação de role/is_active é feita nos layouts via `getCurrentUser()` (cached).

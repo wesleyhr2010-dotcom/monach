@@ -13,6 +13,9 @@ const SCHEMA_VERSION = "2026-04-24-notificacao-templates-v3";
 function createPrismaClient() {
     const pool = new Pool({
         connectionString: process.env.DATABASE_URL,
+        max: 10,                    // Limite de conexões por instância serverless
+        idleTimeoutMillis: 30000,   // Liberar conexões ociosas após 30s
+        connectionTimeoutMillis: 5000, // Timeout de conexão de 5s
     });
     const adapter = new PrismaPg(pool);
 
@@ -23,22 +26,9 @@ function createPrismaClient() {
 
     const extended = withEncryptionExtension(client);
 
-    // Diagnóstico: logar models disponíveis em produção
-    if (process.env.NODE_ENV === "production" || process.env.VERCEL === "1") {
-        const hasNotificacao = "notificacao" in extended;
-        const hasNotificacaoTemplate = "notificacaoTemplate" in extended;
-        const hasNotificacaoLog = "notificacaoLog" in extended;
-        const models = Object.keys(extended).filter((k) => !k.startsWith("$") && typeof (extended as Record<string, unknown>)[k] === "object");
-        console.log(
-            "[Prisma] Schema version:", SCHEMA_VERSION,
-            "| Has notificacao:", hasNotificacao,
-            "| Has notificacaoTemplate:", hasNotificacaoTemplate,
-            "| Has notificacaoLog:", hasNotificacaoLog,
-            "| Models:", models.join(",")
-        );
-        if (!hasNotificacao || !hasNotificacaoTemplate || !hasNotificacaoLog) {
-            console.error("[Prisma] CRITICAL: notificacao* models MISSING. Available:", models.join(","));
-        }
+    // Log de schema version apenas em development
+    if (process.env.NODE_ENV === "development") {
+        console.log("[Prisma] Schema version:", SCHEMA_VERSION);
     }
 
     return extended;

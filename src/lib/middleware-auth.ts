@@ -1,6 +1,18 @@
 import { createServerClient } from "@supabase/ssr"
 import { NextResponse, type NextRequest } from "next/server"
 
+/**
+ * Middleware de autenticação.
+ *
+ * REGRA DE PERFORMANCE: o middleware NÃO faz query ao banco de dados.
+ * Ele apenas:
+ *   1. Refresca o token JWT do Supabase (obrigatório para SSR)
+ *   2. Redireciona auth callbacks (recovery links)
+ *   3. Redireciona usuários não-autenticados para login
+ *
+ * Verificação de role e is_active é feita nos layouts e server actions
+ * via getCurrentUser() (cached com React.cache por request).
+ */
 export async function updateSession(request: NextRequest) {
     // Injeta o pathname atual como header para que layouts server-side possam lê-lo
     const requestHeaders = new Headers(request.headers)
@@ -50,115 +62,31 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(callbackUrl)
     }
 
-    // Request the user session from Supabase
+    // Refresh do token JWT — obrigatório para manter a sessão válida no SSR
     const {
         data: { user },
     } = await supabase.auth.getUser()
 
     const isAdminRoute = url.pathname.startsWith("/admin")
-    const isAdminResetPage = url.pathname.startsWith("/admin/login/reset-password")
     const isAdminLoginPage =
-        (url.pathname === "/admin/login" || url.pathname.startsWith("/admin/login/")) &&
-        !isAdminResetPage
+        url.pathname === "/admin/login" ||
+        url.pathname.startsWith("/admin/login/")
     const isAppRoute = url.pathname.startsWith("/app")
     const isAppLoginPage = url.pathname.startsWith("/app/login")
     const isAppResetPage = url.pathname.startsWith("/app/nueva-contrasena")
 
-    let userRole = null;
-    let isActive = true;
-
-    if (user) {
-        // Busca a role e status na tabela unificada 'resellers'
-        const { data: profile } = await supabase
-            .from('resellers')
-            .select('role, is_active')
-            .eq('auth_user_id', user.id)
-            .single()
-
-        if (profile) {
-            userRole = profile.role;
-            isActive = profile.is_active;
-        }
+    // ============================================
+    // Redirect não-autenticados para login
+    // (Role check é feito no layout via getCurrentUser cached)
+    // ============================================
+    if (isAdminRoute && !user && !isAdminLoginPage) {
+        url.pathname = "/admin/login"
+        return NextResponse.redirect(url)
     }
 
-    // ============================================
-    // Logic for /admin routes (ADMIN or COLABORADORA)
-    // ============================================
-    if (isAdminRoute) {
-        if (!user && !isAdminLoginPage) {
-            url.pathname = "/admin/login"
-            return NextResponse.redirect(url)
-        }
-
-        if (user) {
-            // Usuário inativo não acessa nada
-            if (!isActive) {
-                url.pathname = "/app/login"
-                return NextResponse.redirect(url)
-            }
-
-            // FAIL-CLOSED: só permite /admin se role for ADMIN ou COLABORADORA explicitamente.
-            // Qualquer outro caso (REVENDEDORA, role null, erro de query) é redirecionado.
-            if (userRole !== 'ADMIN' && userRole !== 'COLABORADORA') {
-                url.pathname = "/app"
-                return NextResponse.redirect(url)
-            }
-
-            // Se for Admin/Colaboradora tentando acessar o Login, mande pro painel
-            if (isAdminLoginPage) {
-                url.pathname = "/admin"
-                return NextResponse.redirect(url)
-            }
-
-            // COLABORADORA não acessa rotas exclusivas de ADMIN
-            if (userRole === 'COLABORADORA') {
-                const restrictedPaths = [
-                    "/admin/productos",
-                    "/admin/gamificacion",
-                    "/admin/brindes",
-                    "/admin/commission-tiers",
-                    "/admin/contratos",
-                    "/admin/equipo/consultoras",
-                ];
-                const isRestricted = restrictedPaths.some((path) =>
-                    url.pathname === path || url.pathname.startsWith(path + "/")
-                );
-                if (isRestricted) {
-                    url.pathname = "/admin"
-                    return NextResponse.redirect(url)
-                }
-            }
-        }
-    }
-
-    // ============================================
-    // Logic for /app routes (REVENDEDORA)
-    // ============================================
-    if (isAppRoute) {
-        if (!user && !isAppLoginPage && !isAppResetPage) {
-            url.pathname = "/app/login"
-            return NextResponse.redirect(url)
-        }
-
-        if (user) {
-            // Usuário inativo não acessa nada
-            if (!isActive) {
-                url.pathname = "/app/login"
-                return NextResponse.redirect(url)
-            }
-
-            // Se for Admin/Colaboradora tentando acessar /app, expulse para o /admin
-            if (userRole === 'ADMIN' || userRole === 'COLABORADORA') {
-                url.pathname = "/admin"
-                return NextResponse.redirect(url)
-            }
-
-            // Se for Revendedora tentando acessar o Login, mande pro painel
-            if (isAppLoginPage && userRole === 'REVENDEDORA') {
-                url.pathname = "/app"
-                return NextResponse.redirect(url)
-            }
-        }
+    if (isAppRoute && !user && !isAppLoginPage && !isAppResetPage) {
+        url.pathname = "/app/login"
+        return NextResponse.redirect(url)
     }
 
     return supabaseResponse

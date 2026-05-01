@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 60; // ISR — página pública, cachear por 60s
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "@/components/Header";

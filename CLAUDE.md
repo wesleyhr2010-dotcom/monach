@@ -105,6 +105,32 @@ Estas regras são **obrigatórias** para qualquer criação ou alteração de UI
 - Usar `git push client <branch>` explicitamente. O remote `origin` (fork pessoal do dev) só é usado quando o próprio desenvolvedor pedir, nunca por default.
 - `main` → deploy Vercel em produção. Não forçar push em `main` sem autorização explícita.
 
+## 3.3 Performance — Regras obrigatórias
+
+Estas regras existem para evitar os gargalos de performance que detectamos e corrigimos. **Não reintroduzir.**
+
+### `getCurrentUser()` é cached via `React.cache()`
+- Sempre importar de `@/lib/user`. Nunca criar wrapper alternativo ou chamar `supabase.auth.getUser()` diretamente em server components.
+- Chamadas múltiplas no mesmo request (layout + page + server actions) executam **1 única query real**.
+- `requireAuth()` chama `getCurrentUser()` — não precisa ser antecedido por outra verificação.
+
+### Middleware NÃO faz query ao banco
+- O middleware (`middleware-auth.ts`) apenas refresca o token JWT e redireciona não-autenticados.
+- Verificação de `role` e `is_active` é feita nos **layouts** e **server actions** via `getCurrentUser()`.
+- Nunca adicionar `prisma.xxx` ou `supabase.from('xxx')` no middleware.
+
+### `force-dynamic` só para páginas autenticadas
+- Páginas públicas (`/`, `/catalogo`, `/produto/[slug]`, `/vitrina/[slug]`) usam `export const revalidate = 60`.
+- Páginas do `/app/*` e `/admin/*` usam `force-dynamic` — precisam de dados em tempo real.
+- Se build falhar por dado dinâmico em página ISR, verificar se há `headers()` ou `cookies()` sendo chamado desnecessariamente.
+
+### Pool Prisma com limites
+- `max`, `idleTimeoutMillis`, `connectionTimeoutMillis` devem estar configurados em `src/lib/prisma.ts`.
+- Em ambiente serverless (Vercel), cada instância tem seu próprio pool — manter `max: 10`.
+
+### Referências
+- Tabela completa de TTL e tags: [`SPEC_CACHING_STRATEGY.md`](./docs/sistema/SPEC_CACHING_STRATEGY.md)
+
 ## 4. Antes de concluir qualquer entrega
 
 Checklist mínimo:

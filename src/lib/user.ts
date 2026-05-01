@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createSupabaseSSRClient } from "./supabase-ssr";
 import { prisma } from "./prisma";
 import type { Reseller } from "@/generated/prisma/client";
@@ -15,7 +16,13 @@ export type CurrentUser = {
     rawUser: { id: string; email?: string };
 };
 
-export async function getCurrentUser(): Promise<CurrentUser | null> {
+/**
+ * Retorna o usuário autenticado com perfil do banco.
+ * Envolvido com React.cache() para deduplicação por request —
+ * chamadas múltiplas no mesmo render (layout + page + server actions)
+ * executam apenas 1 query real ao Supabase + Prisma.
+ */
+export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     const supabase = await createSupabaseSSRClient();
     const { data: { user }, error } = await supabase.auth.getUser();
 
@@ -77,7 +84,7 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
         colaboradoraId: profile.colaboradora_id || null,
         rawUser: user
     };
-}
+});
 
 /**
  * Guard obrigatório para TODAS as Server Actions que acessam dados de usuário.
