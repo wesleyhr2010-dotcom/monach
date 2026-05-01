@@ -1,13 +1,12 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { Compass, LayoutGrid, Store, ShoppingBag, MoreHorizontal } from "lucide-react";
+import { Compass, LayoutGrid, ShoppingBag, MoreHorizontal } from "lucide-react";
 import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
 const NAV_ITEMS = [
   { href: "/app", label: "Início", Icon: Compass, exact: true },
   { href: "/app/catalogo", label: "Catálogo", Icon: LayoutGrid, exact: false },
-  { href: "/app/vendas", label: "Consig.", Icon: Store, exact: false },
   { href: "/app/maleta", label: "Maleta", Icon: ShoppingBag, exact: false },
   { href: "/app/mais", label: "Más", Icon: MoreHorizontal, exact: false },
 ] as const;
