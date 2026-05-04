@@ -2838,6 +2838,7 @@ export const RevendedoraLeadScalarFieldEnum = {
   hijos: 'hijos',
   instagram: 'instagram',
   whatsapp: 'whatsapp',
+  email: 'email',
   empresa: 'empresa',
   informconf: 'informconf',
   status: 'status',

@@ -584,6 +584,7 @@ model RevendedoraLead {
   hijos        String @default("")
   instagram    String @default("")
   whatsapp     String
+  email        String @default("")
   empresa      String @default("")
   informconf   String @default("")
 

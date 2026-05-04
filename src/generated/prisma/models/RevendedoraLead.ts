@@ -44,6 +44,7 @@ export type RevendedoraLeadMinAggregateOutputType = {
   hijos: string | null
   instagram: string | null
   whatsapp: string | null
+  email: string | null
   empresa: string | null
   informconf: string | null
   status: $Enums.LeadStatus | null
@@ -64,6 +65,7 @@ export type RevendedoraLeadMaxAggregateOutputType = {
   hijos: string | null
   instagram: string | null
   whatsapp: string | null
+  email: string | null
   empresa: string | null
   informconf: string | null
   status: $Enums.LeadStatus | null
@@ -84,6 +86,7 @@ export type RevendedoraLeadCountAggregateOutputType = {
   hijos: number
   instagram: number
   whatsapp: number
+  email: number
   empresa: number
   informconf: number
   status: number
@@ -114,6 +117,7 @@ export type RevendedoraLeadMinAggregateInputType = {
   hijos?: true
   instagram?: true
   whatsapp?: true
+  email?: true
   empresa?: true
   informconf?: true
   status?: true
@@ -134,6 +138,7 @@ export type RevendedoraLeadMaxAggregateInputType = {
   hijos?: true
   instagram?: true
   whatsapp?: true
+  email?: true
   empresa?: true
   informconf?: true
   status?: true
@@ -154,6 +159,7 @@ export type RevendedoraLeadCountAggregateInputType = {
   hijos?: true
   instagram?: true
   whatsapp?: true
+  email?: true
   empresa?: true
   informconf?: true
   status?: true
@@ -261,6 +267,7 @@ export type RevendedoraLeadGroupByOutputType = {
   hijos: string
   instagram: string
   whatsapp: string
+  email: string
   empresa: string
   informconf: string
   status: $Enums.LeadStatus
@@ -304,6 +311,7 @@ export type RevendedoraLeadWhereInput = {
   hijos?: Prisma.StringFilter<"RevendedoraLead"> | string
   instagram?: Prisma.StringFilter<"RevendedoraLead"> | string
   whatsapp?: Prisma.StringFilter<"RevendedoraLead"> | string
+  email?: Prisma.StringFilter<"RevendedoraLead"> | string
   empresa?: Prisma.StringFilter<"RevendedoraLead"> | string
   informconf?: Prisma.StringFilter<"RevendedoraLead"> | string
   status?: Prisma.EnumLeadStatusFilter<"RevendedoraLead"> | $Enums.LeadStatus
@@ -325,6 +333,7 @@ export type RevendedoraLeadOrderByWithRelationInput = {
   hijos?: Prisma.SortOrder
   instagram?: Prisma.SortOrder
   whatsapp?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   empresa?: Prisma.SortOrder
   informconf?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -349,6 +358,7 @@ export type RevendedoraLeadWhereUniqueInput = Prisma.AtLeast<{
   hijos?: Prisma.StringFilter<"RevendedoraLead"> | string
   instagram?: Prisma.StringFilter<"RevendedoraLead"> | string
   whatsapp?: Prisma.StringFilter<"RevendedoraLead"> | string
+  email?: Prisma.StringFilter<"RevendedoraLead"> | string
   empresa?: Prisma.StringFilter<"RevendedoraLead"> | string
   informconf?: Prisma.StringFilter<"RevendedoraLead"> | string
   status?: Prisma.EnumLeadStatusFilter<"RevendedoraLead"> | $Enums.LeadStatus
@@ -370,6 +380,7 @@ export type RevendedoraLeadOrderByWithAggregationInput = {
   hijos?: Prisma.SortOrder
   instagram?: Prisma.SortOrder
   whatsapp?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   empresa?: Prisma.SortOrder
   informconf?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -398,6 +409,7 @@ export type RevendedoraLeadScalarWhereWithAggregatesInput = {
   hijos?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
   instagram?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
   whatsapp?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
+  email?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
   empresa?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
   informconf?: Prisma.StringWithAggregatesFilter<"RevendedoraLead"> | string
   status?: Prisma.EnumLeadStatusWithAggregatesFilter<"RevendedoraLead"> | $Enums.LeadStatus
@@ -418,6 +430,7 @@ export type RevendedoraLeadCreateInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -438,6 +451,7 @@ export type RevendedoraLeadUncheckedCreateInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -458,6 +472,7 @@ export type RevendedoraLeadUpdateInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -478,6 +493,7 @@ export type RevendedoraLeadUncheckedUpdateInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -498,6 +514,7 @@ export type RevendedoraLeadCreateManyInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -518,6 +535,7 @@ export type RevendedoraLeadUpdateManyMutationInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -537,6 +555,7 @@ export type RevendedoraLeadUncheckedUpdateManyInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -567,6 +586,7 @@ export type RevendedoraLeadCountOrderByAggregateInput = {
   hijos?: Prisma.SortOrder
   instagram?: Prisma.SortOrder
   whatsapp?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   empresa?: Prisma.SortOrder
   informconf?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -591,6 +611,7 @@ export type RevendedoraLeadMaxOrderByAggregateInput = {
   hijos?: Prisma.SortOrder
   instagram?: Prisma.SortOrder
   whatsapp?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   empresa?: Prisma.SortOrder
   informconf?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -611,6 +632,7 @@ export type RevendedoraLeadMinOrderByAggregateInput = {
   hijos?: Prisma.SortOrder
   instagram?: Prisma.SortOrder
   whatsapp?: Prisma.SortOrder
+  email?: Prisma.SortOrder
   empresa?: Prisma.SortOrder
   informconf?: Prisma.SortOrder
   status?: Prisma.SortOrder
@@ -681,6 +703,7 @@ export type RevendedoraLeadCreateWithoutColaboradoraInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -700,6 +723,7 @@ export type RevendedoraLeadUncheckedCreateWithoutColaboradoraInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -748,6 +772,7 @@ export type RevendedoraLeadScalarWhereInput = {
   hijos?: Prisma.StringFilter<"RevendedoraLead"> | string
   instagram?: Prisma.StringFilter<"RevendedoraLead"> | string
   whatsapp?: Prisma.StringFilter<"RevendedoraLead"> | string
+  email?: Prisma.StringFilter<"RevendedoraLead"> | string
   empresa?: Prisma.StringFilter<"RevendedoraLead"> | string
   informconf?: Prisma.StringFilter<"RevendedoraLead"> | string
   status?: Prisma.EnumLeadStatusFilter<"RevendedoraLead"> | $Enums.LeadStatus
@@ -768,6 +793,7 @@ export type RevendedoraLeadCreateManyColaboradoraInput = {
   hijos?: string
   instagram?: string
   whatsapp: string
+  email?: string
   empresa?: string
   informconf?: string
   status?: $Enums.LeadStatus
@@ -787,6 +813,7 @@ export type RevendedoraLeadUpdateWithoutColaboradoraInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -806,6 +833,7 @@ export type RevendedoraLeadUncheckedUpdateWithoutColaboradoraInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -825,6 +853,7 @@ export type RevendedoraLeadUncheckedUpdateManyWithoutColaboradoraInput = {
   hijos?: Prisma.StringFieldUpdateOperationsInput | string
   instagram?: Prisma.StringFieldUpdateOperationsInput | string
   whatsapp?: Prisma.StringFieldUpdateOperationsInput | string
+  email?: Prisma.StringFieldUpdateOperationsInput | string
   empresa?: Prisma.StringFieldUpdateOperationsInput | string
   informconf?: Prisma.StringFieldUpdateOperationsInput | string
   status?: Prisma.EnumLeadStatusFieldUpdateOperationsInput | $Enums.LeadStatus
@@ -846,6 +875,7 @@ export type RevendedoraLeadSelect<ExtArgs extends runtime.Types.Extensions.Inter
   hijos?: boolean
   instagram?: boolean
   whatsapp?: boolean
+  email?: boolean
   empresa?: boolean
   informconf?: boolean
   status?: boolean
@@ -867,6 +897,7 @@ export type RevendedoraLeadSelectCreateManyAndReturn<ExtArgs extends runtime.Typ
   hijos?: boolean
   instagram?: boolean
   whatsapp?: boolean
+  email?: boolean
   empresa?: boolean
   informconf?: boolean
   status?: boolean
@@ -888,6 +919,7 @@ export type RevendedoraLeadSelectUpdateManyAndReturn<ExtArgs extends runtime.Typ
   hijos?: boolean
   instagram?: boolean
   whatsapp?: boolean
+  email?: boolean
   empresa?: boolean
   informconf?: boolean
   status?: boolean
@@ -909,6 +941,7 @@ export type RevendedoraLeadSelectScalar = {
   hijos?: boolean
   instagram?: boolean
   whatsapp?: boolean
+  email?: boolean
   empresa?: boolean
   informconf?: boolean
   status?: boolean
@@ -919,7 +952,7 @@ export type RevendedoraLeadSelectScalar = {
   updated_at?: boolean
 }
 
-export type RevendedoraLeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "cedula" | "edad" | "direccion" | "estado_civil" | "hijos" | "instagram" | "whatsapp" | "empresa" | "informconf" | "status" | "taxa_comissao" | "colaboradora_id" | "observacao_admin" | "created_at" | "updated_at", ExtArgs["result"]["revendedoraLead"]>
+export type RevendedoraLeadOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "cedula" | "edad" | "direccion" | "estado_civil" | "hijos" | "instagram" | "whatsapp" | "email" | "empresa" | "informconf" | "status" | "taxa_comissao" | "colaboradora_id" | "observacao_admin" | "created_at" | "updated_at", ExtArgs["result"]["revendedoraLead"]>
 export type RevendedoraLeadInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   colaboradora?: boolean | Prisma.RevendedoraLead$colaboradoraArgs<ExtArgs>
 }
@@ -945,6 +978,7 @@ export type $RevendedoraLeadPayload<ExtArgs extends runtime.Types.Extensions.Int
     hijos: string
     instagram: string
     whatsapp: string
+    email: string
     empresa: string
     informconf: string
     status: $Enums.LeadStatus
@@ -1386,6 +1420,7 @@ export interface RevendedoraLeadFieldRefs {
   readonly hijos: Prisma.FieldRef<"RevendedoraLead", 'String'>
   readonly instagram: Prisma.FieldRef<"RevendedoraLead", 'String'>
   readonly whatsapp: Prisma.FieldRef<"RevendedoraLead", 'String'>
+  readonly email: Prisma.FieldRef<"RevendedoraLead", 'String'>
   readonly empresa: Prisma.FieldRef<"RevendedoraLead", 'String'>
   readonly informconf: Prisma.FieldRef<"RevendedoraLead", 'String'>
   readonly status: Prisma.FieldRef<"RevendedoraLead", 'LeadStatus'>
