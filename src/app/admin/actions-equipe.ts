@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { generateSlug } from "@/lib/action-utils";
+import { generateSlug, safeAction } from "@/lib/action-utils";
 import { uploadAvatar } from "@/lib/upload";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
@@ -41,13 +41,13 @@ async function criarUsuarioAuthEEnviarConvite(params: {
 
   if (authError) {
     if (authError.message.toLowerCase().includes("already") || authError.message.toLowerCase().includes("registered")) {
-      throw new Error("BUSINESS: Este correo ya está registrado en el sistema.");
+      throw new Error("Este correo ya está registrado en el sistema.");
     }
     throw new Error(`Auth error: ${authError.message}`);
   }
 
   if (!authData.user) {
-    throw new Error("BUSINESS: No se pudo crear el usuario de autenticación.");
+    throw new Error("No se pudo crear el usuario de autenticación.");
   }
 
   const authUserId = authData.user.id;
@@ -272,7 +272,6 @@ export async function criarColaboradora(formData: FormData): Promise<{ success: 
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
-        if (msg.includes("BUSINESS:")) return { success: false, error: msg.replace("BUSINESS:", "").trim() };
         if (msg.includes("Unique constraint")) return { success: false, error: "Já existe com este nome/slug" };
         return { success: false, error: msg };
     }
@@ -337,7 +336,6 @@ export async function criarRevendedora(formData: FormData): Promise<{ success: b
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
-        if (msg.includes("BUSINESS:")) return { success: false, error: msg.replace("BUSINESS:", "").trim() };
         if (msg.includes("Unique constraint")) return { success: false, error: "Já existe com este nome/slug" };
         return { success: false, error: msg };
     }
@@ -544,7 +542,7 @@ export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfi
 export async function getPerfilConsultora(id: string): Promise<ConsultoraPerfil | null> {
     const user = await requireAuth(["ADMIN", "COLABORADORA"]);
     if (user.role === "COLABORADORA" && id !== user.profileId) {
-        throw new Error("BUSINESS: No autorizado.");
+        throw new Error("No autorizado.");
     }
     const c = await prisma.reseller.findUnique({
         where: { id, role: "COLABORADORA" },

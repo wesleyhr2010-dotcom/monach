@@ -9,6 +9,7 @@ import { sendPushNotification } from "@/lib/onesignal-server";
 import { awardPoints } from "@/lib/gamificacao";
 import { notificarRevendedora } from "@/lib/notifications";
 import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validators/maleta.schema";
+import { safeAction } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
 import type { Role } from "@/lib/user";
 

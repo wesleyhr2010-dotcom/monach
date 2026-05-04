@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { safeAction } from "@/lib/action-utils";
 import { createSupabaseSSRClient } from "@/lib/supabase-ssr";
 import { requireAuth } from "@/lib/user";
 

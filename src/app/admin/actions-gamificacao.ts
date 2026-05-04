@@ -2,6 +2,7 @@
 
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { safeAction } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
 
 // ============================================
@@ -71,7 +72,7 @@ export async function upsertNivelRegra(rawData: z.infer<typeof nivelSchema>) {
             where: { id: data.id },
         });
         if (existing && existing.pontos_minimos === 0 && data.pontos_minimos !== 0) {
-            throw new Error("BUSINESS: No se puede cambiar el umbral del nivel base (Bronce).");
+            throw new Error("No se puede cambiar el umbral del nivel base (Bronce).");
         }
         return prisma.nivelRegra.update({
             where: { id: data.id },
@@ -85,9 +86,9 @@ export async function upsertNivelRegra(rawData: z.infer<typeof nivelSchema>) {
 export async function deleteNivelRegra(id: string) {
     await requireAuth(["ADMIN"]);
     const nivel = await prisma.nivelRegra.findUnique({ where: { id } });
-    if (!nivel) throw new Error("BUSINESS: Nível no encontrado.");
+    if (!nivel) throw new Error("Nível no encontrado.");
     if (nivel.pontos_minimos === 0) {
-        throw new Error("BUSINESS: No se puede eliminar el nivel base (Bronce).");
+        throw new Error("No se puede eliminar el nivel base (Bronce).");
     }
     return prisma.nivelRegra.delete({ where: { id } });
 }
