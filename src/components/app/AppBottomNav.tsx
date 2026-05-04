@@ -20,7 +20,7 @@ export function AppBottomNav() {
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           let active: boolean;
           if (href === "/app/mais") {
-            active = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones");
+            active = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones") || pathname.startsWith("/app/desempenho");
           } else {
             active = exact ? pathname === href : pathname.startsWith(href);
           }
