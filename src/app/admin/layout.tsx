@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/user";
 import { getResellerScope } from "@/lib/auth/get-reseller-scope";
 import { prisma } from "@/lib/prisma";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
+import { Toaster } from "sonner";
 
 /**
  * Layout do shell administrativo.
@@ -62,8 +63,11 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     });
 
     return (
-        <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
-            {children}
-        </AdminLayoutClient>
+        <>
+            <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
+                {children}
+            </AdminLayoutClient>
+            <Toaster position="top-right" richColors />
+        </>
     );
 }
