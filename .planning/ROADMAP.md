@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 1: Foundation — Error Handling & UI States** - Standardized error handling, reusable UI state components, and unified toast system
-- [ ] **Phase 2: Core Business — Notifications, Leads & Config** - Template-driven notifications, lead approval pipeline, and editable admin configuration
+- [x] **Phase 2: Core Business — Notifications, Leads & Config** - Template-driven notifications, lead approval pipeline, and editable admin configuration
 - [ ] **Phase 3: Visibility & Analytics — Reseller & Admin Dashboards** - Performance analytics for resellers and global KPI dashboard for admin
 - [ ] **Phase 4: Build Optimization & Polish** - ISR on public pages, build configuration, and cache invalidation
 - [ ] **Phase 5: Validation & Hardening** - Security, performance, and functional acceptance validation
@@ -53,11 +53,11 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] `02-01-PLAN.md` — Notification Template System (substituirVariaveis helper, whitelist, admin editor variable hints, HTML sanitization)
-- [ ] `02-02-PLAN.md` — Lead Pipeline (landing submission, admin approval/rejection, Supabase Auth creation, Brevo emails, idempotency)
-- [ ] `02-03-PLAN.md` — Admin Config: Tiers & Levels (CommissionTier and NivelRegra CRUD with Zod, /admin/config/comissoes and /admin/config/niveis)
-- [ ] `02-04-PLAN.md` — Admin Config: Contracts (Contrato CRUD with R2 PDF upload, /admin/config/contratos, onboarding contract display)
-- [ ] `02-05-PLAN.md` — Notification Integration (wire templates into cron jobs and server actions registrarVenda/conferirEFecharMaleta/submitDevolucao)
+- [x] `02-01-PLAN.md` — Notification Template System (substituirVariaveis helper, whitelist, admin editor variable hints, HTML sanitization)
+- [x] `02-02-PLAN.md` — Lead Pipeline (landing submission, admin approval/rejection, Supabase Auth creation, Brevo emails, idempotency)
+- [x] `02-03-PLAN.md` — Admin Config: Tiers & Levels (CommissionTier and NivelRegra CRUD with Zod, /admin/config/comissoes and /admin/config/niveis)
+- [x] `02-04-PLAN.md` — Admin Config: Contracts (Contrato CRUD with R2 PDF upload, /admin/config/contratos, onboarding contract display)
+- [x] `02-05-PLAN.md` — Notification Integration (wire templates into cron jobs and server actions registrarVenda/conferirEFecharMaleta/submitDevolucao)
 
 ### Phase 3: Visibility & Analytics — Reseller & Admin Dashboards
 **Goal**: Both revendedoras and admin have data-driven visibility into business performance through dashboards with period filtering, trend indicators, and rankings.
