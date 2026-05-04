@@ -1,25 +1,19 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import OneSignal from "react-onesignal";
 import { createBrowserClient } from "@supabase/ssr";
 
 export default function OneSignalWrapper() {
     const initialized = useRef(false);
     const isDev = process.env.NODE_ENV === "development";
-    const [debugMsg, setDebugMsg] = useState<string | null>(null);
-
-    const showLog = useCallback((msg: string) => {
-        if (!isDev) return;
-        setDebugMsg((prev) => (prev ? `${prev}\n${msg}` : msg));
-    }, [isDev]);
 
     const scheduleLog = useCallback((msg: string) => {
+        if (!isDev) return;
         queueMicrotask(() => {
-            showLog(msg);
             console.log(`[push-init] ${msg}`);
         });
-    }, [showLog]);
+    }, [isDev]);
 
     useEffect(() => {
         if (initialized.current) return;
@@ -166,13 +160,6 @@ export default function OneSignalWrapper() {
         initOneSignal();
     }, [scheduleLog]);
 
-    if (isDev && debugMsg) {
-        return (
-            <div className="fixed bottom-24 left-4 right-4 bg-black/90 text-green-400 p-4 rounded-xl z-[9999] text-[10px] font-mono whitespace-pre-wrap pointer-events-none break-all max-h-[40vh] overflow-auto">
-                {debugMsg}
-            </div>
-        );
-    }
-
+    // Painel de debug removido — logs continuam no console do browser
     return null;
 }

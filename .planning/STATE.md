@@ -1,12 +1,12 @@
 ---
 milestone: v1.0
 name: Operação e Visibilidade
-status: ready-to-execute
+status: in-progress
 progress:
   phases_total: 5
-  phases_complete: 0
+  phases_complete: 1
   plans_total: 8
-  plans_complete: 0
+  plans_complete: 3
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -16,32 +16,32 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 1 — Foundation (Error Handling & UI States)
+**Current focus:** Phase 2 — Core Business (Notifications, Leads & Config)
 
 ## Current Position
 
 Phase: 2 of 5 (Core Business — Notifications, Leads & Config)
 Plan: —
 Status: Ready to execute
-Last activity: 2026-05-04 — Phase 2 planned with 5 plans
+Last activity: 2026-05-04 — Phase 1 completed (3/3 plans, 10 commits, ~2.5h)
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [██░░░░░░░░] 20% (1/5 phases) | 37.5% plans (3/8)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 3
+- Average duration: ~50 min/plan
+- Total execution time: ~2.5h
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| — | — | — | — |
+| 1. Foundation | 3 | ~2.5h | ~50 min |
 
 **Recent Trend:**
-- Not started
+- Phase 1 completed smoothly — all 3 plans delivered on 2026-05-04
 
 ## Accumulated Context
 
@@ -71,5 +71,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Phase 1 context gathered (4 areas discussed, 13 decisions captured)
-Resume file: .planning/phases/01-foundation-error-handling-ui-states/01-CONTEXT.md
+Stopped at: Phase 1 complete; Phase 2 ready to execute
+Resume file: .planning/phases/02-core-business-notifications-leads-config/02-01-PLAN.md

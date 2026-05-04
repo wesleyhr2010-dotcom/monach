@@ -75,11 +75,11 @@ Itens bloqueantes do produto principal (maleta em consignação) e da segurança
 
 Itens que aumentam valor do produto depois do ciclo base estar estável.
 
-- [x] **Phase 1: Foundation — Error Handling & UI States** — Concluído em 2026-05-04. Ref.: [`CHANGELOG.md`](./CHANGELOG.md) 2026-05-04, [`ROADMAP.md`](../.planning/ROADMAP.md).
-  - [x] **01-01 — Error Handling Infrastructure** — `ActionResult<T>`, `safeAction()`, `mapError()`, migração de `actions-revendedora.ts`. Ref.: `TECH-01`, `TECH-02`.
-  - [x] **01-02 — UI State Components** — `SkeletonCard`, `EmptyState`, `ErrorState` + integração em ≥3 rotas PWA e ≥3 rotas Admin. Ref.: `TECH-03`, `TECH-04`, `TECH-05`.
-  - [x] **01-03 — Toast System & Remaining Migrations** — `sonner` em layouts, migração de actions admin, substituição de toasts inline. Ref.: `TECH-01`, `TECH-06`.
-- [~] **Phase 2: Core Business — Notifications, Leads & Config** — Planejamento concluído (5 planos em 2 waves). **Bloqueada pela Phase 1** (dependência declarada no `ROADMAP.md`). Pronto para execução via `/gsd-execute-phase 02` após conclusão da Phase 1. Ref.: [`CHANGELOG.md`](./CHANGELOG.md) 2026-05-04, [`ROADMAP.md`](../.planning/ROADMAP.md).
+- [x] **Phase 1: Foundation — Error Handling & UI States** — Concluído em 2026-05-04. 3 planos, 10 commits, ~2.5h. Ref.: [`CHANGELOG.md`](./CHANGELOG.md) 2026-05-04.
+  - [x] **01-01 — Error Handling Infrastructure** — `ActionResult<T>`, `safeAction()`, `mapError()`, 20 testes Vitest, migração de `actions-revendedora.ts`. Ref.: `TECH-01`, `TECH-02`.
+  - [x] **01-02 — UI State Components** — `SkeletonCard`, `EmptyState`, `ErrorState` criados + integração em ≥3 rotas PWA e ≥3 rotas Admin. Ref.: `TECH-03`, `TECH-04`, `TECH-05`.
+  - [x] **01-03 — Toast System & Remaining Migrations** — `sonner` `<Toaster />` em ambos os layouts, migração de 4 actions admin, remoção total de toasts inline. Ref.: `TECH-01`, `TECH-06`.
+- [~] **Phase 2: Core Business — Notifications, Leads & Config** — Planejamento concluído (5 planos em 2 waves). **Desbloqueada** pela conclusão da Phase 1. Pronto para execução via `/gsd-execute-phase 02`. Ref.: [`CHANGELOG.md`](./CHANGELOG.md) 2026-05-04, [`ROADMAP.md`](../.planning/ROADMAP.md).
   - [ ] **02-01 — Notification Template System** — `substituirVariaveis()`, sanitização, hints no editor. Ref.: `NOTF-01`, `NOTF-07..09`.
   - [ ] **02-02 — Lead Pipeline** — Landing → admin review → aprovação com criação de usuário + email Brevo. Ref.: `LEAD-01..07`.
   - [ ] **02-03 — Admin Config: Tiers & Levels** — CRUD de comissões e níveis de gamificação. Ref.: `CONF-01`, `CONF-02`, `CONF-06`.

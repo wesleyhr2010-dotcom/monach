@@ -16,7 +16,7 @@ export function AppBottomNav() {
 
   return (
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav">
-      <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)]">
+      <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           let active: boolean;
           if (href === "/app/mais") {
@@ -29,7 +29,7 @@ export function AppBottomNav() {
               key={href}
               href={href}
               pattern="crossfade"
-              className="flex flex-col items-center gap-1 min-w-[52px] py-2 select-none"
+              className="flex flex-col items-center gap-1 min-w-[52px] py-2"
             >
               <Icon
                 size={24}

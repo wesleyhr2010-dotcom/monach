@@ -10,7 +10,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation — Error Handling & UI States** - Standardized error handling, reusable UI state components, and unified toast system
+- [x] **Phase 1: Foundation — Error Handling & UI States** - Standardized error handling, reusable UI state components, and unified toast system
 - [ ] **Phase 2: Core Business — Notifications, Leads & Config** - Template-driven notifications, lead approval pipeline, and editable admin configuration
 - [ ] **Phase 3: Visibility & Analytics — Reseller & Admin Dashboards** - Performance analytics for resellers and global KPI dashboard for admin
 - [ ] **Phase 4: Build Optimization & Polish** - ISR on public pages, build configuration, and cache invalidation
@@ -34,9 +34,9 @@
 **UI hint**: yes
 
 Plans:
-- [ ] `01-01-PLAN.md` — Error Handling Infrastructure (ActionResult, safeAction, mapError + migrate actions-revendedora.ts)
-- [ ] `01-02-PLAN.md` — UI State Components (SkeletonCard, EmptyState, ErrorState + integration into PWA and Admin routes)
-- [ ] `01-03-PLAN.md` — Toast System & Remaining Migrations (sonner install, Toaster in layouts, migrate admin actions, replace inline toasts)
+- [x] `01-01-PLAN.md` — Error Handling Infrastructure (ActionResult, safeAction, mapError + migrate actions-revendedora.ts)
+- [x] `01-02-PLAN.md` — UI State Components (SkeletonCard, EmptyState, ErrorState + integration into PWA and Admin routes)
+- [x] `01-03-PLAN.md` — Toast System & Remaining Migrations (sonner install, Toaster in layouts, migrate admin actions, replace inline toasts)
 
 ### Phase 2: Core Business — Notifications, Leads & Config
 **Goal**: Admin operates autonomously — notifications use editable templates with variable substitution, leads from the landing page convert to verified accounts, and commission tiers / gamification levels / contracts are editable without developer intervention.
@@ -109,7 +109,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/3 | Planned | - |
+| 1. Foundation | 3/3 | Completed | 2026-05-04 |
 | 2. Core Business | 0/5 | Ready to execute | - |
 | 3. Visibility & Analytics | 0/TBD | Not started | - |
 | 4. Build Optimization | 0/TBD | Not started | - |
@@ -139,4 +139,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 ---
 
 *Roadmap created: 2026-05-04*  
+*Last updated: 2026-05-04 — Phase 1 completed (3/3 plans)*  
 *Milestone: v1.0 — Operação e Visibilidade*

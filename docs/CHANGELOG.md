@@ -1,5 +1,52 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-04 — Phase 1 Concluída: Foundation — Error Handling & UI States
+
+### Contexto
+Execução completa da Phase 1 via `/gsd-execute-phase 01`. 3 planos, 10 commits, ~2.5h. A fase estabelece a infraestrutura de error handling padronizado (`ActionResult<T>`), componentes de estado de UI reutilizáveis e sistema de toast unificado via `sonner`.
+
+### 01-01 — Error Handling Infrastructure
+
+**Criado:**
+- **`src/__tests__/lib/action-utils.test.ts`** — 20 testes Vitest cobrindo `safeAction`, `mapError`, casos de Prisma (`P2002`, `P2025`, `P2014`), Zod e erros genéricos.
+
+**Modificado:**
+- **`src/lib/action-utils.ts`** — `mapError()` mapeia erros Prisma para mensagens em espanhol; `safeAction()` aprimorado com captura de `ZodError` e erros genéricos.
+- **`src/app/app/actions-revendedora.ts`** — todas as 9 exports envoltas em `safeAction`; padrão `ActionResult<T>` em vez de `throw new Error('BUSINESS:...')`.
+
+### 01-02 — UI State Components
+
+**Criado:**
+- **`src/components/ui/empty-state.tsx`** — `EmptyState` com ícone Lucide (48px, mapeamento por string key), título e descrição. Fallback para `<PackageOpen />` com `console.warn` em DEV.
+- **`src/components/ui/error-state.tsx`** — `ErrorState` com ícone, título, descrição e botão de retry.
+- **`src/components/ui/skeleton-card.tsx`** — `SkeletonCard` com estilo de card para estados de loading.
+
+**Modificado:**
+- Integração em ≥3 rotas PWA (`/app/maleta`, `/app/catalogo`, `/app`) e ≥3 rotas Admin (`/admin/produtos`, `/admin/revendedoras`, `/admin/maleta`).
+
+### 01-03 — Toast System & Remaining Migrations
+
+**Modificado:**
+- **`src/app/app/layout.tsx`** — `<Toaster />` do `sonner` montado no layout PWA.
+- **`src/app/admin/layout.tsx`** — `<Toaster />` montado no layout admin.
+- **7 páginas/componentes admin** — toasts inline (`admin-toast`) substituídos por chamadas `sonner` (`toast.success`, `toast.error`).
+- **4 arquivos de actions admin** — `BUSINESS:` throws removidos; imports de `safeAction` adicionados (`actions-products`, `actions-categories`, `actions-dashboard`, `actions-gamificacao`).
+- **`actions-maletas.ts`** — mantido padrão existente de `{ success, error }` (já robusto); `safeAction` importado para consistência.
+
+### Verificação
+- ✅ `grep -c "safeAction" src/app/app/actions-revendedora.ts` → 10 matches
+- ✅ `grep -c "ActionResult" src/lib/action-utils.ts` → 2 matches
+- ✅ Componentes `EmptyState`, `ErrorState`, `SkeletonCard` criados
+- ✅ `Toaster` em ambos os layouts
+- ✅ `admin-toast` inline: 0 matches (totalmente removido)
+- ✅ Typecheck: sem novos erros
+- ✅ Lint nos arquivos modificados: limpo
+
+### Próximo Passo
+Executar Phase 2 (`/gsd-execute-phase 02`) — desbloqueada pela conclusão da Phase 1.
+
+---
+
 ## 2026-04-30 — Performance: eliminação de gargalos de auth, middleware e cache
 
 ### Contexto

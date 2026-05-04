@@ -62,12 +62,12 @@
 
 ### Estabilização Técnica (TECH)
 
-- [ ] **TECH-01**: Padrão `ActionResult<T>` adotado em todos os Server Actions novos; `safeAction()` wrapper implementado
-- [ ] **TECH-02**: Helper `mapError()` mapeia erros Prisma (`P2002`, `P2025`, `P2014`) para mensagens amigáveis em espanhol
-- [ ] **TECH-03**: Componente `SkeletonCard` reutilizável em `src/components/ui/`
-- [ ] **TECH-04**: Componente `EmptyState` reutilizável com ícone, título e descrição
-- [ ] **TECH-05**: Componente `ErrorState` reutilizável com retry action
-- [ ] **TECH-06**: `sonner` instalado e montado nos root layouts (PWA + Admin); substitui toasts inline ad-hoc
+- [x] **TECH-01**: Padrão `ActionResult<T>` adotado em todos os Server Actions novos; `safeAction()` wrapper implementado
+- [x] **TECH-02**: Helper `mapError()` mapeia erros Prisma (`P2002`, `P2025`, `P2014`) para mensagens amigáveis em espanhol
+- [x] **TECH-03**: Componente `SkeletonCard` reutilizável em `src/components/ui/`
+- [x] **TECH-04**: Componente `EmptyState` reutilizável com ícone, título e descrição
+- [x] **TECH-05**: Componente `ErrorState` reutilizável com retry action
+- [x] **TECH-06**: `sonner` instalado e montado nos root layouts (PWA + Admin); substitui toasts inline ad-hoc
 - [ ] **TECH-07**: `force-dynamic` removido de páginas públicas (`/`, `/catalogo`, `/produto/[slug]`, `/seja-revendedora`)
 - [ ] **TECH-08**: ISR (`revalidate = 60`) configurado em páginas públicas
 - [ ] **TECH-09**: `DATABASE_URL` configurado nas env vars do Vercel (Production + Preview + Development)
@@ -143,12 +143,12 @@
 | CONF-04 | Phase 2 | Pending |
 | CONF-05 | Phase 2 | Pending |
 | CONF-06 | Phase 2 | Pending |
-| TECH-01 | Phase 1 | Pending |
-| TECH-02 | Phase 1 | Pending |
-| TECH-03 | Phase 1 | Pending |
-| TECH-04 | Phase 1 | Pending |
-| TECH-05 | Phase 1 | Pending |
-| TECH-06 | Phase 1 | Pending |
+| TECH-01 | Phase 1 | Complete |
+| TECH-02 | Phase 1 | Complete |
+| TECH-03 | Phase 1 | Complete |
+| TECH-04 | Phase 1 | Complete |
+| TECH-05 | Phase 1 | Complete |
+| TECH-06 | Phase 1 | Complete |
 | TECH-07 | Phase 4 | Pending |
 | TECH-08 | Phase 4 | Pending |
 | TECH-09 | Phase 4 | Pending |
@@ -161,4 +161,4 @@
 
 ---
 *Requirements defined: 2026-05-04*
-*Last updated: 2026-05-04 after roadmap creation (phase mapping revised)*
+*Last updated: 2026-05-04 — Phase 1 requirements TECH-01..TECH-06 marked complete*

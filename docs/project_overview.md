@@ -28,6 +28,7 @@ O ciclo central do negócio é a **maleta em consignação**: admin/consultora e
 - **React 19**
 - **TypeScript** estrito
 - **Tailwind CSS** + tokens do design system
+- **sonner** — toast notifications unificadas PWA + Admin
 - **Zod** para validação de schemas em Server Actions e Route Handlers
 
 ### Persistência & Auth

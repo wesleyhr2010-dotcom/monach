@@ -12,7 +12,6 @@ import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 const navItems = [
     { href: "/app", label: "Início", icon: <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />, exact: true },
     { href: "/app/catalogo", label: "Catálogo", icon: <Store className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
-    { href: "/app/vendas", label: "Consig.", icon: <Store className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
     { href: "/app/maleta", label: "Maleta", icon: <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
     { href: "/app/mais", label: "Más", icon: <LayoutTemplate className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
 ];
