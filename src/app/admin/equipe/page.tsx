@@ -23,6 +23,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Users, UserPlus, Phone, Percent, Trash2, Link2, X } from "lucide-react";
+import { toast } from "sonner";
 
 export default function EquipePage() {
     const router = useRouter();
@@ -32,8 +33,6 @@ export default function EquipePage() {
     const [revendedoras, setRevendedoras] = useState<RevendedoraItem[]>([]);
     const [showNewColab, setShowNewColab] = useState(false);
     const [showNewRevend, setShowNewRevend] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
 
     useEffect(() => {
         loadData();
@@ -45,27 +44,17 @@ export default function EquipePage() {
         setRevendedoras(r);
     }
 
-    function showMsg(type: "success" | "error", msg: string) {
-        if (type === "success") {
-            setSuccess(msg);
-            setTimeout(() => setSuccess(null), 3000);
-        } else {
-            setError(msg);
-            setTimeout(() => setError(null), 4000);
-        }
-    }
-
     function handleNewColab(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         startTransition(async () => {
             const res = await criarColaboradora(fd);
             if (res.success) {
-                showMsg("success", "Colaboradora criada!");
+                toast.success("Colaboradora criada!");
                 setShowNewColab(false);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro");
+                toast.error(res.error || "Erro");
             }
         });
     }
@@ -76,11 +65,11 @@ export default function EquipePage() {
         startTransition(async () => {
             const res = await criarRevendedora(fd);
             if (res.success) {
-                showMsg("success", "Revendedora criada!");
+                toast.success("Revendedora criada!");
                 setShowNewRevend(false);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro");
+                toast.error(res.error || "Erro");
             }
         });
     }
@@ -90,10 +79,10 @@ export default function EquipePage() {
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                showMsg("success", `"${name}" removida`);
+                toast.success(`"${name}" removida`);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro");
+                toast.error(res.error || "Erro");
             }
         });
     }
@@ -103,10 +92,10 @@ export default function EquipePage() {
             const cId = colaboradoraId === "none" ? null : colaboradoraId;
             const res = await vincularRevendedora(revendedoraId, cId);
             if (res.success) {
-                showMsg("success", "Vínculo atualizado!");
+                toast.success("Vínculo atualizado!");
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro");
+                toast.error(res.error || "Erro");
             }
         });
     }
@@ -126,10 +115,6 @@ export default function EquipePage() {
             </header>
 
             <div className="admin-content">
-                {/* Toast */}
-                {success && <div className="admin-toast admin-toast-success">✅ {success}</div>}
-                {error && <div className="admin-toast admin-toast-error">❌ {error}</div>}
-
                 {/* Tabs */}
                 <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
                     <Button

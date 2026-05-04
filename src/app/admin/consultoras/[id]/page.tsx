@@ -19,6 +19,7 @@ import {
     Package,
     Award,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
 
@@ -29,8 +30,6 @@ export default function ConsultoraPerfilPage() {
     const [loading, setLoading] = useState(true);
     const [isPending, startTransition] = useTransition();
     const [showEdit, setShowEdit] = useState(false);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
 
     useEffect(() => {
         if (!id) return;
@@ -43,29 +42,19 @@ export default function ConsultoraPerfilPage() {
         fetchPerfil();
     }, [id]);
 
-    function showMsg(type: "success" | "error", msg: string) {
-        if (type === "success") {
-            setSuccess(msg);
-            setTimeout(() => setSuccess(null), 3000);
-        } else {
-            setError(msg);
-            setTimeout(() => setError(null), 4000);
-        }
-    }
-
     function handleEdit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         startTransition(async () => {
             const res = await atualizarMembro(id, fd);
             if (res.success) {
-                showMsg("success", "Dados atualizados com sucesso!");
+                toast.success("Dados atualizados com sucesso!");
                 setShowEdit(false);
                 // Recarrega perfil
                 const data = await getPerfilConsultora(id);
                 setPerfil(data);
             } else {
-                showMsg("error", res.error || "Erro ao atualizar");
+                toast.error(res.error || "Erro ao atualizar");
             }
         });
     }
@@ -110,10 +99,6 @@ export default function ConsultoraPerfilPage() {
                     </Button>
                 </div>
             </header>
-
-            {/* Toast */}
-            {success && <div className="admin-toast admin-toast-success" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>✅ {success}</div>}
-            {error && <div className="admin-toast admin-toast-error" style={{ position: "fixed", top: 20, right: 20, zIndex: 100 }}>❌ {error}</div>}
 
             {/* Edit Dialog */}
             <Dialog open={showEdit} onOpenChange={setShowEdit}>

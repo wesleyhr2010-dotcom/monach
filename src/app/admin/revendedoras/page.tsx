@@ -31,6 +31,7 @@ import {
     AlertTriangle,
     RotateCcw,
 } from "lucide-react";
+import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 import { SkeletonCard } from "@/components/ui/skeleton-card";
@@ -166,7 +167,6 @@ export default function RevendedorasPage() {
     const [editId, setEditId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
 
     const loadData = useCallback(async () => {
         setLoading(true);
@@ -180,27 +180,17 @@ export default function RevendedorasPage() {
         loadData();
     }, [loadData]);
 
-    function showMsg(type: "success" | "error", msg: string) {
-        if (type === "success") {
-            setSuccess(msg);
-            setTimeout(() => setSuccess(null), 3000);
-        } else {
-            setError(msg);
-            setTimeout(() => setError(null), 4000);
-        }
-    }
-
     function handleNew(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         startTransition(async () => {
             const res = await criarRevendedora(fd);
             if (res.success) {
-                showMsg("success", "Revendedora criada com sucesso!");
+                toast.success("Revendedora criada com sucesso!");
                 setShowNew(false);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao criar revendedora");
+                toast.error(res.error || "Erro ao criar revendedora");
             }
         });
     }
@@ -212,11 +202,11 @@ export default function RevendedorasPage() {
         startTransition(async () => {
             const res = await atualizarMembro(editId, fd);
             if (res.success) {
-                showMsg("success", "Revendedora atualizada!");
+                toast.success("Revendedora atualizada!");
                 setEditId(null);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao atualizar");
+                toast.error(res.error || "Erro ao atualizar");
             }
         });
     }
@@ -226,10 +216,10 @@ export default function RevendedorasPage() {
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                showMsg("success", `"${name}" removida`);
+                toast.success(`"${name}" removida`);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao remover");
+                toast.error(res.error || "Erro ao remover");
             }
         });
     }
@@ -239,10 +229,10 @@ export default function RevendedorasPage() {
             const cId = colaboradoraId === "none" ? null : colaboradoraId;
             const res = await vincularRevendedora(revendedoraId, cId);
             if (res.success) {
-                showMsg("success", "Vínculo atualizado!");
+                toast.success("Vínculo atualizado!");
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao vincular");
+                toast.error(res.error || "Erro ao vincular");
             }
         });
     }
@@ -369,10 +359,6 @@ export default function RevendedorasPage() {
             </header>
 
             <div className="admin-content" style={{ padding: "24px 32px", gap: "0" }}>
-                {/* Toasts */}
-                {success && <div className="admin-toast admin-toast-success">✅ {success}</div>}
-                {error && <div className="admin-toast admin-toast-error">❌ {error}</div>}
-
                 {/* ── Filtros ────────────────────────────────────────────────── */}
                 <div style={{
                     display: "flex", alignItems: "center", gap: "10px",

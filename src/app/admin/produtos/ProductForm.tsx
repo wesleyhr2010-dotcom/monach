@@ -8,6 +8,7 @@ import { VariantManager } from "./VariantManager";
 import { CategorySelect } from "./CategorySelect";
 import type { Product } from "@/lib/types";
 import type { Category } from "../actions-categories";
+import { toast } from "sonner";
 
 interface VariantInput {
     attribute_name: string;
@@ -25,7 +26,6 @@ interface ProductFormProps {
 export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
-    const [toast, setToast] = useState<{ type: "success" | "error"; message: string } | null>(null);
 
     const [productType, setProductType] = useState<string>(product?.product_type || "simple");
     const [existingImages, setExistingImages] = useState<string[]>(product?.images || []);
@@ -41,10 +41,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
         })) || []
     );
 
-    function showToast(type: "success" | "error", message: string) {
-        setToast({ type, message });
-        setTimeout(() => setToast(null), 4000);
-    }
+
 
     function handleImagesChange(existing: string[], files: File[]) {
         setExistingImages(existing);
@@ -93,14 +90,14 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
             }
 
             if (result.success) {
-                showToast("success", product ? "Producto actualizado" : "Producto creado");
+                toast.success(product ? "Producto actualizado" : "Producto creado");
                 if (!product && "data" in result) {
                     router.push(`/admin/produtos/${result.data}`);
                 } else {
                     router.refresh();
                 }
             } else {
-                showToast("error", result.error || "Error desconocido");
+                toast.error(result.error || "Error desconocido");
             }
         });
     }
@@ -274,12 +271,6 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
                 </div>
             </form>
 
-            {/* Toast */}
-            {toast && (
-                <div className={`admin-toast ${toast.type === "success" ? "admin-toast-success" : "admin-toast-error"}`}>
-                    {toast.type === "success" ? "✅" : "❌"} {toast.message}
-                </div>
-            )}
         </>
     );
 }

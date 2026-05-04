@@ -18,6 +18,7 @@ import {
   Clock,
   ExternalLink,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
 
@@ -42,8 +43,6 @@ export default function DocumentosRevendedoraPage() {
 
   const [documentos, setDocumentos] = useState<DocumentoRevendedora[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
   const [rejeitandoId, setRejeitandoId] = useState<string | null>(null);
   const [observacao, setObservacao] = useState("");
@@ -56,7 +55,7 @@ export default function DocumentosRevendedoraPage() {
         const data = await getDocumentosRevendedora(id);
         setDocumentos(data);
       } catch {
-        setError("Erro ao carregar documentos.");
+        toast.error("Erro ao carregar documentos.");
       } finally {
         setLoading(false);
       }
@@ -64,46 +63,36 @@ export default function DocumentosRevendedoraPage() {
     fetchDocs();
   }, [id]);
 
-  function showMsg(type: "success" | "error", msg: string) {
-    if (type === "success") {
-      setSuccess(msg);
-      setTimeout(() => setSuccess(null), 3000);
-    } else {
-      setError(msg);
-      setTimeout(() => setError(null), 4000);
-    }
-  }
-
   function handleAprovar(documentoId: string) {
     startTransition(async () => {
       const res = await aprovarDocumento(documentoId);
       if (res.success) {
-        showMsg("success", "Documento aprobado.");
+        toast.success("Documento aprobado.");
         setDocumentos((prev) =>
           prev.map((d) => (d.id === documentoId ? { ...d, status: "aprovado", observacao: "" } : d))
         );
       } else {
-        showMsg("error", res.error || "Error al aprobar.");
+        toast.error(res.error || "Error al aprobar.");
       }
     });
   }
 
   function handleRejeitar(documentoId: string) {
     if (!observacao.trim()) {
-      showMsg("error", "La observación es obligatoria al rechazar.");
+      toast.error("La observación es obligatoria al rechazar.");
       return;
     }
     startTransition(async () => {
       const res = await rejeitarDocumento(documentoId, observacao.trim());
       if (res.success) {
-        showMsg("success", "Documento rechazado.");
+        toast.success("Documento rechazado.");
         setDocumentos((prev) =>
           prev.map((d) => (d.id === documentoId ? { ...d, status: "rejeitado", observacao: observacao.trim() } : d))
         );
         setRejeitandoId(null);
         setObservacao("");
       } else {
-        showMsg("error", res.error || "Error al rechazar.");
+        toast.error(res.error || "Error al rechazar.");
       }
     });
   }
@@ -120,14 +109,6 @@ export default function DocumentosRevendedoraPage() {
       />
 
       <div className="admin-content">
-        {/* Toasts */}
-        {success && (
-          <div className="admin-toast admin-toast-success">✅ {success}</div>
-        )}
-        {error && (
-          <div className="admin-toast admin-toast-error">❌ {error}</div>
-        )}
-
         {loading ? (
           <Card>
             <CardContent className="text-center py-12">

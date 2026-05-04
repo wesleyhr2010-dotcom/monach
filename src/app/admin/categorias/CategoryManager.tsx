@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Plus, Trash2, Edit2, Check, X, CornerDownRight } from "lucide-react";
+import { toast } from "sonner";
 
 interface CategoryTree extends Category {
     children: CategoryTree[];
@@ -27,8 +28,6 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     const [addingToParent, setAddingToParent] = useState<string | null>(null);
     const [newChildName, setNewChildName] = useState("");
 
-    const [toast, setToast] = useState<{ type: "success" | "error"; msg: string } | null>(null);
-
     // Build the tree
     const tree: CategoryTree[] = [];
     const map = new Map<string, CategoryTree>();
@@ -45,21 +44,16 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         }
     });
 
-    function showToast(type: "success" | "error", msg: string) {
-        setToast({ type, msg });
-        setTimeout(() => setToast(null), 3000);
-    }
-
     function handleCreateTopLevel() {
         if (!newName.trim()) return;
         startTransition(async () => {
             const result = await createCategory(newName.trim(), null);
             if (result.success) {
-                showToast("success", "Categoría creada");
+                toast.success("Categoría creada");
                 setNewName("");
                 router.refresh();
             } else {
-                showToast("error", result.error || "Error");
+                toast.error(result.error || "Error");
             }
         });
     }
@@ -69,12 +63,12 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         startTransition(async () => {
             const result = await createCategory(newChildName.trim(), parentId);
             if (result.success) {
-                showToast("success", "Subcategoría creada");
+                toast.success("Subcategoría creada");
                 setNewChildName("");
                 setAddingToParent(null);
                 router.refresh();
             } else {
-                showToast("error", result.error || "Error");
+                toast.error(result.error || "Error");
             }
         });
     }
@@ -84,11 +78,11 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         startTransition(async () => {
             const result = await updateCategory(id, editName.trim());
             if (result.success) {
-                showToast("success", "Categoría actualizada");
+                toast.success("Categoría actualizada");
                 setEditingId(null);
                 router.refresh();
             } else {
-                showToast("error", result.error || "Error");
+                toast.error(result.error || "Error");
             }
         });
     }
@@ -98,10 +92,10 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
         startTransition(async () => {
             const result = await deleteCategory(id);
             if (result.success) {
-                showToast("success", "Categoría eliminada");
+                toast.success("Categoría eliminada");
                 router.refresh();
             } else {
-                showToast("error", result.error || "Error");
+                toast.error(result.error || "Error");
             }
         });
     }
@@ -286,15 +280,6 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                 </CardContent>
             </Card>
 
-            {/* Toast */}
-            {toast && (
-                <div className={`fixed bottom-4 right-4 z-50 p-4 rounded-md shadow-lg border ${toast.type === "success" ? "bg-green-50 text-green-900 border-green-200" : "bg-red-50 text-red-900 border-red-200"}`}>
-                    <div className="flex items-center gap-2">
-                        {toast.type === "success" ? <Check className="w-5 h-5 text-green-600" /> : <X className="w-5 h-5 text-red-600" />}
-                        <p className="text-sm font-medium">{toast.msg}</p>
-                    </div>
-                </div>
-            )}
         </div>
     );
 }

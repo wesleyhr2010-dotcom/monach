@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatGsCompact } from "@/lib/format";
 import { UserPlus, Search, Trash2, ArrowRight, Users, Phone, Percent } from "lucide-react";
+import { toast } from "sonner";
 
 export const dynamic = "force-dynamic";
 
@@ -28,8 +29,6 @@ export default function ConsultorasPage() {
     const [statusFilter, setStatusFilter] = useState<"todos" | "ativas" | "inativas">("todos");
     const [showNew, setShowNew] = useState(false);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [success, setSuccess] = useState<string | null>(null);
 
     const loadData = useCallback(async () => {
         setLoading(true);
@@ -43,27 +42,17 @@ export default function ConsultorasPage() {
         loadData();
     }, [loadData]);
 
-    function showMsg(type: "success" | "error", msg: string) {
-        if (type === "success") {
-            setSuccess(msg);
-            setTimeout(() => setSuccess(null), 3000);
-        } else {
-            setError(msg);
-            setTimeout(() => setError(null), 4000);
-        }
-    }
-
     function handleNew(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
         startTransition(async () => {
             const res = await criarColaboradora(fd);
             if (res.success) {
-                showMsg("success", "Consultora criada com sucesso!");
+                toast.success("Consultora criada com sucesso!");
                 setShowNew(false);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao criar consultora");
+                toast.error(res.error || "Erro ao criar consultora");
             }
         });
     }
@@ -73,10 +62,10 @@ export default function ConsultorasPage() {
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                showMsg("success", `"${name}" removida`);
+                toast.success(`"${name}" removida`);
                 loadData();
             } else {
-                showMsg("error", res.error || "Erro ao remover");
+                toast.error(res.error || "Erro ao remover");
             }
         });
     }
@@ -158,10 +147,6 @@ export default function ConsultorasPage() {
             </header>
 
             <div className="admin-content">
-                {/* Toast */}
-                {success && <div className="admin-toast admin-toast-success">✅ {success}</div>}
-                {error && <div className="admin-toast admin-toast-error">❌ {error}</div>}
-
                 {/* Filters */}
                 <div style={{ display: "flex", gap: "12px", marginBottom: "20px", flexWrap: "wrap", alignItems: "center" }}>
                     <div style={{ position: "relative", flex: "1 1 300px", maxWidth: "420px" }}>
