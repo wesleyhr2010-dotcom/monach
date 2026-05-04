@@ -11,6 +11,27 @@ export type ActionResult<T = void> =
     | { success: false; error: string };
 
 /**
+ * Maps known Prisma error codes to user-friendly Spanish messages.
+ * Strips stack traces and internal details — never leaks raw errors to the client.
+ */
+export function mapError(err: unknown): string {
+    const code = (err as any)?.code;
+    if (code === "P2002") {
+        return "Ya existe un registro con ese valor. Verifica los datos e intenta de nuevo.";
+    }
+    if (code === "P2025") {
+        return "El registro que buscás no fue encontrado. Puede que haya sido eliminado.";
+    }
+    if (code === "P2014") {
+        return "Hay un conflicto en los datos relacionados. Revisá las conexiones entre registros.";
+    }
+    if (err instanceof Error) {
+        return err.message;
+    }
+    return "Error desconocido";
+}
+
+/**
  * Wraps a server action in standardized error handling.
  * Replaces 15+ identical try/catch blocks across the codebase.
  *
@@ -29,8 +50,7 @@ export async function safeAction<T = void>(
         const result = await fn();
         return { success: true, data: result };
     } catch (err: unknown) {
-        const message = err instanceof Error ? err.message : "Erro desconhecido";
-        return { success: false, error: message };
+        return { success: false, error: mapError(err) };
     }
 }
 
