@@ -2,6 +2,7 @@ import { getCurrentUser } from "@/lib/user";
 
 export const dynamic = "force-dynamic";
 import { redirect } from "next/navigation";
+import Link from "next/link";
 import {
     getDashboardMetricas,
     getAlertasMaletas,
@@ -26,31 +27,47 @@ export const metadata = {
     title: "Dashboard — Monarca Admin",
 };
 
+const PERIOD_OPTIONS = [
+    { label: "7d", days: 7 },
+    { label: "30d", days: 30 },
+    { label: "3m", days: 90 },
+    { label: "12m", days: 365 },
+];
+
 function formatCurrency(value: number): string {
     if (value >= 1_000_000) return `G$ ${(value / 1_000_000).toFixed(1).replace(".", ".")}M`;
     if (value >= 1_000) return `G$ ${(value / 1_000).toFixed(0)}K`;
     return `G$ ${value.toLocaleString("pt-BR")}`;
 }
 
-export default async function AdminDashboardPage() {
+export default async function AdminDashboardPage({
+    searchParams,
+}: {
+    searchParams: Promise<{ period?: string }>;
+}) {
     const user = await getCurrentUser();
     if (!user || !user.isActive || (user.role !== "ADMIN" && user.role !== "COLABORADORA")) {
         redirect("/admin/login");
     }
 
+    const params = await searchParams;
+    const periodParam = params.period || "30";
+    const periodDays = parseInt(periodParam, 10);
+    const validPeriod = PERIOD_OPTIONS.some((o) => o.days === periodDays) ? periodDays : 30;
+
     const isSuperAdmin = user.role === "ADMIN";
     const colaboradoraId = isSuperAdmin ? undefined : (user.profileId ?? undefined);
 
     const [metricas, alertas, ranking, minhaComissao] = await Promise.all([
-        getDashboardMetricas(colaboradoraId),
+        getDashboardMetricas(colaboradoraId, validPeriod),
         getAlertasMaletas(colaboradoraId),
         isSuperAdmin
-            ? getRankingColaboradoras()
+            ? getRankingColaboradoras(validPeriod)
             : colaboradoraId
-                ? getRankingRevendedoras(colaboradoraId)
+                ? getRankingRevendedoras(colaboradoraId, validPeriod)
                 : Promise.resolve([]),
         !isSuperAdmin && colaboradoraId
-            ? getMinhaComissao(colaboradoraId)
+            ? getMinhaComissao(colaboradoraId, validPeriod)
             : Promise.resolve(null),
     ]);
 
@@ -74,38 +91,56 @@ export default async function AdminDashboardPage() {
                         {isSuperAdmin ? "Dashboard" : `Olá, ${user.name.split(" ")[0]}`}
                     </span>
                 </div>
-                <div style={{ position: "relative" }}>
-                    <div style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 8,
-                        background: "#1C3A35",
-                        border: "1px solid #35605A55",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}>
-                        <Bell size={15} color="#4ADE80" strokeWidth={1.5} />
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    {/* Period selector */}
+                    <div style={{ display: "flex", gap: "6px" }}>
+                        {PERIOD_OPTIONS.map((opt) => (
+                            <Link
+                                key={opt.days}
+                                href={`/admin?period=${opt.days}`}
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                                    validPeriod === opt.days
+                                        ? "bg-[#35605A] text-white"
+                                        : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
+                                }`}
+                            >
+                                {opt.label}
+                            </Link>
+                        ))}
                     </div>
-                    {metricas.totalAlertas > 0 && (
+                    <div style={{ position: "relative" }}>
                         <div style={{
-                            position: "absolute",
-                            top: -4,
-                            right: -4,
-                            width: 16,
-                            height: 16,
-                            borderRadius: "50%",
-                            background: "#E05C5C",
-                            border: "1.5px solid #0A0A0A",
+                            width: 36,
+                            height: 36,
+                            borderRadius: 8,
+                            background: "#1C3A35",
+                            border: "1px solid #35605A55",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                         }}>
-                            <span style={{ color: "#fff", fontFamily: "Raleway, sans-serif", fontWeight: 700, fontSize: 9 }}>
-                                {Math.min(metricas.totalAlertas, 9)}
-                            </span>
+                            <Bell size={15} color="#4ADE80" strokeWidth={1.5} />
                         </div>
-                    )}
+                        {metricas.totalAlertas > 0 && (
+                            <div style={{
+                                position: "absolute",
+                                top: -4,
+                                right: -4,
+                                width: 16,
+                                height: 16,
+                                borderRadius: "50%",
+                                background: "#E05C5C",
+                                border: "1.5px solid #0A0A0A",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}>
+                                <span style={{ color: "#fff", fontFamily: "Raleway, sans-serif", fontWeight: 700, fontSize: 9 }}>
+                                    {Math.min(metricas.totalAlertas, 9)}
+                                </span>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </div>
 
@@ -170,6 +205,25 @@ export default async function AdminDashboardPage() {
                         variant="danger"
                         valueColor="#E05C5C"
                     />
+                </div>
+
+                {/* Analytics link */}
+                <div style={{ display: "flex", justifyContent: "flex-end" }}>
+                    <Link
+                        href={`/admin/analytics?period=${validPeriod}`}
+                        style={{
+                            color: "#35605A",
+                            fontFamily: "Raleway, sans-serif",
+                            fontSize: 12,
+                            fontWeight: 600,
+                            textDecoration: "none",
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                        }}
+                    >
+                        Ver analytics detallado →
+                    </Link>
                 </div>
 
                 {/* Middle Row: Alertas + Ranking */}

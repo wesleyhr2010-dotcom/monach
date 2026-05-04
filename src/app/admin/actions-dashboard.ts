@@ -10,6 +10,17 @@ function getMesAtual() {
     return { start, end };
 }
 
+function getPeriodRange(periodDays?: number): { start: Date; end: Date } {
+    if (!periodDays) {
+        return getMesAtual();
+    }
+    const end = new Date();
+    end.setHours(23, 59, 59, 999);
+    const start = new Date(end.getTime() - periodDays * 24 * 60 * 60 * 1000);
+    start.setHours(0, 0, 0, 0);
+    return { start, end };
+}
+
 function formatMaletaNumero(id: string): string {
     const hex = id.replace(/-/g, "").slice(-4).toUpperCase();
     return `#${parseInt(hex, 16) % 1000}`.padStart(4, "0");
@@ -29,9 +40,12 @@ export interface DashboardMetricas {
     totalAlertas: number;
 }
 
-export async function getDashboardMetricas(colaboradoraId?: string): Promise<DashboardMetricas> {
+export async function getDashboardMetricas(
+    colaboradoraId?: string,
+    periodDays?: number
+): Promise<DashboardMetricas> {
     await requireAuth(["ADMIN", "COLABORADORA"]);
-    const { start, end } = getMesAtual();
+    const { start, end } = getPeriodRange(periodDays);
     const mesAnteriorStart = new Date(start.getFullYear(), start.getMonth() - 1, 1);
     const mesAnteriorEnd = new Date(start.getFullYear(), start.getMonth(), 0, 23, 59, 59, 999);
 
@@ -188,9 +202,9 @@ export interface RankingColaboradora {
     percentMeta: number;
 }
 
-export async function getRankingColaboradoras(): Promise<RankingColaboradora[]> {
+export async function getRankingColaboradoras(periodDays?: number): Promise<RankingColaboradora[]> {
     await requireAuth(["ADMIN"]);
-    const { start, end } = getMesAtual();
+    const { start, end } = getPeriodRange(periodDays);
 
     const colaboradoras = await prisma.reseller.findMany({
         where: { role: "COLABORADORA", is_active: true },
@@ -250,9 +264,12 @@ export interface RankingRevendedora {
     percentMeta: number;
 }
 
-export async function getRankingRevendedoras(colaboradoraId: string): Promise<RankingRevendedora[]> {
+export async function getRankingRevendedoras(
+    colaboradoraId: string,
+    periodDays?: number
+): Promise<RankingRevendedora[]> {
     await requireAuth(["ADMIN", "COLABORADORA"]);
-    const { start, end } = getMesAtual();
+    const { start, end } = getPeriodRange(periodDays);
 
     const revendedoras = await prisma.reseller.findMany({
         where: { colaboradora_id: colaboradoraId, role: "REVENDEDORA", is_active: true },
@@ -288,9 +305,12 @@ export async function getRankingRevendedoras(colaboradoraId: string): Promise<Ra
 // Comissão própria (COLABORADORA)
 // ============================================
 
-export async function getMinhaComissao(resellerId: string): Promise<number> {
+export async function getMinhaComissao(
+    resellerId: string,
+    periodDays?: number
+): Promise<number> {
     await requireAuth(["ADMIN", "COLABORADORA"]);
-    const { start, end } = getMesAtual();
+    const { start, end } = getPeriodRange(periodDays);
     const result = await prisma.maleta.aggregate({
         _sum: { valor_comissao_colaboradora: true },
         where: {
