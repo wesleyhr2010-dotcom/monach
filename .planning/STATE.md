@@ -16,13 +16,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 2 — Core Business (Notifications, Leads & Config)
+**Current focus:** Phase 2 — Core Business (Notifications, Leads & Config) — EXECUTING
 
 ## Current Position
 
 Phase: 2 of 5 (Core Business — Notifications, Leads & Config)
 Plan: —
-Status: Ready to execute
+Status: Executing Wave 1
 Last activity: 2026-05-04 — Phase 1 completed (3/3 plans, 10 commits, ~2.5h)
 
 Progress: [██░░░░░░░░] 20% (1/5 phases) | 37.5% plans (3/8)

@@ -2,6 +2,7 @@ import { Prisma } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { sanitizeForLog } from "@/lib/errors/sanitize-log";
+import DOMPurify from "isomorphic-dompurify";
 
 export type TipoNotificacao =
   | "nova_maleta"
@@ -151,4 +152,107 @@ export async function notificarRevendedora(
   }
 
   return notif;
+}
+
+/**
+ * Substitui placeholders `{chave}` em um template por valores do contexto.
+ * Suporta notação de ponto para objetos aninhados: `{maleta.id}`.
+ * Se whitelist for fornecida, apenas chaves na whitelist são substituídas.
+ * Chaves não encontradas no contexto permanecem como estão.
+ */
+export function substituirVariaveis(
+  template: string,
+  contexto: Record<string, unknown>,
+  whitelist?: string[]
+): string {
+  return template.replace(/\{([^}]+)\}/g, (match, key) => {
+    if (whitelist && !whitelist.includes(key)) {
+      return match;
+    }
+
+    const parts = key.split(".");
+    let value: unknown = contexto;
+
+    for (const part of parts) {
+      if (value && typeof value === "object" && part in value) {
+        value = (value as Record<string, unknown>)[part];
+      } else {
+        return match;
+      }
+    }
+
+    return value !== undefined && value !== null ? String(value) : match;
+  });
+}
+
+/**
+ * Whitelist de variáveis permitidas por tipo de notificação.
+ * Hardcoded em código-fonte — não configurável em runtime.
+ */
+export const VARIAVEIS_POR_TIPO: Record<string, string[]> = {
+  prazo_proximo: ["maleta_id", "dias_restantes", "nome_revendedora"],
+  maleta_atrasada: ["maleta_id", "nome_revendedora"],
+  pontos_ganhos: ["pontos", "motivo", "nome_revendedora"],
+  acerto_confirmado: ["maleta_id", "valor_comissao", "nome_revendedora"],
+  devolucao_recebida: ["maleta_id", "nome_revendedora"],
+  nova_maleta: ["maleta_id", "nome_revendedora"],
+  brinde_entregue: ["nome_regalo", "nome_revendedora"],
+};
+
+/**
+ * Mapeia os valores de `tipo` armazenados no banco para as chaves de
+ * `VARIAVEIS_POR_TIPO`.  Alguns templates no BD usam sufixos (ex. d3/d1)
+ * que compartilham a mesma whitelist.
+ */
+export function mapTipoParaWhitelist(tipoDb: string): string | null {
+  if (tipoDb.startsWith("prazo_proximo")) return "prazo_proximo";
+  if (tipoDb === "maleta_atrasada") return "maleta_atrasada";
+  if (tipoDb === "maleta_devolvida_admin") return "devolucao_recebida";
+  if (tipoDb === "nova_maleta_revendedora") return "nova_maleta";
+  if (tipoDb === "brinde_disponivel") return "brinde_entregue";
+  if (tipoDb === "pontos_concedidos") return "pontos_ganhos";
+  return null;
+}
+
+/**
+ * Sanitiza HTML de template, permitindo apenas tags de formatação básicas.
+ * Remove scripts, handlers de evento e atributos perigosos.
+ */
+export function sanitizeTemplateVars(input: string): string {
+  return DOMPurify.sanitize(input, {
+    ALLOWED_TAGS: ["b", "i", "strong", "em", "br", "p", "a"],
+    ALLOWED_ATTR: ["href"],
+  });
+}
+
+/**
+ * Converte HTML em texto plano para notificações push (OneSignal).
+ * Substitui <br> e <p> por \n, remove tags restantes, decodifica entidades HTML.
+ */
+export function htmlToPlainText(html: string): string {
+  let text = html
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<\/p>\s*<p>/gi, "\n\n")
+    .replace(/<p\s*\/?>/gi, "")
+    .replace(/<\/p>/gi, "\n");
+
+  // Remove todas as tags HTML restantes
+  text = text.replace(/<[^>]+>/g, "");
+
+  // Decodifica entidades HTML comuns
+  const entities: Record<string, string> = {
+    "&amp;": "&",
+    "&lt;": "<",
+    "&gt;": ">",
+    "&quot;": '"',
+    "&#39;": "'",
+    "&nbsp;": " ",
+  };
+
+  for (const [entity, char] of Object.entries(entities)) {
+    text = text.split(entity).join(char);
+  }
+
+  // Normaliza espaços em branco
+  return text.replace(/\n{3,}/g, "\n\n").trim();
 }

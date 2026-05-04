@@ -10,18 +10,11 @@ import {
   type RevendedoraCampanha,
   type FiltroCampanha,
 } from "./actions";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from "@/components/ui/dialog";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Bell, Pencil, Power, Send, AlertCircle, CheckCircle2 } from "lucide-react";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
 import type { NotificacaoLogItem } from "./actions";
+import TemplateEditor from "./TemplateEditor";
 
 interface NotifPushClientProps {
   templates: NotificacaoTemplate[];
@@ -576,64 +569,12 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
 
       {/* Modal de edição */}
       {editTemplate && (
-        <Dialog open onOpenChange={() => setEditTemplate(null)}>
-          <DialogContent
-            style={{
-              background: "var(--admin-surface)",
-              border: "1px solid var(--admin-border)",
-              color: "var(--admin-text)",
-              maxWidth: "480px",
-            }}
-          >
-            <DialogHeader>
-              <DialogTitle style={{ color: "var(--admin-text)" }}>Editar Template</DialogTitle>
-              <DialogDescription style={{ color: "var(--admin-text-muted)" }}>
-                {TIPO_LABELS[editTemplate.tipo] || editTemplate.tipo}
-              </DialogDescription>
-            </DialogHeader>
-
-            <form action={handleSaveEdit} style={{ display: "flex", flexDirection: "column", gap: "16px", marginTop: "8px" }}>
-              <div>
-                <label className="admin-label">Título (ES)</label>
-                <input
-                  name="titulo"
-                  defaultValue={editTemplate.titulo_es}
-                  className="admin-input"
-                  required
-                  maxLength={120}
-                />
-              </div>
-              <div>
-                <label className="admin-label">Mensaje (ES)</label>
-                <textarea
-                  name="body"
-                  defaultValue={editTemplate.body_es}
-                  className="admin-textarea"
-                  required
-                  maxLength={500}
-                  rows={4}
-                />
-              </div>
-
-              <DialogFooter style={{ gap: "8px", marginTop: "8px" }}>
-                <button
-                  type="button"
-                  onClick={() => setEditTemplate(null)}
-                  className="admin-btn admin-btn-secondary admin-btn-sm"
-                >
-                  Cancelar
-                </button>
-                <button
-                  type="submit"
-                  disabled={isPendingSave}
-                  className="admin-btn admin-btn-primary admin-btn-sm"
-                >
-                  {isPendingSave ? "Guardando..." : "Guardar Template"}
-                </button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <TemplateEditor
+          template={editTemplate}
+          onSave={handleSaveEdit}
+          onClose={() => setEditTemplate(null)}
+          isPending={isPendingSave}
+        />
       )}
     </>
   );
