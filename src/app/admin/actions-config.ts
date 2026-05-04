@@ -3,6 +3,8 @@
 import { prisma } from "@/lib/prisma";
 import { safeAction, type ActionResult } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
+import { createR2Client, R2_BUCKET, R2_PUBLIC_DOMAIN } from "@/lib/r2";
+import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
 
 // ============================================
@@ -198,5 +200,172 @@ export async function deleteNivelRegra(
     }
 
     await prisma.nivelRegra.delete({ where: { id } });
+  });
+}
+
+// ============================================
+// Contratos
+// ============================================
+
+export interface ContratoItem {
+  id: string;
+  nome: string;
+  url: string;
+  obrigatorio: boolean;
+  ativo: boolean;
+  created_at: Date;
+}
+
+export async function getContratos(): Promise<ActionResult<ContratoItem[]>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+    const contratos = await prisma.contrato.findMany({
+      orderBy: { created_at: "desc" },
+    });
+    return contratos.map((c) => ({
+      id: c.id,
+      nome: c.nome,
+      url: c.url,
+      obrigatorio: c.obrigatorio,
+      ativo: c.ativo,
+      created_at: c.created_at,
+    }));
+  });
+}
+
+export async function uploadContrato(
+  formData: FormData
+): Promise<ActionResult<ContratoItem>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+
+    const file = formData.get("file") as File | null;
+    const nome = formData.get("nome") as string | null;
+    const obrigatorio = formData.get("obrigatorio") === "true";
+    const ativo = formData.get("ativo") === "true";
+
+    if (!file || !nome) {
+      throw new Error("Arquivo e nome são obrigatórios.");
+    }
+
+    if (file.type !== "application/pdf") {
+      throw new Error("Solo se aceptan archivos PDF.");
+    }
+
+    if (file.size > 10 * 1024 * 1024) {
+      throw new Error("El archivo no puede superar 10MB.");
+    }
+
+    const id = crypto.randomUUID();
+    const key = `contratos/${id}.pdf`;
+
+    const r2 = createR2Client();
+    await r2.send(
+      new PutObjectCommand({
+        Bucket: R2_BUCKET,
+        Key: key,
+        Body: Buffer.from(await file.arrayBuffer()),
+        ContentType: "application/pdf",
+      })
+    );
+
+    const url = `https://${R2_PUBLIC_DOMAIN}/${key}`;
+
+    const contrato = await prisma.contrato.create({
+      data: { id, nome, url, obrigatorio, ativo },
+    });
+
+    return {
+      id: contrato.id,
+      nome: contrato.nome,
+      url: contrato.url,
+      obrigatorio: contrato.obrigatorio,
+      ativo: contrato.ativo,
+      created_at: contrato.created_at,
+    };
+  });
+}
+
+const updateContratoSchema = z.object({
+  nome: z.string().min(2, "El nombre debe tener al menos 2 caracteres"),
+  obrigatorio: z.boolean(),
+  ativo: z.boolean(),
+});
+
+export async function updateContrato(
+  id: string,
+  rawData: unknown
+): Promise<ActionResult<ContratoItem>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+    const data = updateContratoSchema.parse(rawData);
+
+    const contrato = await prisma.contrato.update({
+      where: { id },
+      data: {
+        nome: data.nome,
+        obrigatorio: data.obrigatorio,
+        ativo: data.ativo,
+      },
+    });
+
+    return {
+      id: contrato.id,
+      nome: contrato.nome,
+      url: contrato.url,
+      obrigatorio: contrato.obrigatorio,
+      ativo: contrato.ativo,
+      created_at: contrato.created_at,
+    };
+  });
+}
+
+export async function deleteContrato(
+  id: string
+): Promise<ActionResult<void>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+
+    const contrato = await prisma.contrato.findUnique({ where: { id } });
+    if (!contrato) {
+      throw new Error("Contrato no encontrado.");
+    }
+
+    // Deletar do R2
+    try {
+      const key = contrato.url.replace(`https://${R2_PUBLIC_DOMAIN}/`, "");
+      const r2 = createR2Client();
+      await r2.send(
+        new DeleteObjectCommand({ Bucket: R2_BUCKET, Key: key })
+      );
+    } catch (err) {
+      console.error("[deleteContrato] Erro ao deletar do R2:", err);
+    }
+
+    await prisma.contrato.delete({ where: { id } });
+  });
+}
+
+// ============================================
+// Contrato ativo (público — usado no onboarding)
+// ============================================
+
+export async function getContratoAtivo(): Promise<
+  ActionResult<{ id: string; nome: string; url: string; obrigatorio: boolean } | null>
+> {
+  return safeAction(async () => {
+    const contrato = await prisma.contrato.findFirst({
+      where: { ativo: true },
+      orderBy: { created_at: "desc" },
+    });
+
+    if (!contrato) return null;
+
+    return {
+      id: contrato.id,
+      nome: contrato.nome,
+      url: contrato.url,
+      obrigatorio: contrato.obrigatorio,
+    };
   });
 }

@@ -102,6 +102,18 @@ export async function completeOnboarding(
     return { success: true, perfilCompleto, pontosPerfil };
 }
 
+export async function aceitarContrato(): Promise<{ success: boolean }> {
+    const user = await requireAuth(["REVENDEDORA"]);
+    const resellerId = user.profileId!;
+
+    await prisma.reseller.update({
+        where: { id: resellerId },
+        data: { contrato_aceite_em: new Date() },
+    });
+
+    return { success: true };
+}
+
 export async function getOnboardingStatus(): Promise<{
     id: string;
     name: string;

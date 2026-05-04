@@ -124,6 +124,7 @@ export const ResellerScalarFieldEnum = {
   is_active: 'is_active',
   perfil_completo: 'perfil_completo',
   onboarding_completo: 'onboarding_completo',
+  contrato_aceite_em: 'contrato_aceite_em',
   documentos_url: 'documentos_url',
   created_at: 'created_at',
   updated_at: 'updated_at'

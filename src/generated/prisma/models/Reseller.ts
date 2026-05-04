@@ -62,6 +62,7 @@ export type ResellerMinAggregateOutputType = {
   is_active: boolean | null
   perfil_completo: boolean | null
   onboarding_completo: boolean | null
+  contrato_aceite_em: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -94,6 +95,7 @@ export type ResellerMaxAggregateOutputType = {
   is_active: boolean | null
   perfil_completo: boolean | null
   onboarding_completo: boolean | null
+  contrato_aceite_em: Date | null
   created_at: Date | null
   updated_at: Date | null
 }
@@ -126,6 +128,7 @@ export type ResellerCountAggregateOutputType = {
   is_active: number
   perfil_completo: number
   onboarding_completo: number
+  contrato_aceite_em: number
   documentos_url: number
   created_at: number
   updated_at: number
@@ -169,6 +172,7 @@ export type ResellerMinAggregateInputType = {
   is_active?: true
   perfil_completo?: true
   onboarding_completo?: true
+  contrato_aceite_em?: true
   created_at?: true
   updated_at?: true
 }
@@ -201,6 +205,7 @@ export type ResellerMaxAggregateInputType = {
   is_active?: true
   perfil_completo?: true
   onboarding_completo?: true
+  contrato_aceite_em?: true
   created_at?: true
   updated_at?: true
 }
@@ -233,6 +238,7 @@ export type ResellerCountAggregateInputType = {
   is_active?: true
   perfil_completo?: true
   onboarding_completo?: true
+  contrato_aceite_em?: true
   documentos_url?: true
   created_at?: true
   updated_at?: true
@@ -353,6 +359,7 @@ export type ResellerGroupByOutputType = {
   is_active: boolean
   perfil_completo: boolean
   onboarding_completo: boolean
+  contrato_aceite_em: Date | null
   documentos_url: runtime.JsonValue
   created_at: Date
   updated_at: Date
@@ -409,6 +416,7 @@ export type ResellerWhereInput = {
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
   perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
   onboarding_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  contrato_aceite_em?: Prisma.DateTimeNullableFilter<"Reseller"> | Date | string | null
   documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
@@ -457,6 +465,7 @@ export type ResellerOrderByWithRelationInput = {
   is_active?: Prisma.SortOrder
   perfil_completo?: Prisma.SortOrder
   onboarding_completo?: Prisma.SortOrder
+  contrato_aceite_em?: Prisma.SortOrderInput | Prisma.SortOrder
   documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -508,6 +517,7 @@ export type ResellerWhereUniqueInput = Prisma.AtLeast<{
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
   perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
   onboarding_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  contrato_aceite_em?: Prisma.DateTimeNullableFilter<"Reseller"> | Date | string | null
   documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
@@ -556,6 +566,7 @@ export type ResellerOrderByWithAggregationInput = {
   is_active?: Prisma.SortOrder
   perfil_completo?: Prisma.SortOrder
   onboarding_completo?: Prisma.SortOrder
+  contrato_aceite_em?: Prisma.SortOrderInput | Prisma.SortOrder
   documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -597,6 +608,7 @@ export type ResellerScalarWhereWithAggregatesInput = {
   is_active?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
   perfil_completo?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
   onboarding_completo?: Prisma.BoolWithAggregatesFilter<"Reseller"> | boolean
+  contrato_aceite_em?: Prisma.DateTimeNullableWithAggregatesFilter<"Reseller"> | Date | string | null
   documentos_url?: Prisma.JsonWithAggregatesFilter<"Reseller">
   created_at?: Prisma.DateTimeWithAggregatesFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"Reseller"> | Date | string
@@ -629,6 +641,7 @@ export type ResellerCreateInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -677,6 +690,7 @@ export type ResellerUncheckedCreateInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -723,6 +737,7 @@ export type ResellerUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -771,6 +786,7 @@ export type ResellerUncheckedUpdateInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -818,6 +834,7 @@ export type ResellerCreateManyInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -850,6 +867,7 @@ export type ResellerUpdateManyMutationInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -883,6 +901,7 @@ export type ResellerUncheckedUpdateManyInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -931,6 +950,7 @@ export type ResellerCountOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   perfil_completo?: Prisma.SortOrder
   onboarding_completo?: Prisma.SortOrder
+  contrato_aceite_em?: Prisma.SortOrder
   documentos_url?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
@@ -968,6 +988,7 @@ export type ResellerMaxOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   perfil_completo?: Prisma.SortOrder
   onboarding_completo?: Prisma.SortOrder
+  contrato_aceite_em?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -1000,6 +1021,7 @@ export type ResellerMinOrderByAggregateInput = {
   is_active?: Prisma.SortOrder
   perfil_completo?: Prisma.SortOrder
   onboarding_completo?: Prisma.SortOrder
+  contrato_aceite_em?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
 }
@@ -1055,6 +1077,10 @@ export type DecimalFieldUpdateOperationsInput = {
 
 export type BoolFieldUpdateOperationsInput = {
   set?: boolean
+}
+
+export type NullableDateTimeFieldUpdateOperationsInput = {
+  set?: Date | string | null
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -1314,6 +1340,7 @@ export type ResellerCreateWithoutRevendedoras_sob_mimInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1361,6 +1388,7 @@ export type ResellerUncheckedCreateWithoutRevendedoras_sob_mimInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1411,6 +1439,7 @@ export type ResellerCreateWithoutColaboradoraInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1457,6 +1486,7 @@ export type ResellerUncheckedCreateWithoutColaboradoraInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1524,6 +1554,7 @@ export type ResellerUpdateWithoutRevendedoras_sob_mimInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1571,6 +1602,7 @@ export type ResellerUncheckedUpdateWithoutRevendedoras_sob_mimInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1636,6 +1668,7 @@ export type ResellerScalarWhereInput = {
   is_active?: Prisma.BoolFilter<"Reseller"> | boolean
   perfil_completo?: Prisma.BoolFilter<"Reseller"> | boolean
   onboarding_completo?: Prisma.BoolFilter<"Reseller"> | boolean
+  contrato_aceite_em?: Prisma.DateTimeNullableFilter<"Reseller"> | Date | string | null
   documentos_url?: Prisma.JsonFilter<"Reseller">
   created_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"Reseller"> | Date | string
@@ -1668,6 +1701,7 @@ export type ResellerCreateWithoutDocumentosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1715,6 +1749,7 @@ export type ResellerUncheckedCreateWithoutDocumentosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1776,6 +1811,7 @@ export type ResellerUpdateWithoutDocumentosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1823,6 +1859,7 @@ export type ResellerUncheckedUpdateWithoutDocumentosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -1868,6 +1905,7 @@ export type ResellerCreateWithoutDados_bancariosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1915,6 +1953,7 @@ export type ResellerUncheckedCreateWithoutDados_bancariosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -1976,6 +2015,7 @@ export type ResellerUpdateWithoutDados_bancariosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2023,6 +2063,7 @@ export type ResellerUncheckedUpdateWithoutDados_bancariosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2068,6 +2109,7 @@ export type ResellerCreateWithoutReseller_productsInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2115,6 +2157,7 @@ export type ResellerUncheckedCreateWithoutReseller_productsInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2176,6 +2219,7 @@ export type ResellerUpdateWithoutReseller_productsInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2223,6 +2267,7 @@ export type ResellerUncheckedUpdateWithoutReseller_productsInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2268,6 +2313,7 @@ export type ResellerCreateWithoutMaletasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2315,6 +2361,7 @@ export type ResellerUncheckedCreateWithoutMaletasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2376,6 +2423,7 @@ export type ResellerUpdateWithoutMaletasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2423,6 +2471,7 @@ export type ResellerUncheckedUpdateWithoutMaletasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2468,6 +2517,7 @@ export type ResellerCreateWithoutVendasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2515,6 +2565,7 @@ export type ResellerUncheckedCreateWithoutVendasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2576,6 +2627,7 @@ export type ResellerUpdateWithoutVendasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2623,6 +2675,7 @@ export type ResellerUncheckedUpdateWithoutVendasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2668,6 +2721,7 @@ export type ResellerCreateWithoutPontos_extratoInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2715,6 +2769,7 @@ export type ResellerUncheckedCreateWithoutPontos_extratoInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2776,6 +2831,7 @@ export type ResellerUpdateWithoutPontos_extratoInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2823,6 +2879,7 @@ export type ResellerUncheckedUpdateWithoutPontos_extratoInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -2868,6 +2925,7 @@ export type ResellerCreateWithoutResgatesInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2915,6 +2973,7 @@ export type ResellerUncheckedCreateWithoutResgatesInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -2976,6 +3035,7 @@ export type ResellerUpdateWithoutResgatesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3023,6 +3083,7 @@ export type ResellerUncheckedUpdateWithoutResgatesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3068,6 +3129,7 @@ export type ResellerCreateWithoutSolicitacoes_brindeInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3115,6 +3177,7 @@ export type ResellerUncheckedCreateWithoutSolicitacoes_brindeInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3176,6 +3239,7 @@ export type ResellerUpdateWithoutSolicitacoes_brindeInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3223,6 +3287,7 @@ export type ResellerUncheckedUpdateWithoutSolicitacoes_brindeInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3268,6 +3333,7 @@ export type ResellerCreateWithoutNotif_preferenciasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3315,6 +3381,7 @@ export type ResellerUncheckedCreateWithoutNotif_preferenciasInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3376,6 +3443,7 @@ export type ResellerUpdateWithoutNotif_preferenciasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3423,6 +3491,7 @@ export type ResellerUncheckedUpdateWithoutNotif_preferenciasInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3468,6 +3537,7 @@ export type ResellerCreateWithoutNotificacoesInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3515,6 +3585,7 @@ export type ResellerUncheckedCreateWithoutNotificacoesInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3576,6 +3647,7 @@ export type ResellerUpdateWithoutNotificacoesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3623,6 +3695,7 @@ export type ResellerUncheckedUpdateWithoutNotificacoesInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3668,6 +3741,7 @@ export type ResellerCreateWithoutAnalytics_acessosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3715,6 +3789,7 @@ export type ResellerUncheckedCreateWithoutAnalytics_acessosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3776,6 +3851,7 @@ export type ResellerUpdateWithoutAnalytics_acessosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3823,6 +3899,7 @@ export type ResellerUncheckedUpdateWithoutAnalytics_acessosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -3868,6 +3945,7 @@ export type ResellerCreateWithoutAnalytics_diarioInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3915,6 +3993,7 @@ export type ResellerUncheckedCreateWithoutAnalytics_diarioInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -3976,6 +4055,7 @@ export type ResellerUpdateWithoutAnalytics_diarioInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4023,6 +4103,7 @@ export type ResellerUncheckedUpdateWithoutAnalytics_diarioInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4068,6 +4149,7 @@ export type ResellerCreateWithoutLeads_atribuidosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -4115,6 +4197,7 @@ export type ResellerUncheckedCreateWithoutLeads_atribuidosInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -4176,6 +4259,7 @@ export type ResellerUpdateWithoutLeads_atribuidosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4223,6 +4307,7 @@ export type ResellerUncheckedUpdateWithoutLeads_atribuidosInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4268,6 +4353,7 @@ export type ResellerCreateManyColaboradoraInput = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Date | string
   updated_at?: Date | string
@@ -4300,6 +4386,7 @@ export type ResellerUpdateWithoutColaboradoraInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4346,6 +4433,7 @@ export type ResellerUncheckedUpdateWithoutColaboradoraInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4392,6 +4480,7 @@ export type ResellerUncheckedUpdateManyWithoutColaboradoraInput = {
   is_active?: Prisma.BoolFieldUpdateOperationsInput | boolean
   perfil_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   onboarding_completo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  contrato_aceite_em?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   documentos_url?: Prisma.JsonNullValueInput | runtime.InputJsonValue
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -4555,6 +4644,7 @@ export type ResellerSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: boolean
   documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -4604,6 +4694,7 @@ export type ResellerSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Exte
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: boolean
   documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -4638,6 +4729,7 @@ export type ResellerSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Exte
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: boolean
   documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
@@ -4672,12 +4764,13 @@ export type ResellerSelectScalar = {
   is_active?: boolean
   perfil_completo?: boolean
   onboarding_completo?: boolean
+  contrato_aceite_em?: boolean
   documentos_url?: boolean
   created_at?: boolean
   updated_at?: boolean
 }
 
-export type ResellerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth_user_id" | "colaboradora_id" | "name" | "email" | "whatsapp" | "avatar_url" | "bio" | "slug" | "role" | "taxa_comissao" | "endereco_cep" | "endereco_logradouro" | "endereco_numero" | "endereco_complemento" | "endereco_cidade" | "endereco_estado" | "cedula" | "instagram" | "edad" | "estado_civil" | "hijos" | "empresa" | "informconf" | "is_active" | "perfil_completo" | "onboarding_completo" | "documentos_url" | "created_at" | "updated_at", ExtArgs["result"]["reseller"]>
+export type ResellerOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "auth_user_id" | "colaboradora_id" | "name" | "email" | "whatsapp" | "avatar_url" | "bio" | "slug" | "role" | "taxa_comissao" | "endereco_cep" | "endereco_logradouro" | "endereco_numero" | "endereco_complemento" | "endereco_cidade" | "endereco_estado" | "cedula" | "instagram" | "edad" | "estado_civil" | "hijos" | "empresa" | "informconf" | "is_active" | "perfil_completo" | "onboarding_completo" | "contrato_aceite_em" | "documentos_url" | "created_at" | "updated_at", ExtArgs["result"]["reseller"]>
 export type ResellerInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   colaboradora?: boolean | Prisma.Reseller$colaboradoraArgs<ExtArgs>
   revendedoras_sob_mim?: boolean | Prisma.Reseller$revendedoras_sob_mimArgs<ExtArgs>
@@ -4750,6 +4843,7 @@ export type $ResellerPayload<ExtArgs extends runtime.Types.Extensions.InternalAr
     is_active: boolean
     perfil_completo: boolean
     onboarding_completo: boolean
+    contrato_aceite_em: Date | null
     documentos_url: runtime.JsonValue
     created_at: Date
     updated_at: Date
@@ -5218,6 +5312,7 @@ export interface ResellerFieldRefs {
   readonly is_active: Prisma.FieldRef<"Reseller", 'Boolean'>
   readonly perfil_completo: Prisma.FieldRef<"Reseller", 'Boolean'>
   readonly onboarding_completo: Prisma.FieldRef<"Reseller", 'Boolean'>
+  readonly contrato_aceite_em: Prisma.FieldRef<"Reseller", 'DateTime'>
   readonly documentos_url: Prisma.FieldRef<"Reseller", 'Json'>
   readonly created_at: Prisma.FieldRef<"Reseller", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"Reseller", 'DateTime'>

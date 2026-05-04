@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { ChevronRight, ChevronLeft, Package, TrendingUp, Star, Bell, Camera, Phone, Landmark, ImageIcon } from "lucide-react";
-import { awardPrimeiroAcesso, completeOnboarding, getOnboardingStatus } from "./actions";
+import { ChevronRight, ChevronLeft, Package, TrendingUp, Star, Bell, Camera, Phone, Landmark, ImageIcon, FileText, CheckCircle2 } from "lucide-react";
+import { awardPrimeiroAcesso, completeOnboarding, getOnboardingStatus, aceitarContrato } from "./actions";
+import { getContratoAtivo } from "@/app/admin/actions-config";
 
 const slides = [
     {
@@ -83,6 +84,8 @@ export default function BienvenidaPage() {
     const [saving, setSaving] = useState(false);
     const [notifPermission, setNotifPermission] = useState<NotificationPermission | null>(null);
     const [pontosPerfil, setPontosPerfil] = useState(0);
+    const [contrato, setContrato] = useState<{ nome: string; url: string; obrigatorio: boolean } | null>(null);
+    const [contratoAceito, setContratoAceito] = useState(false);
 
     useEffect(() => {
         getOnboardingStatus()
@@ -98,6 +101,14 @@ export default function BienvenidaPage() {
                     router.replace("/app");
                     return;
                 }
+                // Fetch active contract
+                getContratoAtivo()
+                    .then((result) => {
+                        if (result.success && result.data) {
+                            setContrato(result.data);
+                        }
+                    })
+                    .catch(() => {});
                 // Award primeiro acesso
                 awardPrimeiroAcesso()
                     .then((result) => {
@@ -145,6 +156,19 @@ export default function BienvenidaPage() {
         return data.url;
     };
 
+    const handleAceitarContrato = async () => {
+        setSaving(true);
+        try {
+            await aceitarContrato();
+            setContratoAceito(true);
+            setStep(4);
+        } catch (err: unknown) {
+            setError(err instanceof Error ? err.message : "Error al guardar.");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const handleComplete = async (skipProfile = false, skipPush = false) => {
         setSaving(true);
         try {
@@ -166,9 +190,9 @@ export default function BienvenidaPage() {
 
             if (skipPush || notifPermission === "granted") {
                 // Ir direto para tela final
-                setStep(5);
+                setStep(6);
             } else {
-                setStep(4); // Tela final de conclusão
+                setStep(5); // Tela de notificaciones
             }
         } catch (err: unknown) {
             setError(err instanceof Error ? err.message : "Error al guardar.");
@@ -182,7 +206,7 @@ export default function BienvenidaPage() {
             const perm = await Notification.requestPermission();
             setNotifPermission(perm);
         }
-        setStep(5);
+        setStep(6);
     };
 
     const goToDashboard = () => {
@@ -213,9 +237,9 @@ export default function BienvenidaPage() {
     return (
         <div className="min-h-screen bg-white flex flex-col">
             {/* Progress dots */}
-            {step > 0 && step < 5 && (
+            {step > 1 && step < 6 && (
                 <div className="flex justify-center gap-2 pt-6 pb-2">
-                    {[1, 2, 3, 4].map((s) => (
+                    {[2, 3, 4, 5].map((s) => (
                         <div
                             key={s}
                             className={`w-2 h-2 rounded-full transition-colors ${step >= s ? "bg-[#2E5A4C]" : "bg-[#E8E2D6]"}`}
@@ -272,8 +296,82 @@ export default function BienvenidaPage() {
                 </div>
             )}
 
-            {/* Step 3: Profile */}
-            {step === 3 && (
+            {/* Step 3: Contract */}
+            {step === 3 && contrato && (
+                <div className="flex-1 flex flex-col px-6 pt-4 pb-8">
+                    <h2 className="text-xl font-bold text-center mb-2">Contrato</h2>
+                    <p className="text-center text-sm text-[#6b7280] mb-6">
+                        Antes de continuar, revisá el contrato de revendedora.
+                    </p>
+
+                    <div className="bg-[#F5F0E8] rounded-2xl p-5 max-w-sm mx-auto w-full mb-6">
+                        <div className="flex items-center gap-3 mb-3">
+                            <FileText className="w-6 h-6 text-[#2E5A4C]" />
+                            <span className="font-medium text-[#1A1A1A]">{contrato.nome}</span>
+                        </div>
+                        <a
+                            href={contrato.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-sm text-[#35605A] font-medium underline"
+                        >
+                            Ver contrato PDF →
+                        </a>
+                    </div>
+
+                    <div className="max-w-sm mx-auto w-full">
+                        <label className="flex items-start gap-3 cursor-pointer">
+                            <input
+                                type="checkbox"
+                                checked={contratoAceito}
+                                onChange={(e) => setContratoAceito(e.target.checked)}
+                                className="mt-1"
+                            />
+                            <span className="text-sm text-[#4b5563]">
+                                He leído y acepto los términos del contrato
+                            </span>
+                        </label>
+                    </div>
+
+                    <div className="mt-auto pt-6 max-w-sm mx-auto w-full space-y-3">
+                        <button
+                            onClick={handleAceitarContrato}
+                            disabled={saving || (contrato.obrigatorio && !contratoAceito)}
+                            className="w-full bg-[#2E5A4C] text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+                        >
+                            <CheckCircle2 className="w-4 h-4" />
+                            {saving ? "Guardando..." : "Aceptar y continuar →"}
+                        </button>
+                        {!contrato.obrigatorio && (
+                            <button
+                                onClick={() => setStep(4)}
+                                className="w-full text-[#6b7280] text-sm font-medium py-2"
+                            >
+                                Completar más tarde
+                            </button>
+                        )}
+                    </div>
+                </div>
+            )}
+
+            {/* Step 3 (skip): If no contract, jump to profile */}
+            {step === 3 && !contrato && (
+                <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+                    <div className="w-16 h-16 bg-[#F5F0E8] rounded-full flex items-center justify-center mb-4">
+                        <CheckCircle2 className="w-8 h-8 text-[#2E5A4C]" />
+                    </div>
+                    <p className="text-sm text-[#6b7280] mb-6">No hay contrato activo en este momento.</p>
+                    <button
+                        onClick={() => setStep(4)}
+                        className="w-full max-w-sm bg-[#2E5A4C] text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform"
+                    >
+                        Continuar →
+                    </button>
+                </div>
+            )}
+
+            {/* Step 4: Profile */}
+            {step === 4 && (
                 <div className="flex-1 flex flex-col px-6 pt-4 pb-8">
                     <h2 className="text-xl font-bold text-center mb-1">Completa tu perfil</h2>
                     <p className="text-center text-sm text-[#6b7280] mb-6">+100 pts si completas todos los datos</p>
@@ -371,8 +469,8 @@ export default function BienvenidaPage() {
                 </div>
             )}
 
-            {/* Step 4: Push Notifications */}
-            {step === 4 && (
+            {/* Step 5: Push Notifications */}
+            {step === 5 && (
                 <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
                     <div className="w-16 h-16 bg-[#F5F0E8] rounded-full flex items-center justify-center mb-4">
                         <Bell className="w-8 h-8 text-[#2E5A4C]" />
@@ -396,7 +494,7 @@ export default function BienvenidaPage() {
                             Activar notificaciones
                         </button>
                         <button
-                            onClick={() => setStep(5)}
+                            onClick={() => setStep(6)}
                             className="w-full text-[#6b7280] text-sm font-medium py-2"
                         >
                             Ahora no — activar después
@@ -405,8 +503,8 @@ export default function BienvenidaPage() {
                 </div>
             )}
 
-            {/* Step 5: Final */}
-            {step === 5 && (
+            {/* Step 6: Final */}
+            {step === 6 && (
                 <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
                     <div className="text-5xl mb-4">✅</div>
                     <h2 className="text-2xl font-bold text-[#1A1A1A] mb-6">¡Todo listo!</h2>
