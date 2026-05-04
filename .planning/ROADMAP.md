@@ -30,8 +30,13 @@
   3. `SkeletonCard`, `EmptyState`, and `ErrorState` components are available in `src/components/ui/` and used in at least 3 routes each
   4. `sonner` toast notifications appear consistently across both PWA and Admin layouts, replacing all inline toast divs
   5. A grep for `throw new Error.*BUSINESS` in migrated action files returns zero matches
-**Plans**: TBD
+**Plans**: 3 plans
 **UI hint**: yes
+
+Plans:
+- [ ] `01-01-PLAN.md` — Error Handling Infrastructure (ActionResult, safeAction, mapError + migrate actions-revendedora.ts)
+- [ ] `01-02-PLAN.md` — UI State Components (SkeletonCard, EmptyState, ErrorState + integration into PWA and Admin routes)
+- [ ] `01-03-PLAN.md` — Toast System & Remaining Migrations (sonner install, Toaster in layouts, migrate admin actions, replace inline toasts)
 
 ### Phase 2: Core Business — Notifications, Leads & Config
 **Goal**: Admin operates autonomously — notifications use editable templates with variable substitution, leads from the landing page convert to verified accounts, and commission tiers / gamification levels / contracts are editable without developer intervention.
