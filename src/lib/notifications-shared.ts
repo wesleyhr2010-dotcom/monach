@@ -10,6 +10,7 @@ export type TipoNotificacao =
   | "acerto_confirmado"
   | "brinde_entregue"
   | "pontos_ganhos"
+  | "devolucao_recebida"
   | "documento_reprovado"
   | "documento_aprovado";
 

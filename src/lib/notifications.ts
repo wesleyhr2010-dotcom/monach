@@ -117,6 +117,31 @@ export async function enviarPushSePermitido(
 }
 
 /**
+ * Busca template ativo no banco e substitui variáveis.
+ * Retorna null se template inativo/ausente.
+ */
+export async function buscarTemplateAtivo(
+  tipo: string
+): Promise<{ titulo: string; mensagem: string } | null> {
+  try {
+    const template = await prisma.notificacaoTemplate.findFirst({
+      where: { tipo, ativo: true },
+      select: { titulo_es: true, body_es: true },
+    });
+
+    if (!template) return null;
+
+    return {
+      titulo: template.titulo_es,
+      mensagem: template.body_es,
+    };
+  } catch (err) {
+    console.error("[buscarTemplateAtivo] Erro:", err instanceof Error ? err.message : err);
+    return null;
+  }
+}
+
+/**
  * Combinação completa: persiste notificação + envia push condicional.
  * Retorna a notificação criada (ou null em caso de erro no banco).
  */
@@ -138,4 +163,52 @@ export async function notificarRevendedora(
   }
 
   return notif;
+}
+
+/**
+ * Envia notificação usando template do banco com substituição de variáveis.
+ * Se template inativo/ausente, usa fallback (não envia nada).
+ * Falhas na notificação não quebram o fluxo principal.
+ */
+export async function notificarComTemplate(params: {
+  reseller_id: string;
+  auth_user_id?: string | null;
+  tipo: import("./notifications-shared").TipoNotificacao;
+  variaveis: Record<string, unknown>;
+  fallbackTitulo: string;
+  fallbackMensagem: string;
+  dados?: import("./notifications-shared").DadosNotificacao;
+}) {
+  try {
+    const template = await buscarTemplateAtivo(params.tipo);
+
+    if (!template) {
+      // Template inativo/ausente: não enviar (fallback removido por design)
+      return null;
+    }
+
+    const whitelist = (await import("./notifications-shared")).VARIAVEIS_POR_TIPO[params.tipo];
+    const titulo = (await import("./notifications-shared")).substituirVariaveis(
+      template.titulo,
+      params.variaveis,
+      whitelist
+    );
+    const mensagem = (await import("./notifications-shared")).substituirVariaveis(
+      template.mensagem,
+      params.variaveis,
+      whitelist
+    );
+
+    return notificarRevendedora({
+      reseller_id: params.reseller_id,
+      tipo: params.tipo,
+      titulo,
+      mensagem,
+      dados: params.dados,
+      auth_user_id: params.auth_user_id,
+    });
+  } catch (err) {
+    console.error("[notificarComTemplate] Erro:", err instanceof Error ? err.message : err);
+    return null;
+  }
 }

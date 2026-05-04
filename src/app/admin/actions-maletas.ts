@@ -7,7 +7,7 @@ export type { MaletaListItem, MaletaDetail, MaletaItemDetail } from "@/lib/types
 import { mapMaletaToListItem, mapMaletaToDetail } from "@/lib/mappers/maleta.mapper";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { awardPoints } from "@/lib/gamificacao";
-import { notificarRevendedora } from "@/lib/notifications";
+import { notificarRevendedora, notificarComTemplate } from "@/lib/notifications";
 import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validators/maleta.schema";
 import { safeAction } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
@@ -638,34 +638,53 @@ export async function conferirEFecharMaleta(
             maximumFractionDigits: 0,
         }).format(comissaoRevendedora);
 
-        await notificarRevendedora({
+        const resellerNome = maleta.reseller?.id
+            ? (await prisma.reseller.findUnique({ where: { id: maleta.reseller.id }, select: { name: true } }))?.name ?? ""
+            : "";
+
+        await notificarComTemplate({
             reseller_id: maleta.reseller.id,
-            tipo: "acerto_confirmado",
-            titulo: "Acerto confirmado",
-            mensagem: `¡Listo! Tu consig. #${maleta.numero} fue confirmada. Comisión: ${comissaoStr}.`,
-            dados: { cta_url: `/app/maleta/${maleta.id}`, maleta_id: maleta.id },
             auth_user_id: maleta.reseller.auth_user_id,
+            tipo: "acerto_confirmado",
+            variaveis: {
+                maleta_id: maleta.numero ?? maleta.id,
+                valor_comissao: comissaoStr,
+                nome_revendedora: resellerNome,
+            },
+            fallbackTitulo: "Acerto confirmado",
+            fallbackMensagem: `¡Listo! Tu consig. #${maleta.numero} fue confirmada. Comisión: ${comissaoStr}.`,
+            dados: { cta_url: `/app/maleta/${maleta.id}`, maleta_id: maleta.id },
         });
 
         // Notificações de pontos (best-effort)
         if (pontosDevolucao) {
-            await notificarRevendedora({
+            await notificarComTemplate({
                 reseller_id: maleta.reseller.id,
-                tipo: "pontos_ganhos",
-                titulo: "¡Puntos ganados!",
-                mensagem: `¡Ganaste ${pontosDevolucao.pontos} puntos! ${pontosDevolucao.descricao}`,
-                dados: { pontos: pontosDevolucao.pontos, motivo: pontosDevolucao.descricao },
                 auth_user_id: maleta.reseller.auth_user_id,
+                tipo: "pontos_ganhos",
+                variaveis: {
+                    pontos: pontosDevolucao.pontos,
+                    motivo: pontosDevolucao.descricao,
+                    nome_revendedora: resellerNome,
+                },
+                fallbackTitulo: "¡Puntos ganados!",
+                fallbackMensagem: `¡Ganaste ${pontosDevolucao.pontos} puntos! ${pontosDevolucao.descricao}`,
+                dados: { pontos: pontosDevolucao.pontos, motivo: pontosDevolucao.descricao },
             });
         }
         if (pontosCompleta) {
-            await notificarRevendedora({
+            await notificarComTemplate({
                 reseller_id: maleta.reseller.id,
-                tipo: "pontos_ganhos",
-                titulo: "¡Puntos ganados!",
-                mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
-                dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
                 auth_user_id: maleta.reseller.auth_user_id,
+                tipo: "pontos_ganhos",
+                variaveis: {
+                    pontos: pontosCompleta.pontos,
+                    motivo: pontosCompleta.descricao,
+                    nome_revendedora: resellerNome,
+                },
+                fallbackTitulo: "¡Puntos ganados!",
+                fallbackMensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
+                dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
             });
         }
 

@@ -7,7 +7,7 @@ import { safeAction } from "@/lib/action-utils";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
-import { notificarRevendedora } from "@/lib/notifications";
+import { notificarRevendedora, notificarComTemplate } from "@/lib/notifications";
 
 function getMonthBounds() {
     const now = new Date();
@@ -345,21 +345,39 @@ export async function registrarVenda(rawInput: {
             return { pontosVenda, pontosCompleta };
         });
 
+        // Fetch reseller name for template substitution
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: { name: true, auth_user_id: true },
+        });
+
         if (pontosVenda) {
-            await notificarRevendedora({
+            await notificarComTemplate({
                 reseller_id: resellerId,
+                auth_user_id: reseller?.auth_user_id,
                 tipo: "pontos_ganhos",
-                titulo: "¡Puntos ganados!",
-                mensagem: `¡Ganaste ${pontosVenda.pontos} puntos! ${pontosVenda.descricao}`,
+                variaveis: {
+                    pontos: pontosVenda.pontos,
+                    motivo: pontosVenda.descricao,
+                    nome_revendedora: reseller?.name ?? "",
+                },
+                fallbackTitulo: "¡Puntos ganados!",
+                fallbackMensagem: `¡Ganaste ${pontosVenda.pontos} puntos! ${pontosVenda.descricao}`,
                 dados: { pontos: pontosVenda.pontos, motivo: pontosVenda.descricao },
             });
         }
         if (pontosCompleta) {
-            await notificarRevendedora({
+            await notificarComTemplate({
                 reseller_id: resellerId,
+                auth_user_id: reseller?.auth_user_id,
                 tipo: "pontos_ganhos",
-                titulo: "¡Puntos ganados!",
-                mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
+                variaveis: {
+                    pontos: pontosCompleta.pontos,
+                    motivo: pontosCompleta.descricao,
+                    nome_revendedora: reseller?.name ?? "",
+                },
+                fallbackTitulo: "¡Puntos ganados!",
+                fallbackMensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
                 dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
             });
         }
@@ -397,6 +415,28 @@ export async function submitDevolucao(input: {
                     comprovante_devolucao_url: input.comprovante_url,
                 },
             });
+        });
+
+        // Notificar revendedora (template)
+        const maletaInfo = await prisma.maleta.findUnique({
+            where: { id: input.maleta_id },
+            select: { numero: true },
+        });
+        const resellerDev = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: { name: true, auth_user_id: true },
+        });
+        await notificarComTemplate({
+            reseller_id: resellerId,
+            auth_user_id: resellerDev?.auth_user_id,
+            tipo: "devolucao_recebida",
+            variaveis: {
+                maleta_id: maletaInfo?.numero ?? input.maleta_id,
+                nome_revendedora: resellerDev?.name ?? "",
+            },
+            fallbackTitulo: "Devolución recibida",
+            fallbackMensagem: "Tu devolución fue recibida y está en revisión.",
+            dados: { maleta_id: input.maleta_id },
         });
 
         await notificarDevolucaoPendente(resellerId, input.maleta_id);
