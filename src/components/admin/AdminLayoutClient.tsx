@@ -11,9 +11,11 @@ import type { Role } from "@/lib/user";
 import {
     AlignJustify,
     ArrowLeft,
+    Award,
     Bell,
     Briefcase,
     CircleDollarSign,
+    FileText,
     Gift,
     Grid2x2,
     LayoutDashboard,
@@ -102,9 +104,21 @@ const allNavEntries: (NavItem | NavSection)[] = [
         roles: ["ADMIN"],
     },
     {
-        href: "/admin/comissoes",
+        href: "/admin/config/comissoes",
         label: "Comissões",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN"],
+    },
+    {
+        href: "/admin/config/niveis",
+        label: "Níveis",
+        icon: <Award size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN"],
+    },
+    {
+        href: "/admin/config/contratos",
+        label: "Contratos",
+        icon: <FileText size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
