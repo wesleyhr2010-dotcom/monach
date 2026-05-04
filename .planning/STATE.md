@@ -1,9 +1,9 @@
 ---
 milestone: v1.0
 name: Operação e Visibilidade
-status: planning
+status: ready-to-plan
 progress:
-  phases_total: 0
+  phases_total: 5
   phases_complete: 0
   plans_total: 0
   plans_complete: 0
@@ -16,29 +16,60 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Defining requirements for milestone v1.0
+**Current focus:** Phase 1 — Foundation (Error Handling & UI States)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 1 of 5 (Foundation — Error Handling & UI States)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-04 — Milestone v1.0 started
+Status: Ready to plan
+Last activity: 2026-05-04 — Roadmap created for milestone v1.0
+
+Progress: [░░░░░░░░░░] 0%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0
+- Average duration: —
+- Total execution time: —
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| — | — | — | — |
+
+**Recent Trend:**
+- Not started
 
 ## Accumulated Context
 
-<!-- Decisions, blockers, todos carried forward from previous milestones -->
+### Decisions
 
-(None — first milestone)
+- Phase structure: 5 phases derived from research recommendations and requirement dependencies
+- Phase 1 is pure foundation (TECH-01..06) to avoid partial ActionResult migration anti-pattern
+- NOTF moved to Phase 2 (not Phase 1) because it depends on ActionResult pattern and sonner from Phase 1
+- Phase 5 added as explicit validation/hardening phase (research PITFALLS.md detection checklist)
 
-## Pending Todos
+### Pending Todos
 
-<!-- Scoped todos that aren't tied to a specific phase yet -->
+None yet.
 
-(None)
+### Blockers/Concerns
 
-## Active Blockers
+None yet.
 
-<!-- Issues blocking any phase -->
+## Deferred Items
 
-(None)
+Items acknowledged and carried forward from previous milestone close:
+
+| Category | Item | Status | Deferred At |
+|----------|------|--------|-------------|
+| *(none — first milestone)* | | | |
+
+## Session Continuity
+
+Last session: 2026-05-04
+Stopped at: Roadmap created and written; awaiting Phase 1 planning
+Resume file: None

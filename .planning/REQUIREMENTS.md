@@ -104,15 +104,15 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| NOTF-01 | Phase 1 | Pending |
-| NOTF-02 | Phase 1 | Pending |
-| NOTF-03 | Phase 1 | Pending |
-| NOTF-04 | Phase 1 | Pending |
-| NOTF-05 | Phase 1 | Pending |
-| NOTF-06 | Phase 1 | Pending |
-| NOTF-07 | Phase 1 | Pending |
-| NOTF-08 | Phase 1 | Pending |
-| NOTF-09 | Phase 1 | Pending |
+| NOTF-01 | Phase 2 | Pending |
+| NOTF-02 | Phase 2 | Pending |
+| NOTF-03 | Phase 2 | Pending |
+| NOTF-04 | Phase 2 | Pending |
+| NOTF-05 | Phase 2 | Pending |
+| NOTF-06 | Phase 2 | Pending |
+| NOTF-07 | Phase 2 | Pending |
+| NOTF-08 | Phase 2 | Pending |
+| NOTF-09 | Phase 2 | Pending |
 | LEAD-01 | Phase 2 | Pending |
 | LEAD-02 | Phase 2 | Pending |
 | LEAD-03 | Phase 2 | Pending |
@@ -155,10 +155,10 @@
 | TECH-10 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 52 total
-- Mapped to phases: 52
+- v1 requirements: 49 total (NOTF 9 + LEAD 7 + DESE 9 + DASH 8 + CONF 6 + TECH 10)
+- Mapped to phases: 49
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-04*
-*Last updated: 2026-05-04 after initial definition*
+*Last updated: 2026-05-04 after roadmap creation (phase mapping revised)*
