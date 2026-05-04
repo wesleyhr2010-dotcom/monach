@@ -2,10 +2,10 @@ import { describe, it, expect } from "vitest";
 import {
   substituirVariaveis,
   VARIAVEIS_POR_TIPO,
-  sanitizeTemplateVars,
   htmlToPlainText,
   mapTipoParaWhitelist,
-} from "@/lib/notifications";
+} from "@/lib/notifications-shared";
+import { sanitizeTemplateVars } from "@/lib/notifications-server";
 
 describe("substituirVariaveis", () => {
   it("substitui variáveis simples", () => {

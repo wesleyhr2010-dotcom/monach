@@ -9,7 +9,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
-import { VARIAVEIS_POR_TIPO, mapTipoParaWhitelist } from "@/lib/notifications";
+import { VARIAVEIS_POR_TIPO, mapTipoParaWhitelist } from "@/lib/notifications-shared";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
 
 interface TemplateEditorProps {
