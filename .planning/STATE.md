@@ -4,9 +4,9 @@ name: Operação e Visibilidade
 status: in-progress
 progress:
   phases_total: 5
-  phases_complete: 2
+  phases_complete: 3
   plans_total: 13
-  plans_complete: 8
+  plans_complete: 10
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -16,32 +16,34 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 3 — READY TO EXECUTE
+**Current focus:** Phase 3 — COMPLETE
 
 ## Current Position
 
-Phase: 3 of 5 (TBD — desbloqueada pela conclusão da Phase 2)
+Phase: 3 of 5 (completed)
 Plan: —
-Status: Ready
-Last activity: 2026-05-04 — Phase 2 completed (5/5 plans, ~4h)
+Status: Complete
+Last activity: 2026-05-04 — Phase 3 completed (2/2 plans, ~2h)
 
-Progress: [████░░░░░░] 40% (2/5 phases) | 61.5% plans (8/13)
+Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13)
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 3
+- Total plans completed: 10
 - Average duration: ~50 min/plan
-- Total execution time: ~2.5h
+- Total execution time: ~4.5h
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 1. Foundation | 3 | ~2.5h | ~50 min |
+| 2. Core Business | 5 | ~4h | ~48 min |
+| 3. Visibility & Analytics | 2 | ~2h | ~60 min |
 
 **Recent Trend:**
-- Phase 1 completed smoothly — all 3 plans delivered on 2026-05-04
+- Phase 3 completed smoothly — reseller dashboard with recharts and admin period filters delivered
 
 ## Accumulated Context
 
@@ -55,6 +57,8 @@ Progress: [████░░░░░░] 40% (2/5 phases) | 61.5% plans (8/13)
 - **Schema drift handled inline**: added `email` to `RevendedoraLead` (02-02) and `contrato_aceite_em` to `Reseller` (02-04) via migrations
 - **Build error resolved via module split**: `notifications.ts` → `notifications-shared.ts` (client-safe) + `notifications-server.ts` (DOMPurify) to avoid `node:module` client bundle error
 - **Cron jobs Edge Functions** already had template-aware `_shared/notifications.ts` helper — no changes needed for 02-05
+- **Phase 3 executed inline** (2 plans, wave 1) — no subagent spawning needed for small phase
+- **recharts** chosen for PWA bar chart — only used on `/app/desempenho`, acceptable bundle impact
 
 ### Pending Todos
 
@@ -75,5 +79,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Phase 2 complete; Phase 3 ready to execute
-Resume file: .planning/phases/02-core-business-notifications-leads-config/02-05-SUMMARY.md
+Stopped at: Phase 3 complete; Phase 4 ready to plan
+Resume file: .planning/phases/03-visibility-analytics-reseller-admin-dashboards/03-02-SUMMARY.md

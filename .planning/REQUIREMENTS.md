@@ -30,26 +30,26 @@
 
 ### Desempenho da Revendedora (DESE)
 
-- [ ] **DESE-01**: Rota `/app/desempenho` existe e é acessível pelo menu "Más" e pelo link "Análisis" da home
-- [ ] **DESE-02**: 4 cards de métricas: Acessos ao Catálogo, Visitantes Únicos, Clipes no WhatsApp, Peças Vendidas
-- [ ] **DESE-03**: Seletor de período: Esta Semana / Este Mês / Últimos 30 dias / Este Ano
-- [ ] **DESE-04**: Tendência percentual vs período anterior (verde ↑, vermelho ↓, "Nuevo" se período anterior = 0)
-- [ ] **DESE-05**: Gráfico de barras de visitas diárias (recharts) com tooltip personalizado
-- [ ] **DESE-06**: Lista dos 10 produtos mais populares com imagem, visitas e vendidos
-- [ ] **DESE-07**: Server Action `getMetricasDesempenho(resellerId, rango)` consulta `AnalyticsDiario` para ranges > 7 dias; `AnalyticsAcesso` apenas para ranges curtos
-- [ ] **DESE-08**: Dados respeitam RBAC — revendedora só vê seus próprios dados
-- [ ] **DESE-09**: Estado vazio (sem acessos) exibe mensagem amigável em vez de cards zerados
+- [x] **DESE-01**: Rota `/app/desempenho` existe e é acessível pelo menu "Más" e pelo link "Análisis" da home
+- [x] **DESE-02**: 4 cards de métricas: Acessos ao Catálogo, Visitantes Únicos, Clipes no WhatsApp, Peças Vendidas
+- [x] **DESE-03**: Seletor de período: Esta Semana / Este Mes / Últimos 30 dias / Este Ano
+- [x] **DESE-04**: Tendência percentual vs período anterior (verde ↑, vermelho ↓, "Nuevo" se período anterior = 0)
+- [x] **DESE-05**: Gráfico de barras de visitas diárias (recharts) com tooltip personalizado
+- [x] **DESE-06**: Lista dos 10 produtos mais populares com imagem, visitas e vendidos
+- [x] **DESE-07**: Server Action `getMetricasDesempenho(resellerId, rango)` consulta `AnalyticsDiario` para ranges > 7 dias; `AnalyticsAcesso` apenas para ranges curtos
+- [x] **DESE-08**: Dados respeitam RBAC — revendedora só vê seus próprios dados
+- [x] **DESE-09**: Estado vazio (sem acessos) exibe mensagem amigável em vez de cards zerados
 
 ### Dashboard Admin (DASH)
 
-- [ ] **DASH-01**: KPIs globais visíveis para ADMIN: faturamento total, revendedoras ativas, maletas em circulação, taxa de conversão
-- [ ] **DASH-02**: KPIs por grupo visíveis para COLABORADORA: faturamento do grupo, revendedoras ativas do grupo, comissão total
-- [ ] **DASH-03**: Filtro de período (7d/30d/3m/12m) reflete em todos os KPIs
-- [ ] **DASH-04**: Gráfico de fluxo de maletas (barras) por status ao longo do tempo
-- [ ] **DASH-05**: Ranking de produtos mais vendidos (top 10)
-- [ ] **DASH-06**: Alertas de prazo (maletas com ≤7 dias para vencimento)
-- [ ] **DASH-07**: Scope seguro — COLABORADORA só vê dados do seu grupo via `getResellerScope`
-- [ ] **DASH-08**: Estados de loading com skeleton cards consistentes
+- [x] **DASH-01**: KPIs globais visíveis para ADMIN: faturamento total, revendedoras ativas, maletas em circulação, taxa de conversão
+- [x] **DASH-02**: KPIs por grupo visíveis para COLABORADORA: faturamento do grupo, revendedoras ativas do grupo, comissão total
+- [x] **DASH-03**: Filtro de período (7d/30d/3m/12m) reflete em todos os KPIs
+- [x] **DASH-04**: Gráfico de fluxo de maletas (barras) por status ao longo do tempo
+- [x] **DASH-05**: Ranking de produtos mais vendidos (top 10)
+- [x] **DASH-06**: Alertas de prazo (maletas com ≤7 dias para vencimento)
+- [x] **DASH-07**: Scope seguro — COLABORADORA só vê dados do seu grupo via `getResellerScope`
+- [x] **DASH-08**: Estados de loading com skeleton cards consistentes
 
 ### Configurações Globais (CONF)
 
@@ -120,23 +120,23 @@
 | LEAD-05 | Phase 2 | Pending |
 | LEAD-06 | Phase 2 | Pending |
 | LEAD-07 | Phase 2 | Pending |
-| DESE-01 | Phase 3 | Pending |
-| DESE-02 | Phase 3 | Pending |
-| DESE-03 | Phase 3 | Pending |
-| DESE-04 | Phase 3 | Pending |
-| DESE-05 | Phase 3 | Pending |
-| DESE-06 | Phase 3 | Pending |
-| DESE-07 | Phase 3 | Pending |
-| DESE-08 | Phase 3 | Pending |
-| DESE-09 | Phase 3 | Pending |
-| DASH-01 | Phase 3 | Pending |
-| DASH-02 | Phase 3 | Pending |
-| DASH-03 | Phase 3 | Pending |
-| DASH-04 | Phase 3 | Pending |
-| DASH-05 | Phase 3 | Pending |
-| DASH-06 | Phase 3 | Pending |
-| DASH-07 | Phase 3 | Pending |
-| DASH-08 | Phase 3 | Pending |
+| DESE-01 | Phase 3 | Complete |
+| DESE-02 | Phase 3 | Complete |
+| DESE-03 | Phase 3 | Complete |
+| DESE-04 | Phase 3 | Complete |
+| DESE-05 | Phase 3 | Complete |
+| DESE-06 | Phase 3 | Complete |
+| DESE-07 | Phase 3 | Complete |
+| DESE-08 | Phase 3 | Complete |
+| DESE-09 | Phase 3 | Complete |
+| DASH-01 | Phase 3 | Complete |
+| DASH-02 | Phase 3 | Complete |
+| DASH-03 | Phase 3 | Complete |
+| DASH-04 | Phase 3 | Complete |
+| DASH-05 | Phase 3 | Complete |
+| DASH-06 | Phase 3 | Complete |
+| DASH-07 | Phase 3 | Complete |
+| DASH-08 | Phase 3 | Complete |
 | CONF-01 | Phase 2 | Pending |
 | CONF-02 | Phase 2 | Pending |
 | CONF-03 | Phase 2 | Pending |
@@ -161,4 +161,4 @@
 
 ---
 *Requirements defined: 2026-05-04*
-*Last updated: 2026-05-04 — Phase 1 requirements TECH-01..TECH-06 marked complete*
+*Last updated: 2026-05-04 — Phase 3 requirements DESE-01..DESE-09 and DASH-01..DASH-08 marked complete*

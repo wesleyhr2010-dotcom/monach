@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: Foundation — Error Handling & UI States** - Standardized error handling, reusable UI state components, and unified toast system
 - [x] **Phase 2: Core Business — Notifications, Leads & Config** - Template-driven notifications, lead approval pipeline, and editable admin configuration
-- [ ] **Phase 3: Visibility & Analytics — Reseller & Admin Dashboards** - Performance analytics for resellers and global KPI dashboard for admin
+- [x] **Phase 3: Visibility & Analytics — Reseller & Admin Dashboards** - Performance analytics for resellers and global KPI dashboard for admin
 - [ ] **Phase 4: Build Optimization & Polish** - ISR on public pages, build configuration, and cache invalidation
 - [ ] **Phase 5: Validation & Hardening** - Security, performance, and functional acceptance validation
 
@@ -72,8 +72,12 @@ Plans:
   6. COLABORADORA sees group-scoped KPIs (faturamento do grupo, revendedoras ativas do grupo, comissão total) — she cannot see data outside her group
   7. Admin dashboard includes period filter (7d/30d/3m/12m), maleta flow chart by status, product ranking (top 10), and deadline alerts (maletas with ≤7 days remaining)
   8. Dashboard loading states show skeleton cards consistent with the design system
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [x] `03-01-PLAN.md` — Reseller Performance Dashboard (`/app/desempenho` with metric cards, period filter, recharts bar chart, top products, empty states)
+- [x] `03-02-PLAN.md` — Admin Dashboard Polish (period filter on `/admin`, skeleton loading states, DASH requirements verification)
 
 ### Phase 4: Build Optimization & Polish
 **Goal**: Public pages serve via ISR for better performance; Vercel build is fast and reliable; all mutation Server Actions invalidate cache correctly.
@@ -110,8 +114,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 3/3 | Completed | 2026-05-04 |
-| 2. Core Business | 0/5 | Ready to execute | - |
-| 3. Visibility & Analytics | 0/TBD | Not started | - |
+| 2. Core Business | 5/5 | Completed | 2026-05-04 |
+| 3. Visibility & Analytics | 2/2 | Completed | 2026-05-04 |
 | 4. Build Optimization | 0/TBD | Not started | - |
 | 5. Validation & Hardening | 0/TBD | Not started | - |
 
@@ -139,5 +143,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 ---
 
 *Roadmap created: 2026-05-04*  
-*Last updated: 2026-05-04 — Phase 1 completed (3/3 plans)*  
+*Last updated: 2026-05-04 — Phase 3 completed (2/2 plans)*  
 *Milestone: v1.0 — Operação e Visibilidade*
