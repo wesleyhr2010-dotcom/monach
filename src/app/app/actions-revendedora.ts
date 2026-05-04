@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
+import { safeAction, ActionResult } from "@/lib/action-utils";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
@@ -15,126 +16,149 @@ function getMonthBounds() {
     return { start, end };
 }
 
-export async function getDashboardCompleto() {
-    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    if (!user.profileId) {
-        throw new Error("BUSINESS: Perfil no encontrado.");
-    }
+export async function getDashboardCompleto(): Promise<ActionResult<{
+    nome: string;
+    avatarUrl: string | null;
+    rank: string;
+    pontosSaldo: number;
+    faturamentoMes: number;
+    ganhosMes: number;
+    pecasVendidasMes: number;
+    maletaAtiva: { id: string; status: string; data_limite: Date | null } | null;
+    historicoMaletas: Array<{
+        id: string;
+        status: string;
+        data_limite: Date | null;
+        totalItens: number;
+        vendidos: number;
+    }>;
+    commissionInfo: {
+        tierAtual: { pct: number; min_sales_value: number } | null;
+        proximoTier: { pct: number; min_sales_value: number } | null;
+        tiers: Array<{ pct: number; min_sales_value: number }>;
+    };
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+        if (!user.profileId) {
+            throw new Error("Perfil no encontrado.");
+        }
 
-    const resellerId = user.profileId;
-    const { start, end } = getMonthBounds();
+        const resellerId = user.profileId;
+        const { start, end } = getMonthBounds();
 
-    // Todas as queries em paralelo — evita waterfall sequencial
-    const [reseller, vendasMes, pontosAggr, maletaAtiva, maletas, rank, allTiers] =
-        await Promise.all([
-            prisma.reseller.findUnique({
-                where: { id: resellerId },
-                select: { name: true, avatar_url: true },
-            }),
-            prisma.vendaMaleta.findMany({
-                where: {
-                    reseller_id: resellerId,
-                    created_at: { gte: start, lt: end },
-                },
-                select: { quantidade: true, preco_unitario: true },
-            }),
-            prisma.pontosExtrato.aggregate({
-                where: { reseller_id: resellerId },
-                _sum: { pontos: true },
-            }),
-            prisma.maleta.findFirst({
-                where: {
-                    reseller_id: resellerId,
-                    status: { in: ["ativa", "atrasada"] },
-                },
-                orderBy: { created_at: "desc" },
-                select: { id: true, status: true, data_limite: true },
-            }),
-            prisma.maleta.findMany({
-                where: { reseller_id: resellerId },
-                include: {
-                    itens: {
-                        select: {
-                            quantidade_enviada: true,
-                            quantidade_vendida: true,
+        const [reseller, vendasMes, pontosAggr, maletaAtiva, maletas, rank, allTiers] =
+            await Promise.all([
+                prisma.reseller.findUnique({
+                    where: { id: resellerId },
+                    select: { name: true, avatar_url: true },
+                }),
+                prisma.vendaMaleta.findMany({
+                    where: {
+                        reseller_id: resellerId,
+                        created_at: { gte: start, lt: end },
+                    },
+                    select: { quantidade: true, preco_unitario: true },
+                }),
+                prisma.pontosExtrato.aggregate({
+                    where: { reseller_id: resellerId },
+                    _sum: { pontos: true },
+                }),
+                prisma.maleta.findFirst({
+                    where: {
+                        reseller_id: resellerId,
+                        status: { in: ["ativa", "atrasada"] },
+                    },
+                    orderBy: { created_at: "desc" },
+                    select: { id: true, status: true, data_limite: true },
+                }),
+                prisma.maleta.findMany({
+                    where: { reseller_id: resellerId },
+                    include: {
+                        itens: {
+                            select: {
+                                quantidade_enviada: true,
+                                quantidade_vendida: true,
+                            },
                         },
                     },
-                },
-                orderBy: { created_at: "desc" },
-            }),
-            getRankAtual(resellerId),
-            prisma.commissionTier.findMany({
-                where: { ativo: true },
-                orderBy: { min_sales_value: "asc" },
-            }),
-        ]);
+                    orderBy: { created_at: "desc" },
+                }),
+                getRankAtual(resellerId),
+                prisma.commissionTier.findMany({
+                    where: { ativo: true },
+                    orderBy: { min_sales_value: "asc" },
+                }),
+            ]);
 
-    const pontosSaldo = pontosAggr._sum.pontos ?? 0;
+        const pontosSaldo = pontosAggr._sum.pontos ?? 0;
 
-    const faturamentoMes = vendasMes.reduce(
-        (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
-        0
-    );
-    const pecasVendidasMes = vendasMes.reduce((sum, v) => sum + v.quantidade, 0);
+        const faturamentoMes = vendasMes.reduce(
+            (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
+            0
+        );
+        const pecasVendidasMes = vendasMes.reduce((sum, v) => sum + v.quantidade, 0);
 
-    const commissionInfo = await computeCommissionPct(faturamentoMes);
-    const ganhosMes = faturamentoMes * ((commissionInfo.tierAtual?.pct ?? 0) / 100);
+        const commissionInfo = await computeCommissionPct(faturamentoMes);
+        const ganhosMes = faturamentoMes * ((commissionInfo.tierAtual?.pct ?? 0) / 100);
 
-    const historicoMaletas = maletas.map((m) => ({
-        id: m.id,
-        status: m.status,
-        data_limite: m.data_limite,
-        totalItens: m.itens.reduce((acc, item) => acc + item.quantidade_enviada, 0),
-        vendidos: m.itens.reduce((acc, item) => acc + item.quantidade_vendida, 0),
-    }));
+        const historicoMaletas = maletas.map((m) => ({
+            id: m.id,
+            status: m.status,
+            data_limite: m.data_limite,
+            totalItens: m.itens.reduce((acc, item) => acc + item.quantidade_enviada, 0),
+            vendidos: m.itens.reduce((acc, item) => acc + item.quantidade_vendida, 0),
+        }));
 
-    const tiers = allTiers.map((t) => ({
-        pct: Number(t.pct),
-        min_sales_value: Number(t.min_sales_value),
-    }));
+        const tiers = allTiers.map((t) => ({
+            pct: Number(t.pct),
+            min_sales_value: Number(t.min_sales_value),
+        }));
 
-    return {
-        nome: reseller?.name || "Revendedora",
-        avatarUrl: reseller?.avatar_url || null,
-        rank,
-        pontosSaldo,
-        faturamentoMes,
-        ganhosMes,
-        pecasVendidasMes,
-        maletaAtiva,
-        historicoMaletas,
-        commissionInfo: { ...commissionInfo, tiers },
-    };
+        return {
+            nome: reseller?.name || "Revendedora",
+            avatarUrl: reseller?.avatar_url || null,
+            rank,
+            pontosSaldo,
+            faturamentoMes,
+            ganhosMes,
+            pecasVendidasMes,
+            maletaAtiva,
+            historicoMaletas,
+            commissionInfo: { ...commissionInfo, tiers },
+        };
+    });
 }
 
 // ============================================
 // Get active maleta for a reseller
 // ============================================
-export async function getMinhasMaletas(resellerId: string) {
-    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    // Prevenir IDOR: garantir que a revendedora só veja seus próprios dados
-    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
-        throw new Error("BUSINESS: No tienes permiso para ver estas consignaciones.");
-    }
-    if (user.role === "COLABORADORA" && user.profileId) {
-        await assertIsInGroup(resellerId, user.profileId);
-    }
-    const maletas = await prisma.maleta.findMany({
-        where: { reseller_id: resellerId },
-        include: {
-            itens: {
-                include: {
-                    product_variant: {
-                        include: {
-                            product: { select: { id: true, name: true, images: true, price: true } },
+export async function getMinhasMaletas(resellerId: string): Promise<ActionResult<Awaited<ReturnType<typeof prisma.maleta.findMany>>>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+        if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+            throw new Error("No tienes permiso para ver estas consignaciones.");
+        }
+        if (user.role === "COLABORADORA" && user.profileId) {
+            await assertIsInGroup(resellerId, user.profileId);
+        }
+        const maletas = await prisma.maleta.findMany({
+            where: { reseller_id: resellerId },
+            include: {
+                itens: {
+                    include: {
+                        product_variant: {
+                            include: {
+                                product: { select: { id: true, name: true, images: true, price: true } },
+                            },
                         },
                     },
                 },
             },
-        },
-        orderBy: { created_at: "desc" },
+            orderBy: { created_at: "desc" },
+        });
+        return maletas;
     });
-    return maletas;
 }
 
 // ============================================
@@ -144,137 +168,148 @@ export async function registrarVendaMultipla(inputData: {
     cliente_nome: string;
     cliente_telefone: string;
     itens: Array<{ maleta_item_id: string; quantidade: number }>;
-}) {
-    const user = await requireAuth(["REVENDEDORA"]);
-    const resellerId = user.profileId!;
+}): Promise<ActionResult<{ success: true }>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        const resellerId = user.profileId!;
 
-    const data = registrarVendaMultiplaSchema.parse(inputData);
+        const data = registrarVendaMultiplaSchema.parse(inputData);
 
-    const pontos = await prisma.$transaction(async (tx) => {
-        for (const cartItem of data.itens) {
-            const maletaItem = await tx.maletaItem.findFirstOrThrow({
-                where: {
-                    id: cartItem.maleta_item_id,
-                    maleta: { reseller_id: resellerId },
-                },
-            });
+        const pontos = await prisma.$transaction(async (tx) => {
+            for (const cartItem of data.itens) {
+                const maletaItem = await tx.maletaItem.findFirstOrThrow({
+                    where: {
+                        id: cartItem.maleta_item_id,
+                        maleta: { reseller_id: resellerId },
+                    },
+                });
 
-            // Pessimistic Lock for concurrency
-            await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${maletaItem.id}::uuid FOR UPDATE`;
+                await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${maletaItem.id}::uuid FOR UPDATE`;
 
-            const disponivel = maletaItem.quantidade_enviada - maletaItem.quantidade_vendida;
-            if (cartItem.quantidade > disponivel) {
-                throw new Error(`Apenas ${disponivel} peça(s) disponível(is) para o item (SKU limit).`);
+                const disponivel = maletaItem.quantidade_enviada - maletaItem.quantidade_vendida;
+                if (cartItem.quantidade > disponivel) {
+                    throw new Error(`Apenas ${disponivel} peça(s) disponível(is) para o item (SKU limit).`);
+                }
+
+                await tx.vendaMaleta.create({
+                    data: {
+                        maleta_id: maletaItem.maleta_id,
+                        maleta_item_id: maletaItem.id,
+                        reseller_id: resellerId,
+                        cliente_nome: data.cliente_nome,
+                        cliente_telefone: data.cliente_telefone,
+                        quantidade: cartItem.quantidade,
+                        preco_unitario: maletaItem.preco_fixado ?? 0,
+                    },
+                });
+
+                await tx.maletaItem.update({
+                    where: { id: maletaItem.id },
+                    data: { quantidade_vendida: { increment: cartItem.quantidade } },
+                });
             }
 
-            await tx.vendaMaleta.create({
-                data: {
-                    maleta_id: maletaItem.maleta_id,
-                    maleta_item_id: maletaItem.id,
-                    reseller_id: resellerId,
-                    cliente_nome: data.cliente_nome,
-                    cliente_telefone: data.cliente_telefone,
-                    quantidade: cartItem.quantidade,
-                    preco_unitario: maletaItem.preco_fixado ?? 0,
-                },
-            });
+            return awardPoints(resellerId, 'venda_multipla_maleta', tx);
+        });
 
-            await tx.maletaItem.update({
-                where: { id: maletaItem.id },
-                data: { quantidade_vendida: { increment: cartItem.quantidade } },
+        if (pontos) {
+            await notificarRevendedora({
+                reseller_id: resellerId,
+                tipo: "pontos_ganhos",
+                titulo: "¡Puntos ganados!",
+                mensagem: `¡Ganaste ${pontos.pontos} puntos! ${pontos.descricao}`,
+                dados: { pontos: pontos.pontos, motivo: pontos.descricao },
             });
         }
-        
-        return awardPoints(resellerId, 'venda_multipla_maleta', tx);
+
+        return { success: true };
     });
-
-    if (pontos) {
-        await notificarRevendedora({
-            reseller_id: resellerId,
-            tipo: "pontos_ganhos",
-            titulo: "¡Puntos ganados!",
-            mensagem: `¡Ganaste ${pontos.pontos} puntos! ${pontos.descricao}`,
-            dados: { pontos: pontos.pontos, motivo: pontos.descricao },
-        });
-    }
-
-    return { success: true };
 }
 
 // ============================================
 // Get all sales for a reseller
 // ============================================
-export async function getMinhasVendas(resellerId: string) {
-    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
-        throw new Error("BUSINESS: No tienes permiso para ver estas ventas.");
-    }
-    if (user.role === "COLABORADORA" && user.profileId) {
-        await assertIsInGroup(resellerId, user.profileId);
-    }
-    const vendas = await prisma.vendaMaleta.findMany({
-        where: {
-            maleta_item: {
-                maleta: { reseller_id: resellerId },
+export async function getMinhasVendas(resellerId: string): Promise<ActionResult<Awaited<ReturnType<typeof prisma.vendaMaleta.findMany>>>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+        if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+            throw new Error("No tienes permiso para ver estas ventas.");
+        }
+        if (user.role === "COLABORADORA" && user.profileId) {
+            await assertIsInGroup(resellerId, user.profileId);
+        }
+        const vendas = await prisma.vendaMaleta.findMany({
+            where: {
+                maleta_item: {
+                    maleta: { reseller_id: resellerId },
+                },
             },
-        },
-        include: {
-            maleta_item: {
-                include: {
-                    product_variant: {
-                        include: {
-                            product: { select: { name: true, images: true } },
+            include: {
+                maleta_item: {
+                    include: {
+                        product_variant: {
+                            include: {
+                                product: { select: { name: true, images: true } },
+                            },
                         },
                     },
                 },
             },
-        },
-        orderBy: { created_at: "desc" },
+            orderBy: { created_at: "desc" },
+        });
+        return vendas;
     });
-    return vendas;
 }
 
 // ============================================
 // Financial summary
 // ============================================
-export async function getResumoFinanceiro(resellerId: string) {
-    const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
-    if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
-        throw new Error("BUSINESS: No tienes permiso para ver este resumen.");
-    }
-    if (user.role === "COLABORADORA" && user.profileId) {
-        await assertIsInGroup(resellerId, user.profileId);
-    }
-    const reseller = await prisma.reseller.findUnique({
-        where: { id: resellerId },
-        select: { taxa_comissao: true },
-    });
+export async function getResumoFinanceiro(resellerId: string): Promise<ActionResult<{
+    totalVendido: number;
+    comissaoPct: number;
+    comissaoValor: number;
+    aDevolver: number;
+    totalVendas: number;
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
+        if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
+            throw new Error("No tienes permiso para ver este resumen.");
+        }
+        if (user.role === "COLABORADORA" && user.profileId) {
+            await assertIsInGroup(resellerId, user.profileId);
+        }
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: { taxa_comissao: true },
+        });
 
-    const vendas = await prisma.vendaMaleta.findMany({
-        where: {
-            maleta_item: {
-                maleta: { reseller_id: resellerId },
+        const vendas = await prisma.vendaMaleta.findMany({
+            where: {
+                maleta_item: {
+                    maleta: { reseller_id: resellerId },
+                },
             },
-        },
-        select: { quantidade: true, preco_unitario: true },
+            select: { quantidade: true, preco_unitario: true },
+        });
+
+        const totalVendido = vendas.reduce(
+            (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
+            0
+        );
+
+        const comissaoPct = Number(reseller?.taxa_comissao || 0);
+        const comissaoValor = totalVendido * (comissaoPct / 100);
+        const aDevolver = totalVendido - comissaoValor;
+
+        return {
+            totalVendido,
+            comissaoPct,
+            comissaoValor,
+            aDevolver,
+            totalVendas: vendas.length,
+        };
     });
-
-    const totalVendido = vendas.reduce(
-        (sum, v) => sum + v.quantidade * Number(v.preco_unitario),
-        0
-    );
-
-    const comissaoPct = Number(reseller?.taxa_comissao || 0);
-    const comissaoValor = totalVendido * (comissaoPct / 100);
-    const aDevolver = totalVendido - comissaoValor;
-
-    return {
-        totalVendido,
-        comissaoPct,
-        comissaoValor,
-        aDevolver,
-        totalVendas: vendas.length,
-    };
 }
 
 // ============================================
@@ -285,81 +320,79 @@ export async function registrarVenda(rawInput: {
     cliente_nome: string;
     cliente_telefone: string;
     preco_unitario?: number;
-}) {
-    const user = await requireAuth(["REVENDEDORA"]);
-    const resellerId = user.profileId!;
+}): Promise<ActionResult<{ success: true }>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        const resellerId = user.profileId!;
 
-    const input = registrarVendaSchema.parse(rawInput);
+        const input = registrarVendaSchema.parse(rawInput);
 
-    const { pontosVenda, pontosCompleta } = await prisma.$transaction(async (tx) => {
-        const item = await tx.maletaItem.findFirstOrThrow({
-            where: {
-                id: input.maleta_item_id,
-                maleta: { reseller_id: resellerId },
-            },
-        });
+        const { pontosVenda, pontosCompleta } = await prisma.$transaction(async (tx) => {
+            const item = await tx.maletaItem.findFirstOrThrow({
+                where: {
+                    id: input.maleta_item_id,
+                    maleta: { reseller_id: resellerId },
+                },
+            });
 
-        // Pessimistic Lock
-        await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${item.id}::uuid FOR UPDATE`;
+            await tx.$executeRaw`SELECT id FROM maleta_itens WHERE id = ${item.id}::uuid FOR UPDATE`;
 
-        if (item.quantidade_vendida >= item.quantidade_enviada) {
-            throw new Error("Este artículo ya no está disponible.");
-        }
+            if (item.quantidade_vendida >= item.quantidade_enviada) {
+                throw new Error("Este artículo ya no está disponible.");
+            }
 
-        await tx.vendaMaleta.create({
-            data: {
-                maleta_id: item.maleta_id,
-                maleta_item_id: item.id,
-                reseller_id: resellerId,
-                cliente_nome: input.cliente_nome,
-                cliente_telefone: input.cliente_telefone,
+            await tx.vendaMaleta.create({
+                data: {
+                    maleta_id: item.maleta_id,
+                    maleta_item_id: item.id,
+                    reseller_id: resellerId,
+                    cliente_nome: input.cliente_nome,
+                    cliente_telefone: input.cliente_telefone,
                     preco_unitario: item.preco_fixado ?? 0,
                     quantidade: 1,
-            },
+                },
+            });
+
+            await tx.maletaItem.update({
+                where: { id: item.id },
+                data: { quantidade_vendida: { increment: 1 } },
+            });
+
+            const pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
+
+            const allItems = await tx.maletaItem.findMany({
+                where: { maleta_id: item.maleta_id },
+            });
+
+            const todosVendidos = allItems.every(i => i.quantidade_vendida >= i.quantidade_enviada);
+            const pontosCompleta = todosVendidos
+                ? await awardPoints(resellerId, 'maleta_completa', tx)
+                : null;
+
+            return { pontosVenda, pontosCompleta };
         });
 
-        await tx.maletaItem.update({
-            where: { id: item.id },
-            data: { quantidade_vendida: { increment: 1 } },
-        });
+        if (pontosVenda) {
+            await notificarRevendedora({
+                reseller_id: resellerId,
+                tipo: "pontos_ganhos",
+                titulo: "¡Puntos ganados!",
+                mensagem: `¡Ganaste ${pontosVenda.pontos} puntos! ${pontosVenda.descricao}`,
+                dados: { pontos: pontosVenda.pontos, motivo: pontosVenda.descricao },
+            });
+        }
+        if (pontosCompleta) {
+            await notificarRevendedora({
+                reseller_id: resellerId,
+                tipo: "pontos_ganhos",
+                titulo: "¡Puntos ganados!",
+                mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
+                dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
+            });
+        }
 
-        // Recompensas da gamificação
-        const pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
-
-        // Verifica bônus de maleta completa
-        const allItems = await tx.maletaItem.findMany({
-            where: { maleta_id: item.maleta_id },
-        });
-
-        const todosVendidos = allItems.every(i => i.quantidade_vendida >= i.quantidade_enviada);
-        const pontosCompleta = todosVendidos
-            ? await awardPoints(resellerId, 'maleta_completa', tx)
-            : null;
-
-        return { pontosVenda, pontosCompleta };
+        return { success: true };
     });
-
-    // Notificações de pontos (best-effort fora da tx)
-    if (pontosVenda) {
-        await notificarRevendedora({
-            reseller_id: resellerId,
-            tipo: "pontos_ganhos",
-            titulo: "¡Puntos ganados!",
-            mensagem: `¡Ganaste ${pontosVenda.pontos} puntos! ${pontosVenda.descricao}`,
-            dados: { pontos: pontosVenda.pontos, motivo: pontosVenda.descricao },
-        });
-    }
-    if (pontosCompleta) {
-        await notificarRevendedora({
-            reseller_id: resellerId,
-            tipo: "pontos_ganhos",
-            titulo: "¡Puntos ganados!",
-            mensagem: `¡Ganaste ${pontosCompleta.pontos} puntos! ${pontosCompleta.descricao}`,
-            dados: { pontos: pontosCompleta.pontos, motivo: pontosCompleta.descricao },
-        });
-    }
-
-    return { success: true };
 }
 
 // ============================================
@@ -368,25 +401,22 @@ export async function registrarVenda(rawInput: {
 export async function submitDevolucao(input: {
     maleta_id: string;
     comprovante_url: string;
-}): Promise<{ success: boolean; error?: string }> {
-    try {
+}): Promise<ActionResult<{ success: true }>> {
+    return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         const resellerId = user.profileId!;
 
         await prisma.$transaction(async (tx) => {
-            // 1. Verificar ownership
             const maleta = await tx.maleta.findFirstOrThrow({
                 where: { id: input.maleta_id, reseller_id: resellerId },
             });
 
-            // 2. Validar estado (solo 'ativa' o 'atrasada' pueden devolver)
             if (!["ativa", "atrasada"].includes(maleta.status)) {
                 throw new Error(
                     "Esta consignación no puede devolverse en su estado actual."
                 );
             }
 
-            // 3. Actualizar estado de la consignación a pendiente de revisión material
             await tx.maleta.update({
                 where: { id: input.maleta_id },
                 data: {
@@ -396,19 +426,14 @@ export async function submitDevolucao(input: {
             });
         });
 
-        // 4. Notificar consultora/admin (best-effort fuera de tx)
         await notificarDevolucaoPendente(resellerId, input.maleta_id);
 
         return { success: true };
-    } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : "Error desconocido al enviar devolución";
-        console.error("[submitDevolucao] Error:", msg);
-        return { success: false, error: msg };
-    }
+    });
 }
 
 async function notificarDevolucaoPendente(resellerId: string, _maletaId: string) {
-  void _maletaId; // parâmetro reservado para logs futuros
+    void _maletaId;
     try {
         const reseller = await prisma.reseller.findUnique({
             where: { id: resellerId },
@@ -421,7 +446,6 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
 
         const targetUserIds: string[] = [];
 
-        // Notificar consultora responsable
         if (reseller.colaboradora_id) {
             const colaboradora = await prisma.reseller.findUnique({
                 where: { id: reseller.colaboradora_id },
@@ -432,7 +456,6 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
             }
         }
 
-        // Notificar todos los ADMINs
         const admins = await prisma.reseller.findMany({
             where: { role: "ADMIN" },
             select: { auth_user_id: true },
@@ -448,7 +471,6 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
         }
     } catch (err: unknown) {
         console.error("[notificarDevolucaoPendente] Error:", err instanceof Error ? err.message : String(err));
-        // Best-effort: no fallar la devolución si la notificación falla
     }
 }
 
@@ -456,31 +478,57 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
 // Catálogo — Itens da maleta ativa
 // ============================================
 
-export async function getCatalogoRevendedora() {
-    const user = await requireAuth(["REVENDEDORA"]);
-    if (!user.profileId) {
-        throw new Error("BUSINESS: Perfil no encontrado.");
-    }
-    const resellerId = user.profileId;
+export async function getCatalogoRevendedora(): Promise<ActionResult<{
+    maleta: { id: string; numero: number; status: string; data_limite: Date | null } | null;
+    itens: Array<{
+        id: string;
+        maleta_item_id: string;
+        product_variant_id: string;
+        preco_fixado: number;
+        quantidade_enviada: number;
+        quantidade_vendida: number;
+        disponivel: number;
+        producto: {
+            id: string;
+            name: string;
+            sku: string;
+            slug: string;
+            images: string[];
+            category: string;
+        };
+        variante: {
+            id: string;
+            attribute_name: string;
+            attribute_value: string;
+        };
+    }>;
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        if (!user.profileId) {
+            throw new Error("Perfil no encontrado.");
+        }
+        const resellerId = user.profileId;
 
-    const maletaAtiva = await prisma.maleta.findFirst({
-        where: {
-            reseller_id: resellerId,
-            status: { in: ["ativa", "atrasada"] },
-        },
-        orderBy: { created_at: "desc" },
-        include: {
-            itens: {
-                where: {
-                    quantidade_vendida: { lt: prisma.maletaItem.fields.quantidade_enviada },
-                },
-                include: {
-                    product_variant: {
-                        include: {
-                            product: {
-                                include: {
-                                    categories: {
-                                        include: { category: true },
+        const maletaAtiva = await prisma.maleta.findFirst({
+            where: {
+                reseller_id: resellerId,
+                status: { in: ["ativa", "atrasada"] },
+            },
+            orderBy: { created_at: "desc" },
+            include: {
+                itens: {
+                    where: {
+                        quantidade_vendida: { lt: prisma.maletaItem.fields.quantidade_enviada },
+                    },
+                    include: {
+                        product_variant: {
+                            include: {
+                                product: {
+                                    include: {
+                                        categories: {
+                                            include: { category: true },
+                                        },
                                     },
                                 },
                             },
@@ -488,65 +536,64 @@ export async function getCatalogoRevendedora() {
                     },
                 },
             },
-        },
+        });
+
+        if (!maletaAtiva) {
+            return { maleta: null, itens: [] };
+        }
+
+        const itens = maletaAtiva.itens
+            .filter((item) => item.quantidade_vendida < item.quantidade_enviada)
+            .map((item) => ({
+                id: item.id,
+                maleta_item_id: item.id,
+                product_variant_id: item.product_variant_id,
+                preco_fixado: Number(item.preco_fixado || 0),
+                quantidade_enviada: item.quantidade_enviada,
+                quantidade_vendida: item.quantidade_vendida,
+                disponivel: item.quantidade_enviada - item.quantidade_vendida,
+                producto: {
+                    id: item.product_variant.product.id,
+                    name: item.product_variant.product.name,
+                    sku: item.product_variant.sku || item.product_variant.product.sku,
+                    slug: item.product_variant.product.id,
+                    images: item.product_variant.image_url
+                        ? [item.product_variant.image_url]
+                        : item.product_variant.product.images,
+                    category: item.product_variant.product.categories[0]?.category?.name || "",
+                },
+                variante: {
+                    id: item.product_variant.id,
+                    attribute_name: item.product_variant.attribute_name,
+                    attribute_value: item.product_variant.attribute_value,
+                },
+            }));
+
+        return {
+            maleta: {
+                id: maletaAtiva.id,
+                numero: maletaAtiva.numero,
+                status: maletaAtiva.status,
+                data_limite: maletaAtiva.data_limite,
+            },
+            itens,
+        };
     });
-
-    if (!maletaAtiva) {
-        return { maleta: null, itens: [] };
-    }
-
-    const itens = maletaAtiva.itens
-        .filter((item) => item.quantidade_vendida < item.quantidade_enviada)
-        .map((item) => ({
-            id: item.id,
-            maleta_item_id: item.id,
-            product_variant_id: item.product_variant_id,
-            preco_fixado: Number(item.preco_fixado || 0),
-            quantidade_enviada: item.quantidade_enviada,
-            quantidade_vendida: item.quantidade_vendida,
-            disponivel: item.quantidade_enviada - item.quantidade_vendida,
-            producto: {
-                id: item.product_variant.product.id,
-                name: item.product_variant.product.name,
-                sku: item.product_variant.sku || item.product_variant.product.sku,
-                slug: item.product_variant.product.id,
-                images: item.product_variant.image_url
-                    ? [item.product_variant.image_url]
-                    : item.product_variant.product.images,
-                category: item.product_variant.product.categories[0]?.category?.name || "",
-            },
-            variante: {
-                id: item.product_variant.id,
-                attribute_name: item.product_variant.attribute_name,
-                attribute_value: item.product_variant.attribute_value,
-            },
-        }));
-
-    return {
-        maleta: {
-            id: maletaAtiva.id,
-            numero: maletaAtiva.numero,
-            status: maletaAtiva.status,
-            data_limite: maletaAtiva.data_limite,
-        },
-        itens,
-    };
 }
 
 // ============================================
 // Gamificação — Compartilhar catálogo
 // ============================================
 
-export async function registrarPuntosCompartirCatalogo() {
-    const user = await requireAuth(["REVENDEDORA"]);
-    if (!user.profileId) return { success: false, error: "Perfil no encontrado" };
-    const resellerId = user.profileId;
+export async function registrarPuntosCompartirCatalogo(): Promise<ActionResult<{ success: true }>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        if (!user.profileId) {
+            throw new Error("Perfil no encontrado.");
+        }
+        const resellerId = user.profileId;
 
-    try {
         await awardPoints(resellerId, "compartilhou_catalogo");
         return { success: true };
-    } catch (err: unknown) {
-        const msg = err instanceof Error ? err.message : "Erro ao registrar pontos";
-        return { success: false, error: msg };
-    }
+    });
 }
