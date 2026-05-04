@@ -13,7 +13,10 @@ import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminAvatar } from "@/components/admin/AdminAvatar";
 import { fmtCurrency, daysRemaining, daysLabel, daysColorClass, type MaletaStatus } from "@/lib/maleta-helpers";
-import { Briefcase, Plus, ArrowRight } from "lucide-react";
+import { Briefcase, Plus, ArrowRight, AlertTriangle, RotateCcw } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 export default function MaletasPage() {
   const [maletas, setMaletas] = useState<MaletaListItem[]>([]);
@@ -22,6 +25,7 @@ export default function MaletasPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [colaboradoras, setColaboradoras] = useState<{ id: string; name: string }[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   async function loadColaboradoras() {
     const cols = await getColaboradoras();
@@ -30,6 +34,7 @@ export default function MaletasPage() {
 
   async function loadMaletas() {
     setLoading(true);
+    setLoadError(null);
     try {
       const data = await getMaletas(
         undefined,
@@ -39,7 +44,7 @@ export default function MaletasPage() {
       );
       setMaletas(data);
     } catch (err) {
-      console.error(err);
+      setLoadError(err instanceof Error ? err.message : "Error al cargar consignaciones");
     }
     setLoading(false);
   }
@@ -50,7 +55,11 @@ export default function MaletasPage() {
   if (loading) {
     return (
       <div className="admin-content">
-        <div className="admin-loading"><div className="admin-spinner" /></div>
+        <div className="flex flex-col gap-3 py-4">
+          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+        </div>
       </div>
     );
   }
@@ -112,19 +121,19 @@ export default function MaletasPage() {
         }
       />
 
-      {maletas.length === 0 ? (
-        <AdminEmptyState
-          icon={Briefcase}
-          title="Ninguna consignación encontrada"
-          description="Crea la primera consignación para una revendedora."
-          action={
-            <Link href="/admin/maleta/nova">
-              <button className="admin-btn admin-btn-primary" style={{ borderRadius: "var(--admin-radius-pill)" }}>
-                <Plus className="w-3.5 h-3.5" style={{ marginRight: 6 }} />
-                Crear Consignación
-              </button>
-            </Link>
-          }
+      {loadError ? (
+        <ErrorState
+          title="Error al cargar"
+          description={loadError}
+          onRetry={loadMaletas}
+          className="py-12"
+        />
+      ) : maletas.length === 0 ? (
+        <EmptyState
+          icon={<Briefcase className="w-12 h-12" />}
+          title="No hay maletas"
+          description="Creá tu primera consignación desde el botón Nueva Maleta."
+          className="py-12"
         />
       ) : (
         <div className="admin-card" style={{ padding: 0 }}>

@@ -11,6 +11,9 @@ import {
     shareImages,
     fallbackWhatsAppIndividual,
 } from "@/lib/share-images";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 export const dynamic = "force-dynamic";
 
@@ -39,6 +42,7 @@ export default function CatalogoPage() {
     const transitionRouter = useTransitionRouter();
     const [itens, setItens] = useState<CatalogoItem[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [search, setSearch] = useState("");
     const [categoriaAtiva, setCategoriaAtiva] = useState("Todos");
     const [categorias, setCategorias] = useState<string[]>(["Todos"]);
@@ -46,10 +50,16 @@ export default function CatalogoPage() {
     useEffect(() => {
         async function fetchCatalogo() {
             setLoading(true);
-            const data = await getCatalogoRevendedora();
-            setItens(data.itens);
-            const cats = [...new Set(data.itens.map((i: { producto: { category: string } }) => i.producto.category).filter(Boolean))];
-            setCategorias(["Todos", ...cats]);
+            setError(null);
+            const result = await getCatalogoRevendedora();
+            if (!result.success) {
+                setError(result.error);
+                setItens([]);
+            } else {
+                setItens(result.data.itens);
+                const cats = [...new Set(result.data.itens.map((i: { producto: { category: string } }) => i.producto.category).filter(Boolean))];
+                setCategorias(["Todos", ...cats]);
+            }
             setLoading(false);
         }
         fetchCatalogo();
@@ -67,18 +77,15 @@ export default function CatalogoPage() {
         const imageUrl = item.producto.images[0];
         const text = `¡Mira estas joyas de Monarca! 💎\n${item.producto.name} — ${formatGs(item.preco_fixado)}\n${item.variante.attribute_value}`;
 
-        // Tentar compartilhar com imagem real
         if (imageUrl) {
             const fileName = `${item.producto.sku || item.id}.webp`;
             const file = await downloadImageAsFile(imageUrl, fileName);
             if (file) {
                 const result = await shareImages([file], text);
                 if (result.shared || result.cancelled) return;
-                // Se não conseguiu share (canShare=false), cair no fallback
             }
         }
 
-        // Fallback: WhatsApp com link do produto
         fallbackWhatsAppIndividual(item, undefined, formatGs);
     }
 
@@ -133,18 +140,25 @@ export default function CatalogoPage() {
             {/* Content */}
             <div className="flex-1 overflow-y-auto px-4 pb-24">
                 {loading ? (
-                    <div className="flex items-center justify-center py-20">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#35605A]" />
+                    <div className="flex flex-col gap-3 py-4">
+                        <SkeletonCard />
+                        <SkeletonCard />
+                        <SkeletonCard />
                     </div>
+                ) : error ? (
+                    <ErrorState
+                        title="Error al cargar"
+                        description={error}
+                        onRetry={() => window.location.reload()}
+                    />
                 ) : filtered.length === 0 ? (
-                    <div className="flex flex-col items-center justify-center py-20 text-center">
-                        <ImageOff className="w-12 h-12 text-[#B4ABA2] mb-4" />
-                        <p className="text-[#6B6B6B] text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
-                            {search || categoriaAtiva !== "Todos"
-                                ? "Nenhum producto encontrado"
-                                : "Nenhum item disponível na sua consignação"}
-                        </p>
-                    </div>
+                    <EmptyState
+                        title={search || categoriaAtiva !== "Todos" ? "Ningún producto encontrado" : "Catálogo vacío"}
+                        description={search || categoriaAtiva !== "Todos"
+                            ? "Probá con otros términos de búsqueda."
+                            : "Tu maleta activa no tiene productos disponibles."
+                        }
+                    />
                 ) : (
                     <div className="grid grid-cols-2 gap-3">
                         {filtered.map((item) => (

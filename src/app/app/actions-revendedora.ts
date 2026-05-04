@@ -16,28 +16,7 @@ function getMonthBounds() {
     return { start, end };
 }
 
-export async function getDashboardCompleto(): Promise<ActionResult<{
-    nome: string;
-    avatarUrl: string | null;
-    rank: string;
-    pontosSaldo: number;
-    faturamentoMes: number;
-    ganhosMes: number;
-    pecasVendidasMes: number;
-    maletaAtiva: { id: string; status: string; data_limite: Date | null } | null;
-    historicoMaletas: Array<{
-        id: string;
-        status: string;
-        data_limite: Date | null;
-        totalItens: number;
-        vendidos: number;
-    }>;
-    commissionInfo: {
-        tierAtual: { pct: number; min_sales_value: number } | null;
-        proximoTier: { pct: number; min_sales_value: number } | null;
-        tiers: Array<{ pct: number; min_sales_value: number }>;
-    };
-}>> {
+export async function getDashboardCompleto() {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
         if (!user.profileId) {
@@ -133,7 +112,7 @@ export async function getDashboardCompleto(): Promise<ActionResult<{
 // ============================================
 // Get active maleta for a reseller
 // ============================================
-export async function getMinhasMaletas(resellerId: string): Promise<ActionResult<Awaited<ReturnType<typeof prisma.maleta.findMany>>>> {
+export async function getMinhasMaletas(resellerId: string) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
         if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
@@ -168,7 +147,7 @@ export async function registrarVendaMultipla(inputData: {
     cliente_nome: string;
     cliente_telefone: string;
     itens: Array<{ maleta_item_id: string; quantidade: number }>;
-}): Promise<ActionResult<{ success: true }>> {
+}) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         const resellerId = user.profileId!;
@@ -229,7 +208,7 @@ export async function registrarVendaMultipla(inputData: {
 // ============================================
 // Get all sales for a reseller
 // ============================================
-export async function getMinhasVendas(resellerId: string): Promise<ActionResult<Awaited<ReturnType<typeof prisma.vendaMaleta.findMany>>>> {
+export async function getMinhasVendas(resellerId: string) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
         if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
@@ -264,13 +243,7 @@ export async function getMinhasVendas(resellerId: string): Promise<ActionResult<
 // ============================================
 // Financial summary
 // ============================================
-export async function getResumoFinanceiro(resellerId: string): Promise<ActionResult<{
-    totalVendido: number;
-    comissaoPct: number;
-    comissaoValor: number;
-    aDevolver: number;
-    totalVendas: number;
-}>> {
+export async function getResumoFinanceiro(resellerId: string) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA", "ADMIN", "COLABORADORA"]);
         if (user.role === "REVENDEDORA" && user.profileId !== resellerId) {
@@ -320,7 +293,7 @@ export async function registrarVenda(rawInput: {
     cliente_nome: string;
     cliente_telefone: string;
     preco_unitario?: number;
-}): Promise<ActionResult<{ success: true }>> {
+}) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         const resellerId = user.profileId!;
@@ -401,7 +374,7 @@ export async function registrarVenda(rawInput: {
 export async function submitDevolucao(input: {
     maleta_id: string;
     comprovante_url: string;
-}): Promise<ActionResult<{ success: true }>> {
+}) {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         const resellerId = user.profileId!;
@@ -478,31 +451,7 @@ async function notificarDevolucaoPendente(resellerId: string, _maletaId: string)
 // Catálogo — Itens da maleta ativa
 // ============================================
 
-export async function getCatalogoRevendedora(): Promise<ActionResult<{
-    maleta: { id: string; numero: number; status: string; data_limite: Date | null } | null;
-    itens: Array<{
-        id: string;
-        maleta_item_id: string;
-        product_variant_id: string;
-        preco_fixado: number;
-        quantidade_enviada: number;
-        quantidade_vendida: number;
-        disponivel: number;
-        producto: {
-            id: string;
-            name: string;
-            sku: string;
-            slug: string;
-            images: string[];
-            category: string;
-        };
-        variante: {
-            id: string;
-            attribute_name: string;
-            attribute_value: string;
-        };
-    }>;
-}>> {
+export async function getCatalogoRevendedora() {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         if (!user.profileId) {
@@ -585,7 +534,7 @@ export async function getCatalogoRevendedora(): Promise<ActionResult<{
 // Gamificação — Compartilhar catálogo
 // ============================================
 
-export async function registrarPuntosCompartirCatalogo(): Promise<ActionResult<{ success: true }>> {
+export async function registrarPuntosCompartirCatalogo() {
     return safeAction(async () => {
         const user = await requireAuth(["REVENDEDORA"]);
         if (!user.profileId) {

@@ -28,7 +28,12 @@ import {
     ArrowRight,
     Trash2,
     Edit,
+    AlertTriangle,
+    RotateCcw,
 } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
@@ -471,21 +476,25 @@ export default function RevendedorasPage() {
 
                 {/* ── Tabela ─────────────────────────────────────────────────── */}
                 {loading ? (
-                    <div style={{
-                        display: "flex", alignItems: "center", justifyContent: "center",
-                        padding: "60px 0", color: "var(--admin-text-muted)",
-                    }}>
-                        Cargando revendedoras...
+                    <div className="flex flex-col gap-3 py-4">
+                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
                     </div>
+                ) : error ? (
+                    <ErrorState
+                        title="Error al cargar"
+                        description={error}
+                        onRetry={() => { setError(null); loadData(); }}
+                        className="py-12"
+                    />
                 ) : filtered.length === 0 ? (
-                    <div style={{
-                        display: "flex", flexDirection: "column", alignItems: "center",
-                        justifyContent: "center", padding: "60px 0", color: "var(--admin-text-muted)",
-                        gap: "12px",
-                    }}>
-                        <Search className="w-10 h-10" />
-                        <p>{search ? "Nenhuma revendedora encontrada" : "Nenhuma revendedora cadastrada"}</p>
-                    </div>
+                    <EmptyState
+                        icon={<Search className="w-10 h-10" />}
+                        title={search ? "Ninguna revendedora encontrada" : "No hay revendedoras"}
+                        description={search ? "Probá con otros términos de búsqueda." : "Aún no tenés revendedoras en el sistema."}
+                        className="py-12"
+                    />
                 ) : (
                     <div style={{
                         border: "1px solid var(--admin-border)",

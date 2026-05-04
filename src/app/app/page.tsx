@@ -6,6 +6,8 @@ import { AppHeader } from "@/components/app/AppHeader";
 import { SectionHeader } from "@/components/app/SectionHeader";
 import { StatCard } from "@/components/app/StatCard";
 import { MaletaCard } from "@/components/app/MaletaCard";
+import { ErrorState } from "@/components/ui/error-state";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
 function formatCurrency(value: number): string {
   return `G$ ${value.toLocaleString("es-PY")}`;
@@ -62,8 +64,21 @@ export default async function AppDashboardPage() {
     }
   }
 
-  // Busca dados no servidor diretamente — sem segundo round-trip via useEffect
-  const data = await getDashboardCompleto();
+  const result = await getDashboardCompleto();
+
+  if (!result.success) {
+    return (
+      <div className="flex flex-col min-h-full bg-[#F5F2EF]">
+        <ErrorState
+          title="Error al cargar"
+          description={result.error}
+          onRetry={() => typeof window !== "undefined" && window.location.reload()}
+        />
+      </div>
+    );
+  }
+
+  const data = result.data;
 
   const maletaAtual =
     data.historicoMaletas.find((m) => m.status === "ativa" || m.status === "atrasada") ??

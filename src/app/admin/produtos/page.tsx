@@ -7,7 +7,8 @@ import { ProductTable } from "./ProductTable";
 import { SearchBar } from "./SearchBar";
 import { CategoryFilter } from "./CategoryFilter";
 import { Button } from "@/components/ui/button";
-import { Plus, ChevronLeft, ChevronRight } from "lucide-react";
+import { EmptyState } from "@/components/ui/empty-state";
+import { Plus, ChevronLeft, ChevronRight, PackageOpen } from "lucide-react";
 
 export const metadata = {
     title: "Productos — Monarca Admin",
@@ -58,9 +59,17 @@ export default async function ProdutosPage(props: {
                     </span>
                 </div>
 
+            {products.length === 0 ? (
+                <EmptyState
+                    icon={<PackageOpen className="w-12 h-12" />}
+                    title="No hay productos"
+                    description="Agregá tu primer producto desde el botón Nuevo."
+                />
+            ) : (
                 <ProductTable products={products} />
+            )}
 
-                {totalPages > 1 && (
+            {totalPages > 1 && (
                     <div className="flex items-center justify-between py-4">
                         <div className="text-sm text-muted-foreground">
                             Página {page} de {totalPages}
