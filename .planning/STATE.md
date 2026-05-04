@@ -4,9 +4,9 @@ name: Operação e Visibilidade
 status: in-progress
 progress:
   phases_total: 5
-  phases_complete: 1
-  plans_total: 8
-  plans_complete: 3
+  phases_complete: 2
+  plans_total: 13
+  plans_complete: 8
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -16,16 +16,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 2 — Core Business (Notifications, Leads & Config) — EXECUTING
+**Current focus:** Phase 3 — READY TO EXECUTE
 
 ## Current Position
 
-Phase: 2 of 5 (Core Business — Notifications, Leads & Config)
+Phase: 3 of 5 (TBD — desbloqueada pela conclusão da Phase 2)
 Plan: —
-Status: Executing Wave 1
-Last activity: 2026-05-04 — Phase 1 completed (3/3 plans, 10 commits, ~2.5h)
+Status: Ready
+Last activity: 2026-05-04 — Phase 2 completed (5/5 plans, ~4h)
 
-Progress: [██░░░░░░░░] 20% (1/5 phases) | 37.5% plans (3/8)
+Progress: [████░░░░░░] 40% (2/5 phases) | 61.5% plans (8/13)
 
 ## Performance Metrics
 
@@ -51,14 +51,18 @@ Progress: [██░░░░░░░░] 20% (1/5 phases) | 37.5% plans (3/8)
 - Phase 1 is pure foundation (TECH-01..06) to avoid partial ActionResult migration anti-pattern
 - NOTF moved to Phase 2 (not Phase 1) because it depends on ActionResult pattern and sonner from Phase 1
 - Phase 5 added as explicit validation/hardening phase (research PITFALLS.md detection checklist)
+- **Phase 2 executed via sequential inline execution** (not subagent parallelization) due to unavailability of `gsd-executor` subagent type and file overlap between 02-03 and 02-04 on `actions-config.ts`
+- **Schema drift handled inline**: added `email` to `RevendedoraLead` (02-02) and `contrato_aceite_em` to `Reseller` (02-04) via migrations
+- **Build error resolved via module split**: `notifications.ts` → `notifications-shared.ts` (client-safe) + `notifications-server.ts` (DOMPurify) to avoid `node:module` client bundle error
+- **Cron jobs Edge Functions** already had template-aware `_shared/notifications.ts` helper — no changes needed for 02-05
 
 ### Pending Todos
 
-None yet.
+None.
 
 ### Blockers/Concerns
 
-None yet.
+None.
 
 ## Deferred Items
 
@@ -66,10 +70,10 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| *(none — first milestone)* | | | |
+| RBAC tests | Fix `rbac-regression.test.ts` expectations (3 tests expect `rejects.toThrow` but functions return `ActionResult`) | Pending | 2026-05-04 |
 
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Phase 1 complete; Phase 2 ready to execute
-Resume file: .planning/phases/02-core-business-notifications-leads-config/02-01-PLAN.md
+Stopped at: Phase 2 complete; Phase 3 ready to execute
+Resume file: .planning/phases/02-core-business-notifications-leads-config/02-05-SUMMARY.md

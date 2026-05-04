@@ -42,8 +42,76 @@ Execução completa da Phase 1 via `/gsd-execute-phase 01`. 3 planos, 10 commits
 - ✅ Typecheck: sem novos erros
 - ✅ Lint nos arquivos modificados: limpo
 
+## 2026-05-04 — Phase 2 Concluída: Core Business — Notifications, Leads & Config
+
+### Contexto
+Execução completa da Phase 2 via execução inline sequencial (fallback por indisponibilidade de `gsd-executor`). 5 planos em 2 waves, ~4h. A fase entrega: (a) sistema de templates de notificação com variáveis, sanitização e editor; (b) pipeline completo de leads (landing → admin review → aprovação com criação de usuário + email); (c) CRUD de configurações admin (tiers de comissão, níveis de gamificação, contratos com upload PDF); (d) integração dos templates nos Server Actions e cron jobs.
+
+### 02-01 — Notification Template System
+
+**Criado:**
+- **`src/lib/notifications-shared.ts`** — `substituirVariaveis()`, `VARIAVEIS_POR_TIPO`, `sanitizeTemplateVars()`, `htmlToPlainText()`, `mapTipoParaWhitelist()`. Client-safe (sem Prisma/DOMPurify).
+- **`src/lib/notifications-server.ts`** — `sanitizeTemplateVars()` com DOMPurify (server-only).
+- **`src/__tests__/lib/notifications.test.ts`** — 28 testes Vitest cobrindo substituição de variáveis, sanitização de HTML, conversão para texto plano, validação de tipos e casos edge (campos ausentes, XSS, etc.).
+
+**Modificado:**
+- **`src/lib/notifications.ts`** — `notificarComTemplate()` helper (busca template ativo por tipo, substitui variáveis com whitelist, fallback). Split de `notifications.ts` em `notifications-shared.ts` (client-safe) e `notifications-server.ts` (DOMPurify) para resolver erro de bundle `node:module`.
+
+### 02-02 — Lead Pipeline
+
+**Criado:**
+- **`prisma/migrations/20260504120000_add_lead_email/migration.sql`** — Adiciona coluna `email` em `RevendedoraLead`.
+- **`src/app/api/leads/submit/route.ts`** — API route para submissão de leads (form landing → banco).
+- **`src/app/admin/leads/page.tsx`** — Tela admin com tabs (Pendientes/Aprobadas/Rechazadas), modais de ação.
+- **`src/app/admin/leads/actions.ts`** — Server Actions `getLeads`, `aprovarLead`, `recusarLead` com `safeAction` e Zod.
+
+**Modificado:**
+- **`prisma/schema.prisma`** — Adiciona `email String?` em `RevendedoraLead`.
+- **`src/app/admin/actions-leads.ts`** — Reescrito com `safeAction`, Zod, idempotência em `aprovarLead` (Serializable transaction), emails Brevo (welcome/rejection).
+- **`src/app/seja-revendedora/page.tsx`** — Formulário conectado à API route.
+
+### 02-03 — Admin Config: Tiers & Levels
+
+**Criado:**
+- **`src/app/admin/config/comissoes/page.tsx`** — CRUD de `CommissionTier` com cards de resumo, tabela e proteção do tier base.
+- **`src/app/admin/config/niveis/page.tsx`** — CRUD de `NivelRegra` com cards de resumo, tabela e drag-and-drop.
+- **`src/app/admin/actions-config.ts`** — Server Actions `getTiers`, `createTier`, `updateTier`, `deleteTier`, `getNiveis`, `createNivel`, `updateNivel`, `deleteNivel` com `safeAction` e Zod.
+
+### 02-04 — Admin Config: Contracts
+
+**Criado:**
+- **`prisma/migrations/20260504180000_add_contrato_aceite_em/migration.sql`** — Adiciona `contrato_aceite_em` em `Reseller`.
+- **`src/app/admin/config/contratos/page.tsx`** — CRUD de `ContratoVersao` com upload PDF R2 (limite 10MB, validação MIME), tabela de histórico.
+- **`src/app/app/bienvenida/steps/ContractStep.tsx`** — Passo de aceite de contrato no onboarding PWA.
+
+**Modificado:**
+- **`prisma/schema.prisma`** — Adiciona `contrato_aceite_em DateTime?` em `Reseller`; model `ContratoVersao` (já existia, verificado).
+- **`src/app/admin/actions-config.ts`** — Adiciona `getContratos`, `createContrato`, `updateContrato`, `deleteContrato`.
+- **`src/app/app/bienvenida/page.tsx`** — Integra passo de contrato (step 3) entre "How it works" e "Profile".
+
+### 02-05 — Notification Integration
+
+**Modificado:**
+- **`src/lib/notifications.ts`** — `notificarComTemplate()` helper (busca `NotificacaoTemplate` ativo, substitui variáveis, fallback).
+- **`src/app/app/actions-revendedora.ts`** — `registrarVenda` e `submitDevolucao` usam `notificarComTemplate` (tipos `pontos_ganhos` e `devolucao_recebida`).
+- **`src/app/admin/actions-maletas.ts`** — `conferirEFecharMaleta` usa `notificarComTemplate` (tipos `acerto_confirmado` e `pontos_ganhos`).
+- **`src/lib/notifications-shared.ts`** — Adiciona `devolucao_recebida` ao tipo `TipoNotificacao`.
+- **Cron jobs Edge Functions** (`check-maleta-prazo`, `marcar-maletas-atrasadas`) — Já usavam `_shared/notifications.ts` com template fallback; nenhuma mudança necessária.
+
+### Correções Durante a Phase
+
+- **Build fix**: Split de `notifications.ts` em `notifications-shared.ts` + `notifications-server.ts` para resolver erro `node:module` no client bundle causado pelo `isomorphic-dompurify`.
+
+### Verificação
+- ✅ Build: passa (`next build` sem erros)
+- ✅ TypeScript: sem erros nos arquivos modificados
+- ✅ Lint: sem erros nos arquivos modificados
+- ✅ Testes: 130/133 passam (3 falhas pré-existentes em `rbac-regression.test.ts` — expectativa de `rejects.toThrow` vs retorno `ActionResult`)
+- ✅ Templates: 7 templates seedados em `NotificacaoTemplate`
+- ✅ Wire: todas as ações geradoras de notificação usam `notificarComTemplate`
+
 ### Próximo Passo
-Executar Phase 2 (`/gsd-execute-phase 02`) — desbloqueada pela conclusão da Phase 1.
+Executar Phase 3 — desbloqueada pela conclusão da Phase 2.
 
 ---
 
