@@ -45,8 +45,12 @@ export default function CompartirFotosPage() {
     useEffect(() => {
         async function fetchCatalogo() {
             setLoading(true);
-            const data = await getCatalogoRevendedora();
-            setItens(data.itens);
+            const result = await getCatalogoRevendedora();
+            if (result.success) {
+                setItens(result.data.itens);
+            } else {
+                setError(result.error);
+            }
             setLoading(false);
         }
         fetchCatalogo();
@@ -113,7 +117,10 @@ export default function CompartirFotosPage() {
             }
 
             // 3. Award points (só se realmente compartilhou ou usou fallback)
-            await registrarPuntosCompartirCatalogo();
+            const ptsResult = await registrarPuntosCompartirCatalogo();
+            if (!ptsResult.success) {
+                console.error("[Gamificación] Error al registrar puntos:", ptsResult.error);
+            }
 
             // Reset
             setSelectedIds([]);

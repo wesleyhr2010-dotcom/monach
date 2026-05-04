@@ -51,11 +51,15 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
 
     startTransition(async () => {
       try {
-        await registrarVenda({
+        const result = await registrarVenda({
           maleta_item_id: selectedItemId,
           cliente_nome: clienteNome,
           cliente_telefone: clienteTelefone,
         });
+        if (!result.success) {
+          setError(result.error);
+          return;
+        }
         router.push(`/app/maleta/${maletaId}`);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Error al registrar la venta.");

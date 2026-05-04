@@ -6,8 +6,26 @@ import { AppHeader } from "@/components/app/AppHeader";
 import { SectionHeader } from "@/components/app/SectionHeader";
 import { StatCard } from "@/components/app/StatCard";
 import { MaletaCard } from "@/components/app/MaletaCard";
+import { ErrorState } from "@/components/ui/error-state";
+import { SkeletonCard } from "@/components/ui/skeleton-card";
 
-type DashboardData = Awaited<ReturnType<typeof getDashboardCompleto>>;
+type DashboardData = {
+  nome: string;
+  avatarUrl: string | null;
+  rank: { nome: string; cor: string };
+  pontosSaldo: number;
+  faturamentoMes: number;
+  ganhosMes: number;
+  pecasVendidasMes: number;
+  maletaAtiva: { id: string; status: string; data_limite: Date | null } | null;
+  historicoMaletas: Array<{ id: string; status: string; data_limite: Date | null; totalItens: number; vendidos: number }>;
+  commissionInfo: {
+    tierAtual: { pct: number; min_sales_value: number } | null;
+    proximoTier: { pct: number; min_sales_value: number } | null;
+    tiers: Array<{ pct: number; min_sales_value: number }>;
+    faltaParaProximo: number;
+  };
+};
 
 function formatCurrency(value: number): string {
   return `G$ ${value.toLocaleString("es-PY")}`;
@@ -49,7 +67,14 @@ export default function AppDashboardClient() {
 
   useEffect(() => {
     getDashboardCompleto()
-      .then((result) => { setData(result); setLoading(false); })
+      .then((result) => {
+        if (result.success) {
+          setData(result.data);
+        } else {
+          setError(result.error);
+        }
+        setLoading(false);
+      })
       .catch((err: unknown) => {
         setError(err instanceof Error ? err.message : "Error al cargar datos.");
         setLoading(false);
@@ -58,37 +83,36 @@ export default function AppDashboardClient() {
 
   if (error) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center p-6">
-        <div className="text-center">
-          <p className="text-red-500 text-sm font-medium mb-3">{error}</p>
-          <button
-            onClick={() => {
-              setError(""); setLoading(true);
-              getDashboardCompleto()
-                .then(r => { setData(r); setLoading(false); })
-                .catch(() => { setError("Error al cargar datos."); setLoading(false); });
-            }}
-            className="text-sm text-[#35605A] font-medium hover:underline"
-          >
-            Intentar de nuevo
-          </button>
-        </div>
+      <div className="absolute inset-0 flex items-center justify-center p-6 bg-[#F5F2EF]">
+        <ErrorState
+          title="Error al cargar"
+          description={error}
+          onRetry={() => {
+            setError(""); setLoading(true);
+            getDashboardCompleto()
+              .then((r) => {
+                if (r.success) { setData(r.data); }
+                else { setError(r.error); }
+                setLoading(false);
+              })
+              .catch(() => { setError("Error al cargar datos."); setLoading(false); });
+          }}
+        />
       </div>
     );
   }
 
   if (loading || !data) {
     return (
-      <div className="absolute inset-0 flex items-center justify-center">
-        <div className="flex flex-col items-center gap-3">
-          <div
-            className="w-8 h-8 rounded-full border-[3px] animate-spin"
-            style={{ borderColor: "#EBEBEB", borderTopColor: "#35605A" }}
-          />
-          <p className="text-[#777777] text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
-            Cargando...
-          </p>
+      <div className="absolute inset-0 flex flex-col gap-3 p-5 bg-[#F5F2EF]">
+        <SkeletonCard />
+        <div className="grid grid-cols-2 gap-3">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
         </div>
+        <SkeletonCard />
       </div>
     );
   }
