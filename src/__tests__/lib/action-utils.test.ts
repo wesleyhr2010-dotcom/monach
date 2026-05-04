@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { safeAction, mapError, ActionResult, generateSlug, toNumber } from "@/lib/action-utils";
+import { safeAction, mapError, generateSlug, toNumber } from "@/lib/action-utils";
 
 // ─── Mock Prisma-like errors ───────────────────────────────────────────────
 
 function createPrismaError(code: string, message: string): Error {
-    const err = new Error(message);
-    (err as any).code = code;
+    const err = new Error(message) as Error & { code: string };
+    err.code = code;
     return err;
 }
 

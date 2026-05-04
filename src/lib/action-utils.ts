@@ -15,7 +15,7 @@ export type ActionResult<T = void> =
  * Strips stack traces and internal details — never leaks raw errors to the client.
  */
 export function mapError(err: unknown): string {
-    const code = (err as any)?.code;
+    const code = (err as { code?: string })?.code;
     if (code === "P2002") {
         return "Ya existe un registro con ese valor. Verifica los datos e intenta de nuevo.";
     }
