@@ -39,10 +39,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     if (user.role === "COLABORADORA") {
         const restrictedPaths = [
             "/admin/productos",
+            "/admin/categorias",
             "/admin/gamificacion",
             "/admin/brindes",
-            "/admin/commission-tiers",
-            "/admin/contratos",
+            "/admin/leads",
+            "/admin/consultoras",
+            "/admin/config",
             "/admin/equipo/consultoras",
         ];
         const isRestricted = restrictedPaths.some((path) =>
