@@ -19,7 +19,16 @@ next-monarca/
 │   ├── sistema/            # System SPECs (security, caching, etc.)
 │   └── prd/                # Product requirements
 ├── scripts/                # SQL scripts (RLS policies, cron setup, seeds)
-├── design-system/          # Design system assets (non-docs)
+├── design-system/          # Design system assets (compiled, NOT docs)
+│   ├── css/design-system.css  # CSS variables prontas (--ds-color-primary, etc.)
+│   ├── tokens.json             # Tokens em JSON (fonte para geração de CSS)
+│   └── components/Button.tsx  # Componente de referência
+├── supabase/               # Supabase Edge Functions (cron jobs)
+│   └── functions/
+│       ├── _shared/            # Helpers compartilhados entre Edge Functions
+│       ├── check-maleta-prazo/     # Notifica D-3/D-1 com deduplicação
+│       ├── marcar-maletas-atrasadas/ # Transição ativa → atrasada
+│       └── agrega-analytics-diario/ # Agregação diária de analytics
 ├── public/                 # Static assets (images, icons, PWA manifest)
 ├── env/                    # Environment variable examples
 ├── next.config.ts          # Next.js configuration (Serwist PWA, R2 images)
@@ -74,10 +83,12 @@ src/
 │   ├── seja-revendedora/   # Reseller recruitment landing
 │   └── api/
 │       ├── proxy-image/    # CORS proxy for R2 images (share feature)
-│       ├── track/          # Analytics tracking
+│       ├── upload-r2/      # Authenticated file upload endpoint (10MB limit, validates path/type)
+│       ├── export/         # Data export: CSV (route.ts) + PDF (pdf/route.ts)
+│       ├── track/          # Analytics tracking (page views, events)
 │       ├── auth/           # Auth API routes
 │       ├── admin/          # Admin API (AlertBell count + alertas)
-│       └── test-email/     # Email testing endpoint
+│       └── test-email/     # Email testing endpoint (dev only)
 ├── components/
 │   ├── ui/                 # shadcn/ui atoms + custom atoms
 │   │   ├── button.tsx
@@ -94,6 +105,7 @@ src/
 │   │   ├── MaletaList.tsx
 │   │   └── ... (revendedora UI components)
 │   ├── admin/              # Admin-specific molecules/organisms
+│   │   ├── AdminLayoutClient.tsx  # Client wrapper for admin layout (TanStack Query provider)
 │   │   ├── AdminPageHeader.tsx
 │   │   ├── AdminStatCard.tsx
 │   │   ├── AdminStatusBadge.tsx
@@ -125,6 +137,7 @@ src/
 │   ├── utils.ts            # Generic utilities (cn, etc.)
 │   ├── config.ts           # App configuration constants
 │   ├── cart.ts             # Shopping cart state
+│   ├── query-provider.tsx  # TanStack React Query provider (used in admin layout)
 │   ├── share-images.ts     # Image download for Web Share API
 │   ├── compress-image.ts   # Client-side image compression
 │   ├── auth/
@@ -206,7 +219,10 @@ Server Actions live alongside their pages, not in a central folder:
 | Push notifications | `src/lib/notifications.ts` |
 | Data schema | `prisma/schema.prisma` |
 | Security SPECs | `docs/sistema/SPEC_SECURITY_*.md` |
-| Design tokens | `docs/design-system/tokens.md` |
+| Design tokens (source) | `docs/design-system/tokens.md` |
+| Design tokens (CSS) | `design-system/css/design-system.css` |
+| Design tokens (JSON) | `design-system/tokens.json` |
+| Paper artboards (visual source) | `app.paper.design` (via Paper MCP) |
 | RLS policies | `scripts/rls-policies.sql` |
 | Cron setup | `scripts/setup-cron-jobs.sql` |
 

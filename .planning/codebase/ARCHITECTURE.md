@@ -2,6 +2,21 @@
 # Codebase Architecture — NEXT-MONARCA
 # Mapped: 2026-05-04
 
+## Visual Source of Truth — Paper
+
+**CRITICAL workflow rule (CLAUDE.md §3.1):** Paper (`app.paper.design`) is the authoritative source for ALL UI decisions. Before implementing or modifying any screen, component, or visual element:
+
+1. Open the relevant artboard via `mcp__plugin_paper-desktop_paper__*` tools
+2. Extract `get_jsx`, `get_computed_styles`, `get_screenshot`, and tokens
+3. Convert extracted values to design system tokens — never hard-code hex/px in production code
+4. If design does not exist in Paper, **pause and ask** before inventing layout
+
+Paper artboards are linked by `pageId/nodeId` in SPECs. Example format: `app.paper.design/file/.../{pageId}/{nodeId}`.
+
+Never create a screen without an approved visual reference in Paper.
+
+---
+
 ## Pattern
 
 **Next.js 15/16 App Router — Multi-Surface Monolith**
@@ -127,12 +142,18 @@ Admin reviews and closes
 
 ## Cron Architecture
 
-Three cron jobs as Supabase Edge Functions (pg_cron via `scripts/setup-cron-jobs.sql`):
+Three cron jobs as Supabase Edge Functions in `supabase/functions/` (pg_cron via `scripts/setup-cron-jobs.sql`):
 - `check-maleta-prazo` — D-3/D-1 notifications with deduplication
 - `marcar-maletas-atrasadas` — status transition `ativa → atrasada`
 - `agrega-analytics-diario` — daily analytics aggregation
 
 Legacy route handlers in `src/app/api/cron/` are being migrated to Edge Functions.
+
+## CI/CD Status
+
+**Vercel**: configured — `main` branch deploys to production automatically.
+
+**GitHub Actions**: `.github/` directory does NOT exist. CI (typecheck, lint, tests) mentioned in `project_overview.md` as planned but not yet configured. Currently there is no automated pre-merge quality gate.
 
 ## Prisma Transaction Pattern
 

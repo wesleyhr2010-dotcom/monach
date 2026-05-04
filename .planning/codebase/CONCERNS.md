@@ -60,9 +60,33 @@
 **Issue**: Loading skeletons and empty states were recently improved but may still be inconsistent across all pages.
 **Ref**: `docs/sistema/SPEC_SKELETON_EMPTY_STATES.md`
 
+### 10. GitHub Actions CI não existe
+**Issue**: `.github/` directory does not exist in the repository. `project_overview.md` lists GitHub Actions as a planned CI tool (typecheck, lint, tests, E2E), but it has never been configured. Currently there is **no automated pre-merge quality gate** — tests and lint must be run manually.
+**Risk**: Regressions can be merged without being caught.
+**Fix**: Create `.github/workflows/ci.yml` running `npm run lint`, `npm run typecheck`, `npm test`. Add Vercel preview as deployment check.
+
+### 11. Features com SPEC pronta mas não implementadas
+Complete list of SPECs that exist but have no corresponding implementation:
+
+| Feature | SPEC | Urgência |
+|---------|------|---------|
+| Vitrina pública `/vitrina/[slug]` | `SPEC_VITRINE_PUBLICA.md` | Média |
+| Pipeline de Leads (`/admin/leads`) | `SPEC_ADMIN_LEADS.md` | Alta |
+| Dashboard admin KPIs | `SPEC_ADMIN_DASHBOARD.md` | Média |
+| Config. globais (tiers/níveis/contratos) | `SPEC_ADMIN_CONFIG.md` | Média |
+| Desempenho individual da revendedora | `SPEC_DESEMPENHO.md` | Baixa |
+| Perfil docs (`/app/perfil/documentos`) | `SPEC_PERFIL.md` | Baixa |
+| Relatórios admin (`/admin/relatorios`) | — | Baixa |
+| E2E Playwright | `SPEC_TESTING_STRATEGY.md` | Média |
+| Sentry observabilidade | `SPEC_LOGGING_MONITORING.md` | Média |
+| Rate limiting Upstash Redis | `SPEC_SECURITY_API_ENDPOINTS.md` | Média |
+| Estratégia de cache `revalidateTag` | `SPEC_CACHING_STRATEGY.md` | Alta (bloqueada) |
+| Modo offline PWA | `SPEC_OFFLINE_SYNC.md` | Baixa (futura) |
+| Migração Capacitor iOS/Android | `SPEC_CAPACITOR_MIGRATION.md` | Baixa (decisão de negócio) |
+
 ## 🟢 Low Priority / Future
 
-### 10. Domínio ainda não migrado para produção
+### 12. Domínio ainda não migrado para produção
 **Issue**: App likely still running on Vercel preview URL or temporary domain, not `monarcasemijoyas.com.py`.
 **Checklist exists**: `docs/sistema/SPEC_DOMAIN_MIGRATION.md` covers DNS, Supabase Auth, Brevo, R2, OneSignal, OAuth, PWA.
 **Note**: Auth callback already validated on preview domain.
@@ -75,20 +99,6 @@
 ### 12. Sem rate limiting
 **Issue**: Sensitive endpoints (auth, Server Actions, upload) have no rate limiting.
 **Fix**: Implement Upstash Redis rate limiting per `docs/sistema/SPEC_SECURITY_API_ENDPOINTS.md`.
-
-### 13. Desempenho individual da revendedora
-**File**: `src/app/app/vendas/` (partial?)
-**Issue**: Individual analytics/performance screen for revendedoras is not implemented.
-**Ref**: `docs/revendedoras/SPEC_DESEMPENHO.md`
-
-### 14. Vitrina pública não implementada
-**File**: `src/app/` (no `/vitrina/[slug]` route)
-**Issue**: Public reseller showcase page (`/vitrina/[slug]`) for SEO and sharing not yet built.
-**Ref**: `docs/revendedoras/SPEC_VITRINE_PUBLICA.md`
-
-### 15. Configurações globais admin
-**Issue**: Global settings page for commission tiers, level thresholds, and contract terms not implemented.
-**Ref**: `docs/admin/SPEC_ADMIN_CONFIG.md`
 
 ## ⚠️ Architecture Concerns
 

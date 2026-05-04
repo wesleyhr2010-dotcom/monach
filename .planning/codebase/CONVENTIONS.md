@@ -2,6 +2,41 @@
 # Code Conventions — NEXT-MONARCA
 # Mapped: 2026-05-04
 
+## Paper-First UI Convention (MANDATORY)
+
+**Every UI change requires a Paper artboard check before writing code.** This is the most important frontend convention in the project (CLAUDE.md §3.1).
+
+### Workflow
+1. Before writing any JSX/CSS, open the relevant artboard via `mcp__plugin_paper-desktop_paper__*` tools
+2. Call `get_screenshot` to see the design, `get_jsx` for markup, `get_computed_styles` for exact values
+3. Extract colors/spacing → convert to design system tokens (never hard-code)
+4. If the screen doesn't exist in Paper yet → **stop and ask** before inventing layout
+
+### Design System Token Sources
+
+Two physical sources (both must be in sync):
+
+| Source | Path | Use |
+|--------|------|-----|
+| Token spec | `docs/design-system/tokens.md` | Documentation reference |
+| CSS variables | `design-system/css/design-system.css` | `--ds-color-*`, `--ds-radius-*`, etc. |
+| Token JSON | `design-system/tokens.json` | Programmatic use |
+
+App namespace: `--app-*` (PWA revendedora) | Admin namespace: `--admin-*`
+
+### Modularidade obrigatória
+- Antes de criar componente → buscar em `src/components/app/` e `src/components/admin/`
+- Átomos genéricos (badge, pill, card) devem servir ≥ 2 telas antes de virar componente
+- Novos padrões visuais vindos do Paper → registrar em `docs/sistema/SPEC_DESIGN_MODULES.md`
+
+### Checklist obrigatório antes de commitar UI
+1. Artboard correspondente conferido no Paper via MCP
+2. Componentes existentes reaproveitados (ou justificativa no PR)
+3. Zero hex/px mágicos no JSX — apenas tokens
+4. SPEC da feature referencia o artboard Paper e lista componentes tocados
+
+---
+
 ## Language Split
 
 | Layer | Language | Reason |
