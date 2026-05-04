@@ -49,8 +49,15 @@ Plans:
   4. Lead approval is idempotent — re-approving an already approved lead returns success without creating duplicates
   5. Admin edits commission tiers at `/admin/config/comissoes`, gamification levels at `/admin/config/niveis`, and contracts at `/admin/config/contratos`
   6. New revendedoras see the active contract during onboarding; changes to tiers/levels do not affect already closed maletas (snapshots remain immutable)
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
+
+Plans:
+- [ ] `02-01-PLAN.md` — Notification Template System (substituirVariaveis helper, whitelist, admin editor variable hints, HTML sanitization)
+- [ ] `02-02-PLAN.md` — Lead Pipeline (landing submission, admin approval/rejection, Supabase Auth creation, Brevo emails, idempotency)
+- [ ] `02-03-PLAN.md` — Admin Config: Tiers & Levels (CommissionTier and NivelRegra CRUD with Zod, /admin/config/comissoes and /admin/config/niveis)
+- [ ] `02-04-PLAN.md` — Admin Config: Contracts (Contrato CRUD with R2 PDF upload, /admin/config/contratos, onboarding contract display)
+- [ ] `02-05-PLAN.md` — Notification Integration (wire templates into cron jobs and server actions registrarVenda/conferirEFecharMaleta/submitDevolucao)
 
 ### Phase 3: Visibility & Analytics — Reseller & Admin Dashboards
 **Goal**: Both revendedoras and admin have data-driven visibility into business performance through dashboards with period filtering, trend indicators, and rankings.
@@ -102,8 +109,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 0/TBD | Not started | - |
-| 2. Core Business | 0/TBD | Not started | - |
+| 1. Foundation | 0/3 | Planned | - |
+| 2. Core Business | 0/5 | Ready to execute | - |
 | 3. Visibility & Analytics | 0/TBD | Not started | - |
 | 4. Build Optimization | 0/TBD | Not started | - |
 | 5. Validation & Hardening | 0/TBD | Not started | - |

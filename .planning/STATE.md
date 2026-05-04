@@ -1,11 +1,11 @@
 ---
 milestone: v1.0
 name: Operação e Visibilidade
-status: ready-to-plan
+status: ready-to-execute
 progress:
   phases_total: 5
   phases_complete: 0
-  plans_total: 0
+  plans_total: 8
   plans_complete: 0
 ---
 
@@ -20,10 +20,10 @@ See: .planning/PROJECT.md (updated 2026-05-04)
 
 ## Current Position
 
-Phase: 1 of 5 (Foundation — Error Handling & UI States)
+Phase: 2 of 5 (Core Business — Notifications, Leads & Config)
 Plan: —
-Status: Ready to plan
-Last activity: 2026-05-04 — Roadmap created for milestone v1.0
+Status: Ready to execute
+Last activity: 2026-05-04 — Phase 2 planned with 5 plans
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -71,5 +71,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Roadmap created and written; awaiting Phase 1 planning
-Resume file: None
+Stopped at: Phase 1 context gathered (4 areas discussed, 13 decisions captured)
+Resume file: .planning/phases/01-foundation-error-handling-ui-states/01-CONTEXT.md
