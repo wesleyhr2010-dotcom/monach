@@ -5,7 +5,7 @@ milestone: v1.1
 name: Visibilidade e Polimento
 status: planning
 progress:
-  phases_total: 0
+  phases_total: 3
   phases_complete: 0
   plans_total: 0
   plans_complete: 0
@@ -16,14 +16,23 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-05)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Milestone v1.1 — planning requirements and roadmap
+**Current focus:** Milestone v1.1 — planning complete, ready to execute
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 6 of 8 (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-05 — Milestone v1.1 started
+Status: Planning complete
+Last activity: 2026-05-05 — Roadmap created (3 phases, 26 requirements)
+
+Progress: [░░░░░░░░░░] 0% (0/3 phases) | 0% plans (0/TBD)
+
+## Performance Metrics
+
+**Velocity (v1.0 baseline):**
+- Total plans completed: 19
+- Average duration: ~45 min/plan
+- Total execution time: ~21.5h
 
 ## Accumulated Context
 
@@ -55,5 +64,5 @@ Items acknowledged from previous milestone:
 ## Session Continuity
 
 Last session: 2026-05-05
-Stopped at: Milestone v1.1 initialized — requirements definition pending
+Stopped at: Milestone v1.1 roadmap created; ready for Phase 6 execution
 Resume file: —
