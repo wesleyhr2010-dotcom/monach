@@ -1,251 +1,165 @@
-# Technology Stack Research: Milestone v1.0
+# Research: Stack for v1.1
 
-**Project:** NEXT-MONARCA
-**Research Date:** 2026-05-04
-**Scope:** Stack additions/changes for notification template engine, analytics dashboards, lead pipeline, admin config panel, centralized error handling, skeleton/empty/error states, and build optimization.
-
----
-
-## 1. Existing Stack Summary (Validated — Do Not Change)
-
-| Layer | Technology | Version |
-|-------|------------|---------|
-| Framework | Next.js (App Router, Server Components, Server Actions) | 16.1.6 |
-| React | React / React DOM | 19.2.3 |
-| Language | TypeScript (strict) | 5.x |
-| Styling | Tailwind CSS | v4 |
-| ORM | Prisma | 7.4.2 |
-| Database | PostgreSQL (Supabase) | — |
-| Auth | Supabase Auth (email/password) + RLS | 2.98.0 |
-| Storage | Cloudflare R2 (S3-compatible) | — |
-| Email | Brevo (Sendinblue) | 5.0.4 |
-| Push | OneSignal | 3.5.1 |
-| Cron | Supabase Edge Functions | — |
-| Testing | Vitest | 4.0.18 |
-| Validation | Zod | 4.3.6 |
-| Icons | Lucide React | 0.576.0 |
-| PWA | Serwist | 9.5.6 |
-| Query (Client) | TanStack Query (React Query) | 5.90.21 |
-| PDF | jsPDF + @react-pdf/renderer | 4.2.0 / 4.3.2 |
-| CSV/Excel | PapaParse + csv-parser + xlsx | — |
-
-**Note:** `recharts` is referenced in project docs as "already used in admin analytics" but is **NOT installed** and has **zero imports** in the current codebase. This research treats it as a required addition.
+> **Scope:** Identificar adições de biblioteca/padrão estritamente necessárias para as 3 features do milestone v1.1 (Vitrina pública, Email branding, Admin analytics).  
+> **Baseline:** Next.js 16.1.6 + React 19 + Tailwind v4 + Prisma 7 + Supabase Auth/RLS + Brevo + OneSignal + Recharts 3.8.1 + Serwist PWA.
 
 ---
 
-## 2. New Stack Additions Needed
+## Existing Stack (Baseline)
 
-### 2.1 Charts & Data Visualization
-
-| Library | Version | Why Needed | Feature Area |
-|---------|---------|------------|--------------|
-| **recharts** | `^3.8.1` | Bar charts for reseller analytics (`/app/desempeno`), line charts for admin dashboard fluxo de maletas, donut charts for status distribution. Already prescribed in SPECs (`SPEC_DESEMPENHO.md`, `SPEC_ADMIN_DASHBOARD.md`). | Analytics dashboards (PWA + Admin) |
-
-**Rationale:** The project needs bar charts (visitas diárias), line charts (fluxo de maletas temporal), and donut/pie charts (distribuição por status). Recharts is React-native, tree-shakeable, and the team has already specced it. No need to introduce Chart.js or D3 complexity.
-
-**Integration:** Wrap recharts components in Client Components ( `'use client'` ) since they use DOM refs. Use inside `<Suspense>` with skeleton fallbacks. Tailwind colors map directly via `fill="url(#gradient)"` or hex tokens from the design system.
-
-**React 19 compatibility:** Recharts 3.8.1 is actively maintained and compatible with React 18+. No blocking issues with React 19 have been reported in the issue tracker as of May 2026.
-
----
-
-### 2.2 Toast Notifications & Error Handling
-
-| Library | Version | Why Needed | Feature Area |
-|---------|---------|------------|--------------|
-| **sonner** | `^2.0.7` | Standardized toast notifications for the `ActionResult` pattern. `SPEC_ERROR_HANDLING.md` explicitly references sonner, but it is **not installed** — the codebase currently uses ad-hoc inline toast divs in every admin page. | Centralized error handling |
-
-**Rationale:** The `ActionResult<T>` pattern requires a unified toast layer. Currently each admin page reimplements its own toast with `useState` + `setTimeout` + fixed positioning. Sonner provides stackable toasts, auto-dismiss, promise toasts, and accessibility out of the box. It is lighter and simpler than `react-hot-toast` or `notistack`.
-
-**Integration:** Mount `<Toaster />` once in the root layouts (`/app/layout.tsx` for PWA, `/admin/layout.tsx` for admin). Server Actions return `ActionResult`; client components call `toast.success()` / `toast.error()`. Supports the SPEC-mandated durations: success 3s, business error 5s, critical error 7s.
+| Capability | Library / Pattern | Status |
+|-----------|-------------------|--------|
+| Framework | `next` 16.1.6 + `react` 19.2.3 | ✓ |
+| Styling | `tailwindcss` v4 + design tokens (`--app-*`, `--admin-*`) | ✓ |
+| Charts | `recharts` 3.8.1 | ✓ |
+| Database | `prisma` 7.4.2 + `@prisma/adapter-pg` | ✓ |
+| Auth / Realtime | `@supabase/ssr` 0.9.0 + `@supabase/supabase-js` 2.98.0 | ✓ |
+| Email delivery | `@getbrevo/brevo` 5.0.4 | ✓ |
+| Push | `react-onesignal` 3.5.1 | ✓ |
+| Validation | `zod` 4.3.6 | ✓ |
+| Testing | `vitest` 4.0.18 | ✓ |
+| PDF / CSV | `jspdf` 4.2.0 + `papaparse` 5.5.3 | ✓ |
+| Images / Storage | `@aws-sdk/client-s3` 3.997.0 + `sharp` 0.34.5 | ✓ |
 
 ---
 
-### 2.3 Form Handling
+## New Stack Needs
 
-| Library | Version | Why Needed | Feature Area |
-|---------|---------|------------|--------------|
-| **react-hook-form** | `^7.75.0` | Complex forms in lead approval modal (select consultora + taxa), commission tier editor, contrato upload. `SPEC_ERROR_HANDLING.md` §7 explicitly prescribes "Zod + React Hook Form" for client-side validation. | Lead pipeline, Admin config |
-| **@hookform/resolvers** | `^5.2.2` | Bridges `react-hook-form` with Zod v4 schemas. Required because the project uses Zod 4.3.6 for Server Action validation and wants to reuse the same schemas client-side. | Lead pipeline, Admin config |
+### For Vitrina Pública (SEO + Tracking)
 
-**Rationale:** Manual form state (`useState` per field) is error-prone and verbose for multi-field modals like lead approval. React Hook Form provides uncontrolled form optimization (less re-renders), easy integration with Zod via resolvers, and built-in `isSubmitting` state for loading spinners. Version 7.75.0 adds TypeScript 6.0 support and fixes dirty-field pruning.
+**Nenhuma biblioteca nova é necessária.** Todas as capacidades são nativas do Next.js 15+ e do runtime Node.js.
 
-**Integration:** Reuse existing Zod schemas (e.g., `commissionTierSchema` in `SPEC_ADMIN_CONFIG.md`) in both Server Actions and client forms. No schema duplication. Works inside Radix Dialogs (already available via `radix-ui` package).
+| Pattern | Nativo de | Onde se integra | Rationale |
+|---------|-----------|-----------------|-----------|
+| `generateMetadata` | `next` | `/vitrina/[slug]/page.tsx` | SEO dinâmico (título, descrição, OG, `robots: noindex`) é API oficial do App Router. Não adicionar `next-seo` — seria duplicidade. |
+| `cookies()` / `headers()` | `next/headers` | Server Component da vitrina | Leitura e escrita de cookie `monarca_visitor_id` server-side. |
+| `crypto.randomUUID()` | Node.js 19+ / Edge Runtime | Server Component / Middleware | Geração de UUID v4 para `visitor_id` sem instalar `uuid`. |
+| Route Handler `POST` | `next` | `/api/track-evento/route.ts` | Endpoint público de tracking fire-and-forget. Nativo do App Router. |
+| OG Images dinâmicas | `next/og` (`ImageResponse`) | `/vitrina/[slug]/opengraph-image.tsx` (opcional) | Geração de imagens OG on-the-fly é nativa desde Next.js 13. Não instalar `@vercel/og`. |
 
----
-
-### 2.4 Date Manipulation
-
-| Library | Version | Why Needed | Feature Area |
-|---------|---------|------------|--------------|
-| **date-fns** | `^4.1.0` | Time-range calculations for analytics ("Esta Semana", "Este Mes", "Últimos 30 días", "Este Año"), Paraguay timezone (`America/Asuncion`) handling, cron job date math, trend comparisons. | Analytics dashboards, Cron jobs |
-
-**Rationale:** Native `Date` arithmetic is verbose and error-prone across month boundaries and timezone edges. Date-fns v4 is tree-shakeable (import only what you use), supports Paraguay timezone via `TZDate`, and has excellent TypeScript support. It is lighter than `moment` (which is deprecated) and more ergonomic than `luxon` for the simple date math this project needs.
-
-**Integration:** Use in Server Actions for `getDateRange(rango)` helper and in cron Edge Functions for `check-maleta-prazo`. Pair with Prisma's `AT TIME ZONE 'America/Asuncion'` for database-level timezone consistency (already specced in `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`).
+> **Nota sobre cookie em Server Component:** Next.js Server Components podem ler cookies via `cookies()`, mas **não podem setar headers de resposta**. Se for necessário criar o `visitor_id` no primeiro acesso, a estratégia é: (a) Middleware que injeta o cookie antes do hit da página, ou (b) Client Component que detecta ausência do cookie e grava via `document.cookie`. Ambas usam APIs nativas.
 
 ---
 
-### 2.5 Notification Template Engine
+### For Email Branding
 
-**Decision: NO new library.**
+**Recomendação principal: zero bibliotecas novas.** A padronização de layout é um problema de **template wrapper**, não de dependência.
 
-Variable substitution (`{maleta_id}`, `{dias_restantes}`, `{nome_revendedora}`) is a simple regex replace. A dedicated template engine (Handlebars, Mustache, Nunjucks) is overkill for a system with ~7 template types and simple scalar variables.
+| Abordagem | O que é | Quando usar |
+|-----------|---------|-------------|
+| **Recomendada:** `EmailLayout` base + template literals | Função wrapper que injeta header (logo, cores Monarca) e footer (unsubscribe, endereço) em HTML string. | 7 templates existentes, volume baixo, copy estável. |
+| **Alternativa DX:** `@react-email` | `@react-email/components` 1.0.12 + `@react-email/render` 2.0.8 + `@react-email/tailwind` 2.0.7 | Se o time precisar de preview local de emails, testes visuais, ou escalar para 20+ templates. |
 
-**Implementation:**
+**Integração da abordagem zero-lib:**
 
 ```ts
-// src/lib/notifications/substituir-variaveis.ts
-export function substituirVariaveis(
-  template: string,
-  vars: Record<string, string | number>
-): string {
-  return template.replace(/\{(\w+)\}/g, (_, key) => String(vars[key] ?? `{${key}}`));
+// src/lib/email-layout.ts
+export function renderEmailBase(contentHtml: string, opts: { previewText?: string }) {
+  return `
+    <!doctype html>
+    <html>
+      <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"></head>
+      <body style="margin:0;padding:0;background:#f6f6f6;font-family:Arial,sans-serif;">
+        <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+          <tr><td align="center" style="padding:24px 0;">
+            <table width="600" cellspacing="0" cellpadding="0" style="background:#fff;border-radius:8px;overflow:hidden;">
+              <!-- Header Monarca -->
+              <tr><td style="background:#35605a;padding:24px;text-align:center;">
+                <img src="${process.env.NEXT_PUBLIC_SITE_URL}/logo-email.png" alt="Monarca" width="140" />
+              </td></tr>
+              <!-- Content -->
+              <tr><td style="padding:32px 24px;">${contentHtml}</td></tr>
+              <!-- Footer -->
+              <tr><td style="background:#fafafa;padding:24px;text-align:center;color:#888;font-size:12px;">
+                Monarca Semijoyas · monarcasemijoyas.com.py
+              </td></tr>
+            </table>
+          </td></tr>
+        </table>
+      </body>
+    </html>
+  `;
 }
 ```
 
-This is referenced in `PROJECT.md` Active items ("helper `substituirVariaveis`") and aligns with the `NotificacaoTemplate` schema in `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`.
+Todos os templates existentes (`src/lib/email-templates/*.ts`) passam seu HTML interno por `renderEmailBase()` antes de chamar `sendEmail()`. O ponto de integração é único: `src/lib/emails.ts` (já existe).
+
+**Por que NÃO adicionar `@react-email` agora:**
+- 7 templates transacionais, copy estável, baixa frequência de mudança.
+- Templates atuais são strings HTML simples; migrar para JSX é churn sem ganho operacional imediato.
+- `@react-email/tailwind` 2.0.7 tem peer deps que podem conflitar com Tailwind v4 do projeto (ainda não totalmente validado na v4).
+- Se no futuro o volume de templates ultrapassar 15–20, reavaliar `@react-email`.
 
 ---
 
-## 3. Installation Commands
+### For Admin Analytics
 
-```bash
-# Charts
-npm install recharts@^3.8.1
+**Nenhuma biblioteca nova é necessária.** Todas as capacidades visuais e de dados já existem na codebase.
 
-# Toast / error handling
-npm install sonner@^2.0.7
+| Capability | O que já existe | Onde se integra |
+|------------|-----------------|-----------------|
+| Gráficos de linha / donut / barras | `recharts` 3.8.1 | `/admin/analytics/page.tsx` e componentes filhos. Reutilizar padrão já estabelecido em `/app/desempeno` (revendedora). |
+| Realtime badge (sininho) | `@supabase/supabase-js` 2.98.0 | `AdminAlertBell` — canal `postgres_changes` na tabela `maletas` com filtro `status=eq.aguardando_revisao`. |
+| Queries agregadas / raw SQL | `prisma` 7.4.2 + `$queryRaw` | `getAnalyticsData()` — series temporais, top produtos, KPIs. Já usado em outras partes do admin. |
+| Export CSV | Nativo (template string + `Blob`) | Botão "Exportar CSV" — construir string com `\n` separador e fazer download via `URL.createObjectURL`. Não instalar lib de CSV apenas para export simples. |
+| Date math (períodos 7d/30d/3m/12m) | Nativo `Date` | `new Date(Date.now() - N * 24*60*60*1000)` é suficiente. Não adicionar `date-fns` ou `dayjs`. |
 
-# Forms + Zod resolver
-npm install react-hook-form@^7.75.0 @hookform/resolvers@^5.2.2
-
-# Date manipulation
-npm install date-fns@^4.1.0
-```
-
-**Total new runtime dependencies: 4 packages** (plus 1 resolver package).
+> **Nota sobre CSV:** `papaparse` 5.5.3 já está em `dependencies`, mas é **parser** (leitura), não writer. Para escrita, uma função utilitária de 10 linhas é suficiente e evita adicionar `csv-writer` ou `csv-stringify`.
 
 ---
 
-## 4. Integration Notes with Existing Stack
+## Integration Points
 
-### 4.1 Recharts + Tailwind v4 + Design System
+1. **Vitrina → Analytics DB**
+   - Server Component `/vitrina/[slug]/page.tsx` chama `trackearAcceso()` (Server Action ou helper Prisma) passando `visitor_id` do cookie.
+   - Client Component `WhatsAppConsultarButton` chama `fetch('/api/track-evento', ...)` antes de abrir `wa.me`.
 
-- Recharts does not consume Tailwind classes directly for `fill`/`stroke`. Use design system hex tokens (e.g., `#35605a` → primary green) inline, or define SVG `<linearGradient>` elements inside chart components.
-- Wrap all chart usage in `'use client'` components since Recharts reads DOM measurements via refs.
-- Place inside `<Suspense fallback={<SkeletonCard />}>` to avoid blocking Server Component renders.
+2. **Email Templates → Brevo**
+   - Todos os `src/lib/email-templates/*.ts` são atualizados para usar `renderEmailBase()`.
+   - `src/lib/emails.ts` (Brevo client) permanece inalterado — continua recebendo `htmlContent: string`.
 
-### 4.2 Sonner + ActionResult Pattern
+3. **Admin Analytics → Recharts**
+   - Componentes de gráfico reutilizam o mesmo padrão de `/app/desempeno` (composable chart components: `<LineChart />`, `<ResponsiveContainer />`, etc.).
+   - Filtro de período (7d/30d/3m/12m) é estado client-side que refetch via Server Action ou query string + `router.refresh()`.
 
-- Mount `<Toaster />` in both `/app/layout.tsx` and `/admin/layout.tsx` with appropriate position (`bottom-center` for mobile PWA, `top-right` for desktop admin).
-- Server Actions return `ActionResult<T>`. Client components consume it:
-  ```ts
-  const result = await createMaleta(data);
-  if (!result.success) toast.error(result.error, { duration: 5000 });
-  else toast.success('Consignación creada exitosamente.', { duration: 3000 });
-  ```
-- Sonner's `toast.promise()` is ideal for async Server Actions with loading states.
-
-### 4.3 React Hook Form + Zod + Radix UI
-
-- The project already has `radix-ui` (v1.4.3) installed, providing Dialog, Select, Tabs, Checkbox, etc. Use these for accessible form UI.
-- Reuse Zod schemas from Server Actions in client forms via `@hookform/resolvers/zod`:
-  ```ts
-  const form = useForm<CommissionTierInput>({
-    resolver: zodResolver(commissionTierSchema),
-  });
-  ```
-- This avoids duplicating validation logic between client and server.
-
-### 4.4 Date-fns + Prisma + Paraguay Timezone
-
-- Use `date-fns` for client-friendly date formatting (e.g., `format(dia, 'dd/MMM')` for chart axes).
-- Use Prisma's `AT TIME ZONE 'America/Asuncion'` for database aggregations (already in SPEC).
-- For cron jobs, use `date-fns` to compute `startOfMonth`, `endOfMonth`, `subDays`, etc. in the Edge Function before passing to Prisma queries.
-
-### 4.5 TanStack Query Integration (Already Installed)
-
-- TanStack Query (`@tanstack/react-query` v5.90.21) is installed but appears lightly used. For the analytics dashboards with interactive period filters, wrap `getMetricasDesempenho` and `getDashboardData` in `useQuery` hooks to get caching, refetching, and `isPending` states for free.
-- This pairs well with React Hook Form: form submit invalidates query cache, UI auto-refreshes.
+4. **Alert Bell → Supabase Realtime**
+   - `AdminAlertBell` (Client Component) abre canal Realtime no mount.
+   - `fetchCount()` e `fetchMaletas()` batem em API Routes (`/api/admin/alertas/*`) que usam `getAdminSession()` + `getResellerScope()` + Prisma.
 
 ---
 
-## 5. Build Optimization (No New Libraries)
+## What NOT to Add
 
-**Problem:** Public pages (`/`, `/catalogo`, `/produto/[slug]`, `/vitrina/[slug]`) currently use `export const dynamic = 'force-dynamic'` as a workaround because Vercel build fails without a valid `DATABASE_URL` during static generation.
-
-**Solution (configuration only):**
-
-1. **Configure `DATABASE_URL` in Vercel** as a build-time environment variable (not just runtime). The connection string must be accessible to Prisma during `next build`.
-2. **Replace `force-dynamic` with ISR** on public pages:
-   ```ts
-   export const revalidate = 60;
-   ```
-   This is already the prescribed strategy in `SPEC_CACHING_STRATEGY.md` §8.
-3. **Ensure Prisma generate runs before build** — already in `package.json` scripts:
-   ```json
-   "build": "prisma generate && next build"
-   ```
-4. **Verify `max` pool size** in `src/lib/prisma.ts` is set to `10` for serverless (already mentioned in `CLAUDE.md` §3.3).
-
-**No new dependencies required.** This is purely Vercel dashboard config + code removal.
+| Library / Pattern | Por que evitar |
+|-------------------|----------------|
+| `next-seo` | `generateMetadata` nativo do Next.js 15 cobre 100% dos casos (título, descrição, OG, robots, alternates). |
+| `js-cookie` / `react-cookie` | `next/headers` server-side e `document.cookie` client-side são suficientes para um único cookie anônimo. |
+| `uuid` | `crypto.randomUUID()` é nativo em todos os runtimes que o projeto usa (Node.js 20+, Edge, Browser moderno). |
+| `@vercel/og` | `ImageResponse` de `next/og` é nativo desde Next.js 13. |
+| `date-fns` / `dayjs` | Cálculos de período (7d, 30d, 3m, 12m) são subtrações simples de timestamp. Não justifica bundle extra. |
+| `@tanstack/react-table` | Tabelas do analytics são simples (top 10, lista de alertas). HTML `<table>` + Tailwind já usado no admin. |
+| `csv-writer` / `csv-stringify` | Export CSV de relatório admin é string template + download nativo. |
+| Chart library extra (chart.js, victory, nivo) | `recharts` 3.8.1 já instalado e usado em produção. |
+| Analytics SaaS (Plausible, Google Analytics, Mixpanel) | A SPEC define analytics próprio (`AnalyticsAcesso` no Postgres). Não adicionar tracker de terceiro sem decisão de produto explícita. |
+| `@react-email` (agora) | Ver seção "Email Branding" — overkill para 7 templates estáveis. Reavaliar se passar de 20 templates. |
 
 ---
 
-## 6. What NOT to Add (Avoid Bloat)
+## Recommendation
 
-| Category | What to Skip | Why |
-|----------|-------------|-----|
-| **State Management** | Zustand, Redux, Jotai | Next.js Server Components + Server Actions + URL state eliminate the need for global client state. TanStack Query (already installed) covers server state caching. |
-| **Template Engine** | Handlebars, Mustache, Nunjucks | 7 notification templates with scalar variable substitution — regex is sufficient and zero-dependency. |
-| **Secondary Chart Library** | Chart.js, Victory, Tremor | Recharts covers all chart types needed (bar, line, donut). Adding a second chart library fragments the visual language and increases bundle size. |
-| **Date Library** | Moment.js, Luxon | Moment is deprecated and heavy. Luxon is powerful but overkill for simple range math and formatting. date-fns v4 is tree-shakeable and ideal. |
-| **Form Library** | Formik | React Hook Form is lighter, faster, and has better Zod integration. Formik is no longer the community default. |
-| **UI Component Library** | shadcn/ui add-ons, Material UI | Radix UI primitives are already installed. Build components with Tailwind + Radix to maintain design system consistency. |
-| **Analytics/BI** | Apache ECharts, Metabase embed | The project needs operational dashboards, not a full BI suite. Recharts + Prisma aggregations are sufficient for v1.0. |
-| **Build Tools** | @vercel/postgres, next-on-pages | Prisma + Supabase works correctly on Vercel. No need to swap the database adapter. |
+**v1.1 não requer instalação de nenhuma biblioteca nova.**
 
----
+Todas as 3 features são implementáveis com o stack existente, usando APIs nativas do Next.js 15+ e padrões já estabelecidos na codebase:
 
-## 7. Version Confidence Assessment
+1. **Vitrina pública:** `generateMetadata`, `cookies()`, Route Handler, `crypto.randomUUID()`.
+2. **Email branding:** função `renderEmailBase()` wrapper (nova, ~30 linhas) aplicada nos 7 templates existentes.
+3. **Admin analytics:** `recharts` (já usado), `@supabase/supabase-js` Realtime (já usado), Prisma `$queryRaw` (já usado), CSV nativo.
 
-| Library | Version | Confidence | Notes |
-|---------|---------|------------|-------|
-| recharts | 3.8.1 | **HIGH** | Verified via GitHub releases. Active maintenance. Compatible with React 18+. No React 19 blockers found. |
-| sonner | 2.0.7 | **HIGH** | Verified via GitHub releases. Lightweight, stable. Works with React 19. |
-| react-hook-form | 7.75.0 | **HIGH** | Verified via GitHub releases. Latest stable. Explicitly supports TypeScript 6.0. |
-| @hookform/resolvers | 5.2.2 | **HIGH** | Verified via GitHub releases. Fixes Zod 4 resolver compatibility (critical for this project). |
-| date-fns | 4.1.0 | **HIGH** | Verified via GitHub releases. v4 adds timezone support to format functions, directly relevant for `America/Asuncion`. |
+**Se o time decidir priorizar DX de email no futuro**, a stack candidata é `@react-email/components` 1.0.12 + `@react-email/render` 2.0.8, mas isso deve ser tratado como um spike separado (fora do escopo v1.1) devido ao potencial de conflito com Tailwind v4.
+
+**Ação imediata:** nenhum `npm install` necessário. Começar implementação diretamente nas camadas de aplicação (pages, components, templates).
 
 ---
 
-## 8. Feature-to-Stack Mapping
-
-| Milestone Feature | New Stack Addition | Existing Stack Used |
-|-------------------|-------------------|---------------------|
-| Notification template engine (variable substitution) | None — regex helper | Prisma (`NotificacaoTemplate`), OneSignal, Brevo, Supabase Edge Functions |
-| Analytics dashboard (reseller `/app/desempeno`) | recharts, date-fns | Prisma (`AnalyticsAcesso`, `AnalyticsDiario`), TanStack Query, Tailwind |
-| Admin dashboard (global/group KPIs) | recharts, date-fns | Prisma (`maleta`, `reseller`), RLS, Tailwind |
-| Lead pipeline (`/admin/leads`) | react-hook-form, @hookform/resolvers, sonner | Prisma (`RevendedoraLead`), Supabase Auth, Brevo, Radix UI |
-| Admin config (tiers, levels, contracts) | react-hook-form, @hookform/resolvers, sonner | Prisma (`CommissionTier`, `Contrato`), R2 upload API, Radix UI |
-| Centralized error handling (`ActionResult`) | sonner | Zod, existing `mapError` helper, Sentry (future) |
-| Skeleton/empty/error states | None — pure components | Tailwind, React `Suspense`, design system tokens |
-| Build optimization (remove `force-dynamic`) | None — config only | Vercel env vars, ISR (`revalidate`), Prisma |
-
----
-
-## 9. Risk Notes
-
-1. **Recharts + React 19:** While no blocking issues were found, recharts uses `ReactDOM.render` internally in some legacy paths. Monitor for hydration warnings in dev. If issues arise, wrap charts in a client-only boundary.
-2. **Zod 4 + @hookform/resolvers:** The resolver package at v5.2.2 explicitly fixes Zod 4 output types. Do NOT use v5.2.1 or earlier, as they may have type mismatches with Zod 4's `.pipe()` and `.transform()`.
-3. **Date-fns v4 timezone:** Requires `TZDate` v1.0.2+ for Paraguay timezone support. Install alongside date-fns if using named timezones beyond simple offset math.
-4. **Sonner in dual layouts:** PWA and Admin have separate root layouts. Ensure `<Toaster />` is mounted in both, with distinct `richColors` and position props appropriate to each viewport.
-
----
-
-## Sources
-
-- GitHub Releases (verified): recharts/recharts v3.8.1, emilkowalski/sonner v2.0.7, react-hook-form/react-hook-form v7.75.0, react-hook-form/resolvers v5.2.2, date-fns/date-fns v4.1.0
-- Project SPECs: `SPEC_DESEMPENHO.md`, `SPEC_ADMIN_DASHBOARD.md`, `SPEC_ADMIN_LEADS.md`, `SPEC_ADMIN_CONFIG.md`, `SPEC_ERROR_HANDLING.md`, `SPEC_SKELETON_EMPTY_STATES.md`, `SPEC_CACHING_STRATEGY.md`, `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`
-- Current codebase audit: `package.json`, grep results for installed/ missing packages
+*Research produced: 2026-05-05*  
+*Verifier: npm registry (versions checked via `npm view`)*

@@ -1,309 +1,131 @@
-# Feature Landscape
+# Research: Features for v1.1
 
-**Domain:** Plataforma de gestão de revendedoras de semijoias (Monarca — Paraguai)
-**Milestone:** v1.0 — Operação e Visibilidade
-**Researched:** 2026-05-04
-**Scope:** Apenas features NOVAS deste milestone. Features já existentes (autenticação, maletas, gamificação, notificações push, catálogo, etc.) estão fora deste documento — consultar `PROJECT.md` §Validated.
+## Feature 1: Vitrina Pública
 
----
+### Table Stakes
+- URL única e compartilhável por revendedora (`/vitrina/{slug}`), gerada no cadastro (`{nombre-slug}-{random-3}`)
+- Página pública sem autenticação — cliente final acessa diretamente
+- Grid de produtos com foto, nome e preço, alimentado pela maleta ativa da revendedora
+- CTA "Consultar por WhatsApp" com deep-link preenchido
+- SEO mínimo: title/description dinâmicos e Open Graph tags (imagem do avatar)
+- 404 para slug inexistente ou revendedora desativada
+- Placeholder para imagens quebradas
+- Estado vazio elegante quando não há maleta ativa ("Próximamente artículos disponibles")
 
-## 1. Categorias de Feature deste Milestone
+### Differentiators
+- **Mensagem contextual por produto**: o deep-link do WhatsApp preenche o nome do produto e preço, não apenas uma mensagem genérica — isso aumenta a conversão porque o cliente não precisa digitar o que viu
+- **Tracking anônimo com `visitor_id` persistente** (cookie UUID, 30 dias): permite contar visitantes únicos sem exigir login ou coletar PII
+- **Estratégia `noindex` deliberada**: vitrinas pessoais são deixadas fora do Google para evitar conteúdo duplicado em massa, mas têm metadata rica para preview em redes sociais/WhatsApp
+- **Eventos de analytics granulares**: `catalogo_revendedora` (visita) e `clique_whatsapp` (clique) com `produto_id` opcional — permite à revendedora entender o que gera interesse
+- **Fallback de preço**: se preço for nulo/zerado, oculta o valor mas mantém o CTA (evita mostrar "G$ 0")
 
-| # | Categoria | SPEC Principal | Descrição Resumida |
-|---|-----------|----------------|--------------------|
-| 1 | **Motor de Templates de Notificação** | `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` | Conectar o editor de templates existente aos cron jobs e geradores automáticos; implementar substituição de variáveis (`{nome_revendedora}`, `{maleta_id}`, etc.) |
-| 2 | **Analytics da Revendedora (PWA)** | `revendedoras/SPEC_DESEMPENHO.md` | Tela `/app/desempeno` com métricas individuais de acessos, visitantes únicos, cliques WhatsApp e peças vendidas; gráfico de visitas diárias; ranking de produtos populares |
-| 3 | **Dashboard Admin (KPIs globais/grupo)** | `admin/SPEC_ADMIN_DASHBOARD.md` | Visão executiva em `/admin` com cards de faturamento, maletas, revendedoras e alertas; lista de maletas com atenção; ranking por consultora ou revendedora; filtro por período |
-| 4 | **Pipeline de Candidaturas (Leads)** | `admin/SPEC_ADMIN_LEADS.md` | Revisão de candidaturas da landing `/seja-revendedora`; aprovação com criação automática de usuário Supabase + `Reseller` + email de boas-vindas; rejeição com email |
-| 5 | **Configurações Globais Admin** | `admin/SPEC_ADMIN_CONFIG.md` | CRUD de faixas de comissão (`CommissionTier`); upload e gestão de contratos PDF; regras de enquadramento automático |
-| 6 | **Error Handling Centralizado + Estados de UI** | `sistema/SPEC_ERROR_HANDLING.md` | Padronização `ActionResult<T>` em todas as Server Actions; catálogo de mensagens em espanhol paraguaio; `mapError()` helper; skeleton/empty/error states por tela |
-| 7 | **Otimização de Build** | `sistema/SPEC_DEPLOY_STRATEGY.md` | Remover `force-dynamic` de páginas públicas; configurar `DATABASE_URL` no build step da Vercel; adotar ISR onde apropriado |
+### Anti-Features
+- **Não é loja com checkout**: não adicionar carrinho, pagamento ou fluxo de compra — a vitrina é um catálogo de consulta, não e-commerce
+- **Não indexar no Google**: milhares de vitrinas com produtos similares competiriam entre si (thin content). `noindex` é uma escolha de SEO, não uma limitação
+- **Não exigir cookies**: se o visitante bloquear cookies, o `visitor_id` usa o request — perde-se a contagem de únicos, mas a página funciona normalmente
+- **Não expor dados sensíveis da revendedora**: apenas nome, avatar e WhatsApp. Não mostrar endereço, banco, documentos
+- **Não sincronizar estoque em tempo real**: a vitrina reflete o snapshot da maleta ativa; não é um ERP de estoque
 
----
+### Complexity
+**Medium**
 
-## 2. Table Stakes (Must-Have)
+Razões:
+- Next.js App Router não permite Server Components setarem cookies diretamente — requer middleware para estabelecer `monarca_visitor_id`, ou um padrão híbrido (Server Component lê, middleware escreve)
+- Rota API pública `/api/track-evento` precisa de validação básica (whitelist de `tipo_evento`) e potencialmente rate limiting para evitar spam de analytics
+- Metadata dinâmica exige `generateMetadata` com fetch de reseller — precisa de cache curto para não sobrecarregar
+- Múltiplos edge cases: reseller inativa, sem maleta ativa, imagem quebrada, preço nulo, cookie bloqueado, prefetch do Next.js contando como visita falsa
 
-Features que o usuário espera encontrar. Ausência = produto incompleto ou frustração operacional.
-
-### 2.1 Motor de Templates de Notificação
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Helper `substituirVariaveis(template, contexto)` | Templates salvos no banco são inúteis sem interpolação de variáveis | **S** | Regex simples ou `String.replace` com validação de chaves |
-| Refatorar cron jobs para ler `NotificacaoTemplate` por `tipo` | Hoje os cron jobs usam textos hardcoded; ignoram o editor existente | **M** | Tocar `check-maleta-prazo`, `marcar-maletas-atrasadas`, `registrarVenda`, `conferirEFecharMaleta`, `submitDevolucao` |
-| Fallback para texto default quando template inativo/ausente | Se admin desativar um template, o sistema não pode quebrar | **S** | Textos default já existem nos cron; manter como fallback |
-| Hint "Variables disponibles" no modal de edição | Admin precisa saber quais variáveis pode usar em cada tipo de template | **S** | Adicionar lista de variáveis por tipo no modal existente |
-
-### 2.2 Analytics da Revendedora (PWA)
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| 4 cards de métricas com valor + tendência % | Todo app de analytics mostra KPIs em cards com comparação temporal | **M** | Reutilizar padrão de cards do admin; calcular período anterior equivalente |
-| Seletor de período (Semana / Mês / 30 dias / Ano) | Sem filtro de data, o analytics é estático e pouco útil | **M** | Dropdown client-side; recarrega dados via Server Action |
-| Gráfico de barras de visitas diárias | Visualização temporal é table stake de qualquer dashboard | **M** | `recharts` já é dependência; BarChart com gradiente verde |
-| Lista de top 10 produtos populares | Revendedora precisa saber o que está funcionando na vitrina | **M** | Query `GROUP BY produto_id ORDER BY COUNT DESC LIMIT 10` |
-| Tendência % vs período anterior (verde/vermelho/"Nuevo") | Comparativo é o mínimo para dar contexto aos números | **S** | Fórmula simples; edge case `anterior = 0` → "Nuevo" |
-| Empty state quando sem dados | Recém-cadastrada ou sem atividade não pode ver tela em branco | **S** | Mensagem amigável em espanhol paraguaio |
-
-### 2.3 Dashboard Admin (KPIs globais/grupo)
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Cards KPI principais (faturamento, maletas, revendedoras, alertas) | Dashboard sem KPIs numéricos não é dashboard | **M** | 4 queries agregadas em paralelo (`Promise.all`) |
-| Visão diferenciada por role (SUPER_ADMIN vs CONSULTORA) | Consultora não pode ver dados de outras consultoras | **M** | Reutilizar `getResellerScope` e `assertIsInGroup` existentes |
-| Lista "Maletas com Atenção" (atrasadas / aguardando revisão / vence em ≤2 dias) | Admin precisa de uma fila de ação imediata | **M** | Query com `OR` de status + filtro de prazo |
-| Ranking de desempenho (consultoras ou revendedoras) | Comparativo de performance é essencial para gestão | **M** | `GROUP BY` com `SUM` e `COUNT`; ordenação DESC |
-| Filtro de período (semana / mês / personalizado) | Métricas reagem ao contexto temporal | **M** | Dropdown client-side; recalcular queries |
-| CTAs diretos para telas de ação | Dashboard é um hub — cada item deve ser clicável | **S** | Links para `/admin/maletas/[id]`, `/admin/revendedoras/[id]` |
-
-### 2.4 Pipeline de Candidaturas (Leads)
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Tabs por status (Pendientes / Aprobadas / Rechazadas) | Sem organização por status, admin não consegue operar | **S** | Filtro por query param; contagem por tab |
-| Badge numérico no sidebar com leads pendentes | Admin precisa saber que há novas candidaturas sem entrar na tela | **S** | Contagem SSR no `layout.tsx`; polling ou revalidação |
-| Modal de aprovação com seleção de consultora + taxa de comissão | Aprovação sem vinculação de consultora quebra o modelo de negócio | **M** | Select de colaboradoras; input de taxa (0-100) |
-| Criação automática de usuário Supabase Auth + `Reseller` | Aprovação manual de conta é inviável em escala | **M** | `supabaseAdmin.auth.admin.createUser`; senha temporária; rollback se falhar |
-| Envio de email de boas-vindas com credenciais | Nova revendedora precisa saber como acessar | **M** | Template Brevo/Resend; substituição de variáveis |
-| Modal de rejeição com motivo + email de recusa | Candidata rejeitada deve ser informada formalmente | **M** | Campo de observação; template de email |
-| Validação de duplicidade (email/cédula já existentes) | Evitar criar revendedora duplicada | **S** | `findFirst` antes de criar; erro `CONFLICT` |
-
-### 2.5 Configurações Globais Admin
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| CRUD de faixas de comissão (`CommissionTier`) | Admin precisa ajustar comissões sem alterar código | **M** | Tabela já existe no Prisma; falta UI e Server Actions |
-| Regra de enquadramento automático (maior faixa cujo mínimo supera) | Sistema deve calcular comissão automaticamente | **S** | Lógica de query: `WHERE min_sales_value <= faturamento ORDER BY min_sales_value DESC LIMIT 1` |
-| Proteção da faixa base (`min_sales_value = 0`) | Deletar a faixa base quebra o cálculo para todas | **S** | Guard no `deleteCommissionTier` |
-| Upload de contratos PDF com drag-and-drop | Admin precisa versionar contratos sem dev | **M** | R2 upload; validação de tipo/tamanho (PDF ≤10MB) |
-| Ativar/inativar contratos | Contratos antigos não devem aparecer para novas revendedoras | **S** | Flag `ativo` no schema; filtro na query |
-
-### 2.6 Error Handling Centralizado + Estados de UI
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Tipo `ActionResult<T>` em todas as Server Actions | Sem padrão, cada action retorna algo diferente | **M** | Refatoração cross-cutting; toca dezenas de arquivos |
-| Helper `mapError(error)` centralizado | Mapear Prisma errors, business errors e unknowns para mensagens amigáveis | **M** | `P2002` → `CONFLICT`, `P2025` → `NOT_FOUND`, `BUSINESS:` → mensagem limpa |
-| Catálogo de mensagens de erro por módulo | Evitar inventar mensagens em cada Server Action | **M** | Documento vivo em `SPEC_ERROR_HANDLING.md` §2 |
-| Duração de toast por severidade (sucesso 3s, negócio 5s, crítico 7s) | UX consistente de feedback | **S** | Config no `sonner` provider |
-| Skeleton states por tela | Tela em branco durante loading parece quebrada | **M** | Componentes `SkeletonCard`, `SkeletonList`, etc. reutilizáveis |
-| Empty states por tela | Sem dados não é erro — é estado válido que precisa de mensagem | **M** | Mapear todas as telas de `/app/*` e `/admin/*` |
-| Error states por tela (botão "Reintentar") | Falha de rede ou servidor precisa de recovery path | **M** | Wrapper `ErrorBoundary` ou estados inline com retry |
-
-### 2.7 Otimização de Build
-
-| Feature | Por que é esperado | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Remover `force-dynamic` de páginas públicas | Degradação de performance em todas as páginas públicas | **S-M** | `/`, `/catalogo/*`, `/produto/[slug]`, `/seja-revendedora` |
-| Configurar `DATABASE_URL` no build step da Vercel | Build falha sem banco acessível para Prisma | **S** | Env var em Production + Preview + Development |
-| Adotar ISR (`revalidate = 60`) em páginas públicas | Cache estático com stale-while-revalidate é o padrão Next.js | **S** | Substitui `force-dynamic` com comportamento de cache saudável |
-| Revalidar `force-dynamic` caso a caso em páginas autenticadas | Algumas páginas admin/app realmente precisam de dados em tempo real | **S** | Manter apenas onde há `headers()`/`cookies()` ou dados sensíveis a cada request |
+### Dependencies
+- **Maleta ativa** (`SPEC_MALETA.md`): fonte dos itens exibidos — só produtos com `quantidade_vendida < quantidade_enviada`
+- **R2 images** (`SPEC_API_UPLOAD_R2.md`): imagens dos produtos e avatar da revendedora
+- **Reseller.slug** (`SPEC_DATABASE.md`): campo existente ou a adicionar; único e imutável
+- **AnalyticsAcesso** (`SPEC_DATABASE.md`): tabela de eventos para tracking
+- **Site público existente**: herda layout, tokens de design e componentes visuais (ex.: header, footer)
+- **WhatsApp deep-link**: depende do número de WhatsApp da revendedora estar preenchido no perfil
 
 ---
 
-## 3. Differentiators (Nice-to-Have)
+## Feature 2: Email Branding
 
-Features que agregam valor perceptível sem serem esperadas. Implementar se sobrar tempo ou se o time quiser se diferenciar.
+### Table Stakes
+- Remetente único e verificado: `no-reply@monarcasemijoyas.com.py` (SPF/DKIM/DMARC configurados)
+- Layout HTML consistente em todos os emails: `max-width: 600px`, padding padrão, fonte segura para email (Arial/sans-serif)
+- Cor de marca primária (`#35605a`) em títulos e botões CTA
+- Footer padronizado com nome da marca e domínio
+- Copy em **español paraguayo** (não neutro): "Restablece tu contraseña", "Consignación", "Acerto" (adaptado), "Revendedora"
+- Templates mobile-friendly (botões com padding generoso, fontes legíveis)
 
-### 3.1 Motor de Templates de Notificação
+### Differentiators
+- **Wrapper/template centralizado**: em vez de cada email ter seu próprio HTML inline repetido, criar uma função `renderEmailTemplate({ title, body, cta })` que aplica o branding consistentemente — facilita futuras alterações de identidade visual
+- **Tonalidade de marca premium de semijoias**: uso estratégico de emojis (💎, 🦋, ✨) e cor de destaque dourada (`#C9A84C`) para emails de celebração (candidatura aprovada, documento aprovado)
+- **Emails de acerto com breakdown visual**: tabela estilizada mostrando total vendido, comissão e percentual — transforma um email transacional em um "recibo de comissão" que a revendedora pode guardar
+- **Consistência entre Supabase Auth e transacionais**: mesmo o email de reset de senha (enviado pelo Supabase via SMTP Brevo) deve compartilhar a mesma paleta e estrutura visual dos emails transacionais da aplicação
 
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Preview de push/email com variáveis substituídas | Admin vê exatamente como a mensagem chegará ao usuário | **M** | Simular contexto com dados fictícios no modal |
-| Segmentação de template por grupo de revendedoras | Mensagens diferentes para novas vs veteranas | **M** | Adicionar `group_id` ou `segmento` ao `NotificacaoTemplate` |
-| Estatísticas de abertura/clique por template | Saber quais notificações funcionam melhor | **L** | Rastrear no `NotificacaoLog`; dashboard simples |
+### Anti-Features
+- **Não usar imagens pesadas ou hero banners**: emails transacionais precisam carregar instantaneamente; imagens externas aumentam spam score e quebram em clientes que bloqueiam imagens
+- **Não usar fontes customizadas (Google Fonts, etc.)**: a maioria dos clientes de email ignora; usar fonte segura (Arial, Helvetica, sans-serif)
+- **Não usar CSS complexo ou flexbox**: tabelas são ainda o padrão mais confiável para layout de email; manter inline styles simples
+- **Não enviar PII em plaintext no corpo**: senhas temporárias podem ser enviadas (necessário para onboarding), mas sempre com contexto de segurança e recomendação de troca
+- **Não criar templates em português ou espanhol neutro**: manter terminologia local ("Consignación" em vez de "Bolsa", "Revendedora" em vez de "Vendedora")
 
-### 3.2 Analytics da Revendedora (PWA)
+### Complexity
+**Low-Medium**
 
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Meta de acessos/vendas com barra de progresso | Gamificação visual do desempenho | **M** | Comparar faturamento atual com `min_sales_value` do tier superior |
-| Comparativo com média do grupo | "Você está acima de 70% das revendedoras do seu grupo" | **M** | Query agregada do grupo; requer cuidado com privacidade |
-| Exportar dados (PDF ou imagem) | Revendedora pode compartilhar métricas no WhatsApp | **M** | `html2canvas` ou `jspdf` no client |
+Razões:
+- A maior parte do trabalho é design/template, não lógica de negócio. Pode ser resolvida com um wrapper centralizado e refatoração dos 7 templates existentes
+- Complexidade menor: atualizar templates do Supabase Auth requer edição no dashboard do Supabase (não código), o que é manual mas simples
+- Risco técnico baixo: emails são fire-and-forget; falhas não quebram o fluxo principal (já há try/catch no `sendEmail`)
+- Única complexidade moderada: garantir que o wrapper funcione bem em clientes de email antigos (Gmail, Outlook, Apple Mail)
 
-### 3.3 Dashboard Admin (KPIs globais/grupo)
-
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Exportação de dados (CSV/Excel) | Admin pode levar dados para planilhas | **M** | `json2csv` ou `xlsx` no Server Action; restrito a SUPER_ADMIN |
-| Alertas preditivos ("Esta revendedora tende a atrasar") | Ação preventiva antes do problema | **L** | Requer análise histórica de prazos de devolução |
-| Comparativo mês a mês com gráfico de linha | Tendência de crescimento do negócio | **M** | `recharts` LineChart; query de 12 meses |
-
-### 3.4 Pipeline de Candidaturas (Leads)
-
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Auto-preenchimento de dados do candidato via Informconf | Reduzir fricção no preenchimento do formulário | **L** | Integração com API Informconf (PY) — fora do escopo atual |
-| Scoring automático de lead (pontuação por perfil) | Priorizar candidaturas mais promissoras | **L** | Regras de pontuação baseadas em idade, cidade, experiência |
-| Aprovação/rejeição em massa (bulk actions) | Operar várias candidaturas de uma vez | **M** | Checkbox multi-select; batch de criações/emails |
-
-### 3.5 Configurações Globais Admin
-
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Simulador de comissão ("Se vender X, ganha Y") | Admin testa faixas antes de publicar | **M** | Input de valor fictício + cálculo com tiers atuais |
-| Histórico de versões de contrato | Rastrear alterações nos contratos | **M** | Soft-delete ou versionamento com `created_at` |
-| Notificação push/email quando contrato é atualizado | Revendedoras sabem que há novo contrato | **S** | Hook no `updateContrato` |
-
-### 3.6 Error Handling Centralizado + Estados de UI
-
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| Error boundary com link para suporte | Usuário não fica preso em tela quebrada | **M** | `react-error-boundary` + componente custom de fallback |
-| Telemetria de erros no Sentry | Time de dev vê erros em produção em tempo real | **M** | `SPEC_LOGGING_MONITORING.md` já prevê isso |
-| Retry automático com backoff para falhas de rede | Resiliência transparente para o usuário | **M** | Wrapper em `fetch` ou Server Action com `setTimeout` |
-
-### 3.7 Otimização de Build
-
-| Feature | Proposta de Valor | Complexidade | Notas |
-|---------|-------------------|--------------|-------|
-| ISR com `revalidateTag` por entidade | Invalidação granular de cache quando dados mudam | **M** | `revalidateTag('produtos')` no `createProduto`; `SPEC_CACHING_STRATEGY.md` |
-| Edge caching via Vercel + Cloudflare | Menor TTFB para usuários no PY | **S** | Configuração de CDN; sem alteração de código |
-| Bundle analysis e code splitting | Reduzir tamanho do bundle do PWA | **M** | `@next/bundle-analyzer`; lazy load de componentes pesados |
+### Dependencies
+- **Brevo SDK** (`@getbrevo/brevo`): já instalado e funcional
+- **`sendEmail()` helper** (`src/lib/emails.ts`): cliente central já existente
+- **Variáveis de ambiente** (`SPEC_ENVIRONMENT_VARIABLES.md`): `BREVO_API_KEY`, `BREVO_FROM_EMAIL`, `BREVO_FROM_NAME`
+- **DNS/SPF/DKIM**: domínio `monarcasemijoyas.com.py` precisa estar verificado no Brevo (pré-requisito de infra, não código)
+- **Supabase Auth SMTP**: templates de reset/convite editados no dashboard Supabase
 
 ---
 
-## 4. Anti-Features (O que NÃO construir)
+## Feature 3: Admin Analytics
 
-Features que parecem boas ideias mas adicionam complexidade sem valor proporcional para v1.0.
+### Table Stakes
+- KPI cards no topo: Maletas Ativas, Total Devolvidas (mês), Taxa de Atraso, Ticket Médio, Revendedoras com Maleta, Tempo Médio de Devolução
+- Gráfico de linha temporal (série temporal de envios/devoluções/atrasadas) com filtro de período: 7d / 30d / 3m / 12m
+- Gráfico donut de distribuição por status atual
+- Tabela Top 10 revendedoras por volume (maletas ativas + valor em maleta)
+- Tabela de alertas de prazo (maletas com vencimento nos próximos 7 dias)
+- Filtro por consultora (SUPER_ADMIN only) e exportar CSV
+- RBAC: consultora vê apenas dados de seu grupo; SUPER_ADMIN vê tudo
 
-| Anti-Feature | Por que evitar | O que fazer em vez disso |
-|--------------|---------------|-------------------------|
-| **i18n / templates multi-idioma** | Idioma fixo é espanhol paraguaio (PROJECT.md §Constraints). Suporte a múltiplos idiomas multiplicaria complexidade de templates, emails e UI sem demanda de negócio. | Templates em espanhol paraguaio único. Se necessário no futuro, adicionar campo `idioma` ao `Reseller` e replicar templates. |
-| **Real-time analytics com WebSocket** | O modelo de negócio não exige dados em tempo real. Maleta e vendas são eventos diários, não segundos. WebSocket aumentaria infra e custo sem benefício claro. | Polling a cada 30s no admin (já usado no AlertBell) e refresh manual no PWA. Cron diário para consolidação. |
-| **CRM completo para leads** | Pipeline de leads deste milestone é operacional (aprovar/rejeitar), não de vendas. Adicionar notas, tarefas, timeline e integração com CRM externo (HubSpot/Pipedrive) sai do escopo de gestão de consignação. | Manter fluxo simples: pendente → aprovado/rejeitado. Se necessário no futuro, exportar leads via CSV. |
-| **Dashboard arrastável/customizável** | Drag-and-drop de widgets, resize de cards e salvar layout por usuário soam premium mas raramente são usados em operações B2B simples. | Layout fixo otimizado para o papel do usuário (SUPER_ADMIN vs CONSULTORA). Alterações via código se necessário. |
-| **Edição de templates com rich text / Markdown** | Templates de push têm limite de 240 chars; emails transacionais usam HTML estático. Um editor WYSIWYG seria overkill. | Editor de textarea simples com highlight de variáveis (`{...}`) e lista de variáveis disponíveis. |
-| **Offline-first no PWA para analytics** | Analytics é read-only e depende de dados agregados no servidor. Cache local complexo não justifica para visualização de métricas. | Cache do Next.js (`revalidate`) e do navegador (`Cache-Control`) são suficientes. |
-| **Rate limiting customizado por endpoint** | Requer infra adicional (Upstash Redis). O milestone v1.0 foca em funcionalidade de negócio; segurança de API já é tratada em `SPEC_SECURITY_API_ENDPOINTS.md` (prioridade baixa). | Usar `requireAuth` + RLS como defesa primária. Rate limiting é v1.1+. |
-| **Testes E2E com Playwright** | Playwright ainda não está configurado e golden paths são item de prioridade baixa em `next_steps.md`. Não bloquear v1.0 por isso. | Testes unitários com Vitest para Server Actions e componentes. E2E faseado para v1.1. |
-| **Observabilidade completa (Sentry + logs estruturados)** | Requer conta Sentry, configuração de source maps, e manutenção contínua. Item de prioridade baixa no roadmap. | `console.error` centralizado no `mapError` é suficiente para v1.0. Sentry é v1.1+. |
-| **Migração PWA → Capacitor** | Capacitor resolve push nativo e Universal Links, mas é projeto paralelo de infraestrutura mobile. Não tem relação direta com as features de v1.0. | Manter PWA com Serwist. Capacitor é milestone futuro (`SPEC_CAPACITOR_MIGRATION.md`). |
+### Differentiators
+- **Ranking de produtos mais vendidos com alerta de estoque**: uma coluna paralela às top revendedoras mostrando o top 5 (expansível para 10) produtos por unidades vendidas, com badge `⚠ est. baixo` quando `estoque_atual <= estoque_minimo` — conecta performance de vendas com operação de reposição
+- **Layout dual-column**: top revendedoras lado a lado com top produtos — o admin vê "quem vende" e "o que vende" simultaneamente, facilitando decisões de maleta (quais produtos enviar para quais revendedoras)
+- **Correlação com comissões**: potencial para cruzar volume de vendas com tier de comissão (já existente no sistema) para identificar revendedoras próximas de upgrade
+- **Link direto para ação**: cada alerta de prazo tem botão "Conferir →" que navega direto para a tela de conferência da maleta; cada produto com estoque baixo tem link para o catálogo
 
----
+### Anti-Features
+- **Não é um BI/Enterprise analytics**: não adicionar drill-down infinito, filtros ad-hoc complexos, ou painéis customizáveis — manter foco em decisões operacionais diárias
+- **Não permitir edição de dados no painel**: analytics é somente leitura; qualquer ação (aprovar, conferir) redireciona para a tela específica
+- **Não expor PII em CSVs exportados**: o CSV de maletas deve sanitizar dados sensíveis (CPF, dados bancários)
+- **Não fazer query em tempo real a cada carregamento sem cache**: as queries de agregação são pesadas; usar cache com revalidação (já existe padrão `invalidateCache` no projeto)
+- **Não mostrar dados de outras consultoras**: RBAC deve ser aplicado em todas as queries, inclusive nas agregações raw SQL
 
-## 5. Dependências entre Features
+### Complexity
+**Medium-High**
 
-```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                          DEPENDÊNCIAS v1.0                                  │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ERROR HANDLING ─────────────────────────────────────────────┐              │
-│  (ActionResult + mapError + skeleton/empty/error)            │              │
-│         │                                                    │              │
-│         ▼                                                    │              │
-│  ┌─────────────────┐    ┌─────────────────┐                  │              │
-│  │  LEAD PIPELINE  │    │  ADMIN CONFIG   │                  │              │
-│  │  (aprovarLead)  │◄───┤  (commission    │                  │              │
-│  │                 │    │   tiers)        │                  │              │
-│  └────────┬────────┘    └─────────────────┘                  │              │
-│           │                                                   │              │
-│           │  (cria Reseller + Auth user)                      │              │
-│           ▼                                                   │              │
-│  ┌─────────────────┐                                          │              │
-│  │  NOTIFICATION   │◄─────────────────────────────────────────┘              │
-│  │  TEMPLATE ENGINE│  (todos usam ActionResult e mapError)                  │
-│  │  (substituir    │                                                          │
-│  │   variáveis)    │                                                          │
-│  └────────┬────────┘                                                          │
-│           │                                                                   │
-│           │  (emails de boas-vindas/rejeição usam templates)                  │
-│           ▼                                                                   │
-│  ┌─────────────────┐    ┌─────────────────┐                                   │
-│  │  ADMIN DASHBOARD│◄───┤  RESELLER       │                                   │
-│  │  (KPIs, alertas)│    │  ANALYTICS      │                                   │
-│  │                 │    │  (/app/desempeno)                                │
-│  └─────────────────┘    └─────────────────┘                                   │
-│           │                    │                                              │
-│           │                    │  (depende de AnalyticsDiario                  │
-│           │                    │   já consolidado pelo cron)                   │
-│           │                    ▼                                              │
-│           │           ┌─────────────────┐                                     │
-│           │           │  CRON JOBS      │                                     │
-│           │           │  (já existentes)│                                     │
-│           │           └─────────────────┘                                     │
-│           │                                                                   │
-│           │  (dados de maletas, revendedoras, documentos)                     │
-│           ▼                                                                   │
-│  ┌─────────────────┐                                                          │
-│  │  BUILD          │                                                          │
-│  │  OPTIMIZATION   │  (independente, mas afeta todas as páginas)              │
-│  └─────────────────┘                                                          │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
-```
+Razões:
+- Queries de agregação complexas com `Prisma.sql` e filtros dinâmicos de RBAC (`scope.colaboradora_id`) — requer cuidado para evitar SQL injection e garantir performance
+- Timezone `America/Asuncion` precisa ser aplicado consistentemente nas agregações por dia (`DATE(created_at AT TIME ZONE 'America/Asuncion')`)
+- CSV export server-side: gerar arquivo a partir dos dados filtrados, com headers localizados e formatação de moeda (G$)
+- Múltiplos fetchs paralelos (`Promise.all`) com tipagem correta para KPIs + séries temporais + tabelas
+- Potencial de N+1: `topRevendedoras` precisa incluir nomes das revendedoras (requer `include` ou join adicional)
+- Chart rendering com `recharts` já usado no projeto, mas o layout dual-column e múltiplos gráficos exige cuidado com responsividade
 
-### Detalhamento das dependências
-
-| Feature | Depende de | Por que |
-|---------|-----------|---------|
-| **Notification Template Engine** | `NotificacaoTemplate` table, cron jobs existentes, `ActionResult` | Precisa do schema e dos geradores automáticos que hoje usam textos hardcoded |
-| **Lead Pipeline** | Landing page `/seja-revendedora`, Supabase Auth, Brevo/Resend, `ActionResult` | Lead é originado na landing; aprovação cria user Auth; emails transacionais já configurados |
-| **Reseller Analytics** | `AnalyticsAcesso` table, `AnalyticsDiario` cron, vitrina pública (eventos), recharts | Dados são originados no tracking da vitrina e consolidados pelo cron diário |
-| **Admin Dashboard** | RBAC (`getResellerScope`), maleta data, document data, `ActionResult` | Reutiliza queries existentes de maletas e documentos; escopo RBAC já implementado |
-| **Admin Config** | `CommissionTier` schema, R2 upload, gamification engine | Schema já existe; upload de PDF segue mesmo padrão de documentos; gamification consome tiers |
-| **Error Handling + UI States** | Nenhuma — é foundational | Deve ser implementado primeiro ou em paralelo; todas as outras features devem adotar o padrão |
-| **Build Optimization** | Nenhuma — é infraestrutura | Independente, mas deve ser testado em todas as páginas afetadas |
-
----
-
-## 6. Complexidade por Feature (S/M/L)
-
-| Feature | Complexidade | Justificativa |
-|---------|-------------|---------------|
-| **Notification Template Engine** | **M** | Refatorar múltiplos cron jobs e geradores para ler do banco; criar helper de substituição; garantir fallback. Não é difícil, mas toca muitos pontos. |
-| **Reseller Analytics (PWA)** | **M** | Queries agregadas com `GROUP BY` e `COUNT DISTINCT`; integração `recharts`; cálculo de tendência com edge cases. Layout já definido no Paper. |
-| **Admin Dashboard** | **L** | Múltiplas queries paralelas agregadas; escopo RBAC diferenciado; ranking com múltiplas dimensões; lista de alertas com lógica de prazo. Maior volume de dados. |
-| **Lead Pipeline** | **L** | Fluxo transacional complexo (criar user Auth + Reseller + email); rollback em caso de falha; dupla modal (aprovar/rejeitar); validação de duplicidade. |
-| **Admin Config** | **S-M** | CRUD simples de tiers + upload de PDF. Regras de negócio claras e bem delimitadas. Menor volume de interação com sistemas externos. |
-| **Error Handling + UI States** | **M** | Cross-cutting: refatorar dezenas de Server Actions, criar componentes reutilizáveis, mapear todas as telas. Não é complexo logicamente, mas é trabalhoso. |
-| **Build Optimization** | **S-M** | Principalmente configuração de env vars e remoção de `force-dynamic`. Risco está na regressão — precisa testar build e runtime de todas as páginas. |
-
----
-
-## 7. Recomendação de MVP (v1.0)
-
-**Priorizar nesta ordem:**
-
-1. **Error Handling Centralizado** — Foundation para todas as outras features. Sem `ActionResult` padronizado, cada nova feature adiciona dívida técnica.
-2. **Build Optimization** — Remove workaround que afeta performance de todas as páginas públicas. Baixo esforço, alto impacto.
-3. **Admin Config (Commission Tiers + Contratos)** — Desbloqueia operação autônoma do admin. Sem editar tiers, todo ajuste de comissão exige dev.
-4. **Notification Template Engine** — Conecta feature já construída (editor) ao resto do sistema. Sem isso, o editor continua sendo dead code.
-5. **Lead Pipeline** — Completa o funil de aquisição de revendedoras. Landing existe mas não converte em conta sem este pipeline.
-6. **Admin Dashboard** — Dá visibilidade executiva. Depende de queries já existentes; é mais "colar" dados do que criar novos.
-7. **Reseller Analytics (PWA)** — Fecha o loop de visibilidade para a revendedora. Depende do cron de analytics diário já existente.
-
-**Deferir para pós-v1.0:**
-- Exportação CSV do admin dashboard
-- Preview de template com variáveis
-- Simulador de comissão
-- Scoring de leads
-- Retry automático com backoff
-- Bundle analysis avançado
-
----
-
-## 8. Flags de Pesquisa por Fase
-
-| Fase | Tópico | Provável necessidade de pesquisa? | Notas |
-|------|--------|-----------------------------------|-------|
-| Error Handling | Integração com Sentry | Sim (v1.1) | Sentry não está configurado; pesquisar SDK Next.js + source maps |
-| Build Optimization | ISR com `revalidateTag` | Talvez | `SPEC_CACHING_STRATEGY.md` já detalha; pesquisa de implementação específica por entidade |
-| Lead Pipeline | Provedor de email transacional | Não | Brevo já configurado; usar mesmo cliente `src/lib/emails.ts` |
-| Admin Dashboard | Queries de performance com JOINs pesados | Sim | Ranking e KPIs podem exigir índices ou materialized views em escala |
-| Reseller Analytics | `recharts` em mobile | Não | `recharts` já é dependência; usado em outras telas |
-| Notification Engine | Deduplicação de notificações do cron | Não | Já implementado nos cron jobs existentes (`notificado_em` timestamp) |
-
----
-
-## 9. Fontes
-
-- `docs/revendedoras/SPEC_DESEMPENHO.md` — Analytics individual da revendedora
-- `docs/admin/SPEC_ADMIN_DASHBOARD.md` — Dashboard admin com KPIs
-- `docs/admin/SPEC_ADMIN_CONFIG.md` — Configurações de comissão e contratos
-- `docs/admin/SPEC_ADMIN_LEADS.md` — Pipeline de candidaturas
-- `docs/sistema/SPEC_ERROR_HANDLING.md` — Padrão de erros e estados de UI
-- `docs/sistema/SPEC_DEPLOY_STRATEGY.md` — Estratégia de deploy e build
-- `.planning/PROJECT.md` — Contexto geral, stack, decisões e constraints
-- `docs/next_steps.md` — Ordem de prioridade e itens pendentes
+### Dependencies
+- **Analytics operacional existente**: já há KPIs, gráficos e filtro de período construídos em v1.0 — esta feature expande/adiciona seções
+- **Cron jobs** (`SPEC_CRON_JOBS.md`): cron `agrega-analytics-diario` já alimenta métricas agregadas; pode ser estendido para produtos mais vendidos
+- **RBAC existente** (`getResellerScope`): já usado em todo o admin; deve ser aplicado em todas as queries do dashboard
+- **Prisma + raw queries**: necessário para agregações complexas (ranking de produtos, séries temporais)
+- **Recharts**: biblioteca de gráficos já utilizada no projeto (PWA `/app/desempeno` e admin)
+- **Cache invalidation helper** (`invalidateCache`): já existe e deve ser usado após mutações que afetam analytics (fechamento de maleta, aprovação de documento)
+- **AlertBell existente**: o sistema de alertas de devolução já está integrado ao layout admin; analytics deve coexistir sem conflito
