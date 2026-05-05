@@ -5,6 +5,7 @@ import { requireAuth } from "@/lib/user";
 import { getResellerScope } from "@/lib/auth/get-reseller-scope";
 import { Prisma } from "@/generated/prisma/client";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Default templates (seed-on-read)
@@ -86,14 +87,16 @@ export async function updateNotificacaoTemplate(
   if (!("notificacaoTemplate" in prisma)) {
     throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
   }
-  return prisma.notificacaoTemplate.update({
-    where: { id },
-    data: {
-      titulo_es: data.titulo_es,
-      body_es: data.body_es,
-      ativo: data.ativo,
-    },
-  });
+    const result = await prisma.notificacaoTemplate.update({
+        where: { id },
+        data: {
+            titulo_es: data.titulo_es,
+            body_es: data.body_es,
+            ativo: data.ativo,
+        },
+    });
+    invalidateCache.path.admin("/config/notif-push");
+    return result;
 }
 
 export async function toggleNotificacaoTemplate(id: string, ativo: boolean): Promise<NotificacaoTemplate> {
@@ -101,10 +104,12 @@ export async function toggleNotificacaoTemplate(id: string, ativo: boolean): Pro
   if (!("notificacaoTemplate" in prisma)) {
     throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
   }
-  return prisma.notificacaoTemplate.update({
-    where: { id },
-    data: { ativo },
-  });
+    const result = await prisma.notificacaoTemplate.update({
+        where: { id },
+        data: { ativo },
+    });
+    invalidateCache.path.admin("/config/notif-push");
+    return result;
 }
 
 // ============================================
@@ -440,15 +445,16 @@ export async function enviarCampanhaPush(
     partes.push(`Detalle: ${firstError}`);
   }
 
-  return {
-    success: totalEnviado > 0,
-    message: totalFalha === 0 && semAuthUserId === 0
-      ? `Campanha enviada correctamente a ${totalEnviado} revendedora(s).`
-      : partes.join(" "),
-    total_enviado: totalEnviado,
-    total_falha: totalFalha + semAuthUserId,
-    onesignal_id: onesignalId,
-  };
+    invalidateCache.path.admin("/config/notif-push");
+    return {
+        success: totalEnviado > 0,
+        message: totalFalha === 0 && semAuthUserId === 0
+            ? `Campanha enviada correctamente a ${totalEnviado} revendedora(s).`
+            : partes.join(" "),
+        total_enviado: totalEnviado,
+        total_falha: totalFalha + semAuthUserId,
+        onesignal_id: onesignalId,
+    };
 }
 
 // ============================================

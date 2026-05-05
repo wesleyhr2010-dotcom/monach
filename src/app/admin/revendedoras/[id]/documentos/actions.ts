@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { notificarRevendedora } from "@/lib/notifications";
+import { invalidateCache } from "@/lib/cache/invalidate";
 import { z } from "zod";
 
 export interface DocumentoRevendedora {
@@ -70,15 +71,15 @@ export async function aprovarDocumento(documentoId: string) {
     data: { status: "aprovado", observacao: "" },
   });
 
-  await notificarRevendedora({
-    reseller_id: doc.reseller_id,
-    tipo: "documento_aprovado",
-    titulo: "Documento aprobado",
-    mensagem: "¡Tu documento fue aprobado! Tu cadastro está completo.",
-    auth_user_id: doc.reseller.auth_user_id,
-  });
-
-  return { success: true };
+    await notificarRevendedora({
+        reseller_id: doc.reseller_id,
+        tipo: "documento_aprovado",
+        titulo: "Documento aprobado",
+        mensagem: "¡Tu documento fue aprobado! Tu cadastro está completo.",
+        auth_user_id: doc.reseller.auth_user_id,
+    });
+    invalidateCache.path.admin("/revendedoras");
+    return { success: true };
 }
 
 const rejeitarSchema = z.object({
@@ -112,13 +113,13 @@ export async function rejeitarDocumento(documentoId: string, observacao: string)
     data: { status: "rejeitado", observacao: observacao.trim() },
   });
 
-  await notificarRevendedora({
-    reseller_id: doc.reseller_id,
-    tipo: "documento_reprovado",
-    titulo: "Documento rechazado",
-    mensagem: `Tu documento fue rechazado: ${observacao.trim()}. Por favor, envíalo nuevamente.`,
-    auth_user_id: doc.reseller.auth_user_id,
-  });
-
-  return { success: true };
+    await notificarRevendedora({
+        reseller_id: doc.reseller_id,
+        tipo: "documento_reprovado",
+        titulo: "Documento rechazado",
+        mensagem: `Tu documento fue rechazado: ${observacao.trim()}. Por favor, envíalo nuevamente.`,
+        auth_user_id: doc.reseller.auth_user_id,
+    });
+    invalidateCache.path.admin("/revendedoras");
+    return { success: true };
 }

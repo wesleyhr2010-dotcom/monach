@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 export type NotificacaoGrupo = {
   hoy: NotificacaoItem[];
@@ -97,7 +98,8 @@ export async function marcarComoLida(notificacaoId: string) {
     data: { lida: true },
   });
 
-  return { success: true };
+    invalidateCache.path.app("/notificaciones");
+    return { success: true };
 }
 
 export async function getContagemNaoLidas(): Promise<number> {

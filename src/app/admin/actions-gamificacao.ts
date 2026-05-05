@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { safeAction } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Schemas
@@ -45,10 +46,12 @@ export async function atualizarRegra(
 ) {
     await requireAuth(["ADMIN"]);
     const data = updateRegraSchema.parse(rawData);
-    return prisma.gamificacaoRegra.update({
+    const result = await prisma.gamificacaoRegra.update({
         where: { id },
         data,
     });
+    invalidateCache.gamificacaoConfig();
+    return result;
 }
 
 // ============================================

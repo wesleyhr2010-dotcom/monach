@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { awardPoints } from "@/lib/gamificacao";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 const quickProfileSchema = z.object({
     name: z.string().min(2).max(100).optional(),
@@ -99,6 +100,7 @@ export async function completeOnboarding(
         }
     }
 
+    invalidateCache.path.app("/");
     return { success: true, perfilCompleto, pontosPerfil };
 }
 
@@ -110,7 +112,7 @@ export async function aceitarContrato(): Promise<{ success: boolean }> {
         where: { id: resellerId },
         data: { contrato_aceite_em: new Date() },
     });
-
+    invalidateCache.path.app("/");
     return { success: true };
 }
 

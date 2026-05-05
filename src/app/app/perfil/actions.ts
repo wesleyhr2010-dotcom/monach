@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { awardPoints } from "@/lib/gamificacao";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 const perfilSchema = z.object({
     name: z.string().min(2).max(100),
@@ -73,6 +74,7 @@ export async function actualizarPerfilRevendedora(data: z.infer<typeof perfilSch
         }
     }
 
+    invalidateCache.path.app("/perfil");
     return { success: true, perfilCompleto };
 }
 
@@ -153,6 +155,7 @@ export async function guardarDatosBancarios(data: z.infer<typeof datosBancariosS
         },
     });
 
+    invalidateCache.path.app("/perfil");
     return { success: true };
 }
 

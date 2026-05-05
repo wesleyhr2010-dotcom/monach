@@ -6,6 +6,7 @@ import { uploadAvatar } from "@/lib/upload";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
 import { createServerClient } from "@/lib/supabase";
+import { invalidateCache } from "@/lib/cache/invalidate";
 import { emailConviteUsuario } from "@/lib/email-templates/convite-usuario";
 import type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
 export type { ColaboradoraItem, RevendedoraItem } from "@/lib/types";
@@ -269,6 +270,7 @@ export async function criarColaboradora(formData: FormData): Promise<{ success: 
             throw prismaErr;
         }
 
+        invalidateCache.path.admin("/equipe");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -333,6 +335,7 @@ export async function criarRevendedora(formData: FormData): Promise<{ success: b
             throw prismaErr;
         }
 
+        invalidateCache.path.admin("/equipe");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -375,6 +378,7 @@ export async function atualizarMembro(
         }
 
         await prisma.reseller.update({ where: { id }, data: updates });
+        invalidateCache.path.admin("/equipe");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -390,6 +394,7 @@ export async function deletarMembro(id: string): Promise<{ success: boolean; err
     await requireAuth(["ADMIN"]);
     try {
         await prisma.reseller.delete({ where: { id } });
+        invalidateCache.path.admin("/equipe");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";
@@ -411,6 +416,7 @@ export async function vincularRevendedora(
             where: { id: revendedoraId },
             data: { colaboradora_id: colaboradoraId || null },
         });
+        invalidateCache.path.admin("/equipe");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Erro desconhecido";

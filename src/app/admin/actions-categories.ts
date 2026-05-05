@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { safeAction, generateSlug } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Types
@@ -67,6 +68,7 @@ export async function createCategory(
             },
         });
 
+        invalidateCache.catalog();
         return category.id;
     });
 }
@@ -93,6 +95,7 @@ export async function updateCategory(
             where: { id },
             data,
         });
+        invalidateCache.catalog();
     });
 }
 
@@ -116,6 +119,7 @@ export async function updateCategoriesOrder(
                 })
             )
         );
+        invalidateCache.catalog();
     });
 }
 
@@ -127,5 +131,6 @@ export async function deleteCategory(id: string) {
     return safeAction(async () => {
         await requireAuth(["ADMIN"]);
         await prisma.category.delete({ where: { id } });
+        invalidateCache.catalog();
     });
 }

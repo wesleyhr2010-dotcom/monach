@@ -6,6 +6,7 @@ import { requireAuth } from "@/lib/user";
 import { createR2Client, R2_BUCKET, R2_PUBLIC_DOMAIN } from "@/lib/r2";
 import { PutObjectCommand, DeleteObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Commission Tiers
@@ -69,6 +70,7 @@ export async function upsertCommissionTier(
           ativo: data.ativo,
         },
       });
+      invalidateCache.tiersConfig();
       return { id: updated.id };
     } else {
       const created = await prisma.commissionTier.create({
@@ -78,6 +80,7 @@ export async function upsertCommissionTier(
           ativo: data.ativo,
         },
       });
+      invalidateCache.tiersConfig();
       return { id: created.id };
     }
   });
@@ -99,6 +102,7 @@ export async function deleteCommissionTier(
     }
 
     await prisma.commissionTier.delete({ where: { id } });
+    invalidateCache.tiersConfig();
   });
 }
 
@@ -172,6 +176,7 @@ export async function upsertNivelRegra(
           ativo: data.ativo,
         },
       });
+      invalidateCache.niveisConfig();
       return { id: updated.id };
     } else {
       const created = await prisma.nivelRegra.create({
@@ -183,6 +188,7 @@ export async function upsertNivelRegra(
           ativo: data.ativo,
         },
       });
+      invalidateCache.niveisConfig();
       return { id: created.id };
     }
   });
@@ -200,6 +206,7 @@ export async function deleteNivelRegra(
     }
 
     await prisma.nivelRegra.delete({ where: { id } });
+    invalidateCache.niveisConfig();
   });
 }
 
@@ -274,6 +281,7 @@ export async function uploadContrato(
     const contrato = await prisma.contrato.create({
       data: { id, nome, url, obrigatorio, ativo },
     });
+    invalidateCache.path.admin("/config/contratos");
 
     return {
       id: contrato.id,
@@ -309,6 +317,7 @@ export async function updateContrato(
       },
     });
 
+    invalidateCache.path.admin("/config/contratos");
     return {
       id: contrato.id,
       nome: contrato.nome,
@@ -343,6 +352,7 @@ export async function deleteContrato(
     }
 
     await prisma.contrato.delete({ where: { id } });
+    invalidateCache.path.admin("/config/contratos");
   });
 }
 

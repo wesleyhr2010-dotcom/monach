@@ -7,6 +7,7 @@ import { createServerClient } from "@/lib/supabase";
 import { emailCandidaturaAprovada } from "@/lib/email-templates/candidatura-aprovada";
 import { emailCandidaturaRechazada } from "@/lib/email-templates/candidatura-rechazada";
 import { z } from "zod";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Types
@@ -238,6 +239,7 @@ export async function aprovarLead(
       }
     }
 
+    invalidateCache.path.admin("/leads");
     return { resellerId: result.resellerId };
   });
 }
@@ -261,6 +263,7 @@ export async function recusarLead(
       },
     });
 
+    invalidateCache.path.admin("/leads");
     // Enviar email de rechazo (best-effort)
     try {
       await emailCandidaturaRechazada({

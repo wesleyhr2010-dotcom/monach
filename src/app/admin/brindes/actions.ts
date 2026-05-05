@@ -4,6 +4,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { revalidatePath } from "next/cache";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Schemas
@@ -38,6 +39,7 @@ export async function criarBrinde(rawData: z.infer<typeof brindeSchema>) {
     await requireAuth(["ADMIN", "COLABORADORA"]);
     const data = brindeSchema.parse(rawData);
     const brinde = await prisma.brinde.create({ data });
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes");
     return brinde;
 }
@@ -49,6 +51,7 @@ export async function atualizarBrinde(
     await requireAuth(["ADMIN", "COLABORADORA"]);
     const data = brindeSchema.partial().parse(rawData);
     const brinde = await prisma.brinde.update({ where: { id }, data });
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes");
     return brinde;
 }
@@ -59,6 +62,7 @@ export async function toggleBrindeAtivo(id: string, ativo: boolean) {
         where: { id },
         data: { ativo },
     });
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes");
     return brinde;
 }
@@ -92,6 +96,7 @@ export async function marcarSeparado(id: string) {
         where: { id },
         data: { status: "separado" },
     });
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes/solicitudes");
 }
 
@@ -117,6 +122,7 @@ export async function marcarEntregado(id: string) {
         // Best-effort: não falhar se notificação falhar
     }
 
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes/solicitudes");
     return solicitud;
 }
@@ -157,5 +163,6 @@ export async function cancelarSolicitacion(id: string) {
         });
     });
 
+    invalidateCache.brindes();
     revalidatePath("/admin/brindes/solicitudes");
 }

@@ -8,6 +8,7 @@ import { safeAction, toNumber } from "@/lib/action-utils";
 import { uploadProductImage, deleteR2Image } from "@/lib/upload";
 import { mapProductToDTO, mapProductWithVariantsToDTO } from "@/lib/mappers/product.mapper";
 import { requireAuth } from "@/lib/user";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // ============================================
 // Products — List
@@ -132,6 +133,7 @@ export async function createProduct(formData: FormData) {
             },
         });
 
+        invalidateCache.catalog();
         return product.id;
     });
 }
@@ -233,6 +235,7 @@ export async function updateProduct(id: string, formData: FormData) {
             // Delete orphaned variants (only those without maleta references)
             ...toDelete.map((v) => prisma.productVariant.delete({ where: { id: v.id } })),
         ]);
+        invalidateCache.catalog();
     });
 }
 
@@ -257,6 +260,7 @@ export async function deleteProduct(id: string) {
 
         // Cascade delete product (variants, categories, etc.)
         await prisma.product.delete({ where: { id } });
+        invalidateCache.catalog();
     });
 }
 

@@ -8,6 +8,7 @@ import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/valida
 import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
 import { notificarRevendedora, notificarComTemplate } from "@/lib/notifications";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 function getMonthBounds() {
     const now = new Date();
@@ -201,6 +202,8 @@ export async function registrarVendaMultipla(inputData: {
             });
         }
 
+        invalidateCache.commission(resellerId);
+        invalidateCache.desempeno(resellerId);
         return { success: true };
     });
 }
@@ -382,6 +385,8 @@ export async function registrarVenda(rawInput: {
             });
         }
 
+        invalidateCache.commission(resellerId);
+        invalidateCache.desempeno(resellerId);
         return { success: true };
     });
 }
@@ -441,6 +446,8 @@ export async function submitDevolucao(input: {
 
         await notificarDevolucaoPendente(resellerId, input.maleta_id);
 
+        invalidateCache.commission(resellerId);
+        invalidateCache.desempeno(resellerId);
         return { success: true };
     });
 }

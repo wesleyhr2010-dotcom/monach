@@ -12,6 +12,7 @@ import { conferirMaletaSchema, adicionarItensMaletaSchema } from "@/lib/validato
 import { safeAction } from "@/lib/action-utils";
 import { requireAuth } from "@/lib/user";
 import type { Role } from "@/lib/user";
+import { invalidateCache } from "@/lib/cache/invalidate";
 
 // Prisma 7 + PrismaPg driver adapter does NOT support interactive transactions
 // ($transaction(async tx => {...})). All operations that need atomicity must
@@ -283,6 +284,9 @@ export async function criarMaleta(
             auth_user_id: reseller?.auth_user_id,
         });
 
+        invalidateCache.commission(resellerId);
+        invalidateCache.path.admin("/maleta");
+
         return { success: true, id: maleta.id };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -326,6 +330,8 @@ export async function devolverMaleta(
                 comprovante_devolucao_url: comprovanteUrl,
             },
         });
+        invalidateCache.commission(resellerId);
+        invalidateCache.path.admin("/maleta");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -688,6 +694,8 @@ export async function conferirEFecharMaleta(
             });
         }
 
+        invalidateCache.commission(maleta.reseller.id);
+        invalidateCache.path.admin("/maleta");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -768,7 +776,7 @@ export async function fecharManualmenteMaleta(
         );
 
         await prisma.$transaction(ops);
-
+        invalidateCache.path.admin("/maleta");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Error desconocido";
@@ -949,6 +957,7 @@ export async function adicionarItensMaleta(
             ).catch((err: unknown) => console.error("[Push] Falha:", err));
         }
 
+        invalidateCache.path.admin("/maleta");
         return { success: true };
     } catch (err: unknown) {
         const msg = err instanceof Error ? err.message : "Error desconocido";
