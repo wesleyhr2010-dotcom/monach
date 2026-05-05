@@ -89,7 +89,12 @@ Plans:
   3. All mutation Server Actions call `revalidateTag` or `revalidatePath` after successful writes
   4. Vercel build completes successfully without static generation errors or Prisma connection failures
   5. Authenticated pages (`/app/*`, `/admin/*`) continue to use `force-dynamic` for real-time data
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] `04-01-PLAN.md` — Vercel Environment & ISR Configuration (DATABASE_URL setup, remove force-dynamic from public pages)
+- [ ] `04-02-PLAN.md` — Cache Invalidation Wiring (invalidateCache helper, revalidateTag/revalidatePath in all mutation actions)
+- [ ] `04-03-PLAN.md` — Build Verification & Polish (build/typecheck/lint gates, CI workflow, documentation update)
 
 ### Phase 5: Validation & Hardening
 **Goal**: All v1.0 features are validated against security, performance, and functional acceptance criteria; no critical or high pitfalls remain unaddressed.
@@ -116,7 +121,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Completed | 2026-05-04 |
 | 2. Core Business | 5/5 | Completed | 2026-05-04 |
 | 3. Visibility & Analytics | 2/2 | Completed | 2026-05-04 |
-| 4. Build Optimization | 0/TBD | Not started | - |
+| 4. Build Optimization | 0/3 | Planned | - |
 | 5. Validation & Hardening | 0/TBD | Not started | - |
 
 ---

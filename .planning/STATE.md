@@ -16,14 +16,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 3 — COMPLETE
+**Current focus:** Phase 4 — PLANNED (ready to execute)
 
 ## Current Position
 
-Phase: 3 of 5 (completed)
+Phase: 4 of 5 (planned)
 Plan: —
-Status: Complete
-Last activity: 2026-05-04 — Phase 3 completed (2/2 plans, ~2h)
+Status: Ready to execute
+Last activity: 2026-05-04 — Phase 4 planned (3 plans)
 
 Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13)
 
@@ -41,6 +41,7 @@ Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13
 | 1. Foundation | 3 | ~2.5h | ~50 min |
 | 2. Core Business | 5 | ~4h | ~48 min |
 | 3. Visibility & Analytics | 2 | ~2h | ~60 min |
+| 4. Build Optimization | 3 | — | — |
 
 **Recent Trend:**
 - Phase 3 completed smoothly — reseller dashboard with recharts and admin period filters delivered
@@ -79,5 +80,5 @@ Items acknowledged and carried forward from previous milestone close:
 ## Session Continuity
 
 Last session: 2026-05-04
-Stopped at: Phase 3 complete; Phase 4 ready to plan
-Resume file: .planning/phases/03-visibility-analytics-reseller-admin-dashboards/03-02-SUMMARY.md
+Stopped at: Phase 4 planned (3 plans); ready for execute-phase
+Resume file: .planning/phases/04-build-optimization-polish/04-01-PLAN.md
