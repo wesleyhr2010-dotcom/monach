@@ -16,16 +16,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 4 — COMPLETED
+**Current focus:** Phase 5 — CONTEXT GATHERED
 
 ## Current Position
 
-Phase: 4 of 5 (completed)
-Plan: 04-03
-Status: Complete
-Last activity: 2026-05-04 — Phase 4 completed (3/3 plans)
+Phase: 5 of 5 (context gathered, ready for planning)
+Plan: —
+Status: Context gathered
+Last activity: 2026-05-05 — Phase 5 context gathered (6 areas discussed, 22 decisions captured)
 
-Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13)
+Progress: [████████░░] 80% (4/5 phases) | 76.9% plans (10/13)
 
 ## Performance Metrics
 
@@ -60,6 +60,8 @@ Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13
 - **Cron jobs Edge Functions** already had template-aware `_shared/notifications.ts` helper — no changes needed for 02-05
 - **Phase 3 executed inline** (2 plans, wave 1) — no subagent spawning needed for small phase
 - **recharts** chosen for PWA bar chart — only used on `/app/desempeno`, acceptable bundle impact
+- **Phase 5 context gathered** — 6 areas discussed: BUSINESS throw cleanup (all 10 files), security validation (XSS+RBAC+RLS), performance (EXPLAIN tests + 500ms threshold), tests (Vitest for 3 critical actions + timezone + RBAC expansion), RBAC scope leak (15+ tests, red if unprotected), CI/CD (GitHub Actions basic workflow)
+- **Deferred item resolved**: `rbac-regression.test.ts` fix folded into Phase 5 scope (D-03)
 
 ### Pending Todos
 
@@ -75,10 +77,10 @@ Items acknowledged and carried forward from previous milestone close:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| RBAC tests | Fix `rbac-regression.test.ts` expectations (3 tests expect `rejects.toThrow` but functions return `ActionResult`) | Pending | 2026-05-04 |
+| RBAC tests | Fix `rbac-regression.test.ts` expectations (3 tests expect `rejects.toThrow` but functions return `ActionResult`) | **Resolved** — folded into Phase 5 (D-03) | 2026-05-05 |
 
 ## Session Continuity
 
-Last session: 2026-05-04
-Stopped at: Phase 4 planned (3 plans); ready for execute-phase
-Resume file: .planning/phases/04-build-optimization-polish/04-01-PLAN.md
+Last session: 2026-05-05
+Stopped at: Phase 5 context gathered; ready for plan-phase
+Resume file: .planning/phases/05-validation-hardening/05-CONTEXT.md
