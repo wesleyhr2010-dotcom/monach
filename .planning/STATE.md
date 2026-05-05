@@ -16,14 +16,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-04)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Phase 4 — PLANNED (ready to execute)
+**Current focus:** Phase 4 — IN PROGRESS
 
 ## Current Position
 
-Phase: 4 of 5 (planned)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-05-04 — Phase 4 planned (3 plans)
+Phase: 4 of 5 (in-progress)
+Plan: 04-01
+Status: Executing
+Last activity: 2026-05-04 — Phase 4 execution started
 
 Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13)
 
