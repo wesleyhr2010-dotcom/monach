@@ -25,7 +25,11 @@ export function SolicitudActions({ id, status }: { id: string; status: string })
     function handleCancelar() {
         if (!confirm("¿Cancelar esta solicitud? Los puntos serán reembolsados.")) return;
         startTransition(async () => {
-            await cancelarSolicitacion(id);
+            const result = await cancelarSolicitacion(id);
+            if (!result.success) {
+                alert(result.error || "Error al cancelar");
+                return;
+            }
             router.refresh();
         });
     }

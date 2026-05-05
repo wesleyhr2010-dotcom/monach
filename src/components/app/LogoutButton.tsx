@@ -2,16 +2,25 @@
 
 import OneSignal from "react-onesignal";
 import { LogOut } from "lucide-react";
-import { logoutApp } from "@/lib/actions/auth";
+import { useRouter } from "next/navigation";
 
-export function LogoutButton() {
+interface LogoutButtonProps {
+  logoutAction: () => Promise<void>;
+}
+
+export function LogoutButton({ logoutAction }: LogoutButtonProps) {
+  const router = useRouter();
+
   const handleLogout = async () => {
+    // Best-effort: não bloquear o logout se OneSignal não estiver inicializado
+    OneSignal.logout().catch(() => {});
     try {
-      await OneSignal.logout();
+      await logoutAction();
     } catch {
-      // Best-effort: não falhar o logout se OneSignal não estiver disponível
+      // Server Action pode rejeitar em edge cases — navegação acontece de qualquer forma
     }
-    await logoutApp();
+    router.push("/app/login");
+    router.refresh();
   };
 
   return (

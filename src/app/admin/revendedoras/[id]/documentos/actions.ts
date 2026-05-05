@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
+import { BusinessError } from "@/lib/action-utils";
 import { notificarRevendedora } from "@/lib/notifications";
 import { invalidateCache } from "@/lib/cache/invalidate";
 import { z } from "zod";
@@ -22,7 +23,8 @@ export async function getDocumentosRevendedora(
 ): Promise<DocumentoRevendedora[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
   if (user.role === "COLABORADORA") {
-    await assertIsInGroup(resellerId, user.profileId!);
+    const groupCheck = await assertIsInGroup(resellerId, user.profileId!);
+    if (!groupCheck.success) throw new BusinessError(groupCheck.error);
   }
 
   const docs = await prisma.resellerDocumento.findMany({
@@ -63,7 +65,8 @@ export async function aprovarDocumento(documentoId: string) {
   }
 
   if (user.role === "COLABORADORA") {
-    await assertIsInGroup(doc.reseller_id, user.profileId!);
+    const groupCheck = await assertIsInGroup(doc.reseller_id, user.profileId!);
+    if (!groupCheck.success) return { success: false, error: groupCheck.error };
   }
 
   await prisma.resellerDocumento.update({
@@ -105,7 +108,8 @@ export async function rejeitarDocumento(documentoId: string, observacao: string)
   }
 
   if (user.role === "COLABORADORA") {
-    await assertIsInGroup(doc.reseller_id, user.profileId!);
+    const groupCheck = await assertIsInGroup(doc.reseller_id, user.profileId!);
+    if (!groupCheck.success) return { success: false, error: groupCheck.error };
   }
 
   await prisma.resellerDocumento.update({

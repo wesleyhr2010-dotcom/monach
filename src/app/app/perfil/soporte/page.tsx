@@ -4,12 +4,11 @@ import { getPerfilCompleto } from "../actions";
 const WHATSAPP_SOPORTE_GENERAL = process.env.WHATSAPP_SOPORTE_GENERAL || "+595981000000";
 
 export default async function SoportePage() {
-    let perfil;
-    try {
-        perfil = await getPerfilCompleto();
-    } catch {
+    const result = await getPerfilCompleto();
+    if (!result.success) {
         redirect("/app/login");
     }
+    const perfil = result.data;
 
     const whatsapp = perfil.colaboradora?.whatsapp ?? WHATSAPP_SOPORTE_GENERAL;
     const mensaje = encodeURIComponent(`Hola, soy ${perfil.name} y necesito ayuda con el portal.`);

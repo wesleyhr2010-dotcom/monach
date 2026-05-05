@@ -2,10 +2,8 @@ import { redirect } from "next/navigation";
 import { getPerfilCompleto } from "../actions";
 
 export default async function DocumentosPage() {
-    let perfil;
-    try {
-        perfil = await getPerfilCompleto();
-    } catch {
+    const result = await getPerfilCompleto();
+    if (!result.success) {
         redirect("/app/login");
     }
 

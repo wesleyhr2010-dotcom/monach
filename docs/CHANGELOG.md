@@ -1,5 +1,33 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-05 — Milestone v1.0 Concluído: Operação e Visibilidade
+
+### Contexto
+Milestone v1.0 arquivado via `/gsd-complete-milestone`. 5 fases, 19 planos, 229 testes passando, 33 commits em ~21.5h. O milestone fecha o ciclo operacional (80% pronto → 100% funcional), finaliza as telas do app revendedora e dá visibilidade real para admin e revendedoras.
+
+### Resumo por Fase
+
+**Phase 1 — Foundation (3 planos, ~2.5h):** Error handling padronizado (`ActionResult<T>`, `safeAction()`, `mapError()`), componentes de UI state reutilizáveis (`SkeletonCard`, `EmptyState`, `ErrorState`), toast system unificado (`sonner` em ambos os layouts). 20 testes Vitest.
+
+**Phase 2 — Core Business (5 planos, ~4h):** Sistema de templates de notificação com `substituirVariaveis()`, whitelist e DOMPurify; pipeline de leads com landing → admin approval → Supabase Auth + Brevo; CRUD de configurações (tiers, níveis, contratos com R2 PDF upload); integração de templates nos cron jobs e Server Actions. 28 testes.
+
+**Phase 3 — Visibility & Analytics (2 planos, ~2h):** Dashboard de desempenho da revendedora (`/app/desempeno`) com métricas, filtro de período, gráfico recharts e top produtos. Polish do dashboard admin com filtro de período e skeleton loading states.
+
+**Phase 4 — Build Optimization (3 planos, ~2h):** ISR (`revalidate = 60`) em páginas públicas, helper centralizado `invalidateCache` com 14 arquivos de mutation actions wired, build/typecheck/lint verificados.
+
+**Phase 5 — Validation & Hardening (6 planos, ~3.5h):** Cleanup de `BUSINESS:` throws (9 arquivos), validação de segurança (XSS, OneSignal plain-text, RLS), validação de performance (34 índices), testes de aceitação críticos (19 testes), suite de vazamento de escopo RBAC (23 testes), CI/CD com GitHub Actions.
+
+### Artefatos
+- `.planning/milestones/v1.0-ROADMAP.md` — arquivo completo do roadmap
+- `.planning/milestones/v1.0-REQUIREMENTS.md` — requisitos v1 com 49/49 completos
+- `.planning/MILESTONES.md` — entrada do milestone
+- Tag git: `v1.0`
+
+### Próximo Passo
+Planejar v1.1 via `/gsd-new-milestone`.
+
+---
+
 ## 2026-05-04 — Phase 4 Concluída: Build Optimization & Polish
 
 ### Contexto

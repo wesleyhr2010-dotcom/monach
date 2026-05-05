@@ -128,7 +128,6 @@ export async function logoutApp() {
     const supabase = await createSupabaseSSRClient();
     await supabase.auth.signOut();
     revalidatePath("/", "layout");
-    redirect("/app/login");
 }
 
 // ============================================

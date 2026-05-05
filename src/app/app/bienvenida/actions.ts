@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { safeAction, BusinessError, type ActionResult } from "@/lib/action-utils";
 import { awardPoints } from "@/lib/gamificacao";
 import { invalidateCache } from "@/lib/cache/invalidate";
 
@@ -116,7 +117,7 @@ export async function aceitarContrato(): Promise<{ success: boolean }> {
     return { success: true };
 }
 
-export async function getOnboardingStatus(): Promise<{
+export async function getOnboardingStatus(): Promise<ActionResult<{
     id: string;
     name: string;
     onboarding_completo: boolean;
@@ -124,37 +125,39 @@ export async function getOnboardingStatus(): Promise<{
     pontosPrimeiroAcesso: number;
     whatsapp?: string;
     avatar_url?: string;
-}> {
-    const user = await requireAuth(["REVENDEDORA"]);
-    const resellerId = user.profileId!;
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        const resellerId = user.profileId!;
 
-    const reseller = await prisma.reseller.findUnique({
-        where: { id: resellerId },
-        select: {
-            name: true,
-            onboarding_completo: true,
-            whatsapp: true,
-            avatar_url: true,
-            _count: { select: { maletas: true } },
-        },
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: {
+                name: true,
+                onboarding_completo: true,
+                whatsapp: true,
+                avatar_url: true,
+                _count: { select: { maletas: true } },
+            },
+        });
+
+        if (!reseller) {
+            throw new BusinessError("Perfil no encontrado.");
+        }
+
+        const regra = await prisma.gamificacaoRegra.findUnique({
+            where: { acao: "primeiro_acesso" },
+            select: { pontos: true },
+        });
+
+        return {
+            id: resellerId,
+            name: reseller.name,
+            onboarding_completo: reseller.onboarding_completo,
+            hasMaletas: reseller._count.maletas > 0,
+            pontosPrimeiroAcesso: regra?.pontos ?? 50,
+            whatsapp: reseller.whatsapp || undefined,
+            avatar_url: reseller.avatar_url || undefined,
+        };
     });
-
-    if (!reseller) {
-        throw new Error("BUSINESS: Perfil no encontrado.");
-    }
-
-    const regra = await prisma.gamificacaoRegra.findUnique({
-        where: { acao: "primeiro_acesso" },
-        select: { pontos: true },
-    });
-
-    return {
-        id: resellerId,
-        name: reseller.name,
-        onboarding_completo: reseller.onboarding_completo,
-        hasMaletas: reseller._count.maletas > 0,
-        pontosPrimeiroAcesso: regra?.pontos ?? 50,
-        whatsapp: reseller.whatsapp || undefined,
-        avatar_url: reseller.avatar_url || undefined,
-    };
 }

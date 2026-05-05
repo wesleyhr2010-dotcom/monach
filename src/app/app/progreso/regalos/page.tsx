@@ -27,14 +27,14 @@ export default function RegalosPage() {
     function handleCanjear() {
         if (!modalBrinde) return;
         startTransition(async () => {
-            try {
-                await canjearRegalo(modalBrinde.id);
-                setModalBrinde(null);
-                const fresh = await getBrindesAtivos();
-                setData(fresh);
-            } catch (err: unknown) {
-                setError(err instanceof Error ? err.message : "Error al canjear.");
+            const result = await canjearRegalo(modalBrinde.id);
+            if (!result.success) {
+                setError(result.error || "Error al canjear.");
+                return;
             }
+            setModalBrinde(null);
+            const fresh = await getBrindesAtivos();
+            setData(fresh);
         });
     }
 

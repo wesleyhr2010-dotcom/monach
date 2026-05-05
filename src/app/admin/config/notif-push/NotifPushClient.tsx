@@ -63,8 +63,12 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
 
   async function handleToggle(id: string, current: boolean) {
     startToggle(async () => {
-      const updated = await toggleNotificacaoTemplate(id, !current);
-      setTemplates((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+      const result = await toggleNotificacaoTemplate(id, !current);
+      if (!result.success) {
+        alert(result.error || "Error al actualizar");
+        return;
+      }
+      setTemplates((prev) => prev.map((t) => (t.id === result.data.id ? result.data : t)));
     });
   }
 
@@ -73,12 +77,16 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
     const titulo = formData.get("titulo") as string;
     const body = formData.get("body") as string;
     startSave(async () => {
-      const updated = await updateNotificacaoTemplate(editTemplate.id, {
+      const result = await updateNotificacaoTemplate(editTemplate.id, {
         titulo_es: titulo,
         body_es: body,
         ativo: editTemplate.ativo,
       });
-      setTemplates((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+      if (!result.success) {
+        alert(result.error || "Error al guardar");
+        return;
+      }
+      setTemplates((prev) => prev.map((t) => (t.id === result.data.id ? result.data : t)));
       setEditTemplate(null);
     });
   }

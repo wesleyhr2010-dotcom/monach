@@ -3,7 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
-import { safeAction } from "@/lib/action-utils";
+import { safeAction, BusinessError } from "@/lib/action-utils";
 import { registrarVendaSchema, registrarVendaMultiplaSchema } from "@/lib/validators/maleta.schema";
 import { awardPoints, getRankAtual, computeCommissionPct } from "@/lib/gamificacao";
 import { sendPushNotification } from "@/lib/onesignal-server";
@@ -120,7 +120,8 @@ export async function getMinhasMaletas(resellerId: string) {
             throw new Error("No tienes permiso para ver estas consignaciones.");
         }
         if (user.role === "COLABORADORA" && user.profileId) {
-            await assertIsInGroup(resellerId, user.profileId);
+            const groupCheck = await assertIsInGroup(resellerId, user.profileId);
+            if (!groupCheck.success) throw new BusinessError(groupCheck.error);
         }
         const maletas = await prisma.maleta.findMany({
             where: { reseller_id: resellerId },
@@ -218,7 +219,8 @@ export async function getMinhasVendas(resellerId: string) {
             throw new Error("No tienes permiso para ver estas ventas.");
         }
         if (user.role === "COLABORADORA" && user.profileId) {
-            await assertIsInGroup(resellerId, user.profileId);
+            const groupCheck = await assertIsInGroup(resellerId, user.profileId);
+            if (!groupCheck.success) throw new BusinessError(groupCheck.error);
         }
         const vendas = await prisma.vendaMaleta.findMany({
             where: {
@@ -253,7 +255,8 @@ export async function getResumoFinanceiro(resellerId: string) {
             throw new Error("No tienes permiso para ver este resumen.");
         }
         if (user.role === "COLABORADORA" && user.profileId) {
-            await assertIsInGroup(resellerId, user.profileId);
+            const groupCheck = await assertIsInGroup(resellerId, user.profileId);
+            if (!groupCheck.success) throw new BusinessError(groupCheck.error);
         }
         const reseller = await prisma.reseller.findUnique({
             where: { id: resellerId },

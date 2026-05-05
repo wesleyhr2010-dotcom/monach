@@ -11,10 +11,25 @@ export type ActionResult<T = void> =
     | { success: false; error: string };
 
 /**
+ * Error class for business logic errors (auth failures, validation, etc.).
+ * safeAction catches these and converts them to ActionResult.error.
+ * Prefer over `throw new Error("BUSINESS: ...")` which is the legacy pattern.
+ */
+export class BusinessError extends Error {
+    constructor(message: string) {
+        super(message);
+        this.name = "BusinessError";
+    }
+}
+
+/**
  * Maps known Prisma error codes to user-friendly Spanish messages.
  * Strips stack traces and internal details — never leaks raw errors to the client.
  */
 export function mapError(err: unknown): string {
+    if (err instanceof BusinessError) {
+        return err.message;
+    }
     const code = (err as { code?: string })?.code;
     if (code === "P2002") {
         return "Ya existe un registro con ese valor. Verifica los datos e intenta de nuevo.";

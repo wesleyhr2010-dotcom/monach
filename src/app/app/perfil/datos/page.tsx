@@ -31,11 +31,17 @@ export default function EditarDatosPage() {
 
     useEffect(() => {
         getPerfilCompleto()
-            .then((p) => {
+            .then((result) => {
+                if (!result.success) {
+                    setError(result.error || "Error al cargar perfil");
+                    setLoading(false);
+                    return;
+                }
+                const p = result.data;
                 setResellerId(p.id);
                 setForm({
                     name: p.name,
-                    whatsapp: p.whatsapp,
+                    whatsapp: p.whatsapp || "",
                     avatar_url: p.avatar_url || "",
                     endereco_cep: p.endereco_cep || "",
                     endereco_logradouro: p.endereco_logradouro || "",

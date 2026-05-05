@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { generateSlug, safeAction } from "@/lib/action-utils";
+import { generateSlug, safeAction, BusinessError } from "@/lib/action-utils";
 import { uploadAvatar } from "@/lib/upload";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
@@ -433,7 +433,8 @@ import type { RevendedoraPerfil, ConsultoraPerfil } from "@/lib/types";
 export async function getPerfilRevendedora(id: string): Promise<RevendedoraPerfil | null> {
     const user = await requireAuth(["ADMIN", "COLABORADORA"]);
     if (user.role === "COLABORADORA") {
-        await assertIsInGroup(id, user.profileId!);
+        const groupCheck = await assertIsInGroup(id, user.profileId!);
+        if (!groupCheck.success) throw new BusinessError(groupCheck.error);
     }
     const r = await prisma.reseller.findUnique({
         where: { id, role: "REVENDEDORA" },

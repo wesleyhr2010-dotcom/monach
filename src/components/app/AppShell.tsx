@@ -1,8 +1,7 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LayoutGrid, Store, Briefcase, LayoutTemplate, LogOut } from "lucide-react";
-import { logoutApp } from "@/lib/actions/auth";
 import OneSignalWrapper from "@/components/onesignal/OneSignalWrapper";
 import { AppBottomNav } from "@/components/app/AppBottomNav";
 import { LogoMonarca } from "@/components/LogoMonarca";
@@ -16,8 +15,20 @@ const navItems = [
     { href: "/app/mas", label: "Más", icon: <LayoutTemplate className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
 ];
 
-export default function AppShell({ children }: { children: React.ReactNode }) {
+interface AppShellProps {
+    children: React.ReactNode;
+    logoutAction: () => Promise<void>;
+}
+
+export default function AppShell({ children, logoutAction }: AppShellProps) {
     const pathname = usePathname() ?? "";
+    const router = useRouter();
+
+    const handleLogout = async () => {
+        await logoutAction();
+        router.push("/app/login");
+        router.refresh();
+    };
 
     if (pathname.startsWith("/app/login") || pathname.startsWith("/app/bienvenida")) {
         return <>{children}</>;
@@ -66,12 +77,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                     })}
                 </nav>
                 <div className="p-4 border-t border-[#E8E2D6]">
-                    <form action={logoutApp}>
-                        <button type="submit" className="flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium w-full text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors bg-transparent border-none cursor-pointer">
-                            <LogOut className="w-5 h-5 flex-shrink-0" />
-                            <span>Sair</span>
-                        </button>
-                    </form>
+                    <button type="button" onClick={handleLogout} className="flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium w-full text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors bg-transparent border-none cursor-pointer">
+                        <LogOut className="w-5 h-5 flex-shrink-0" />
+                        <span>Sair</span>
+                    </button>
                 </div>
             </aside>
 

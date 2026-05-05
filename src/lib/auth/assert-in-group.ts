@@ -1,12 +1,13 @@
 import { prisma } from "@/lib/prisma";
+import type { ActionResult } from "@/lib/action-utils";
 
 /**
  * Verifica se uma revendedora pertence ao grupo (equipe) de uma colaboradora.
- * Lança BUSINESS error caso não pertença.
+ * Retorna ActionResult em vez de lançar error.
  *
  * Ref: docs/sistema/SPEC_SECURITY_RBAC.md §5
  */
-export async function assertIsInGroup(resellerId: string, colaboradoraId: string): Promise<void> {
+export async function assertIsInGroup(resellerId: string, colaboradoraId: string): Promise<ActionResult<void>> {
     const reseller = await prisma.reseller.findFirst({
         where: {
             id: resellerId,
@@ -15,6 +16,8 @@ export async function assertIsInGroup(resellerId: string, colaboradoraId: string
     });
 
     if (!reseller) {
-        throw new Error("BUSINESS: Esta revendedora no pertenece a tu equipo.");
+        return { success: false, error: "Esta revendedora no pertenece a tu equipo." };
     }
+
+    return { success: true, data: undefined };
 }

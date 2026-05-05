@@ -3,6 +3,7 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { safeAction, BusinessError, type ActionResult } from "@/lib/action-utils";
 import { revalidatePath } from "next/cache";
 import { invalidateCache } from "@/lib/cache/invalidate";
 
@@ -127,42 +128,44 @@ export async function marcarEntregado(id: string) {
     return solicitud;
 }
 
-export async function cancelarSolicitacion(id: string) {
-    await requireAuth(["ADMIN", "COLABORADORA"]);
-    await prisma.$transaction(async (tx) => {
-        const solicitud = await tx.solicitacaoBrinde.findUniqueOrThrow({
-            where: { id },
-            include: { brinde: true },
-        });
-
-        if (solicitud.status === "entregado") {
-            throw new Error("BUSINESS: No se puede cancelar una solicitud ya entregada.");
-        }
-
-        // Reembolsar pontos
-        await tx.pontosExtrato.create({
-            data: {
-                reseller_id: solicitud.reseller_id,
-                pontos: solicitud.pontos_debitados,
-                descricao: `Reembolso: ${solicitud.brinde.nome}`,
-            },
-        });
-
-        // Devolver estoque se não for ilimitado
-        if (solicitud.brinde.estoque >= 0) {
-            await tx.brinde.update({
-                where: { id: solicitud.brinde_id },
-                data: { estoque: { increment: 1 } },
+export async function cancelarSolicitacion(id: string): Promise<ActionResult<void>> {
+    return safeAction(async () => {
+        await requireAuth(["ADMIN", "COLABORADORA"]);
+        await prisma.$transaction(async (tx) => {
+            const solicitud = await tx.solicitacaoBrinde.findUniqueOrThrow({
+                where: { id },
+                include: { brinde: true },
             });
-        }
 
-        // Atualizar status
-        await tx.solicitacaoBrinde.update({
-            where: { id },
-            data: { status: "cancelado" },
+            if (solicitud.status === "entregado") {
+                throw new BusinessError("No se puede cancelar una solicitud ya entregada.");
+            }
+
+            // Reembolsar pontos
+            await tx.pontosExtrato.create({
+                data: {
+                    reseller_id: solicitud.reseller_id,
+                    pontos: solicitud.pontos_debitados,
+                    descricao: `Reembolso: ${solicitud.brinde.nome}`,
+                },
+            });
+
+            // Devolver estoque se não for ilimitado
+            if (solicitud.brinde.estoque >= 0) {
+                await tx.brinde.update({
+                    where: { id: solicitud.brinde_id },
+                    data: { estoque: { increment: 1 } },
+                });
+            }
+
+            // Atualizar status
+            await tx.solicitacaoBrinde.update({
+                where: { id },
+                data: { status: "cancelado" },
+            });
         });
-    });
 
-    invalidateCache.brindes();
-    revalidatePath("/admin/brindes/solicitudes");
+        invalidateCache.brindes();
+        revalidatePath("/admin/brindes/solicitudes");
+    });
 }

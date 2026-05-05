@@ -6,12 +6,11 @@ import { getPerfilCompleto } from "./actions";
 import { logoutApp } from "@/lib/actions/auth";
 
 export default async function PerfilPage() {
-    let perfil;
-    try {
-        perfil = await getPerfilCompleto();
-    } catch {
+    const result = await getPerfilCompleto();
+    if (!result.success) {
         redirect("/app/login");
     }
+    const perfil = result.data;
 
     const menuItems = [
         { href: "/app/perfil/datos", label: "Mis Datos", icon: <User className="w-5 h-5" /> },

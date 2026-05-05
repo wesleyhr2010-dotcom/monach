@@ -3,8 +3,10 @@
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { safeAction, BusinessError, type ActionResult } from "@/lib/action-utils";
 import { awardPoints } from "@/lib/gamificacao";
 import { invalidateCache } from "@/lib/cache/invalidate";
+import type { DadosBancarios } from "@/generated/prisma/client";
 
 const perfilSchema = z.object({
     name: z.string().min(2).max(100),
@@ -159,45 +161,63 @@ export async function guardarDatosBancarios(data: z.infer<typeof datosBancariosS
     return { success: true };
 }
 
-export async function getPerfilCompleto() {
-    const user = await requireAuth(["REVENDEDORA"]);
-    const resellerId = user.profileId!;
+export async function getPerfilCompleto(): Promise<ActionResult<{
+    id: string;
+    name: string;
+    email: string | undefined;
+    whatsapp: string | null;
+    avatar_url: string | null;
+    taxa_comissao: number;
+    colaboradora: { name: string; whatsapp: string | null } | null;
+    endereco_cep: string | null;
+    endereco_logradouro: string | null;
+    endereco_numero: string | null;
+    endereco_complemento: string | null;
+    endereco_cidade: string | null;
+    endereco_estado: string | null;
+    dados_bancarios: DadosBancarios | null;
+    pontos: number;
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        const resellerId = user.profileId!;
 
-    const reseller = await prisma.reseller.findUnique({
-        where: { id: resellerId },
-        include: {
-            colaboradora: { select: { name: true, whatsapp: true } },
-            dados_bancarios: true,
-            _count: { select: { pontos_extrato: true } },
-        },
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            include: {
+                colaboradora: { select: { name: true, whatsapp: true } },
+                dados_bancarios: true,
+                _count: { select: { pontos_extrato: true } },
+            },
+        });
+
+        if (!reseller) {
+            throw new BusinessError("Perfil no encontrado.");
+        }
+
+        const totalPontos = await prisma.pontosExtrato.aggregate({
+            where: { reseller_id: resellerId },
+            _sum: { pontos: true },
+        });
+
+        return {
+            id: reseller.id,
+            name: reseller.name,
+            email: user.email,
+            whatsapp: reseller.whatsapp,
+            avatar_url: reseller.avatar_url,
+            taxa_comissao: Number(reseller.taxa_comissao),
+            colaboradora: reseller.colaboradora,
+            endereco_cep: reseller.endereco_cep,
+            endereco_logradouro: reseller.endereco_logradouro,
+            endereco_numero: reseller.endereco_numero,
+            endereco_complemento: reseller.endereco_complemento,
+            endereco_cidade: reseller.endereco_cidade,
+            endereco_estado: reseller.endereco_estado,
+            dados_bancarios: reseller.dados_bancarios,
+            pontos: totalPontos._sum.pontos ?? 0,
+        };
     });
-
-    if (!reseller) {
-        throw new Error("BUSINESS: Perfil no encontrado.");
-    }
-
-    const totalPontos = await prisma.pontosExtrato.aggregate({
-        where: { reseller_id: resellerId },
-        _sum: { pontos: true },
-    });
-
-    return {
-        id: reseller.id,
-        name: reseller.name,
-        email: user.email,
-        whatsapp: reseller.whatsapp,
-        avatar_url: reseller.avatar_url,
-        taxa_comissao: Number(reseller.taxa_comissao),
-        colaboradora: reseller.colaboradora,
-        endereco_cep: reseller.endereco_cep,
-        endereco_logradouro: reseller.endereco_logradouro,
-        endereco_numero: reseller.endereco_numero,
-        endereco_complemento: reseller.endereco_complemento,
-        endereco_cidade: reseller.endereco_cidade,
-        endereco_estado: reseller.endereco_estado,
-        dados_bancarios: reseller.dados_bancarios,
-        pontos: totalPontos._sum.pontos ?? 0,
-    };
 }
 
 // ============================================

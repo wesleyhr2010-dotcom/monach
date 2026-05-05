@@ -1,8 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
+import { BusinessError } from "@/lib/action-utils";
 
 // ============================================
 // Security Regression Tests — RBAC
 // Ref: docs/sistema/SPEC_SECURITY_RBAC.md §8–10
+// Adapted for ActionResult pattern (Phase 5, D-03)
 // ============================================
 
 vi.mock("@/lib/user", async (importOriginal) => {
@@ -51,20 +53,20 @@ describe("Segurança — requireAuth", () => {
     vi.clearAllMocks();
   });
 
-  it("deve lançar BUSINESS error quando não há sessão", async () => {
+  it("deve lançar BusinessError quando não há sessão", async () => {
     mockedGetCurrentUser.mockResolvedValue(null);
     mockedRequireAuth.mockImplementation(async () => {
       const user = await getCurrentUser();
       if (!user) {
-        throw new Error("BUSINESS: Sesión no válida. Inicia sesión nuevamente.");
+        throw new BusinessError("Sesión no válida. Inicia sesión nuevamente.");
       }
       return user;
     });
 
-    await expect(requireAuth()).rejects.toThrow("BUSINESS: Sesión no válida");
+    await expect(requireAuth()).rejects.toThrow("Sesión no válida");
   });
 
-  it("deve lançar BUSINESS error quando role não é permitida", async () => {
+  it("deve lançar BusinessError quando role não é permitida", async () => {
     mockedGetCurrentUser.mockResolvedValue({
       id: "u1",
       email: "test@example.com",
@@ -79,12 +81,12 @@ describe("Segurança — requireAuth", () => {
     mockedRequireAuth.mockImplementation(async (allowedRoles) => {
       const user = await getCurrentUser();
       if (allowedRoles && !allowedRoles.includes(user!.role)) {
-        throw new Error("BUSINESS: No tienes permiso para realizar esta acción.");
+        throw new BusinessError("No tienes permiso para realizar esta acción.");
       }
       return user!;
     });
 
-    await expect(requireAuth(["ADMIN"])).rejects.toThrow("BUSINESS: No tienes permiso");
+    await expect(requireAuth(["ADMIN"])).rejects.toThrow("No tienes permiso");
   });
 });
 
@@ -105,17 +107,18 @@ describe("Segurança — assertIsInGroup", () => {
     vi.clearAllMocks();
   });
 
-  it("deve lançar BUSINESS error quando revendedora não pertence à colaboradora", async () => {
-    mockedPrisma.reseller.findFirst.mockResolvedValue(null);
-    await expect(assertIsInGroup("rev-1", "colab-1")).rejects.toThrow(
-      "BUSINESS: Esta revendedora no pertenece a tu equipo."
-    );
-  });
+    it("deve retornar error quando revendedora não pertence à colaboradora", async () => {
+        mockedPrisma.reseller.findFirst.mockResolvedValue(null);
+        const result = await assertIsInGroup("rev-1", "colab-1");
+        expect(result.success).toBe(false);
+        expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
+    });
 
-  it("deve passar silenciosamente quando revendedora pertence à colaboradora", async () => {
-    mockedPrisma.reseller.findFirst.mockResolvedValue({ id: "rev-1", colaboradora_id: "colab-1" });
-    await expect(assertIsInGroup("rev-1", "colab-1")).resolves.toBeUndefined();
-  });
+    it("deve retornar success quando revendedora pertence à colaboradora", async () => {
+        mockedPrisma.reseller.findFirst.mockResolvedValue({ id: "rev-1", colaboradora_id: "colab-1" });
+        const result = await assertIsInGroup("rev-1", "colab-1");
+        expect(result.success).toBe(true);
+    });
 });
 
 describe("Segurança — Server Actions críticas sem sessão", () => {
@@ -125,21 +128,21 @@ describe("Segurança — Server Actions críticas sem sessão", () => {
 
   it("devolverMaleta deve falhar sem sessão", async () => {
     mockedRequireAuth.mockImplementation(() => {
-      return Promise.reject(new Error("BUSINESS: Sesión no válida. Inicia sesión nuevamente."));
+      return Promise.reject(new BusinessError("Sesión no válida. Inicia sesión nuevamente."));
     });
     await expect(devolverMaleta("maleta-1", "https://example.com/comp.png")).rejects.toThrow(
-      "BUSINESS: Sesión no válida"
+      "Sesión no válida"
     );
   });
 
   it("getActiveResellers deve falhar sem sessão", async () => {
-    mockedRequireAuth.mockRejectedValue(new Error("BUSINESS: Sesión no válida. Inicia sesión nuevamente."));
-    await expect(getActiveResellers()).rejects.toThrow("BUSINESS: Sesión no válida");
+    mockedRequireAuth.mockRejectedValue(new BusinessError("Sesión no válida. Inicia sesión nuevamente."));
+    await expect(getActiveResellers()).rejects.toThrow("Sesión no válida");
   });
 
   it("getAvailableVariants deve falhar sem sessão", async () => {
-    mockedRequireAuth.mockRejectedValue(new Error("BUSINESS: Sesión no válida. Inicia sesión nuevamente."));
-    await expect(getAvailableVariants()).rejects.toThrow("BUSINESS: Sesión no válida");
+    mockedRequireAuth.mockRejectedValue(new BusinessError("Sesión no válida. Inicia sesión nuevamente."));
+    await expect(getAvailableVariants()).rejects.toThrow("Sesión no válida");
   });
 });
 
@@ -163,26 +166,26 @@ describe("Segurança — IDOR na app (/app actions)", () => {
     mockedRequireAuth.mockResolvedValue(colabUser);
     mockedPrisma.reseller.findFirst.mockResolvedValue(null); // fora do grupo
 
-    await expect(getMinhasMaletas("rev-fora-do-grupo")).rejects.toThrow(
-      "BUSINESS: Esta revendedora no pertenece a tu equipo."
-    );
+    const result = await getMinhasMaletas("rev-fora-do-grupo");
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
   });
 
   it("COLABORADORA não deve acessar getMinhasVendas de revendedora fora do grupo", async () => {
     mockedRequireAuth.mockResolvedValue(colabUser);
     mockedPrisma.reseller.findFirst.mockResolvedValue(null);
 
-    await expect(getMinhasVendas("rev-fora-do-grupo")).rejects.toThrow(
-      "BUSINESS: Esta revendedora no pertenece a tu equipo."
-    );
+    const result = await getMinhasVendas("rev-fora-do-grupo");
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
   });
 
   it("COLABORADORA não deve acessar getResumoFinanceiro de revendedora fora do grupo", async () => {
     mockedRequireAuth.mockResolvedValue(colabUser);
     mockedPrisma.reseller.findFirst.mockResolvedValue(null);
 
-    await expect(getResumoFinanceiro("rev-fora-do-grupo")).rejects.toThrow(
-      "BUSINESS: Esta revendedora no pertenece a tu equipo."
-    );
+    const result = await getResumoFinanceiro("rev-fora-do-grupo");
+    expect(result.success).toBe(false);
+    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
   });
 });

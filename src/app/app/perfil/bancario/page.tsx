@@ -33,7 +33,13 @@ export default function DatosBancariosPage() {
 
     useEffect(() => {
         getPerfilCompleto()
-            .then((p) => {
+            .then((result) => {
+                if (!result.success) {
+                    setError(result.error || "Error al cargar perfil");
+                    setLoading(false);
+                    return;
+                }
+                const p = result.data;
                 if (p.dados_bancarios) {
                     const db = p.dados_bancarios;
                     if (db.tipo === "alias") {

@@ -3,7 +3,7 @@ import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { assertIsInGroup } from "@/lib/auth/assert-in-group";
-import type { ActionResult } from "@/lib/action-utils";
+import { ActionResult, BusinessError } from "@/lib/action-utils";
 import { safeLogError } from "@/lib/errors/sanitize-log";
 import { createR2Client, R2_BUCKET, R2_PUBLIC_DOMAIN } from "@/lib/r2";
 
@@ -67,7 +67,8 @@ export async function getDocumentSignedUrlAdmin(
         }
 
         if (admin.role === "COLABORADORA") {
-            await assertIsInGroup(documento.reseller.id, admin.profileId!);
+            const groupCheck = await assertIsInGroup(documento.reseller.id, admin.profileId!);
+            if (!groupCheck.success) throw new BusinessError(groupCheck.error);
         }
 
         const signedUrl = await _generateSignedUrl(documento.url);

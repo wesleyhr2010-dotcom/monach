@@ -1,6 +1,8 @@
 import { cache } from "react";
 import { createSupabaseSSRClient } from "./supabase-ssr";
 import { prisma } from "./prisma";
+import { BusinessError } from "./action-utils";
+import type { ActionResult } from "./action-utils";
 import type { Reseller } from "@/generated/prisma/client";
 
 export type Role = "ADMIN" | "COLABORADORA" | "REVENDEDORA";
@@ -94,16 +96,31 @@ export async function requireAuth(allowedRoles?: Role[]): Promise<CurrentUser> {
     const user = await getCurrentUser();
 
     if (!user) {
-        throw new Error("BUSINESS: Sesión no válida. Inicia sesión nuevamente.");
+        throw new BusinessError("Sesión no válida. Inicia sesión nuevamente.");
     }
 
     if (!user.isActive) {
-        throw new Error("BUSINESS: Tu cuenta no está activa. Contacta a tu consultora.");
+        throw new BusinessError("Tu cuenta no está activa. Contacta a tu consultora.");
     }
 
     if (allowedRoles && allowedRoles.length > 0 && !allowedRoles.includes(user.role)) {
-        throw new Error("BUSINESS: No tienes permiso para realizar esta acción.");
+        throw new BusinessError("No tienes permiso para realizar esta acción.");
     }
 
     return user;
+}
+
+/**
+ * ActionResult-safe variant of requireAuth.
+ * Returns ActionResult<CurrentUser> instead of throwing.
+ * Useful when the caller prefers explicit error handling over try/catch.
+ */
+export async function requireAuthSafe(allowedRoles?: Role[]): Promise<ActionResult<CurrentUser>> {
+    try {
+        const user = await requireAuth(allowedRoles);
+        return { success: true, data: user };
+    } catch (err: unknown) {
+        const msg = err instanceof BusinessError ? err.message : "Error de autenticación";
+        return { success: false, error: msg };
+    }
 }

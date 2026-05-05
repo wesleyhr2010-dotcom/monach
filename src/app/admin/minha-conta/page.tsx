@@ -23,7 +23,11 @@ export default async function MinhaContaPage() {
         redirect("/admin");
     }
 
-    const { perfil, resumo } = await getMinhaConta();
+    const result = await getMinhaConta();
+    if (!result.success) {
+        redirect("/admin");
+    }
+    const { perfil, resumo } = result.data;
 
     return (
         <div className="admin-page">

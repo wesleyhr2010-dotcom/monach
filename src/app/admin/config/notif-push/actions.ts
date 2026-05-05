@@ -3,6 +3,7 @@
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
 import { getResellerScope } from "@/lib/auth/get-reseller-scope";
+import { safeAction, BusinessError, type ActionResult } from "@/lib/action-utils";
 import { Prisma } from "@/generated/prisma/client";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
 import { invalidateCache } from "@/lib/cache/invalidate";
@@ -82,34 +83,38 @@ export async function getNotificacaoTemplates(): Promise<NotificacaoTemplate[]> 
 export async function updateNotificacaoTemplate(
   id: string,
   data: { titulo_es: string; body_es: string; ativo: boolean }
-): Promise<NotificacaoTemplate> {
-  await requireAuth(["ADMIN"]);
-  if (!("notificacaoTemplate" in prisma)) {
-    throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
-  }
-    const result = await prisma.notificacaoTemplate.update({
-        where: { id },
-        data: {
-            titulo_es: data.titulo_es,
-            body_es: data.body_es,
-            ativo: data.ativo,
-        },
-    });
-    invalidateCache.path.admin("/config/notif-push");
-    return result;
+): Promise<ActionResult<NotificacaoTemplate>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+    if (!("notificacaoTemplate" in prisma)) {
+      throw new BusinessError("Sistema de plantillas de notificación no disponible.");
+    }
+      const result = await prisma.notificacaoTemplate.update({
+          where: { id },
+          data: {
+              titulo_es: data.titulo_es,
+              body_es: data.body_es,
+              ativo: data.ativo,
+          },
+      });
+      invalidateCache.path.admin("/config/notif-push");
+      return result;
+  });
 }
 
-export async function toggleNotificacaoTemplate(id: string, ativo: boolean): Promise<NotificacaoTemplate> {
-  await requireAuth(["ADMIN"]);
-  if (!("notificacaoTemplate" in prisma)) {
-    throw new Error("BUSINESS: Sistema de plantillas de notificación no disponible.");
-  }
-    const result = await prisma.notificacaoTemplate.update({
-        where: { id },
-        data: { ativo },
-    });
-    invalidateCache.path.admin("/config/notif-push");
-    return result;
+export async function toggleNotificacaoTemplate(id: string, ativo: boolean): Promise<ActionResult<NotificacaoTemplate>> {
+  return safeAction(async () => {
+    await requireAuth(["ADMIN"]);
+    if (!("notificacaoTemplate" in prisma)) {
+      throw new BusinessError("Sistema de plantillas de notificación no disponible.");
+    }
+      const result = await prisma.notificacaoTemplate.update({
+          where: { id },
+          data: { ativo },
+      });
+      invalidateCache.path.admin("/config/notif-push");
+      return result;
+  });
 }
 
 // ============================================

@@ -10,6 +10,7 @@ export {
   mapTipoParaWhitelist,
   htmlToPlainText,
 } from "./notifications-shared";
+import { htmlToPlainText } from "./notifications-shared";
 
 export type {
   TipoNotificacao,
@@ -106,8 +107,18 @@ export async function enviarPushSePermitido(
     return;
   }
 
+  // OneSignal push deve receber apenas plain-text — strip HTML se houver
+  const plainTitulo = htmlToPlainText(titulo);
+  const plainMensagem = htmlToPlainText(mensagem);
+
+  if (/<[^>]+>/.test(titulo) || /<[^>]+>/.test(mensagem)) {
+    console.warn(
+      `[enviarPushSePermitido] HTML detectado no template '${tipo}' — strip aplicado automaticamente para push.`
+    );
+  }
+
   try {
-    await sendPushNotification([resellerAuthUserId], titulo, mensagem);
+    await sendPushNotification([resellerAuthUserId], plainTitulo, plainMensagem);
   } catch (err) {
     console.error(
       "[enviarPushSePermitido] Erro ao enviar push:",

@@ -89,7 +89,13 @@ export default function BienvenidaPage() {
 
     useEffect(() => {
         getOnboardingStatus()
-            .then((status) => {
+            .then((result) => {
+                if (!result.success) {
+                    setError(result.error || "Error");
+                    setLoading(false);
+                    return;
+                }
+                const status = result.data;
                 setName(status.name);
                 setProfile({
                     id: status.id,

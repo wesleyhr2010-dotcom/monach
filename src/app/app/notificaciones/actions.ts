@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { type ActionResult } from "@/lib/action-utils";
 import { invalidateCache } from "@/lib/cache/invalidate";
 
 export type NotificacaoGrupo = {
@@ -74,13 +75,13 @@ export async function getNotificacoes(): Promise<NotificacaoGrupo> {
   return { hoy, ayer, anteriores };
 }
 
-export async function marcarComoLida(notificacaoId: string) {
+export async function marcarComoLida(notificacaoId: string): Promise<ActionResult<void>> {
   const user = await requireAuth(["REVENDEDORA"]);
   const resellerId = user.profileId!;
 
   if (!("notificacao" in prisma)) {
     console.error("[marcarComoLida] prisma.notificacao is undefined");
-    throw new Error("BUSINESS: Sistema de notificaciones no disponible.");
+    return { success: false, error: "Sistema de notificaciones no disponible." };
   }
 
   // Ownership check: só marca como lida se pertencer ao usuário
@@ -90,7 +91,7 @@ export async function marcarComoLida(notificacaoId: string) {
   });
 
   if (!notif) {
-    throw new Error("BUSINESS: Notificación no encontrada.");
+    return { success: false, error: "Notificación no encontrada." };
   }
 
   await prisma.notificacao.update({
@@ -99,7 +100,7 @@ export async function marcarComoLida(notificacaoId: string) {
   });
 
     invalidateCache.path.app("/notificaciones");
-    return { success: true };
+    return { success: true, data: undefined };
 }
 
 export async function getContagemNaoLidas(): Promise<number> {

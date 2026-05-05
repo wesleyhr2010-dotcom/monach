@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
+import { safeAction, BusinessError, type ActionResult } from "@/lib/action-utils";
 
 
 function getMonthBounds(date = new Date()) {
@@ -14,26 +15,48 @@ function getMonthBounds(date = new Date()) {
 // Perfil + Resumo da Consultora Logada
 // ============================================
 
-export async function getMinhaConta() {
-    const user = await requireAuth(["COLABORADORA"]);
-    const consultoraId = user.profileId!;
+export async function getMinhaConta(): Promise<ActionResult<{
+    perfil: {
+        id: string;
+        name: string;
+        email: string;
+        whatsapp: string | null;
+        avatar_url: string | null;
+        taxa_comissao: number;
+        is_active: boolean;
+    };
+    resumo: {
+        revendedorasTotal: number;
+        revendedorasAtivas: number;
+        maletasAtivas: number;
+        maletasAguardando: number;
+        faturamentoGrupoMes: number;
+        comissaoMes: number;
+        faturamentoGrupoTotal: number;
+        comissaoTotal: number;
+        maletasFechadasTotal: number;
+    };
+}>> {
+    return safeAction(async () => {
+        const user = await requireAuth(["COLABORADORA"]);
+        const consultoraId = user.profileId!;
 
-    const consultora = await prisma.reseller.findUnique({
-        where: { id: consultoraId },
-        select: {
-            id: true,
-            name: true,
-            email: true,
-            whatsapp: true,
-            avatar_url: true,
-            taxa_comissao: true,
-            is_active: true,
-        },
-    });
+        const consultora = await prisma.reseller.findUnique({
+            where: { id: consultoraId },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                whatsapp: true,
+                avatar_url: true,
+                taxa_comissao: true,
+                is_active: true,
+            },
+        });
 
-    if (!consultora) {
-        throw new Error("BUSINESS: Perfil no encontrado.");
-    }
+        if (!consultora) {
+            throw new BusinessError("Perfil no encontrado.");
+        }
 
     // Resumo do grupo
     const revendedoras = await prisma.reseller.findMany({
@@ -115,6 +138,7 @@ export async function getMinhaConta() {
             maletasFechadasTotal: totais._count.id,
         },
     };
+  });
 }
 
 // ============================================

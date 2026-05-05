@@ -5,6 +5,7 @@ import { MenuHeader } from "@/components/app/MenuHeader";
 import { MenuSectionCard } from "@/components/app/MenuSectionCard";
 import { MenuRow } from "@/components/app/MenuRow";
 import { LogoutButton } from "@/components/app/LogoutButton";
+import { logoutApp } from "@/lib/actions/auth";
 import { getContagemNaoLidas } from "@/app/app/notificaciones/actions";
 import {
   UserCog,
@@ -101,7 +102,7 @@ export default async function MaisPage() {
           />
         </MenuSectionCard>
 
-        <LogoutButton />
+        <LogoutButton logoutAction={logoutApp} />
       </div>
     </div>
   );
