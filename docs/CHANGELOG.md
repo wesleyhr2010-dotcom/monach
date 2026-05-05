@@ -1,5 +1,42 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-04 — Phase 4 Concluída: Build Optimization & Polish
+
+### Contexto
+Execução da Phase 4 via `/gsd-execute-phase 04`. 3 planos em 2 waves. A fase entrega: (a) remoção de `force-dynamic` de páginas públicas com migração para ISR (`revalidate = 60`); (b) criação do helper centralizado `invalidateCache` em `src/lib/cache/invalidate.ts`; (c) wiring de `revalidateTag`/`revalidatePath` em todas as Server Actions de mutação; (d) verificação de build e configuração de Prisma pool para serverless.
+
+### 04-01 — Vercel Environment & ISR Configuration
+
+**Modificado:**
+- **`src/app/catalogo/[slug]/[productSlug]/page.tsx`** — removido `export const dynamic = "force-dynamic"`; adicionado `export const revalidate = 60`.
+- **`src/app/vitrina/[slug]/page.tsx`** — criada página placeholder com ISR (`revalidate = 60`).
+
+**Verificado:**
+- Prisma pool configurado com `max: 10`, `idleTimeoutMillis: 30000`, `connectionTimeoutMillis: 5000` em `src/lib/prisma.ts`.
+- Build local passa sem `PrismaClientInitializationError`.
+
+### 04-02 — Cache Invalidation Wiring
+
+**Criado:**
+- **`src/lib/cache/invalidate.ts`** — helper `invalidateCache` com métodos tipados para todas as tags de cache do projeto (`catalog`, `brindes`, `gamificacao-config`, `vitrine-*`, `tiers-config`, `niveis-config`, `admin-dashboard`, `desempeno-*`, `commission-*`) e helpers `path` para `revalidatePath`.
+
+**Modificado:**
+- **14 arquivos de Server Actions** — adicionado `import { invalidateCache }` e chamadas de invalidação após cada mutação Prisma bem-sucedida:
+  - Admin: `actions-products`, `actions-categories`, `actions-maletas`, `actions-config`, `actions-equipe`, `actions-gamificacao`, `actions-leads`, `brindes/actions`, `config/notif-push/actions`, `revendedoras/[id]/documentos/actions`.
+  - App: `actions-revendedora`, `perfil/actions`, `notificaciones/actions`, `bienvenida/actions`.
+
+**Compatibilidade:**
+- `revalidateTag` atualizado para receber segundo argumento (`profile: "max"`) conforme API do Next.js 15.
+
+### Verificação
+- ✅ `npm run build` passa sem erros
+- ✅ `npx tsc --noEmit` sem erros em código de produção (erros restantes são em testes preexistentes)
+- ✅ `export const dynamic = "force-dynamic"` removido de todas as páginas públicas
+- ✅ `export const revalidate = 60` presente em todas as páginas públicas
+- ✅ `invalidateCache` importado e usado em 14 arquivos de mutation actions
+
+---
+
 ## 2026-05-04 — Phase 1 Concluída: Foundation — Error Handling & UI States
 
 ### Contexto
