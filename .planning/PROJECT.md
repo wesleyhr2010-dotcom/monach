@@ -48,7 +48,7 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 
 **Target features:**
 - Notificações e Leads — editor de templates conectado ao cron, pipeline de leads da landing, branding de emails
-- Desempenho da Revendedora (PWA) — analytics individual (`/app/desempenho`)
+- Desempenho da Revendedora (PWA) — analytics individual (`/app/desempeno`)
 - Ajustes finos no App Revendedora — rotas quebradas no menu "Más", polimento de UX
 - Dashboard Admin — KPIs globais e por grupo
 - Configurações Globais — tiers, níveis, contratos editáveis no admin

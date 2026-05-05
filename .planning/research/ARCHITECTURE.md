@@ -73,13 +73,13 @@ export async function notificarComTemplate(
 
 ---
 
-### 2.2 Analytics Dashboard for Resellers (`/app/desempenho`)
+### 2.2 Analytics Dashboard for Resellers (`/app/desempeno`)
 
 **Current State:**
 - `AnalyticsAcesso` and `AnalyticsDiario` tables exist
 - Cron `agrega-analytics-diario` consolidates daily
 - Tracking endpoint `/api/track-evento` exists
-- **Route `/app/desempenho` does NOT exist yet**
+- **Route `/app/desempeno` does NOT exist yet**
 
 **Integration Required:**
 
@@ -93,16 +93,16 @@ export async function notificarComTemplate(
 | Produtos Populares | `AnalyticsAcesso` | `GROUP BY produto_id ORDER BY COUNT` |
 
 **New Components:**
-- `src/app/app/desempenho/page.tsx` — Client Component (time range interactive)
-- `src/app/app/desempenho/actions.ts` — Server Action `getMetricasDesempenho(resellerId, rango)`
-- `src/components/app/desempenho/MetricCardTrend.tsx`
-- `src/components/app/desempenho/VisitasDiariasChart.tsx` (recharts BarChart)
-- `src/components/app/desempenho/ProductosPopularesList.tsx`
-- `src/components/app/desempenho/TimeRangeSelector.tsx`
+- `src/app/app/desempeno/page.tsx` — Client Component (time range interactive)
+- `src/app/app/desempeno/actions.ts` — Server Action `getMetricasDesempenho(resellerId, rango)`
+- `src/components/app/desempeno/MetricCardTrend.tsx`
+- `src/components/app/desempeno/VisitasDiariasChart.tsx` (recharts BarChart)
+- `src/components/app/desempeno/ProductosPopularesList.tsx`
+- `src/components/app/desempeno/TimeRangeSelector.tsx`
 
 **Data Flow:**
 ```
-/app/desempenho (Client)
+/app/desempeno (Client)
   → getMetricasDesempenho(resellerId, 'semana')
     → Promise.all([
         getMetricasPeriodo(resellerId, start, end),      // AnalyticsAcesso
@@ -314,7 +314,7 @@ async function DataList() {
 1. `/app` (home) — `SkeletonMetricDashboard`
 2. `/app/maleta` — `SkeletonList`
 3. `/app/catalogo` — Grid skeleton
-4. `/app/desempenho` — NEW page, implement from start
+4. `/app/desempeno` — NEW page, implement from start
 5. `/admin/maletas` — Table skeleton
 6. `/admin/leads` — NEW page, implement from start
 7. `/admin/analytics` — Card + chart skeletons
@@ -380,9 +380,9 @@ export const dynamic = 'force-dynamic';
 | File | Purpose | Feature |
 |------|---------|---------|
 | `src/lib/notifications/template-engine.ts` | Variable substitution + template lookup | Notification Engine |
-| `src/app/app/desempenho/page.tsx` | Reseller analytics dashboard | Reseller Analytics |
-| `src/app/app/desempenho/actions.ts` | `getMetricasDesempenho` Server Action | Reseller Analytics |
-| `src/components/app/desempenho/*.tsx` | Metric cards, chart, product list | Reseller Analytics |
+| `src/app/app/desempeno/page.tsx` | Reseller analytics dashboard | Reseller Analytics |
+| `src/app/app/desempeno/actions.ts` | `getMetricasDesempenho` Server Action | Reseller Analytics |
+| `src/components/app/desempeno/*.tsx` | Metric cards, chart, product list | Reseller Analytics |
 | `src/app/admin/actions-config.ts` | CRUD for tiers, contracts, levels | Admin Config |
 | `src/app/admin/commission-tiers/page.tsx` | Tier management UI | Admin Config |
 | `src/app/admin/contratos/page.tsx` | Contract upload/list UI | Admin Config |
@@ -476,7 +476,7 @@ Admin Action: Rechazar
 ### 4.3 Reseller Analytics Data Flow
 
 ```
-/app/desempenho (Client Component)
+/app/desempeno (Client Component)
   → getMetricasDesempenho(resellerId, 'semana')
     → getDateRange('semana') → { start, end, prevStart, prevEnd }
     → Promise.all([
@@ -537,7 +537,7 @@ async function getTemplateAtivo(tipo: string): Promise<NotificacaoTemplate | nul
 function substituirVariaveis(template: string, vars: Record<string, string | number>): string
 async function notificarComTemplate(tipo: TipoNotificacao, resellerId: string, vars: object, authUserId?: string): Promise<Notificacao | null>
 
-// src/app/app/desempenho/actions.ts
+// src/app/app/desempeno/actions.ts
 async function getMetricasDesempenho(resellerId: string, rango: TimeRange): Promise<DesempenhoData>
 
 // src/app/admin/actions-config.ts (new file)
@@ -611,7 +611,7 @@ async function recusarLead(leadId: string, observacao?: string): Promise<ActionR
 ### Phase 3: Visibility & Analytics (Week 3)
 **Goal:** Give users visibility into their performance.
 
-7. **Reseller Analytics** (`/app/desempenho`)
+7. **Reseller Analytics** (`/app/desempeno`)
    - Why third: Data already exists; just needs aggregation and UI
    - Scope: Server Action with date math; recharts chart; metric cards
    - Depends on: Skeleton components (Phase 1)
@@ -649,7 +649,7 @@ async function recusarLead(leadId: string, observacao?: string): Promise<ActionR
 | `/admin/contratos` | ✓ | ✗ | ✗ | Already in restrictedPaths |
 | `/admin/analytics` | ✓ | ✓ | ✗ | Existing, COLAB sees group scope |
 | `/admin/config/notif-push` | ✓ | ✗ | ✗ | Already SUPER_ADMIN only |
-| `/app/desempenho` | ✗ | ✗ | ✓ | Own data only |
+| `/app/desempeno` | ✗ | ✗ | ✓ | Own data only |
 
 ### 8.2 Middleware Updates
 

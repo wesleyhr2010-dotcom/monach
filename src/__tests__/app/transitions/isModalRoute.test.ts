@@ -25,7 +25,7 @@ describe("isModalRoute", () => {
       "/app/maleta",
       "/app/maleta/abc123",
       "/app/catalogo",
-      "/app/mais",
+      "/app/mas",
       "/app/perfil",
       "/app/notificaciones",
       "/app/progreso",

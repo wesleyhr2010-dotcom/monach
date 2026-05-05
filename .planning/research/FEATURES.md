@@ -12,7 +12,7 @@
 | # | Categoria | SPEC Principal | Descrição Resumida |
 |---|-----------|----------------|--------------------|
 | 1 | **Motor de Templates de Notificação** | `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` | Conectar o editor de templates existente aos cron jobs e geradores automáticos; implementar substituição de variáveis (`{nome_revendedora}`, `{maleta_id}`, etc.) |
-| 2 | **Analytics da Revendedora (PWA)** | `revendedoras/SPEC_DESEMPENHO.md` | Tela `/app/desempenho` com métricas individuais de acessos, visitantes únicos, cliques WhatsApp e peças vendidas; gráfico de visitas diárias; ranking de produtos populares |
+| 2 | **Analytics da Revendedora (PWA)** | `revendedoras/SPEC_DESEMPENHO.md` | Tela `/app/desempeno` com métricas individuais de acessos, visitantes únicos, cliques WhatsApp e peças vendidas; gráfico de visitas diárias; ranking de produtos populares |
 | 3 | **Dashboard Admin (KPIs globais/grupo)** | `admin/SPEC_ADMIN_DASHBOARD.md` | Visão executiva em `/admin` com cards de faturamento, maletas, revendedoras e alertas; lista de maletas com atenção; ranking por consultora ou revendedora; filtro por período |
 | 4 | **Pipeline de Candidaturas (Leads)** | `admin/SPEC_ADMIN_LEADS.md` | Revisão de candidaturas da landing `/seja-revendedora`; aprovação com criação automática de usuário Supabase + `Reseller` + email de boas-vindas; rejeição com email |
 | 5 | **Configurações Globais Admin** | `admin/SPEC_ADMIN_CONFIG.md` | CRUD de faixas de comissão (`CommissionTier`); upload e gestão de contratos PDF; regras de enquadramento automático |
@@ -213,7 +213,7 @@ Features que parecem boas ideias mas adicionam complexidade sem valor proporcion
 │  ┌─────────────────┐    ┌─────────────────┐                                   │
 │  │  ADMIN DASHBOARD│◄───┤  RESELLER       │                                   │
 │  │  (KPIs, alertas)│    │  ANALYTICS      │                                   │
-│  │                 │    │  (/app/desempenho)                                │
+│  │                 │    │  (/app/desempeno)                                │
 │  └─────────────────┘    └─────────────────┘                                   │
 │           │                    │                                              │
 │           │                    │  (depende de AnalyticsDiario                  │

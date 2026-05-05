@@ -9,7 +9,7 @@ Fornecer à revendedora indicadores de desempenho da sua vitrine pública e das 
 - **Cron diário** — consolida dados em `AnalyticsDiario` (ver `SPEC_CRON_JOBS.md`).
 
 ## Fluxo
-1. Revendedora acessa `/app/desempenho` e vê 4 cards de métricas da semana atual.
+1. Revendedora acessa `/app/desempeno` e vê 4 cards de métricas da semana atual.
 2. Pode trocar o período via dropdown: Esta Semana / Este Mes / Últimos 30 días / Este Año.
 3. Ao trocar, a tela re-busca dados e recalcula tendência (% vs período anterior equivalente).
 4. Abaixo dos cards, gráfico de visitas diárias por dia da semana.
@@ -38,8 +38,8 @@ Fornecer à revendedora indicadores de desempenho da sua vitrine pública e das 
 
 ## Detalhes técnicos / Referência
 
-**Ruta:** `/app/desempenho`  
-**Archivo:** `src/app/app/desempenho/page.tsx`  
+**Ruta:** `/app/desempeno`  
+**Archivo:** `src/app/app/desempeno/page.tsx`  
 **Tipo:** Client Component (Time Range interactivo)
 
 ---

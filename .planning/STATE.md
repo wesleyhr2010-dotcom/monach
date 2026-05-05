@@ -58,7 +58,7 @@ Progress: [██████░░░░] 60% (3/5 phases) | 76.9% plans (10/13
 - **Build error resolved via module split**: `notifications.ts` → `notifications-shared.ts` (client-safe) + `notifications-server.ts` (DOMPurify) to avoid `node:module` client bundle error
 - **Cron jobs Edge Functions** already had template-aware `_shared/notifications.ts` helper — no changes needed for 02-05
 - **Phase 3 executed inline** (2 plans, wave 1) — no subagent spawning needed for small phase
-- **recharts** chosen for PWA bar chart — only used on `/app/desempenho`, acceptable bundle impact
+- **recharts** chosen for PWA bar chart — only used on `/app/desempeno`, acceptable bundle impact
 
 ### Pending Todos
 

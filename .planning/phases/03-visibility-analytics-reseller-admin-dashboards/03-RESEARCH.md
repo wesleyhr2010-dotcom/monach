@@ -15,14 +15,14 @@
 - `actions-analytics.ts` — Server actions for analytics page.
 
 ### Missing
-- `/app/desempenho` — Reseller performance page (DESE-01..DESE-09)
+- `/app/desempeno` — Reseller performance page (DESE-01..DESE-09)
 - Period filter on main `/admin` dashboard (DASH-03)
 - Skeleton loading states on `/admin` and `/admin/analytics` (DASH-08)
 - `recharts` library not installed
 
 ## 2. Technical Approach
 
-### Reseller Analytics (`/app/desempenho`)
+### Reseller Analytics (`/app/desempeno`)
 
 **Time Range Utility:**
 Create `src/lib/date-range.ts` with `getDateRange(rango: TimeRange)` that returns:
@@ -91,7 +91,7 @@ Queries in parallel:
 ## 6. Risks
 
 - **Risk:** `AnalyticsDiario` may not have data if cron hasn't run. Mitigation: fallback to `AnalyticsAcesso` raw queries.
-- **Risk:** `recharts` adds bundle size. Mitigation: only used on `/app/desempenho` which is already a client-interactive page.
+- **Risk:** `recharts` adds bundle size. Mitigation: only used on `/app/desempeno` which is already a client-interactive page.
 - **Risk:** Timezone boundary errors (Paraguay DST). Mitigation: use `America/Asuncion` consistently; Prisma `AT TIME ZONE` for raw queries.
 
 ## 7. Patterns to Follow

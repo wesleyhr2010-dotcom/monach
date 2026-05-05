@@ -30,7 +30,7 @@
 
 ### Desempenho da Revendedora (DESE)
 
-- [x] **DESE-01**: Rota `/app/desempenho` existe e é acessível pelo menu "Más" e pelo link "Análisis" da home
+- [x] **DESE-01**: Rota `/app/desempeno` existe e é acessível pelo menu "Más" e pelo link "Análisis" da home
 - [x] **DESE-02**: 4 cards de métricas: Acessos ao Catálogo, Visitantes Únicos, Clipes no WhatsApp, Peças Vendidas
 - [x] **DESE-03**: Seletor de período: Esta Semana / Este Mes / Últimos 30 dias / Este Ano
 - [x] **DESE-04**: Tendência percentual vs período anterior (verde ↑, vermelho ↓, "Nuevo" se período anterior = 0)

@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import { useSyncExternalStore } from "react";
 import { Compass, LayoutGrid, ShoppingBag, MoreHorizontal } from "lucide-react";
 import { TransitionLink } from "@/components/app/transitions/TransitionLink";
 
@@ -8,22 +9,34 @@ const NAV_ITEMS = [
   { href: "/app", label: "Início", Icon: Compass, exact: true },
   { href: "/app/catalogo", label: "Catálogo", Icon: LayoutGrid, exact: false },
   { href: "/app/maleta", label: "Maleta", Icon: ShoppingBag, exact: false },
-  { href: "/app/mais", label: "Más", Icon: MoreHorizontal, exact: false },
+  { href: "/app/mas", label: "Más", Icon: MoreHorizontal, exact: false },
 ] as const;
+
+function isActive(pathname: string, href: string, exact: boolean) {
+  if (href === "/app/mas") {
+    return (
+      pathname.startsWith("/app/mas") ||
+      pathname.startsWith("/app/perfil") ||
+      pathname.startsWith("/app/notificaciones") ||
+      pathname.startsWith("/app/desempeno")
+    );
+  }
+  return exact ? pathname === href : pathname.startsWith(href);
+}
 
 export function AppBottomNav() {
   const pathname = usePathname() ?? "";
+  const mounted = useSyncExternalStore(
+    () => () => {},
+    () => true,
+    () => false
+  );
 
   return (
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav">
       <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
-          let active: boolean;
-          if (href === "/app/mais") {
-            active = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones") || pathname.startsWith("/app/desempenho");
-          } else {
-            active = exact ? pathname === href : pathname.startsWith(href);
-          }
+          const active = mounted ? isActive(pathname, href, exact) : false;
           return (
             <TransitionLink
               key={href}

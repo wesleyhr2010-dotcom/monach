@@ -39,7 +39,7 @@
 
 | Library | Version | Why Needed | Feature Area |
 |---------|---------|------------|--------------|
-| **recharts** | `^3.8.1` | Bar charts for reseller analytics (`/app/desempenho`), line charts for admin dashboard fluxo de maletas, donut charts for status distribution. Already prescribed in SPECs (`SPEC_DESEMPENHO.md`, `SPEC_ADMIN_DASHBOARD.md`). | Analytics dashboards (PWA + Admin) |
+| **recharts** | `^3.8.1` | Bar charts for reseller analytics (`/app/desempeno`), line charts for admin dashboard fluxo de maletas, donut charts for status distribution. Already prescribed in SPECs (`SPEC_DESEMPENHO.md`, `SPEC_ADMIN_DASHBOARD.md`). | Analytics dashboards (PWA + Admin) |
 
 **Rationale:** The project needs bar charts (visitas diárias), line charts (fluxo de maletas temporal), and donut/pie charts (distribuição por status). Recharts is React-native, tree-shakeable, and the team has already specced it. No need to introduce Chart.js or D3 complexity.
 
@@ -225,7 +225,7 @@ npm install date-fns@^4.1.0
 | Milestone Feature | New Stack Addition | Existing Stack Used |
 |-------------------|-------------------|---------------------|
 | Notification template engine (variable substitution) | None — regex helper | Prisma (`NotificacaoTemplate`), OneSignal, Brevo, Supabase Edge Functions |
-| Analytics dashboard (reseller `/app/desempenho`) | recharts, date-fns | Prisma (`AnalyticsAcesso`, `AnalyticsDiario`), TanStack Query, Tailwind |
+| Analytics dashboard (reseller `/app/desempeno`) | recharts, date-fns | Prisma (`AnalyticsAcesso`, `AnalyticsDiario`), TanStack Query, Tailwind |
 | Admin dashboard (global/group KPIs) | recharts, date-fns | Prisma (`maleta`, `reseller`), RLS, Tailwind |
 | Lead pipeline (`/admin/leads`) | react-hook-form, @hookform/resolvers, sonner | Prisma (`RevendedoraLead`), Supabase Auth, Brevo, Radix UI |
 | Admin config (tiers, levels, contracts) | react-hook-form, @hookform/resolvers, sonner | Prisma (`CommissionTier`, `Contrato`), R2 upload API, Radix UI |

@@ -43,7 +43,7 @@ See [STACK.md](./STACK.md) for full integration notes, version confidence, and f
 - **Notification template engine** — Connects the existing editor UI to the rest of the system. Without it, the editor remains dead code.
 - **Lead pipeline** — Completes the reseller acquisition funnel. Landing page exists but cannot convert to accounts without approval flow.
 - **Admin dashboard enhancements** — Gives executive visibility. Builds on existing dashboard (~70% complete); adds period filters, product ranking, and docs integration.
-- **Reseller analytics (`/app/desempenho`)** — Closes the visibility loop for resellers. Depends on existing `AnalyticsDiario` cron; data already exists, needs aggregation and UI.
+- **Reseller analytics (`/app/desempeno`)** — Closes the visibility loop for resellers. Depends on existing `AnalyticsDiario` cron; data already exists, needs aggregation and UI.
 
 **Should-have (differentiators):**
 - Export CSV from admin dashboard
@@ -68,7 +68,7 @@ The v1.0 features integrate through **existing architectural seams**: Prisma ORM
 **Major integration points:**
 1. **Notification Template Engine** — New helper `substituirVariaveis()` + `notificarComTemplate()` in `src/lib/notifications/template-engine.ts`. Refactors 5+ cron jobs and server actions from hardcoded strings to DB-driven templates.
 2. **Lead Pipeline** — Rewrites broken `actions-leads.ts` to use correct `revendedora_leads` schema. Approval flow is a 5-step transaction (check lead → create Supabase Auth user → create `Reseller` → update lead → send Brevo email) requiring idempotency guards.
-3. **Analytics** — Reseller dashboard (`/app/desempenho`) is a new client-component page aggregating `AnalyticsAcesso`, `AnalyticsDiario`, and `VendaMaleta`. Admin dashboard builds on existing `actions-dashboard.ts` (~70% complete).
+3. **Analytics** — Reseller dashboard (`/app/desempeno`) is a new client-component page aggregating `AnalyticsAcesso`, `AnalyticsDiario`, and `VendaMaleta`. Admin dashboard builds on existing `actions-dashboard.ts` (~70% complete).
 4. **Admin Config** — Stubs at `/admin/commission-tiers` and `/admin/contratos` need full CRUD. Contract upload reuses existing R2 pattern.
 5. **Error Handling + UI States** — Cross-cutting migration of all Server Actions to `safeAction()` + `ActionResult<T>`, plus creation of reusable `SkeletonCard`, `EmptyState`, and `ErrorState` components.
 
@@ -117,7 +117,7 @@ See [PITFALLS.md](./PITFALLS.md) for full descriptions, detection strategies, an
 ### Phase 3: Visibility & Analytics — Reseller & Admin Dashboards
 **Rationale:** Data already exists; this phase is about aggregation and presentation. It depends on Phase 1's skeleton components and Phase 2's config data (tiers, commissions).
 **Delivers:**
-- `/app/desempenho` with metric cards (value + trend %), recharts bar chart of daily visits, top 10 products list, and period selector
+- `/app/desempeno` with metric cards (value + trend %), recharts bar chart of daily visits, top 10 products list, and period selector
 - Enhanced `/admin` dashboard with time range filter, product ranking, export CSV, and docs integration
 - `getMetricasDesempenho()` Server Action with `date-fns` range math
 **Uses:** recharts, date-fns (STACK.md §2.1, §2.4)

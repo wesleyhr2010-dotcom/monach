@@ -1,4 +1,4 @@
-# SPEC — Menu "Más" da Revendedora (`/app/mais`)
+# SPEC — Menu "Más" da Revendedora (`/app/mas`)
 
 ## Objetivo
 Oferecer à revendedora um hub de navegação com acesso rápido às áreas secundárias do PWA (perfil, atividade, suporte) e ao logout, acionado pela aba **Más** do bottom nav. Substitui o uso direto de `/app/perfil` como entrada geral de configurações, mantendo `/app/perfil*` apenas como telas de detalhe.
@@ -7,7 +7,7 @@ Oferecer à revendedora um hub de navegação com acesso rápido às áreas secu
 - **Revendedora** — única persona com acesso a `/app/*`. Usa o menu para navegar até cada área secundária.
 
 ## Fluxo
-1. Revendedora toca em **Más** no `AppBottomNav` → navega para `/app/mais`.
+1. Revendedora toca em **Más** no `AppBottomNav` → navega para `/app/mas`.
 2. Server Component carrega dados leves exibidos no header (nada pesado — esta tela é só navegação; métricas pertencem às telas de destino).
 3. Renderiza cabeçalho, 3 grupos de itens ("Mi Cuenta", "Actividad", "Soporte") e botão de logout.
 4. Toque em cada item navega para a rota-alvo (ver tabela em §Detalhes).
@@ -18,8 +18,8 @@ Oferecer à revendedora um hub de navegação com acesso rápido às áreas secu
 - **`Soporte WhatsApp`** abre WhatsApp da consultora da revendedora (fallback: WhatsApp institucional). Lógica em `SPEC_PERFIL.md` §`/app/perfil/soporte`.
 - **`¿Cómo funciona?`** abre tela de onboarding em modo revisão (`/app/bienvenida?modo=review`) — reaproveita componentes do onboarding existente.
 - **Logout** deve sempre chamar `OneSignal.logout()` antes do `supabase.auth.signOut()` para evitar vazamento de `external_id` entre sessões (ver `SPEC_PERFIL.md` Edge cases).
-- **Ícone de configurações (gear) no header** abre `/app/mais/ajustes` — reservado para preferências transversais (idioma, tema, versão). Se a rota não for implementada já nesta entrega, o ícone fica oculto — não deixar botão morto.
-- **Estado ativo do bottom nav:** a aba **Más** deve ficar ativa quando `pathname` começar com `/app/mais` **ou** `/app/perfil` (pois perfil é subárea de "Mi Cuenta"). Atualizar `AppBottomNav` para considerar esse conjunto.
+- **Ícone de configurações (gear) no header** abre `/app/mas/ajustes` — reservado para preferências transversais (idioma, tema, versão). Se a rota não for implementada já nesta entrega, o ícone fica oculto — não deixar botão morto.
+- **Estado ativo do bottom nav:** a aba **Más** deve ficar ativa quando `pathname` começar com `/app/mas` **ou** `/app/perfil` (pois perfil é subárea de "Mi Cuenta"). Atualizar `AppBottomNav` para considerar esse conjunto.
 
 ## Edge cases
 - **Revendedora sem consultora vinculada** → "Soporte WhatsApp" cai no número institucional com mensagem fallback.
@@ -41,7 +41,7 @@ Oferecer à revendedora um hub de navegação com acesso rápido às áreas secu
 ## Detalhes técnicos / Referência
 
 ### Rota
-- `/app/mais` (Server Component + Client Component para interações de logout/toast).
+- `/app/mas` (Server Component + Client Component para interações de logout/toast).
 
 ### Mapa de destinos
 
@@ -90,7 +90,7 @@ Cada **item** (`h-16`, `py-3.75 px-4`):
 
 **Reaproveitar (existentes em `src/components/app/`):**
 - `AppPageShell` — container + bottom nav.
-- `AppBottomNav` — já aponta para `/app/mais`; ajustar regra de `active`.
+- `AppBottomNav` — já aponta para `/app/mas`; ajustar regra de `active`.
 
 **Criar (moléculas novas, uso reutilizável):**
 - `MenuSectionCard` — card branco com label + lista de `MenuRow`.

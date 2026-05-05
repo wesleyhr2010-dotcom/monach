@@ -85,16 +85,16 @@ A tabela é **normativa**: cada par origem → destino tem um único padrão. Li
 |---|---|
 | `/app` | `/app/maleta` |
 | `/app` | `/app/catalogo` |
-| `/app` | `/app/mais` |
+| `/app` | `/app/mas` |
 | `/app/maleta` | `/app/catalogo` |
-| `/app/maleta` | `/app/mais` |
+| `/app/maleta` | `/app/mas` |
 | `/app/maleta` | `/app` |
 | `/app/catalogo` | `/app/maleta` |
-| `/app/catalogo` | `/app/mais` |
+| `/app/catalogo` | `/app/mas` |
 | `/app/catalogo` | `/app` |
-| `/app/mais` | `/app` |
-| `/app/mais` | `/app/maleta` |
-| `/app/mais` | `/app/catalogo` |
+| `/app/mas` | `/app` |
+| `/app/mas` | `/app/maleta` |
+| `/app/mas` | `/app/catalogo` |
 
 > **Regra:** qualquer navegação **entre raízes do bottom nav** usa crossfade.
 
@@ -105,8 +105,8 @@ A tabela é **normativa**: cada par origem → destino tem um único padrão. Li
 | `/app/maleta` | `/app/maleta/[id]` | Push (com **shared element** no card → ver §1.5) |
 | `/app/maleta/[id]` | `/app/maleta` | Pop |
 | `/app/notificaciones` | `/app/maleta/[id]` (CTA da notificação) | Push |
-| `/app/mais` | `/app/perfil` | Push |
-| `/app/mais` | `/app/notificaciones` | Push |
+| `/app/mas` | `/app/perfil` | Push |
+| `/app/mas` | `/app/notificaciones` | Push |
 | `/app/perfil` | `/app/perfil/datos` | Push |
 | `/app/perfil` | `/app/perfil/bancario` | Push |
 | `/app/perfil` | `/app/perfil/documentos` | Push |
@@ -115,8 +115,8 @@ A tabela é **normativa**: cada par origem → destino tem um único padrão. Li
 | `/app` | `/app/progreso` | Push |
 | `/app/progreso` | `/app/progreso/extracto` | Push |
 | `/app/progreso` | `/app/progreso/regalos` | Push |
-| `/app/mais` | `/app/progreso` | Push |
-| `/app/mais` | `/app/desempeno` (futuro) | Push |
+| `/app/mas` | `/app/progreso` | Push |
+| `/app/mas` | `/app/desempeno` (futuro) | Push |
 
 > **Detecção de pop:** o wrapper escuta `popstate` (botão voltar do navegador/Android). O botão voltar do header (componente da página) chama `router.back()` que também aciona `popstate`.
 

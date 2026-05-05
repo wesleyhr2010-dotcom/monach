@@ -54,7 +54,7 @@ interface DesempenhoViewProps {
   resellerId: string;
 }
 
-export function DesempenhoView({
+export function DesempenoView({
   initialData,
   initialError,
   initialRango,
@@ -68,7 +68,7 @@ export function DesempenhoView({
   const handleRangoChange = useCallback(
     (rango: TimeRange) => {
       startTransition(() => {
-        router.push(`/app/desempenho?rango=${rango}`);
+        router.push(`/app/desempeno?rango=${rango}`);
       });
     },
     [router]

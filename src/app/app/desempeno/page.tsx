@@ -2,8 +2,8 @@ export const dynamic = "force-dynamic";
 
 import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/user";
-import { getMetricasDesempenho } from "../actions-desempenho";
-import { DesempenhoView } from "./DesempenhoView";
+import { getMetricasDesempenho } from "../actions-desempeno";
+import { DesempenoView } from "./DesempenoView";
 import { type TimeRange } from "@/lib/date-range";
 
 const VALID_RANGOS: TimeRange[] = ["semana", "mes", "30dias", "anio"];
@@ -28,7 +28,7 @@ export default async function DesempenhoPage({
   const result = await getMetricasDesempenho(user.profileId, rango);
 
   return (
-    <DesempenhoView
+    <DesempenoView
       initialData={result.success ? result.data : null}
       initialError={result.success ? null : result.error}
       initialRango={rango}

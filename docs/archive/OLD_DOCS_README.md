@@ -90,7 +90,7 @@ Este directorio contiene toda la documentación técnica del proyecto **next-mon
 | `SPEC_EXTRATO_BRINDES.md` | `/app/progreso/extracto` + `/regalos` | Historial de puntos + canje de regalos |
 | `SPEC_PERFIL.md` | `/app/perfil` | Perfil, datos, documentos, bancario, soporte |
 | `SPEC_NOTIFICACOES.md` | `/app/notificaciones` + preferencias | Centro de notifs + configuración OneSignal |
-| `SPEC_DESEMPENHO.md` | `/app/desempenho` | Analytics: visitas, conversiones, gráficos |
+| `SPEC_DESEMPENHO.md` | `/app/desempeno` | Analytics: visitas, conversiones, gráficos |
 | `SPEC_VITRINE_PUBLICA.md` | `/vitrina/[slug]` | Vitrina pública — página pública de la revendedora |
 | `SPEC_SEJA_REVENDEDORA.md` | `/seja-revendedora` | Formulario público de inscripción de candidatas |
 | `SPEC_ONBOARDING_REVENDEDORA.md` | `/app/bienvenida` | Flujo de primer acceso — tour guiado + puntos iniciales |

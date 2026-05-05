@@ -22,7 +22,7 @@
 **Severity:** Critical
 
 ### CP-2: Analytics Queries N+1 ou Table Scan em `AnalyticsAcesso`
-**What goes wrong:** O dashboard de desempenho da revendedora (`/app/desempenho`) e o admin dashboard (`/admin`) fazem agregações em `AnalyticsAcesso` (eventos brutos) em vez de usar `AnalyticsDiario` (pré-agregado). Com milhares de eventos, a query explode em tempo e memória.
+**What goes wrong:** O dashboard de desempenho da revendedora (`/app/desempeno`) e o admin dashboard (`/admin`) fazem agregações em `AnalyticsAcesso` (eventos brutos) em vez de usar `AnalyticsDiario` (pré-agregado). Com milhares de eventos, a query explode em tempo e memória.
 **Why it happens:** Dev escreve `COUNT(*)` em `AnalyticsAcesso` filtrando por `reseller_id` e range. Sem índice composto `(reseller_id, created_at, tipo_evento)`, o PostgreSQL faz sequential scan.
 **Consequences:** Timeout de 10s na Vercel (Server Components), custo alto de CPU no Supabase, possível kill da query pelo Postgres, dashboard quebrado para revendedoras.
 **Prevention:**
@@ -114,7 +114,7 @@
 **Severity:** High
 
 ### HP-3: Agregação de Analytics em Request Thread (Server Component Timeout)
-**What goes wrong:** O dashboard de desempenho (`/app/desempenho`) calcula "visitantes únicos" com `COUNT(DISTINCT visitor_id)` sobre `AnalyticsAcesso` no Server Component. Para revendedora com muitos acessos e range "Este Año", a query demora > 10s.
+**What goes wrong:** O dashboard de desempenho (`/app/desempeno`) calcula "visitantes únicos" com `COUNT(DISTINCT visitor_id)` sobre `AnalyticsAcesso` no Server Component. Para revendedora com muitos acessos e range "Este Año", a query demora > 10s.
 **Why it happens:** `COUNT(DISTINCT ...)` em tabela grande sem índice adequado. Next.js 15 Server Components têm timeout implícito na Vercel.
 **Consequences:** 504 Gateway Timeout, página de erro genérica, revendedora sem acesso ao próprio desempenho.
 **Prevention:**
@@ -250,7 +250,7 @@
 ## Minor Pitfalls
 
 ### LP-1: Gráfico de Analytics vazio para Revendedora Nova
-**What goes wrong:** Revendedora com < 7 dias de cadastro acessa `/app/desempenho`. O gráfico de barras recebe array vazio e quebra (recharts sem dados).
+**What goes wrong:** Revendedora com < 7 dias de cadastro acessa `/app/desempeno`. O gráfico de barras recebe array vazio e quebra (recharts sem dados).
 **Why it happens:** Componente `VisitasDiariasChart` não lida com array vazio ou todos os valores zero.
 **Consequences:** Tela branca ou crash no app. Revendedora desiste de usar a feature.
 **Prevention:**
@@ -311,7 +311,7 @@
 □ Configs: Alterar tier, recarregar /app em 10s. Deve mostrar novo valor.
 □ Build: npm run build com DATABASE_URL configurado. Nenhum erro de Prisma em páginas públicas.
 □ Error Handling: Chamar action com input inválido. Deve retornar { success: false, error: "..." } em espanhol.
-□ Skeleton: Throttle 3G em /app/desempenho. Deve ver skeleton imediatamente, nunca tela branca.
+□ Skeleton: Throttle 3G em /app/desempeno. Deve ver skeleton imediatamente, nunca tela branca.
 ```
 
 ---

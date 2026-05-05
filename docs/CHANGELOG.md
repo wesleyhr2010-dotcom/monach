@@ -438,7 +438,7 @@ A `SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md` §2 previa um painel para SUPER_ADMIN 
 ## 2026-04-24 — Fix: migration de notificações aplicada no banco
 
 ### Contexto
-Runtime em `/app/mais` falhava em `getContagemNaoLidas()` com `PrismaClientKnownRequestError`: a tabela `public.notificacoes` não existia no banco conectado pela aplicação, apesar de o model `Notificacao` e a migration já existirem no repositório.
+Runtime em `/app/mas` falhava em `getContagemNaoLidas()` com `PrismaClientKnownRequestError`: a tabela `public.notificacoes` não existia no banco conectado pela aplicação, apesar de o model `Notificacao` e a migration já existirem no repositório.
 
 ### Corrigido
 - **Banco Supabase** — aplicada a migration `20260424000000_add_notificacoes`, criando a tabela `notificacoes`, índices e FK para `resellers`.
@@ -499,7 +499,7 @@ A SPEC `SPEC_NOTIFICACOES.md` previa um histórico persistente de notificações
   - Busca maletas com prazo em ≤ 2 dias → notifica `prazo_proximo` com deduplicação (só notifica se não houver notificação do mesmo tipo para a mesma maleta nas últimas 24h).
 
 ### Modificado
-- **`src/app/app/mais/page.tsx`** — adicionado link "Centro de Notificaciones" com badge de não lidas; renomeado link de preferências para "Config. Notificaciones Push".
+- **`src/app/app/mas/page.tsx`** — adicionado link "Centro de Notificaciones" com badge de não lidas; renomeado link de preferências para "Config. Notificaciones Push".
 - **`src/components/app/AppBottomNav.tsx`** e **`src/components/app/AppShell.tsx`** — aba "Más" ativa também em `/app/notificaciones*`.
 - **`src/__tests__/api/cron-check-overdue.test.ts`** — mocks atualizados para cobrir `findMany`, `notificacao.count/create` e `notificarRevendedora`.
 - **`docs/next_steps.md`** — item "Histórico persistente de notificações no PWA" marcado como `[x]`.
@@ -536,13 +536,13 @@ A rota `/admin/analytics` existia como placeholder de analytics de tráfego web 
 
 ---
 
-## 2026-04-24 — Menu "Más" do PWA (`/app/mais`)
+## 2026-04-24 — Menu "Más" do PWA (`/app/mas`)
 
 ### Contexto
 Implementação do hub de navegação secundária acessado pela aba "Más" do bottom nav, substituindo `/app/perfil` como porta de entrada para configurações e áreas secundárias.
 
 ### Criado
-- **`src/app/app/mais/page.tsx`** — Server Component que monta o hub com 3 grupos (Mi Cuenta, Actividad, Soporte) + botão de logout. Fetches leves: `slug` da revendedora (para vitrina pública) e contagem de documentos pendentes (badge dot).
+- **`src/app/app/mas/page.tsx`** — Server Component que monta o hub com 3 grupos (Mi Cuenta, Actividad, Soporte) + botão de logout. Fetches leves: `slug` da revendedora (para vitrina pública) e contagem de documentos pendentes (badge dot).
 - **`src/components/app/MenuHeader.tsx`** — cabeçalho genérico com back, título uppercase e slot de ícone à direita (client component).
 - **`src/components/app/MenuSectionCard.tsx`** — card branco com label uppercase e lista de itens.
 - **`src/components/app/MenuRow.tsx`** — linha clicável com ícone, texto, chevron, variantes (`default` / `accent-green`), suporte a link externo e badge dot.
@@ -552,7 +552,7 @@ Implementação do hub de navegação secundária acessado pela aba "Más" do bo
 - **`src/app/globals.css`** — adicionados 12 tokens app-* ao `@theme inline` (`app-bg`, `app-card-bg`, `app-card-border`, `app-divider`, `app-icon-bg`, `app-primary`, `app-text`, `app-muted`, `app-accent-green-bg`, `app-accent-green`, `app-danger-bg`, `app-danger-border`, `app-danger`).
 - **`docs/design-system/tokens.md`** — documentados os novos tokens App PWA.
 - **`src/components/app/AppBottomNav.tsx`** — aba "Más" agora fica ativa também em rotas `/app/perfil*` (perfil é subárea de "Mi Cuenta").
-- **`src/components/app/AppShell.tsx`** — sidebar desktop sincronizada com a mesma regra de ativação para `/app/mais` + `/app/perfil*`.
+- **`src/components/app/AppShell.tsx`** — sidebar desktop sincronizada com a mesma regra de ativação para `/app/mas` + `/app/perfil*`.
 - **`docs/next_steps.md`** — item "Menu 'Más' do PWA" marcado como `[x]`.
 
 ---
@@ -560,10 +560,10 @@ Implementação do hub de navegação secundária acessado pela aba "Más" do bo
 ## 2026-04-24 — SPEC do Menu "Más" e padrões de front-end no CLAUDE.md
 
 ### Contexto
-Formalização do design do hub `/app/mais` (aba "Más" do bottom nav) capturado no Paper (artboard `Menu` / `1G-0`) e consagração de três regras obrigatórias para qualquer trabalho de front-end no projeto.
+Formalização do design do hub `/app/mas` (aba "Más" do bottom nav) capturado no Paper (artboard `Menu` / `1G-0`) e consagração de três regras obrigatórias para qualquer trabalho de front-end no projeto.
 
 ### Adicionado
-- **`docs/revendedoras/SPEC_MENU_MAS.md`** — nova SPEC do hub de navegação `/app/mais` com mapa de destinos, layout (referência Paper), moléculas a criar (`MenuHeader`, `MenuSectionCard`, `MenuRow`, `LogoutButton`), tokens de cor, regras de ativação do bottom nav e edge cases.
+- **`docs/revendedoras/SPEC_MENU_MAS.md`** — nova SPEC do hub de navegação `/app/mas` com mapa de destinos, layout (referência Paper), moléculas a criar (`MenuHeader`, `MenuSectionCard`, `MenuRow`, `LogoutButton`), tokens de cor, regras de ativação do bottom nav e edge cases.
 - **`docs/README.md`** — índice atualizado para incluir `SPEC_MENU_MAS.md` na seção 3.
 - **`docs/next_steps.md`** — novo item "Menu 'Más' do PWA" em Prioridade Média.
 

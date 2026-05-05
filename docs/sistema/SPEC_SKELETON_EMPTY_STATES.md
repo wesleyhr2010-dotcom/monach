@@ -116,7 +116,7 @@ export function SkeletonMetricDashboard() {
 | `/app/progreso/extrato` | `SkeletonList` (8 items) | "Aún no tienes movimientos de puntos." (ícone ⭐) | "Error al cargar el historial. [Reintentar]" |
 | `/app/progreso/regalos` | Grid 4x `SkeletonCard` | "No hay regalos disponibles por el momento." (ícone 🎁) | "Error al cargar los regalos. [Reintentar]" |
 | `/app/notificaciones` | `SkeletonList` (5 items) | "No tienes notificaciones nuevas." (ícone 🔔) | "Error al cargar notificaciones. [Reintentar]" |
-| `/app/desempenho` | `SkeletonCard` (gráfico) + 3x `SkeletonCard` métricas | "Aún no hay datos de visitas en este período." | "Error al cargar estadísticas. [Reintentar]" |
+| `/app/desempeno` | `SkeletonCard` (gráfico) + 3x `SkeletonCard` métricas | "Aún no hay datos de visitas en este período." | "Error al cargar estadísticas. [Reintentar]" |
 | `/vitrina/[slug]` | Grid de produtos (skeleton) | "Esta vendedora aún no tiene productos activos." | "Error al cargar la vitrina. [Recargar página]" |
 
 ### Painel Admin

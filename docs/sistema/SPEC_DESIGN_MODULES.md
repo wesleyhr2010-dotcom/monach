@@ -537,7 +537,7 @@ flex items-center gap-3
 | 1 | Shop | `LayoutGrid` | `/app/shop` |
 | 2 | Catálogo | `Store` | `/app/catalogo` |
 | 3 | Maleta | `ShoppingBag` | `/app/maleta` |
-| 4 | Mais | `LayoutGrid` ou `MoreHorizontal` | `/app/mais` |
+| 4 | Mais | `LayoutGrid` ou `MoreHorizontal` | `/app/mas` |
 
 ### Classes Tailwind
 

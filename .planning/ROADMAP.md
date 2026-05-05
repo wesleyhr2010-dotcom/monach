@@ -64,7 +64,7 @@ Plans:
 **Depends on**: Phase 1 (skeleton/empty/error components), Phase 2 (config data, notification infrastructure)
 **Requirements**: DESE-01, DESE-02, DESE-03, DESE-04, DESE-05, DESE-06, DESE-07, DESE-08, DESE-09, DASH-01, DASH-02, DASH-03, DASH-04, DASH-05, DASH-06, DASH-07, DASH-08
 **Success Criteria** (what must be TRUE):
-  1. Revendedora accesses `/app/desempenho` (via menu "Más" or home link "Análisis") and sees 4 metric cards with current value and trend vs previous period
+  1. Revendedora accesses `/app/desempeno` (via menu "Más" or home link "Análisis") and sees 4 metric cards with current value and trend vs previous period
   2. Revendedora selects period (Esta Semana / Este Mês / Últimos 30 días / Este Año) and all metrics and charts update accordingly
   3. Revendedora sees a bar chart of daily visits and a top 10 products list with image, visits, and units sold
   4. When a revendedora has no access data, she sees a friendly empty state instead of zeroed cards
@@ -76,7 +76,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [x] `03-01-PLAN.md` — Reseller Performance Dashboard (`/app/desempenho` with metric cards, period filter, recharts bar chart, top products, empty states)
+- [x] `03-01-PLAN.md` — Reseller Performance Dashboard (`/app/desempeno` with metric cards, period filter, recharts bar chart, top products, empty states)
 - [x] `03-02-PLAN.md` — Admin Dashboard Polish (period filter on `/admin`, skeleton loading states, DASH requirements verification)
 
 ### Phase 4: Build Optimization & Polish

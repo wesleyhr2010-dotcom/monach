@@ -98,7 +98,7 @@ export default async function AppDashboardPage() {
 
       {/* Análisis */}
       <section className="px-5 py-4">
-        <SectionHeader title="Análisis" href="/app/desempenho" />
+        <SectionHeader title="Análisis" href="/app/desempeno" />
         <div className="grid grid-cols-2 gap-3">
           <StatCard icon={<ReceiptIcon />} label="Facturado" value={formatCurrency(data.faturamentoMes)} />
           <StatCard icon={<TrendingUpIcon />} label="Mi Ganancia" value={formatCurrency(data.ganhosMes)} />

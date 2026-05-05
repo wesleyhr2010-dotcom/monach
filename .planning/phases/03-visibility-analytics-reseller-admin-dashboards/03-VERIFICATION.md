@@ -22,7 +22,7 @@ verifier: inline
 
 | Requirement | Status | Evidence |
 |-------------|--------|----------|
-| DESE-01: Route `/app/desempenho` exists | ✓ | `src/app/app/desempenho/page.tsx` created |
+| DESE-01: Route `/app/desempeno` exists | ✓ | `src/app/app/desempeno/page.tsx` created |
 | DESE-02: 4 metric cards | ✓ | `MetricCardTrend` renders accesos, visitantes, cliques, peças |
 | DESE-03: Period selector | ✓ | `TimeRangeSelector` with semana/mes/30dias/anio |
 | DESE-04: Trend indicators | ✓ | Green ↑, red ↓, "Nuevo" for zero baseline |

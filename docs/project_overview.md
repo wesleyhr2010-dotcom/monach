@@ -222,7 +222,7 @@ Rotas implementadas em `src/app/admin/`:
   - `/app/catalogo/` — vitrine dos produtos da maleta ativa com busca, filtros por categoria e botão "Compartir" individual (Web Share API com imagem real via proxy `/api/proxy-image`).
   - `/app/catalogo/compartir/` — seleção multi-foto (máx. 10) com grid 3 colunas, checkmark verde, barra inferior sticky com contagem e botão "Compartir". Download das imagens via proxy `/api/proxy-image` (contorna CORS do R2) e compartilhamento via `navigator.share({ files })` com fallback para WhatsApp incluindo links dos produtos. Tratamento de `AbortError` como cancelamento.
   - Server Actions: `getCatalogoRevendedora` (itens da maleta ativa com saldo), `registrarPuntosCompartirCatalogo` (gamificação: +50 pts, limite 5x/dia).
-- **Menu "Más" (`/app/mais`)**:
+- **Menu "Más" (`/app/mas`)**:
   - Hub de navegação secundária com 3 grupos: "Mi Cuenta" (perfil, notificações, documentos), "Actividad" (desempeño, pontos, vitrina pública) e "Soporte" (WhatsApp, onboarding).
   - Componentes reutilizáveis: `MenuHeader`, `MenuSectionCard`, `MenuRow`, `LogoutButton`.
   - Logout com `OneSignal.logout()` antes do `signOut()` para evitar vazamento de `external_id`.

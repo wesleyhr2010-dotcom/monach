@@ -13,7 +13,7 @@ const navItems = [
     { href: "/app", label: "Início", icon: <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />, exact: true },
     { href: "/app/catalogo", label: "Catálogo", icon: <Store className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
     { href: "/app/maleta", label: "Maleta", icon: <Briefcase className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
-    { href: "/app/mais", label: "Más", icon: <LayoutTemplate className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
+    { href: "/app/mas", label: "Más", icon: <LayoutTemplate className="w-5 h-5 sm:w-6 sm:h-6" />, exact: false },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -42,8 +42,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <nav className="flex-1 p-4 flex flex-col gap-1">
                     {navItems.map((item) => {
                         let isActive: boolean;
-                        if (item.href === "/app/mais") {
-                            isActive = pathname.startsWith("/app/mais") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones");
+                        if (item.href === "/app/mas") {
+                            isActive = pathname.startsWith("/app/mas") || pathname.startsWith("/app/perfil") || pathname.startsWith("/app/notificaciones");
                         } else {
                             isActive = item.exact
                                 ? pathname === item.href

@@ -70,7 +70,7 @@ Definir a matriz de permissões por role (`REVENDEDORA`, `COLABORADORA`, `ADMIN`
 | `/app/progreso` | ✅ (apenas seus pontos) | ✅ | ✅ |
 | `/app/perfil` | ✅ (apenas seu perfil) | ✅ | ✅ |
 | `/app/notificaciones` | ✅ | ✅ | ✅ |
-| `/app/desempenho` | ✅ (apenas seus analytics) | ✅ | ✅ |
+| `/app/desempeno` | ✅ (apenas seus analytics) | ✅ | ✅ |
 | `/app/bienvenida` | ✅ | ✅ | ✅ |
 
 ### Painel Admin (`/admin/*`)

@@ -9,7 +9,7 @@ completed: 2026-05-04
 
 ## What was built
 
-Complete `/app/desempenho` route with metric cards, period filtering, trend indicators, daily visits bar chart (recharts), and top 10 popular products list.
+Complete `/app/desempeno` route with metric cards, period filtering, trend indicators, daily visits bar chart (recharts), and top 10 popular products list.
 
 ### Files created
 
@@ -21,16 +21,16 @@ Complete `/app/desempenho` route with metric cards, period filtering, trend indi
 | `src/components/app/MetricCardTrend.tsx` | Metric card with trend indicator (↑ green, ↓ red, Nuevo) |
 | `src/components/app/VisitasDiariasChart.tsx` | Recharts bar chart for daily visits with custom tooltip |
 | `src/components/app/ProductosPopularesList.tsx` | Top 10 products list with images |
-| `src/app/app/desempenho/DesempenhoView.tsx` | Client component orchestrating interactivity |
-| `src/app/app/desempenho/page.tsx` | Server component page with `force-dynamic` |
+| `src/app/app/desempeno/DesempenhoView.tsx` | Client component orchestrating interactivity |
+| `src/app/app/desempeno/page.tsx` | Server component page with `force-dynamic` |
 
 ### Files modified
 
 | File | Change |
 |------|--------|
-| `src/app/app/page.tsx` | Already had link to `/app/desempenho` via SectionHeader — no change needed |
-| `src/app/app/mais/page.tsx` | Already had "Mi Desempeño" menu row — no change needed |
-| `src/components/app/AppBottomNav.tsx` | Added `/app/desempenho` to active paths for "Más" tab |
+| `src/app/app/page.tsx` | Already had link to `/app/desempeno` via SectionHeader — no change needed |
+| `src/app/app/mas/page.tsx` | Already had "Mi Desempeño" menu row — no change needed |
+| `src/components/app/AppBottomNav.tsx` | Added `/app/desempeno` to active paths for "Más" tab |
 | `package.json` | Added `recharts` dependency |
 
 ### Key decisions
