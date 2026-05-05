@@ -64,13 +64,25 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - ✓ RBAC scope leak suite (23 isolation tests, all passing) — Phase 5
 - ✓ CI/CD quality gate (GitHub Actions workflow: lint + typecheck + test + build) — Phase 5
 
+## Current Milestone: v1.1 Visibilidade e Polimento
+
+**Goal:** Lançar vitrina pública por revendedora com SEO, padronizar comunicação visual dos emails, e expandir analytics operacional no admin.
+
+**Target features:**
+- Vitrina pública `/vitrina/[slug]` com SEO e tracking (SPEC: `revendedoras/SPEC_VITRINE_PUBLICA.md`)
+- Padronizar layout/branding dos emails transacionais (identidade visual, copy espanhol paraguaio)
+- Analytics agregados admin além de campanhas push (SPEC: `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`)
+
 ### Active
 
-<!-- Pendente — ordenado por prioridade definida em docs/next_steps.md -->
+<!-- v1.1 — Visibilidade e Polimento -->
 
 - [ ] Vitrina pública `/vitrina/[slug]` com SEO e tracking (SPEC: `revendedoras/SPEC_VITRINE_PUBLICA.md`)
 - [ ] Padronizar layout/branding dos emails transacionais (identidade visual, copy espanhol paraguaio)
 - [ ] Analytics agregados admin além de campanhas push (SPEC: `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`)
+
+### Future (v1.2+)
+
 - [ ] Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
 - [ ] Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
 - [ ] Rate limiting nos endpoints sensíveis via Upstash Redis (SPEC: `sistema/SPEC_SECURITY_API_ENDPOINTS.md`)
@@ -158,4 +170,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-05 after v1.0 milestone completion*
+*Last updated: 2026-05-05 after v1.1 milestone initialization*

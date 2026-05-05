@@ -38,6 +38,22 @@
 
 ---
 
+## v1.1 — Visibilidade e Polimento
+
+**Started:** 2026-05-05
+**Status:** 🔄 PLANNING
+
+**Goal:** Lançar vitrina pública por revendedora com SEO, padronizar comunicação visual dos emails, e expandir analytics operacional no admin.
+
+**Phases:** TBD | **Plans:** TBD
+
+**Target Features:**
+1. Vitrina pública `/vitrina/[slug]` com SEO e tracking
+2. Padronizar layout/branding dos emails transacionais
+3. Analytics agregados admin além de campanhas push
+
+---
+
 ## Next Milestone
 
-TBD — Use `/gsd-new-milestone` to start planning v1.1
+TBD — v1.2 (Produção e Qualidade: E2E, Observabilidade, Rate Limiting)
