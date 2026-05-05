@@ -13,7 +13,7 @@
 - [x] **Phase 1: Foundation — Error Handling & UI States** - Standardized error handling, reusable UI state components, and unified toast system
 - [x] **Phase 2: Core Business — Notifications, Leads & Config** - Template-driven notifications, lead approval pipeline, and editable admin configuration
 - [x] **Phase 3: Visibility & Analytics — Reseller & Admin Dashboards** - Performance analytics for resellers and global KPI dashboard for admin
-- [ ] **Phase 4: Build Optimization & Polish** - ISR on public pages, build configuration, and cache invalidation
+- [x] **Phase 4: Build Optimization & Polish** - ISR on public pages, build configuration, and cache invalidation
 - [ ] **Phase 5: Validation & Hardening** - Security, performance, and functional acceptance validation
 
 ---
@@ -121,7 +121,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 1. Foundation | 3/3 | Completed | 2026-05-04 |
 | 2. Core Business | 5/5 | Completed | 2026-05-04 |
 | 3. Visibility & Analytics | 2/2 | Completed | 2026-05-04 |
-| 4. Build Optimization | 0/3 | Planned | - |
+| 4. Build Optimization | 3/3 | Completed | 2026-05-04 |
 | 5. Validation & Hardening | 0/TBD | Not started | - |
 
 ---
