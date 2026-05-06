@@ -35,12 +35,12 @@
     - [x] `09-01-PLAN.md` — Playwright Setup & Seed (E2E-01, E2E-02)
     - [x] `09-02-PLAN.md` — Golden Path Tests: Login → Maleta → Venda → Devolução (E2E-03..E2E-06)
     - [x] `09-03-PLAN.md` — Recovery, CI/CD & Documentation (E2E-07..E2E-09)
-- [ ] Phase 10: Observabilidade — Sentry + logs estruturados + alertas
+- [x] Phase 10: Observabilidade — Sentry + logs estruturados + alertas — completed 2026-05-06
   - Plans:
-    - [ ] `10-01-PLAN.md` — Sentry SDK Setup + Health Endpoint (OBS-01, OBS-06)
-    - [ ] `10-02-PLAN.md` — Structured Logger + PII Sanitization (OBS-03, OBS-04)
-    - [ ] `10-03-PLAN.md` — Server Action Integration + Error Context (OBS-02, OBS-04)
-    - [ ] `10-04-PLAN.md` — Performance Monitoring + Alerts + Tests (OBS-05, OBS-07)
+    - [x] `10-01-PLAN.md` — Sentry SDK Setup + Health Endpoint (OBS-01, OBS-06)
+    - [x] `10-02-PLAN.md` — Structured Logger + PII Sanitization (OBS-03, OBS-04)
+    - [x] `10-03-PLAN.md` — Server Action Integration + Error Context (OBS-02, OBS-04)
+    - [x] `10-04-PLAN.md` — Performance Monitoring + Alerts + Tests (OBS-05, OBS-07)
 - [ ] Phase 11: Rate Limiting — Upstash Redis
 
 ### 📋 v1.3 Mobile e Infraestrutura (Future)
@@ -62,7 +62,7 @@
 | 7. Email Branding | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 8. Admin Analytics Extension | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 9. E2E Testing | v1.2 | 3/3 | Complete | 2026-05-06 |
-| 10. Observabilidade | v1.2 | 0/4 | Planned | - |
+| 10. Observabilidade | v1.2 | 4/4 | Complete | 2026-05-06 |
 | 11. Rate Limiting | v1.2 | 0/0 | Not started | - |
 | 12. Domínio Oficial | v1.3 | 0/0 | Planned | - |
 | 13. Capacitor | v1.3 | 0/0 | Planned | - |
