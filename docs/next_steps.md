@@ -141,7 +141,7 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 
 ## Prioridade Baixa — Expansão e qualidade contínua
 
-- [ ] **Vitrina pública** `/vitrina/[slug]` com indexação SEO e tracking. Ref.: [`revendedoras/SPEC_VITRINE_PUBLICA.md`](./revendedoras/SPEC_VITRINE_PUBLICA.md).
+- [x] **Vitrina pública** `/vitrina/[slug]` com ISR, SEO, tracking anônimo, página de detalhe, carrinho localStorage e checkout WhatsApp. Ref.: [`revendedoras/SPEC_VITRINE_PUBLICA.md`](./revendedoras/SPEC_VITRINE_PUBLICA.md). Phase 6 concluída em 2026-05-05.
 - [ ] **Analytics agregados** admin (além de campanhas push). Ref.: [`admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`](./admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md).
 - [ ] **Estratégia de cache e revalidação** — `revalidateTag` por entidade. Ref.: [`sistema/SPEC_CACHING_STRATEGY.md`](./sistema/SPEC_CACHING_STRATEGY.md).
 - [ ] **Error handling centralizado** (ActionResult + mensagens). Ref.: [`sistema/SPEC_ERROR_HANDLING.md`](./sistema/SPEC_ERROR_HANDLING.md).

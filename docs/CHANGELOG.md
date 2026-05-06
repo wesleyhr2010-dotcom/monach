@@ -28,6 +28,38 @@ Planejar v1.1 via `/gsd-new-milestone`.
 
 ---
 
+## 2026-05-05 — Phase 6: Vitrina Pública
+
+### Contexto
+Fase 6 do milestone v1.1 executada com 4 planos em 3 waves. Entrega a vitrina pública por revendedora (`/vitrina/{slug}`), acessível sem autenticação, com ISR, SEO dinâmico, tracking anônimo, página de detalhe do produto, carrinho localStorage e checkout via WhatsApp.
+
+### Resumo por Plano
+
+**06-01 — Vitrina Base:** `getVitrinaData()` com query otimizada (nested `include` evita N+1), componentes `VitrinaHeader`, `ProductCard`, `ProductGrid`, `EmptyState`, página ISR com `generateMetadata` e `robots: noindex`, RLS policies `anon` para `maletas` e `maleta_itens`.
+
+**06-02 — Tracking & Analytics:** Endpoint dedicado `/api/vitrina/track` com whitelist strict (`catalogo_revendedora`, `clique_whatsapp`), bot detection, middleware gerando cookie `mnrc_vid` (30 dias), componente `VitrinaAnalyticsTracker` integrado na página.
+
+**06-04 — Cart & Checkout:** Biblioteca `cart-vitrina.ts` com CRUD localStorage, `CartProvider` React Context, `CartBadge` flutuante sticky, `CartDrawer` slide-up com lista de itens e checkout WhatsApp. Mensagem formatada com `formatGs`, truncamento em ~2000 chars.
+
+**06-03 — Product Detail Page:** `getVitrinaProductDetail()` valida que a variante pertence à maleta ativa da revendedora (previne enumeração), página ISR com foto, nome, preço, descrição e botão "Agregar al carrito" com feedback visual.
+
+### Artefatos
+- `src/lib/vitrina.ts` — queries otimizadas
+- `src/components/vitrina/*` — 8 componentes reutilizáveis
+- `src/lib/cart-vitrina.ts` — carrinho + builder de mensagem WhatsApp
+- `src/app/api/vitrina/track/route.ts` — endpoint de tracking
+- `scripts/rls-policies.sql` — policies 24-25
+
+### Quality Gates
+- Build: ✓ pass
+- Testes: ✓ 229/229 passando
+- Lint: ✓ 0 erros nos novos arquivos
+
+### Próximo Passo
+Phase 7 — Email Branding (padronizar templates transacionais).
+
+---
+
 ## 2026-05-04 — Phase 4 Concluída: Build Optimization & Polish
 
 ### Contexto
