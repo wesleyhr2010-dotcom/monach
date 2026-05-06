@@ -2,7 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/user";
-import type { MaletaStatus } from "@/generated/prisma/client";
+import type { MaletaStatus, Prisma } from "@/generated/prisma/client";
 
 // ============================================
 // Types
@@ -383,4 +383,325 @@ export async function getAnalyticsProdutosMaisVendidos(
     unidadesVendidas: Number(r.unidades_vendidas),
     valorTotal: Number(r.valor_total ?? 0),
   }));
+}
+
+// ============================================
+// Vitrina Analytics Types
+// ============================================
+
+export interface VitrinaKPIs {
+  totalVisitas: number;
+  visitantesUnicos: number;
+  cliquesWhatsApp: number;
+  ctrCheckout: number;
+  ctrContato: number;
+}
+
+export interface VitrinaDia {
+  dia: string; // YYYY-MM-DD
+  visitas: number;
+}
+
+export interface VitrinaRankingItem {
+  id: string;
+  name: string;
+  avatar_url: string | null;
+  visitas: number;
+  visitantesUnicos: number;
+  cliquesWhatsApp: number;
+  ctrCheckout: number;
+  ctrContato: number;
+}
+
+function buildAnalyticsScopeParams(
+  user: Awaited<ReturnType<typeof requireAuth>>,
+  baseParams: unknown[],
+  tableAlias: string
+): { sql: string; params: unknown[] } {
+  let sql = "";
+  const params = [...baseParams];
+  if (user.role !== "ADMIN" && user.profileId) {
+    sql += ` AND ${tableAlias}.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
+    params.push(user.profileId);
+  }
+  return { sql, params };
+}
+
+// ============================================
+// Vitrina KPIs
+// ============================================
+
+export async function getVitrinaKPIs(periodDays = 30, resellerId?: string): Promise<VitrinaKPIs> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
+
+  // --- Historical: AnalyticsDiario ---
+  let diarioSql = "WHERE ad.data >= $1";
+  const diarioParams: unknown[] = [since];
+
+  if (user.role !== "ADMIN" && user.profileId) {
+    diarioSql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${diarioParams.length + 1})`;
+    diarioParams.push(user.profileId);
+  }
+  if (resellerId) {
+    diarioSql += ` AND ad.reseller_id = $${diarioParams.length + 1}`;
+    diarioParams.push(resellerId);
+  }
+
+  const diarioRows = await prisma.$queryRawUnsafe<Array<{
+    total_visitas: bigint;
+    visitantes_unicos: bigint;
+    cliques_whatsapp: bigint;
+  }>>(
+    `SELECT
+      COALESCE(SUM(total_visitas), 0) as total_visitas,
+      COALESCE(SUM(visitantes_unicos), 0) as visitantes_unicos,
+      COALESCE(SUM(cliques_whatsapp), 0) as cliques_whatsapp
+     FROM analytics_diario ad
+     ${diarioSql}`,
+    ...diarioParams
+  );
+
+  // --- Today: AnalyticsAcesso ---
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  let todaySql = "WHERE aa.data_acesso >= $1";
+  const todayParams: unknown[] = [today];
+
+  if (user.role !== "ADMIN" && user.profileId) {
+    todaySql += ` AND aa.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${todayParams.length + 1})`;
+    todayParams.push(user.profileId);
+  }
+  if (resellerId) {
+    todaySql += ` AND aa.reseller_id = $${todayParams.length + 1}`;
+    todayParams.push(resellerId);
+  }
+
+  const [todayVisitas, todayUnicos, todayCliques, todayCheckoutClicks] = await Promise.all([
+    prisma.$queryRawUnsafe<[{ count: bigint }]>(
+      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
+      ...todayParams
+    ),
+    prisma.$queryRawUnsafe<[{ count: bigint }]>(
+      `SELECT COUNT(DISTINCT visitor_id) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
+      ...todayParams
+    ),
+    prisma.$queryRawUnsafe<[{ count: bigint }]>(
+      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp'`,
+      ...todayParams
+    ),
+    prisma.$queryRawUnsafe<[{ count: bigint }]>(
+      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp' AND (aa.produto_id IS NULL OR aa.page_url LIKE '%/carrinho%')`,
+      ...todayParams
+    ),
+  ]);
+
+  const totalVisitas = Number(diarioRows[0].total_visitas) + Number(todayVisitas[0].count);
+  const totalUnicos = Number(diarioRows[0].visitantes_unicos) + Number(todayUnicos[0].count);
+  const totalCliques = Number(diarioRows[0].cliques_whatsapp) + Number(todayCliques[0].count);
+  const totalCheckoutClicks = Number(diarioRows[0].cliques_whatsapp) + Number(todayCheckoutClicks[0].count);
+
+  const ctrContato = totalUnicos > 0 ? (totalCliques / totalUnicos) * 100 : 0;
+  const ctrCheckout = totalUnicos > 0 ? (totalCheckoutClicks / totalUnicos) * 100 : 0;
+
+  return {
+    totalVisitas,
+    visitantesUnicos: totalUnicos,
+    cliquesWhatsApp: totalCliques,
+    ctrCheckout: Math.round(ctrCheckout * 10) / 10,
+    ctrContato: Math.round(ctrContato * 10) / 10,
+  };
+}
+
+// ============================================
+// Vitrina Visitas Series
+// ============================================
+
+export async function getVitrinaVisitasSeries(periodDays = 30, resellerId?: string): Promise<VitrinaDia[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
+
+  let sql = "WHERE ad.data >= $1";
+  const params: unknown[] = [since];
+
+  if (user.role !== "ADMIN" && user.profileId) {
+    sql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
+    params.push(user.profileId);
+  }
+  if (resellerId) {
+    sql += ` AND ad.reseller_id = $${params.length + 1}`;
+    params.push(resellerId);
+  }
+
+  const rows = await prisma.$queryRawUnsafe<Array<{ dia: Date; visitas: bigint }>>(
+    `SELECT
+       ad.data AS dia,
+       SUM(ad.total_visitas) AS visitas
+     FROM analytics_diario ad
+     ${sql}
+     GROUP BY ad.data
+     ORDER BY ad.data ASC`,
+    ...params
+  );
+
+  // Fill missing days
+  const result: VitrinaDia[] = [];
+  const d = new Date(since);
+  const today = new Date();
+  const rowMap = new Map(rows.map((r) => [r.dia.toISOString().slice(0, 10), r]));
+
+  while (d <= today) {
+    const key = d.toISOString().slice(0, 10);
+    const r = rowMap.get(key);
+    result.push({ dia: key, visitas: Number(r?.visitas ?? 0) });
+    d.setDate(d.getDate() + 1);
+  }
+
+  return result;
+}
+
+// ============================================
+// Vitrina Ranking
+// ============================================
+
+export async function getVitrinaRankingRevendedoras(
+  periodDays = 30,
+  limit = 50
+): Promise<VitrinaRankingItem[]> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
+
+  // Get resellers in scope
+  const resellerWhere: Prisma.ResellerWhereInput = { is_active: true, role: "REVENDEDORA" };
+  if (user.role === "COLABORADORA" && user.profileId) {
+    resellerWhere.colaboradora_id = user.profileId;
+  }
+
+  const revendedoras = await prisma.reseller.findMany({
+    where: resellerWhere,
+    select: { id: true, name: true, avatar_url: true },
+    orderBy: { name: "asc" },
+  });
+
+  if (revendedoras.length === 0) return [];
+
+  const ids = revendedoras.map((r) => r.id);
+
+  // Aggregate from AnalyticsDiario
+  const aggRows = await prisma.$queryRawUnsafe<Array<{
+    reseller_id: string;
+    visitas: bigint;
+    unicos: bigint;
+    cliques: bigint;
+  }>>(
+    `SELECT
+       reseller_id,
+       COALESCE(SUM(total_visitas), 0) as visitas,
+       COALESCE(SUM(visitantes_unicos), 0) as unicos,
+       COALESCE(SUM(cliques_whatsapp), 0) as cliques
+     FROM analytics_diario
+     WHERE data >= $1 AND reseller_id = ANY($2)
+     GROUP BY reseller_id`,
+    since,
+    ids
+  );
+
+  const aggMap = new Map(aggRows.map((r) => [r.reseller_id, r]));
+
+  return revendedoras
+    .map((r) => {
+      const a = aggMap.get(r.id);
+      const visitas = Number(a?.visitas ?? 0);
+      const unicos = Number(a?.unicos ?? 0);
+      const cliques = Number(a?.cliques ?? 0);
+      const ctr = unicos > 0 ? Math.round((cliques / unicos) * 100 * 10) / 10 : 0;
+      return {
+        id: r.id,
+        name: r.name,
+        avatar_url: r.avatar_url,
+        visitas,
+        visitantesUnicos: unicos,
+        cliquesWhatsApp: cliques,
+        ctrCheckout: ctr,
+        ctrContato: ctr,
+      };
+    })
+    .sort((a, b) => b.visitas - a.visitas)
+    .slice(0, limit);
+}
+
+// ============================================
+// Vitrina CSV Export
+// ============================================
+
+export async function exportVitrinaAnalyticsCSV(periodDays = 30): Promise<string> {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+  const since = getSinceDate(periodDays);
+
+  let scopeSql = "WHERE ad.data >= $1";
+  const params: unknown[] = [since];
+
+  if (user.role !== "ADMIN" && user.profileId) {
+    scopeSql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
+    params.push(user.profileId);
+  }
+
+  const rows = await prisma.$queryRawUnsafe<Array<{
+    slug: string;
+    total_visitas: bigint;
+    visitantes_unicos: bigint;
+    cliques_whatsapp: bigint;
+  }>>(
+    `SELECT
+       r.slug,
+       COALESCE(SUM(ad.total_visitas), 0) as total_visitas,
+       COALESCE(SUM(ad.visitantes_unicos), 0) as visitantes_unicos,
+       COALESCE(SUM(ad.cliques_whatsapp), 0) as cliques_whatsapp
+     FROM analytics_diario ad
+     JOIN resellers r ON r.id = ad.reseller_id
+     ${scopeSql}
+     GROUP BY r.id, r.slug
+     ORDER BY total_visitas DESC`,
+    ...params
+  );
+
+  const header = "slug,periodo,total_visitas,visitantes_unicos,cliques_whatsapp,ctr_checkout,ctr_contato\n";
+  const periodo = `${since.toISOString().slice(0, 10)}_a_${new Date().toISOString().slice(0, 10)}`;
+
+  const lines = rows.map((row) => {
+    const visitas = Number(row.total_visitas);
+    const unicos = Number(row.visitantes_unicos);
+    const cliques = Number(row.cliques_whatsapp);
+    const ctr = unicos > 0 ? ((cliques / unicos) * 100).toFixed(1) : "0.0";
+    return [
+      row.slug,
+      periodo,
+      visitas,
+      unicos,
+      cliques,
+      ctr,
+      ctr,
+    ].join(",");
+  });
+
+  return header + lines.join("\n");
+}
+
+// ============================================
+// Reseller Selector Helper
+// ============================================
+
+export async function getResellersForAnalytics() {
+  const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+
+  const where: Prisma.ResellerWhereInput = { is_active: true, role: "REVENDEDORA" };
+  if (user.role === "COLABORADORA" && user.profileId) {
+    where.colaboradora_id = user.profileId;
+  }
+
+  return prisma.reseller.findMany({
+    where,
+    select: { id: true, name: true, avatar_url: true },
+    orderBy: { name: "asc" },
+  });
 }
