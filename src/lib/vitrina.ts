@@ -59,3 +59,53 @@ export async function getVitrinaData(slug: string): Promise<VitrinaData | null> 
 
   return { reseller, items };
 }
+
+export interface VitrinaProductDetail {
+  reseller: {
+    id: string;
+    name: string;
+    whatsapp: string;
+  };
+  variant: {
+    id: string;
+    product_id: string;
+    price: import("@/generated/prisma/client").Prisma.Decimal | null;
+    image_url: string;
+    product: {
+      name: string;
+      description: string;
+      images: string[];
+    };
+  };
+}
+
+export async function getVitrinaProductDetail(
+  slug: string,
+  variantId: string
+): Promise<VitrinaProductDetail | null> {
+  const reseller = await prisma.reseller.findFirst({
+    where: { slug, is_active: true },
+    select: { id: true, name: true, whatsapp: true },
+  });
+
+  if (!reseller) return null;
+
+  const variant = await prisma.productVariant.findUnique({
+    where: { id: variantId },
+    include: { product: true },
+  });
+
+  if (!variant) return null;
+
+  const maletaItem = await prisma.maletaItem.findFirst({
+    where: {
+      product_variant_id: variantId,
+      maleta: { reseller_id: reseller.id, status: "ativa" },
+      quantidade_vendida: { lt: prisma.maletaItem.fields.quantidade_enviada },
+    },
+  });
+
+  if (!maletaItem) return null;
+
+  return { reseller, variant };
+}
