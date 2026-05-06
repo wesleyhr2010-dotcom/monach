@@ -64,24 +64,36 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - ✓ RBAC scope leak suite (23 isolation tests, all passing) — Phase 5
 - ✓ CI/CD quality gate (GitHub Actions workflow: lint + typecheck + test + build) — Phase 5
 
-## Current Milestone: v1.1 Visibilidade e Polimento
+## Current Milestone: v1.2 Produção e Qualidade
 
-**Goal:** Lançar vitrina pública por revendedora com SEO, padronizar comunicação visual dos emails, e expandir analytics operacional no admin.
+**Goal:** Elevar a qualidade do sistema com testes E2E, observabilidade, rate limiting e preparação para produção.
 
 **Target features:**
-- Vitrina pública `/vitrina/[slug]` com SEO e tracking (SPEC: `revendedoras/SPEC_VITRINE_PUBLICA.md`)
-- Padronizar layout/branding dos emails transacionais (identidade visual, copy espanhol paraguaio)
-- Analytics agregados admin além de campanhas push (SPEC: `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`)
+- Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
+- Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
+- Rate limiting nos endpoints sensíveis via Upstash Redis (SPEC: `sistema/SPEC_SECURITY_API_ENDPOINTS.md`)
+- Migração para domínio oficial `monarcasemijoyas.com.py`
+- Migração PWA → Capacitor (iOS + Android) (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
+- Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
+
+### Validated
+
+- ✓ Vitrina pública `/vitrina/[slug]` com SEO, tracking, carrinho e checkout WhatsApp — v1.1
+- ✓ Padronização de email branding — wrapper `renderEmailBase()`, 7 templates refatorados, Supabase Auth sync — v1.1
+- ✓ Analytics de vitrina no admin — KPIs, gráfico temporal, ranking, export CSV — v1.1
 
 ### Active
 
-<!-- v1.1 — Visibilidade e Polimento -->
+<!-- v1.2 — Produção e Qualidade -->
 
-- [ ] Vitrina pública `/vitrina/[slug]` com SEO e tracking (SPEC: `revendedoras/SPEC_VITRINE_PUBLICA.md`)
-- [ ] Padronizar layout/branding dos emails transacionais (identidade visual, copy espanhol paraguaio)
-- [ ] Analytics agregados admin além de campanhas push (SPEC: `admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`)
+- [ ] Testes E2E com Playwright — golden paths
+- [ ] Observabilidade — Sentry + logs estruturados + alertas
+- [ ] Rate limiting nos endpoints sensíveis
+- [ ] Migração para domínio oficial
+- [ ] Migração PWA → Capacitor
+- [ ] Modo offline do PWA
 
-### Future (v1.2+)
+### Future (v1.3+)
 
 - [ ] Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
 - [ ] Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
@@ -124,6 +136,8 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 **Design system:** `docs/design-system/tokens.md` + CSS variables `--app-*` / `--admin-*`. Paper é a fonte visual de verdade — consultar MCP Paper antes de qualquer tela nova.
 
 **Shipped v1.0:** 5 phases, 19 plans, 229 tests, 33 commits, ~21.5h timeline.
+**Shipped v1.1:** 3 phases, 10 plans, 272 tests, 34 commits, ~1.5 days timeline.
+**Current:** v1.2 planning — E2E, observabilidade, rate limiting, domínio oficial, Capacitor, offline mode.
 
 ## Constraints
 
@@ -170,4 +184,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-05 after v1.1 milestone initialization*
+*Last updated: 2026-05-06 after v1.1 milestone completion*

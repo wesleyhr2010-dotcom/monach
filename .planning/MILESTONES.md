@@ -41,19 +41,43 @@
 ## v1.1 — Visibilidade e Polimento
 
 **Started:** 2026-05-05
-**Status:** 🔄 IN PROGRESS
+**Shipped:** 2026-05-06
+**Status:** ✅ ARCHIVED
 
 **Goal:** Lançar vitrina pública por revendedora com SEO, padronizar comunicação visual dos emails, e expandir analytics operacional no admin.
 
-**Phases:** 2/3 complete | **Plans:** 7/7 complete
+**Phases:** 3 (6-8) | **Plans:** 10 | **Tests:** 272 passing
 
-**Target Features:**
-1. ✅ Vitrina pública `/vitrina/[slug]` com SEO e tracking — Phase 6 concluída (2026-05-05)
-2. ✅ Padronizar layout/branding dos emails transacionais — Phase 7 concluída (2026-05-06)
-3. 🔄 Analytics agregados admin além de campanhas push — Phase 8 pendente
+**Key Accomplishments:**
+1. Vitrina pública por revendedora — ISR page `/vitrina/{slug}` com SEO dinâmico, tracking anônimo, página de detalhe do produto, carrinho localStorage e checkout via WhatsApp (17 requisitos VITR)
+2. Sistema de email branding — wrapper `renderEmailBase()` com dark mode, 7 templates transacionais refatorados com fallback plaintext, copy espanhol paraguaio, e templates Supabase Auth com sync via Management API + CI/CD
+3. Analytics de vitrina no admin — 5 KPIs, gráfico temporal de visitas, ranking de revendedoras por engajamento, export CSV sem PII, com escopo RBAC (6 requisitos ANLT)
+4. RLS policies anônimas — permite leitura pública de maletas e itens sem autenticação, com validação contra enumeração de produtos
+5. Tracking pipeline — cookie `mnrc_vid` (30 dias) + endpoint `/api/vitrina/track` com whitelist de eventos e bot detection, integrado ao dashboard admin
+6. Test coverage expandida — 43 novas assertions dedicadas a email (23 unit + 20 regressão), mantendo 272 assertions totais passando
+
+**Stats:**
+- Commits: 34 (2026-05-05 → 2026-05-06)
+- Files changed: 73 (+8,929 / −444)
+- TypeScript LOC: ~153,700
+- Timeline: ~1.5 days
+
+**Archive:**
+- `.planning/milestones/v1.1-ROADMAP.md`
+- `.planning/milestones/v1.1-REQUIREMENTS.md`
+
+**Tag:** `v1.1`
 
 ---
 
 ## Next Milestone
 
-TBD — v1.2 (Produção e Qualidade: E2E, Observabilidade, Rate Limiting)
+**v1.2 — Produção e Qualidade**
+
+Target features:
+- Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
+- Observabilidade — Sentry + logs estruturados + alertas
+- Rate limiting nos endpoints sensíveis via Upstash Redis
+- Migração para domínio oficial `monarcasemijoyas.com.py`
+- Migração PWA → Capacitor (iOS + Android)
+- Modo offline do PWA — outbox, sync idempotente, resolução de conflitos
