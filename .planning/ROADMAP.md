@@ -23,7 +23,7 @@
 
 - [x] Phase 6: Vitrina Pública — SEO, Tracking & WhatsApp Integration — completed 2026-05-05
 - [x] Phase 7: Email Branding — Layout Padronizado & Identidade Visual — completed 2026-05-06
-- [ ] Phase 8: Admin Analytics Extension — Métricas de Vitrina no Dashboard
+- [x] Phase 8: Admin Analytics Extension — Métricas de Vitrina no Dashboard — completed 2026-05-06
 
 </details>
 
@@ -38,7 +38,7 @@
 | 5. Validation & Hardening | 6/6 | Complete | 2026-05-05 |
 | 6. Vitrina Pública | 4/4 | Complete | 2026-05-05 |
 | 7. Email Branding | 3/3 | Complete | 2026-05-06 |
-| 8. Admin Analytics Extension | 0/TBD | Planning | — |
+| 8. Admin Analytics Extension | 3/3 | Complete | 2026-05-06 |
 
 ---
 
