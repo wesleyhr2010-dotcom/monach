@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getVitrinaProductDetail } from "@/lib/vitrina";
-import ProductDetailView from "@/components/vitrina/ProductDetailView";
+import ProductDisplay from "@/components/shared/ProductDisplay";
+import VitrinaAddToCartButton from "@/components/vitrina/VitrinaAddToCartButton";
 
 export const revalidate = 300;
 
@@ -37,6 +38,11 @@ export default async function ProductDetailPage({
 
   const { variant, reseller } = data;
 
+  const imageSrc =
+    variant.image_url ||
+    variant.product.images[0] ||
+    "/placeholder.svg";
+
   // Convert Decimal to plain number before passing to Client Component
   const plainVariant = {
     id: variant.id,
@@ -51,12 +57,22 @@ export default async function ProductDetailPage({
   };
 
   return (
-    <ProductDetailView
-      variant={plainVariant}
-      resellerSlug={slug}
-      resellerWhatsapp={reseller.whatsapp}
-      resellerName={reseller.name}
-      resellerId={reseller.id}
+    <ProductDisplay
+      product={{
+        id: variant.id,
+        name: variant.product.name,
+        price: plainVariant.price,
+        description: variant.product.description,
+        images: variant.product.images as string[],
+        sku: undefined,
+      }}
+      backLink={{ href: `/vitrina/${slug}`, label: "Volver a la vitrina" }}
+      actionButton={
+        <VitrinaAddToCartButton
+          variant={plainVariant}
+          resellerSlug={slug}
+        />
+      }
     />
   );
 }
