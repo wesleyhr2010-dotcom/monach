@@ -31,6 +31,10 @@
 ### 📋 v1.2 Produção e Qualidade (Planned)
 
 - [ ] Phase 9: E2E Testing — Playwright golden paths
+  - Plans:
+    - [ ] `09-01-PLAN.md` — Playwright Setup & Seed (E2E-01, E2E-02)
+    - [ ] `09-02-PLAN.md` — Golden Path Tests: Login → Maleta → Venda → Devolução (E2E-03..E2E-06)
+    - [ ] `09-03-PLAN.md` — Recovery, CI/CD & Documentation (E2E-07..E2E-09)
 - [ ] Phase 10: Observabilidade — Sentry + logs estruturados + alertas
 - [ ] Phase 11: Rate Limiting — Upstash Redis
 
@@ -52,7 +56,7 @@
 | 6. Vitrina Pública | v1.1 | 4/4 | Complete | 2026-05-05 |
 | 7. Email Branding | v1.1 | 3/3 | Complete | 2026-05-06 |
 | 8. Admin Analytics Extension | v1.1 | 3/3 | Complete | 2026-05-06 |
-| 9. E2E Testing | v1.2 | 0/0 | Not started | - |
+| 9. E2E Testing | v1.2 | 0/3 | Planning | - |
 | 10. Observabilidade | v1.2 | 0/0 | Not started | - |
 | 11. Rate Limiting | v1.2 | 0/0 | Not started | - |
 | 12. Domínio Oficial | v1.3 | 0/0 | Planned | - |
