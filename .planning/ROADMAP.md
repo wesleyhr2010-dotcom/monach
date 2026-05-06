@@ -21,7 +21,7 @@
 <details>
 <summary>🔄 v1.1 Visibilidade e Polimento (Phases 6-8) — PLANNING</summary>
 
-- [ ] Phase 6: Vitrina Pública — SEO, Tracking & WhatsApp Integration
+- [x] Phase 6: Vitrina Pública — SEO, Tracking & WhatsApp Integration — completed 2026-05-05
 - [ ] Phase 7: Email Branding — Layout Padronizado & Identidade Visual
 - [ ] Phase 8: Admin Analytics Extension — Métricas de Vitrina no Dashboard
 
@@ -36,7 +36,7 @@
 | 3. Visibility & Analytics | 2/2 | Complete | 2026-05-04 |
 | 4. Build Optimization | 3/3 | Complete | 2026-05-04 |
 | 5. Validation & Hardening | 6/6 | Complete | 2026-05-05 |
-| 6. Vitrina Pública | 0/TBD | Planning | — |
+| 6. Vitrina Pública | 4/4 | Complete | 2026-05-05 |
 | 7. Email Branding | 0/TBD | Planning | — |
 | 8. Admin Analytics Extension | 0/TBD | Planning | — |
 
