@@ -5,6 +5,7 @@ import { getVitrinaData } from "@/lib/vitrina";
 import VitrinaHeader from "@/components/vitrina/VitrinaHeader";
 import ProductGrid from "@/components/vitrina/ProductGrid";
 import EmptyState from "@/components/vitrina/EmptyState";
+import VitrinaAnalyticsTracker from "@/components/vitrina/VitrinaAnalyticsTracker";
 
 export const revalidate = 300;
 
@@ -61,6 +62,11 @@ export default async function VitrinaPage({ params }: VitrinaPageProps) {
           <ProductGrid items={items} slug={slug} />
         )}
       </main>
+
+      <VitrinaAnalyticsTracker
+        resellerId={reseller.id}
+        tipoEvento="catalogo_revendedora"
+      />
 
       <footer className="border-t border-gray-100 py-6 text-center text-[12px] text-gray-400">
         Powered by{" "}

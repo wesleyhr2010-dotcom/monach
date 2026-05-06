@@ -89,6 +89,18 @@ export async function updateSession(request: NextRequest) {
         return NextResponse.redirect(url)
     }
 
+    // Visitor ID cookie for anonymous tracking (vitrina analytics)
+    let visitorId = request.cookies.get("mnrc_vid")?.value;
+    if (!visitorId) {
+        visitorId = crypto.randomUUID();
+        supabaseResponse.cookies.set("mnrc_vid", visitorId, {
+            maxAge: 60 * 60 * 24 * 30,
+            sameSite: "lax",
+            path: "/",
+            secure: process.env.NODE_ENV === "production",
+        });
+    }
+
     return supabaseResponse
 }
 
