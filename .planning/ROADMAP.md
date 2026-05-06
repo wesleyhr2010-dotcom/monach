@@ -80,6 +80,14 @@
 - Badge flutuante pode sobrepor conteúdo em mobile → z-index e padding adequados
 - Mensagem WhatsApp pode exceder limite de caracteres → limitar a ~2000 chars
 
+**Plans:** 4 plans in 3 waves
+
+Plans:
+- [ ] `06-01-PLAN.md` — Vitrina Base: ISR page, metadata, getVitrinaData(), shared components, empty state, RLS policies
+- [ ] `06-02-PLAN.md` — Tracking & Analytics: /api/vitrina/track endpoint, middleware cookie, VitrinaAnalyticsTracker
+- [ ] `06-04-PLAN.md` — Cart & Checkout: CartProvider, localStorage, CartBadge, CartDrawer, WhatsApp message builder
+- [ ] `06-03-PLAN.md` — Product Detail Page: /vitrina/[slug]/[produtoId] with photos, description, "Agregar al carrito"
+
 ---
 
 ### Phase 7: Email Branding
