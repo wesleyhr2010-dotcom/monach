@@ -1,21 +1,21 @@
 import { test as base, expect } from "@playwright/test";
 import { seedScenario, cleanupScenario } from "../helpers/seed";
-import type { Reseller, Maleta, Product } from "@/generated/prisma/client";
 
 interface SeededFixtures {
   seededReseller: {
-    reseller: Reseller;
+    reseller: { id: string; email: string; name: string; slug: string };
     authUserId: string;
-    maleta: Maleta;
-    products: Product[];
+    maleta: { id: string; numero: number; status: string };
+    products: { id: string; name: string; sku: string }[];
     password: string;
   };
 }
 
 export const test = base.extend<SeededFixtures>({
-  seededReseller: async ({}, use) => {
+  /* eslint-disable react-hooks/rules-of-hooks */
+  seededReseller: async ({}, useFixture) => {
     const scenario = await seedScenario();
-    await use({
+    await useFixture({
       reseller: scenario.reseller,
       authUserId: scenario.resellerAuthId,
       maleta: scenario.maleta,
@@ -24,6 +24,7 @@ export const test = base.extend<SeededFixtures>({
     });
     await cleanupScenario();
   },
+  /* eslint-enable react-hooks/rules-of-hooks */
 });
 
 export { expect };

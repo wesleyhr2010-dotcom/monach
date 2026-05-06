@@ -7,7 +7,7 @@ export function uniqueId() {
   return `e2e-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
 
-export function createTestReseller(overrides?: Partial<ReturnType<typeof createTestReseller>>) {
+export function createTestReseller(overrides?: Record<string, unknown>) {
   const id = uniqueId();
   return {
     email: `${id}@test.com`,
@@ -25,7 +25,7 @@ export function createTestReseller(overrides?: Partial<ReturnType<typeof createT
   };
 }
 
-export function createTestProduct(overrides?: Partial<ReturnType<typeof createTestProduct>>) {
+export function createTestProduct(overrides?: Record<string, unknown>) {
   const id = uniqueId();
   return {
     sku: `E2E-${id.toUpperCase().slice(0, 20)}`,
@@ -37,7 +37,7 @@ export function createTestProduct(overrides?: Partial<ReturnType<typeof createTe
   };
 }
 
-export function createTestVariant(overrides?: Partial<ReturnType<typeof createTestVariant>>) {
+export function createTestVariant(overrides?: Record<string, unknown>) {
   const id = uniqueId();
   return {
     attribute_name: "cor",

@@ -171,7 +171,7 @@ export async function seedScenario() {
   });
 
   // 4. Products with variants
-  const products: { product: { id: string }; variant: { id: string } }[] = [];
+  const products: { product: { id: string; name: string; sku: string }; variant: { id: string } }[] = [];
   for (let i = 0; i < 3; i++) {
     products.push(
       await seedProductAndVariant({
