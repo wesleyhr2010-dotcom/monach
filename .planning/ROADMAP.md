@@ -152,6 +152,13 @@ Plans:
 - Export CSV consumindo RAM → paginar ou limitar registros
 - Timezone `America/Asuncion` em GROUP BY → usar `AT TIME ZONE` corretamente
 
+**Plans:** 3 plans in 3 waves
+
+Plans:
+- [ ] `08-01-PLAN.md` — Backend Data Layer: vitrina analytics server actions (KPIs, time-series, ranking, CSV export) with RBAC scope and hybrid freshness
+- [ ] `08-02-PLAN.md` — Frontend Components: AnalyticsVitrinaKpiCards, AnalyticsVisitasChart (recharts), AnalyticsVitrinaRanking
+- [ ] `08-03-PLAN.md` — Dashboard Integration: reseller selector, vitrina section wiring, CSV download button, empty states
+
 ---
 
 ## Requirement Coverage
