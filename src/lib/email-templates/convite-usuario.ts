@@ -1,12 +1,20 @@
 import { sendEmail } from "../emails";
+import { renderEmailBase, emailButton, emailAlert, type EmailContent } from "../email-base";
+import { sanitizeTemplateVars } from "@/lib/notifications-server";
 
+/**
+ * Envia email de convite/criação de conta para consultora ou revendedora.
+ *
+ * Tom de voz: entusiasmado (aprovação/cadastro).
+ * Emoji máximo: 2 (já presente no título).
+ */
 export async function emailConviteUsuario(params: {
   email: string;
   nome: string;
   linkDefinirSenha: string | null;
   senhaTemporaria: string;
   tipo: "consultora" | "revendedora";
-}) {
+}): Promise<EmailContent> {
   const { email, nome, linkDefinirSenha, senhaTemporaria, tipo } = params;
 
   const titulo = tipo === "consultora"
@@ -30,31 +38,58 @@ export async function emailConviteUsuario(params: {
   const portalUrl = `${baseUrl}${tipo === "consultora" ? "/admin/login" : "/app/login"}`;
   const resetUrl = linkDefinirSenha ?? `${baseUrl}/auth/callback`;
 
+  const safeNome = sanitizeTemplateVars(nome);
+  const safeSenha = sanitizeTemplateVars(senhaTemporaria);
+  const safeSubtitulo = sanitizeTemplateVars(subtitulo);
+
+  const alert = emailAlert({
+    text: `Contraseña temporal: ${safeSenha}`,
+    variant: "warning",
+  });
+
+  const cta = emailButton({
+    text: ctaTexto,
+    url: resetUrl,
+  });
+
+  const bodyHtml = `
+    <p>${safeSubtitulo}.</p>
+    <p>Tu cuenta en Monarca Semijoyas ya está lista.</p>
+    <p>Usá esta contraseña temporal para tu primer acceso:</p>
+    ${alert.html}
+    <p>Después, hacé clic abajo para redefinir tu contraseña de forma segura:</p>
+    ${cta.html}
+    <p style="color:#888; font-size:13px;">El enlace expira en 24 horas. Si no solicitaste esto, ignorá este correo.</p>
+    <p style="color:#666; font-size:13px;">Una vez que definas tu contraseña, podés ingresar en:<br/>
+      <a href="${portalUrl}" style="color:#35605a;">${portalUrl}</a>
+    </p>
+  `;
+
+  const bodyText = `
+${subtitulo}.
+Tu cuenta en Monarca Semijoyas ya está lista.
+Usá esta contraseña temporal para tu primer acceso:
+${alert.text}
+Después, hacé clic abajo para redefinir tu contraseña de forma segura:
+${cta.text}
+El enlace expira en 24 horas. Si no solicitaste esto, ignorá este correo.
+Una vez que definas tu contraseña, podés ingresar en: ${portalUrl}
+  `.trim();
+
+  const content = renderEmailBase({
+    title: titulo,
+    previewText: subtitulo,
+    greeting: `¡Hola ${safeNome}!`,
+    bodyHtml,
+    bodyText,
+  });
+
   await sendEmail({
     to: { email, name: nome },
     subject: titulo,
-    htmlContent: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-        <h2 style="color: #35605a;">${subtitulo}</h2>
-        <p>Hola <strong>${nome}</strong>,</p>
-        <p>Tu cuenta en Monarca Semijoyas ya está lista.</p>
-        <p>Usá esta contraseña temporal para tu primer acceso:</p>
-        <div style="background:#f7f8f8; border:1px solid #dfe5e4; border-radius:8px; padding:12px 16px; margin:12px 0 18px;">
-          <span style="font-family: monospace; font-size: 16px; letter-spacing: 1px;">${senhaTemporaria}</span>
-        </div>
-        <p>Después, hacé clic abajo para redefinir tu contraseña de forma segura:</p>
-        <a href="${resetUrl}"
-           style="display: inline-block; background: #35605a; color: white;
-                  padding: 12px 28px; border-radius: 6px; text-decoration: none; margin: 16px 0;">
-          ${ctaTexto}
-        </a>
-        <p style="color: #888; font-size: 13px;">El enlace expira en 24 horas. Si no solicitaste esto, ignorá este correo.</p>
-        <p style="color: #666; font-size: 13px;">Una vez que definas tu contraseña, podés ingresar en:<br/>
-          <a href="${portalUrl}" style="color: #35605a;">${portalUrl}</a>
-        </p>
-        <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-        <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
-      </div>
-    `,
+    htmlContent: content.html,
+    textContent: content.text,
   });
+
+  return content;
 }
