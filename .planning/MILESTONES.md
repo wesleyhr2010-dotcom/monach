@@ -78,6 +78,8 @@ Target features:
 - Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
 - Observabilidade — Sentry + logs estruturados + alertas
 - Rate limiting nos endpoints sensíveis via Upstash Redis
+
+Deferred to v1.3:
 - Migração para domínio oficial `monarcasemijoyas.com.py`
 - Migração PWA → Capacitor (iOS + Android)
 - Modo offline do PWA — outbox, sync idempotente, resolução de conflitos

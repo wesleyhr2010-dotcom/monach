@@ -31,9 +31,14 @@
 ### 📋 v1.2 Produção e Qualidade (Planned)
 
 - [ ] Phase 9: E2E Testing — Playwright golden paths
-- [ ] Phase 10: Observabilidade — Sentry + logs estruturados
+- [ ] Phase 10: Observabilidade — Sentry + logs estruturados + alertas
 - [ ] Phase 11: Rate Limiting — Upstash Redis
-- [ ] Phase 12: Infraestrutura — Domínio oficial, Capacitor, Offline mode
+
+### 📋 v1.3 Mobile e Infraestrutura (Future)
+
+- [ ] Phase 12: Domínio Oficial — migração monarcasemijoyas.com.py
+- [ ] Phase 13: Capacitor — PWA → iOS + Android
+- [ ] Phase 14: Offline Mode — outbox, sync, conflitos
 
 ## Progress
 
@@ -50,7 +55,9 @@
 | 9. E2E Testing | v1.2 | 0/0 | Not started | - |
 | 10. Observabilidade | v1.2 | 0/0 | Not started | - |
 | 11. Rate Limiting | v1.2 | 0/0 | Not started | - |
-| 12. Infraestrutura | v1.2 | 0/0 | Not started | - |
+| 12. Domínio Oficial | v1.3 | 0/0 | Planned | - |
+| 13. Capacitor | v1.3 | 0/0 | Planned | - |
+| 14. Offline Mode | v1.3 | 0/0 | Planned | - |
 
 ---
 
@@ -60,10 +67,50 @@
 
 **v1.1 Requirements:** 31 complete (see `.planning/milestones/v1.1-REQUIREMENTS.md`)
 
-**v1.2 Requirements:** TBD
+**v1.2 Requirements:** 23 total (see `.planning/REQUIREMENTS.md`)
+
+## Phase Details
+
+### Phase 9: E2E Testing — Playwright Golden Paths
+
+**Goal:** Cobrir o fluxo crítico da revendedora com testes end-to-end automatizados, garantindo regressão zero nos caminhos de negócio.
+
+**Requirements:** E2E-01 → E2E-09
+
+**Success Criteria:**
+1. `npm run test:e2e` executa todos os golden paths em < 5 minutos
+2. CI roda suite E2E em todo PR sem falsos positivos
+3. Seed script cria cenário completo (usuário + maleta + produtos) em < 10s
+4. Documentação permite que qualquer dev rode E2E localmente em 3 comandos
+
+### Phase 10: Observabilidade — Sentry + Logs Estruturados
+
+**Goal:** Ter visibilidade total do comportamento do sistema em produção, com alertas proativos e zero vazamento de PII.
+
+**Requirements:** OBS-01 → OBS-07
+
+**Success Criteria:**
+1. 100% dos erros de Server Actions aparecem no Sentry com userId e action name
+2. Logs de produção são parseáveis como JSON (sem free-form text)
+3. Nenhum log de erro contém email, telefone ou dados bancários (auditoria manual)
+4. Alerta Sentry dispara quando taxa de erro > 1% em 5 minutos
+5. Release tracking no Sentry associa cada erro ao commit exato
+
+### Phase 11: Rate Limiting — Upstash Redis
+
+**Goal:** Proteger endpoints sensíveis contra abuso e brute-force sem impactar usuários legítimos.
+
+**Requirements:** RATE-01 → RATE-07
+
+**Success Criteria:**
+1. Endpoint `/api/auth/login` bloqueia após 5 tentativas/minuto por IP
+2. Resposta 429 inclui header `Retry-After` e mensagem em espanhol paraguaio
+3. Admin consegue executar 50+ ações/minuto sem ser limitado
+4. Testes automatizados confirmam que limites funcionam e headers são enviados
+5. Documentação de limites está acessível em `.planning/` e no README
 
 ---
 
 *Roadmap created: 2026-05-04*  
-*Last updated: 2026-05-06 — Milestone v1.1 shipped*  
+*Last updated: 2026-05-06 — Milestone v1.2 scoped*  
 *Milestone: v1.2 — Produção e Qualidade (PLANNED)*
