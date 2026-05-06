@@ -64,5 +64,12 @@ Items acknowledged from previous milestone:
 ## Session Continuity
 
 Last session: 2026-05-05
-Stopped at: Milestone v1.1 roadmap created; ready for Phase 6 execution
-Resume file: —
+Stopped at: Phase 6 context gathered; ready for planning
+Resume file: `.planning/phases/06-vitrina-publica/06-CONTEXT.md`
+
+## Phase 6 Context
+
+- Context gathered: 2026-05-05
+- Status: Ready for planning
+- Scope note: Expanded by user to include product detail page + cart + WhatsApp checkout
+- Next step: `/gsd-plan-phase 6` or update SPEC/ROADMAP before planning
