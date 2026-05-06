@@ -47,7 +47,8 @@ Added scripts:
 
 ## Deviations
 
-None.
+- **Prisma 7 adapter required**: The project uses Prisma 7 with `prisma-client` generator and `PrismaPg` adapter. The initial plan assumed a simple `new PrismaClient({ datasources: { db: { url } } })` which doesn't work with Prisma 7. Updated `db.ts` to use `PrismaPg` adapter with `pg.Pool`, matching the pattern in `src/lib/prisma.ts` but without the encryption extension.
+- **ESM/CJS module conflict**: The generated Prisma client at `@/generated/prisma/client` is ESM and causes `require()` errors when Playwright transpiles test files. Resolved by using dynamic `import()` inside `getPrisma()` instead of top-level static imports.
 
 ## Self-Check
 
