@@ -33,6 +33,15 @@ docs/
 
 ---
 
+## Testing
+
+| Tipo | Comando | Documentação |
+|------|---------|-------------|
+| Unitário / Integração | `npm test` | Vitest — [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md) |
+| E2E | `npm run test:e2e` | Playwright — [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md) §9 |
+
+---
+
 ## 2. Produto (PRDs)
 
 | Documento | Descrição |

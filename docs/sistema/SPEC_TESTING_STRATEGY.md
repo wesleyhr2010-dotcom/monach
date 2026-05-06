@@ -312,3 +312,48 @@ Requisitos para PR ser aceito:
 - `test` passa (unitários + integração)
 - `test:coverage` >= limites definidos
 - `test:e2e` passa nos 5 fluxos principais
+
+O workflow `ci-e2e.yml` roda a suite E2E em todo PR para `main`/`develop`. Falhas fazem upload do relatório Playwright como artefato.
+
+---
+
+## 9. Rodar E2E Localmente
+
+### Em 3 comandos
+
+```bash
+# 1. Configure o ambiente de teste
+cp .env.test.example .env.test
+# Edite .env.test com as credenciais do seu banco de teste
+
+# 2. Garanta que o schema do banco de teste está atualizado
+npx prisma db push
+
+# 3. Execute os testes E2E
+npm run test:e2e
+```
+
+### Scripts disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `npm run test:e2e` | Roda todos os testes E2E em headless |
+| `npm run test:e2e:ui` | Abre o modo UI do Playwright para debug |
+| `npm run test:e2e:headed` | Roda em modo headed (browser visível) |
+
+### Troubleshooting
+
+| Problema | Causa provável | Solução |
+|----------|---------------|---------|
+| `Test DB not reachable` | `DATABASE_URL` incorreto | Verifique se o banco local/Supabase está rodando |
+| `Seed timeout` | `SUPABASE_SERVICE_ROLE_KEY` inválido | Confira a chave no `.env.test` |
+| `Browser not installed` | Playwright browsers ausentes | Execute `npx playwright install chromium` |
+| `Port 3000 in use` | Outro servidor Next.js rodando | Mate o processo em `localhost:3000` ou mude a porta |
+| `Missing required environment variables` | `.env.test` não criado | Copie de `.env.test.example` e preencha |
+
+### Requisitos do ambiente
+
+- Banco PostgreSQL de teste (local via Supabase CLI ou projeto dedicado)
+- Supabase project com Auth habilitado
+- Node.js 20+
+- Chromium instalado pelo Playwright
