@@ -350,3 +350,23 @@ WITH CHECK (true);
 -- 3. Se precisar permitir INSERT de leads/analytics pelo anon, as policies
 --    acima já cobrem.
 -- 4. Após rodar este script, valide no Supabase Studio (Table Editor > Policies).
+
+-- --------------------------------------------
+-- 24. MALETAS (anon read active)
+-- --------------------------------------------
+CREATE POLICY IF NOT EXISTS "maletas_anon_read_active"
+ON maletas FOR SELECT TO anon
+USING (status = 'ativa');
+
+-- --------------------------------------------
+-- 25. MALETA_ITENS (anon read via active maleta)
+-- --------------------------------------------
+CREATE POLICY IF NOT EXISTS "maleta_itens_anon_read_active"
+ON maleta_itens FOR SELECT TO anon
+USING (
+  EXISTS (
+    SELECT 1 FROM maletas m
+    WHERE m.id = maleta_itens.maleta_id
+    AND m.status = 'ativa'
+  )
+);
