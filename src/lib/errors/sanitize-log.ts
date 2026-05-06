@@ -22,6 +22,14 @@ const SENSITIVE_FIELDS = [
     "api_key",
     "authorization",
     "cookie",
+    "phone",
+    "telefone",
+    "address",
+    "direccion",
+    "ruc",
+    "passport",
+    "birthdate",
+    "fecha_nacimiento",
 ];
 
 export function sanitizeForLog(obj: Record<string, unknown>): Record<string, unknown> {
@@ -40,6 +48,8 @@ export function sanitizeForLog(obj: Record<string, unknown>): Record<string, unk
     );
 }
 
+import { logger } from "../logger";
+
 /**
  * Wrapper seguro para console.error que sanitiza objetos automaticamente.
  */
@@ -47,5 +57,5 @@ export function safeLogError(
     prefix: string,
     payload: Record<string, unknown>
 ): void {
-    console.error(prefix, sanitizeForLog(payload));
+    logger.error(prefix, sanitizeForLog(payload));
 }
