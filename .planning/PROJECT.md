@@ -66,15 +66,12 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 
 ## Current Milestone: v1.2 Produção e Qualidade
 
-**Goal:** Elevar a qualidade do sistema com testes E2E, observabilidade, rate limiting e preparação para produção.
+**Goal:** Elevar a qualidade do sistema em produção com testes E2E, observabilidade completa e proteção de endpoints.
 
 **Target features:**
 - Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
 - Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
 - Rate limiting nos endpoints sensíveis via Upstash Redis (SPEC: `sistema/SPEC_SECURITY_API_ENDPOINTS.md`)
-- Migração para domínio oficial `monarcasemijoyas.com.py`
-- Migração PWA → Capacitor (iOS + Android) (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
-- Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
 
 ### Validated
 
@@ -89,15 +86,9 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - [ ] Testes E2E com Playwright — golden paths
 - [ ] Observabilidade — Sentry + logs estruturados + alertas
 - [ ] Rate limiting nos endpoints sensíveis
-- [ ] Migração para domínio oficial
-- [ ] Migração PWA → Capacitor
-- [ ] Modo offline do PWA
 
-### Future (v1.3+)
+### Future (v1.3)
 
-- [ ] Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
-- [ ] Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
-- [ ] Rate limiting nos endpoints sensíveis via Upstash Redis (SPEC: `sistema/SPEC_SECURITY_API_ENDPOINTS.md`)
 - [ ] Migração para domínio oficial `monarcasemijoyas.com.py` (DNS, Vercel, Supabase Auth, Brevo SPF/DKIM, R2, OneSignal, PWA)
 - [ ] Migração PWA → Capacitor (iOS + Android) — push nativo APNs, Universal Links (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
 - [ ] Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
@@ -137,7 +128,7 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 
 **Shipped v1.0:** 5 phases, 19 plans, 229 tests, 33 commits, ~21.5h timeline.
 **Shipped v1.1:** 3 phases, 10 plans, 272 tests, 34 commits, ~1.5 days timeline.
-**Current:** v1.2 planning — E2E, observabilidade, rate limiting, domínio oficial, Capacitor, offline mode.
+**Current:** v1.2 planning — E2E, observabilidade, rate limiting.
 
 ## Constraints
 
@@ -184,4 +175,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-06 after v1.1 milestone completion*
+*Last updated: 2026-05-06 after v1.2 scope adjustment*

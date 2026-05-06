@@ -1,32 +1,19 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Visibilidade e Polimento
-status: archived
-shipped_at: "2026-05-06"
-last_updated: "2026-05-06T17:00:00.000Z"
-last_activity: 2026-05-06 -- Milestone v1.1 archived and tagged
+milestone: v1.2
+milestone_name: Produção e Qualidade
+status: planning
+last_updated: "2026-05-06T20:00:00.000Z"
+last_activity: 2026-05-06 -- Milestone v1.2 started
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # STATE.md — NEXT-MONARCA
-
----
-milestone: v1.1
-name: Visibilidade e Polimento
-status: Archived
-shipped: 2026-05-06
-progress:
-  phases_total: 3
-  phases_complete: 3
-  plans_total: 10
-  plans_complete: 10
----
 
 ## Project Reference
 
@@ -37,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-06)
 
 ## Current Position
 
-Milestone: v1.1 — ARCHIVED (shipped 2026-05-06)
-Next: v1.2 — Produção e Qualidade (E2E, Observabilidade, Rate Limiting, Domínio, Capacitor, Offline)
-Status: Ready for next milestone planning
-Last activity: 2026-05-06 -- Milestone v1.1 completion and archival
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-06 — Milestone v1.2 started
 
-Progress: [██████████] 100% (3/3 phases) | 100% plans (10/10)
+Progress: [░░░░░░░░░░] 0% (0/0 phases) | 0% plans (0/0)
 
 ## Performance Metrics
 
@@ -91,12 +78,12 @@ Items acknowledged from previous milestone:
 | E2E Tests | Playwright golden paths (login → maleta → venda → devolução) | Pending | 2026-05-05 |
 | Observability | Sentry + logs estruturados + alertas | Pending | 2026-05-05 |
 | Security | Rate limiting via Upstash Redis | Pending | 2026-05-05 |
-| Infra | Migração domínio oficial monarcasemijoyas.com.py | Pending | 2026-05-05 |
-| Mobile | Migração PWA → Capacitor (iOS + Android) | Pending | 2026-05-05 |
-| Offline | Modo offline PWA — outbox, sync, conflitos | Pending | 2026-05-05 |
+| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.3 | 2026-05-06 |
+| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.3 | 2026-05-06 |
+| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.3 | 2026-05-06 |
 
 ## Session Continuity
 
 Last session: 2026-05-06
-Stopped at: Milestone v1.1 archived and tagged
-Resume: Start v1.2 planning with `/gsd-new-milestone`
+Stopped at: Milestone v1.2 scope adjustment and initialization
+Resume: Define requirements and create roadmap
