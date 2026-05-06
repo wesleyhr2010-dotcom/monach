@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { getPrisma } from "./helpers/db";
 
 /**
  * Playwright Global Teardown
@@ -11,9 +11,7 @@ export default async function globalTeardown() {
     return;
   }
 
-  const prisma = new PrismaClient({
-    datasources: { db: { url: databaseUrl } },
-  });
+  const prisma = await getPrisma();
 
   try {
     // Delete any records created by E2E tests (identified by email/name prefix)

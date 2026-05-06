@@ -1,6 +1,6 @@
 import { test as base, expect } from "@playwright/test";
 import { seedScenario, cleanupScenario } from "../helpers/seed";
-import type { Reseller, Maleta, Product } from "@prisma/client";
+import type { Reseller, Maleta, Product } from "@/generated/prisma/client";
 
 interface SeededFixtures {
   seededReseller: {

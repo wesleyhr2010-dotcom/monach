@@ -1,6 +1,6 @@
-import { prisma } from "./db";
+import { getPrisma } from "./db";
 import { createClient } from "@supabase/supabase-js";
-import type { UserRole } from "@prisma/client";
+import type { UserRole } from "@/generated/prisma/client";
 
 // Track created IDs for cleanup
 const createdIds: {
@@ -37,6 +37,7 @@ export async function seedUser(
     colaboradora_id?: string;
   }
 ) {
+  const prisma = await getPrisma();
   const supabase = getSupabaseAdmin();
 
   // Create Supabase Auth user
@@ -74,6 +75,7 @@ export async function seedUser(
   });
 
   createdIds.resellers.push(reseller.id);
+  await prisma.$disconnect();
   return { authUserId, reseller };
 }
 
@@ -81,6 +83,7 @@ export async function seedProductAndVariant(data?: {
   product?: Partial<{ sku: string; name: string; price: number }>;
   variant?: Partial<{ attribute_name: string; attribute_value: string; price: number; stock_quantity: number }>;
 }) {
+  const prisma = await getPrisma();
   const timestamp = Date.now();
   const product = await prisma.product.create({
     data: {
@@ -108,6 +111,7 @@ export async function seedProductAndVariant(data?: {
   });
   createdIds.variants.push(variant.id);
 
+  await prisma.$disconnect();
   return { product, variant };
 }
 
@@ -115,6 +119,7 @@ export async function seedMaleta(
   resellerId: string,
   items: { variantId: string; quantity: number; precoFixado?: number }[]
 ) {
+  const prisma = await getPrisma();
   const futureDate = new Date();
   futureDate.setDate(futureDate.getDate() + 30);
 
@@ -136,6 +141,7 @@ export async function seedMaleta(
   });
 
   createdIds.maletas.push(maleta.id);
+  await prisma.$disconnect();
   return maleta;
 }
 
@@ -200,6 +206,8 @@ export async function seedScenario() {
 }
 
 export async function cleanupScenario() {
+  const prisma = await getPrisma();
+
   // Delete in reverse dependency order
   for (const maletaId of createdIds.maletas) {
     await prisma.maleta.delete({ where: { id: maletaId } }).catch(() => {});
@@ -218,6 +226,8 @@ export async function cleanupScenario() {
   for (const authUserId of createdIds.authUsers) {
     await supabase.auth.admin.deleteUser(authUserId).catch(() => {});
   }
+
+  await prisma.$disconnect();
 
   // Reset tracking
   createdIds.authUsers = [];
