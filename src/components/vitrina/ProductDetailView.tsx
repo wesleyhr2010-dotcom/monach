@@ -27,8 +27,6 @@ interface ProductDetailViewProps {
 export default function ProductDetailView({
   variant,
   resellerSlug,
-  resellerWhatsapp,
-  resellerName,
 }: ProductDetailViewProps) {
   const [added, setAdded] = useState(false);
 

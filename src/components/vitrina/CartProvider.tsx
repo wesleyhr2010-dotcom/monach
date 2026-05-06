@@ -40,11 +40,8 @@ export function CartProvider({
 
   useEffect(() => {
     const c = getVitrinaCart();
-    if (c && c.reseller_slug === resellerSlug) {
-      setCart(c.items);
-    } else {
-      setCart([]);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setCart(c && c.reseller_slug === resellerSlug ? c.items : []);
   }, [resellerSlug]);
 
   useEffect(() => {
