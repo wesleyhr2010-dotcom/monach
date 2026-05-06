@@ -10,7 +10,7 @@ interface ProductDetailViewProps {
   variant: {
     id: string;
     product_id: string;
-    price: import("@/generated/prisma/client").Prisma.Decimal | null;
+    price: number | null;
     image_url: string;
     product: {
       name: string;
@@ -41,7 +41,7 @@ export default function ProductDetailView({
         product_variant_id: variant.id,
         product_id: variant.product_id,
         name: variant.product.name,
-        price: Number(variant.price) || 0,
+        price: variant.price ?? 0,
         image_url: imageSrc,
       },
       resellerSlug
@@ -73,9 +73,9 @@ export default function ProductDetailView({
 
         <h1 className="text-2xl font-semibold mt-4">{variant.product.name}</h1>
 
-        {variant.price && Number(variant.price) > 0 && (
+        {variant.price != null && variant.price > 0 && (
           <p className="text-xl text-[#35605a] font-medium mt-2">
-            {formatGs(Number(variant.price))}
+            {formatGs(variant.price)}
           </p>
         )}
 
