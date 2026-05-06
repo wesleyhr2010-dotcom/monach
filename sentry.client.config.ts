@@ -6,12 +6,22 @@ Sentry.init({
   tracesSampleRate: 0.1,
   replaysSessionSampleRate: 0,
   replaysOnErrorSampleRate: 1.0,
+  integrations: [
+    Sentry.browserTracingIntegration(),
+    Sentry.replayIntegration({
+      maskAllText: true,
+      maskAllInputs: true,
+      blockAllMedia: true,
+    }),
+  ],
   beforeSend(event) {
     // Sanitize breadcrumbs to ensure no PII leaks
     if (event.breadcrumbs) {
       event.breadcrumbs = event.breadcrumbs.map((crumb) => ({
         ...crumb,
-        message: crumb.message ? sanitizeString(crumb.message) : crumb.message,
+        message: crumb.message
+          ? crumb.message.replace(/[\w.-]+@[\w.-]+\.\w+/g, "[REDACTED_EMAIL]")
+          : crumb.message,
       }));
     }
     return event;

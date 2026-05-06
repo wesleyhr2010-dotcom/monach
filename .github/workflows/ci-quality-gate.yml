@@ -50,3 +50,17 @@ jobs:
           BREVO_API_KEY: ${{ secrets.BREVO_API_KEY }}
           ONESIGNAL_APP_ID: ${{ secrets.ONESIGNAL_APP_ID }}
           ONESIGNAL_REST_API_KEY: ${{ secrets.ONESIGNAL_REST_API_KEY }}
+          NEXT_PUBLIC_SENTRY_DSN: ${{ secrets.NEXT_PUBLIC_SENTRY_DSN }}
+          SENTRY_RELEASE: ${{ github.sha }}
+
+      - name: Create Sentry release
+        if: github.ref == 'refs/heads/main'
+        run: |
+          npm install -g @sentry/cli
+          sentry-cli releases new "${{ github.sha }}"
+          sentry-cli releases set-commits "${{ github.sha }}" --auto
+          sentry-cli releases finalize "${{ github.sha }}"
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
+          SENTRY_PROJECT: ${{ secrets.SENTRY_PROJECT }}
