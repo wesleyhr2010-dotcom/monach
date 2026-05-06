@@ -1,0 +1,30 @@
+name: Sync Supabase Auth Templates
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  sync:
+    name: Sync Auth Email Templates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Sync Supabase Auth templates
+        run: npx tsx scripts/sync-supabase-auth-templates.ts
+        env:
+          SUPABASE_MANAGEMENT_API_KEY: ${{ secrets.SUPABASE_MANAGEMENT_API_KEY }}
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}

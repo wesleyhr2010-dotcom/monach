@@ -111,9 +111,47 @@ npm install @getbrevo/brevo
 
 ---
 
-## Templates dos Emails Auth (Supabase Dashboard)
+## Templates Supabase Auth (Branding Monarca)
 
-Personalizar em: **Supabase Dashboard → Authentication → Email Templates**
+Os templates de **reset password** e **invite user** do Supabase Auth agora usam o **mesmo branding visual completo** dos emails transacionais: logo banner no topo, cores Monarca, footer padronizado e dark mode automático.
+
+Os arquivos-fonte ficam em:
+- `scripts/supabase-auth-templates/reset-password.html`
+- `scripts/supabase-auth-templates/invite-user.html`
+
+### Sincronização automática
+
+Um script TypeScript faz o upload dos templates para o Supabase via **Management API**:
+
+```bash
+# Preview do que seria enviado (sem alterar nada)
+npx tsx scripts/sync-supabase-auth-templates.ts --dry-run
+
+# Comparar templates locais com os do Supabase
+npx tsx scripts/sync-supabase-auth-templates.ts --check
+
+# Sincronizar de verdade
+npx tsx scripts/sync-supabase-auth-templates.ts
+```
+
+**Requisitos:**
+- `SUPABASE_MANAGEMENT_API_KEY` — Organization API Key do Supabase Dashboard
+- `SUPABASE_PROJECT_REF` — ID do projeto (ex: `abcdefghijklmnop`)
+
+**CI/CD:** o workflow `.github/workflows/sync-supabase-templates.yml` executa o sync automaticamente em todo push para `main`. Também pode ser disparado manualmente via `workflow_dispatch`.
+
+### Variáveis Go template (Supabase)
+
+Os templates usam a sintaxe do Go template do Supabase Auth:
+
+| Variável | Descrição |
+|----------|-----------|
+| `{{ .ConfirmationURL }}` | Link de confirmação/reset (obrigatório no CTA) |
+| `{{ .SiteURL }}` | URL base do site (usado no footer) |
+| `{{ .Email }}` | Email do destinatário |
+| `{{ .Token }}` | Token bruto (evitar expor no HTML) |
+
+> ⚠️ **Nunca use `{{ .Token }}` no corpo do email.** Sempre use `{{ .ConfirmationURL }}`.
 
 ### Template: Reset Password
 
@@ -122,39 +160,99 @@ Personalizar em: **Supabase Dashboard → Authentication → Email Templates**
 Monarca — Restablece tu contraseña
 
 <!-- HTML -->
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h2 style="color: #35605a;">🔐 Restablecer contraseña</h2>
-  <p>Recibimos una solicitud para restablecer la contraseña de tu cuenta en Monarca.</p>
-  <a href="{{ .ConfirmationURL }}"
-     style="display: inline-block; background: #35605a; color: white;
-            padding: 12px 28px; border-radius: 6px; text-decoration: none; margin: 16px 0;">
-    Restablecer contraseña
-  </a>
-  <p style="color: #888; font-size: 13px;">El enlace expira en 1 hora. Si no solicitaste esto, ignora este correo.</p>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    @media (prefers-color-scheme: dark) {
+      body, .email-wrapper { background-color: #1A1A1A !important; }
+      .email-body { color: #F5F2EF !important; }
+      .email-primary { color: #4A7D76 !important; }
+      .email-button { background-color: #4A7D76 !important; }
+    }
+  </style>
+</head>
+<body bgcolor="#F5F2EF" style="margin:0; padding:0; background-color:#F5F2EF; font-family:Arial,sans-serif; color:#1A1A1A;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr><td align="center" style="padding:0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;" class="email-wrapper">
+        <tr><td>
+          <img src="https://fotos-monarca.s3.amazonaws.com/logo-email-banner.png" alt="Monarca Semijoyas" style="display:block; width:100%; max-width:600px; border:0;" />
+        </td></tr>
+        <tr><td style="padding:24px; font-size:16px; line-height:1.6;" class="email-body">
+          <h2 style="color:#35605a; margin:0 0 16px;" class="email-primary">🔐 Restablecer contraseña</h2>
+          <p style="margin:0 0 16px;">Recibimos una solicitud para restablecer la contraseña de tu cuenta en Monarca.</p>
+          <p style="margin:0 0 24px;">
+            <a href="{{ .ConfirmationURL }}" style="display:inline-block; background:#35605a; color:#ffffff; padding:12px 28px; border-radius:6px; text-decoration:none; font-family:Arial,sans-serif; font-size:16px; border:none;" class="email-button">Restablecer contraseña</a>
+          </p>
+          <p style="margin:0; color:#888; font-size:13px;">El enlace expira en 1 hora. Si no solicitaste esto, ignorá este correo.</p>
+        </td></tr>
+        <tr><td style="padding:0 24px 24px; font-size:13px; color:#888; line-height:1.5;" class="email-body">
+          <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
+          <p style="margin:0 0 8px; font-weight:bold; color:#35605a;" class="email-primary">Monarca Semijoyas</p>
+          <p style="margin:0 0 8px;"><a href="{{ .SiteURL }}" style="color:#35605a; text-decoration:underline;" class="email-primary">Visitar sitio</a></p>
+          <p style="margin:0 0 8px;">Este correo fue enviado automáticamente. No respondas a esta dirección.</p>
+          <p style="margin:0 0 8px;">¿Necesitás ayuda? Escríbenos por WhatsApp.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
 ```
 
-### Template: Invite User (boas-vindas)
+### Template: Invite User
 
 ```html
 <!-- Assunto -->
 Monarca — ¡Bienvenida! Crea tu contraseña
 
 <!-- HTML -->
-<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px;">
-  <h2 style="color: #35605a;">💎 ¡Bienvenida a Monarca!</h2>
-  <p>Tu cuenta fue creada. Haz clic abajo para definir tu contraseña y comenzar:</p>
-  <a href="{{ .ConfirmationURL }}"
-     style="display: inline-block; background: #35605a; color: white;
-            padding: 12px 28px; border-radius: 6px; text-decoration: none; margin: 16px 0;">
-    Crear mi contraseña
-  </a>
-  <p style="color: #888; font-size: 13px;">El enlace expira en 24 horas.</p>
-  <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
-  <p style="color: #aaa; font-size: 12px;">Monarca Semijoyas · monarcasemijoyas.com.py</p>
-</div>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <style>
+    @media (prefers-color-scheme: dark) {
+      body, .email-wrapper { background-color: #1A1A1A !important; }
+      .email-body { color: #F5F2EF !important; }
+      .email-primary { color: #4A7D76 !important; }
+      .email-button { background-color: #4A7D76 !important; }
+    }
+  </style>
+</head>
+<body bgcolor="#F5F2EF" style="margin:0; padding:0; background-color:#F5F2EF; font-family:Arial,sans-serif; color:#1A1A1A;">
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+    <tr><td align="center" style="padding:0;">
+      <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="max-width:600px;" class="email-wrapper">
+        <tr><td>
+          <img src="https://fotos-monarca.s3.amazonaws.com/logo-email-banner.png" alt="Monarca Semijoyas" style="display:block; width:100%; max-width:600px; border:0;" />
+        </td></tr>
+        <tr><td style="padding:24px; font-size:16px; line-height:1.6;" class="email-body">
+          <h2 style="color:#35605a; margin:0 0 16px;" class="email-primary">💎 ¡Bienvenida a Monarca!</h2>
+          <p style="margin:0 0 16px;">Tu cuenta fue creada. Hacé clic abajo para definir tu contraseña y comenzar:</p>
+          <p style="margin:0 0 24px;">
+            <a href="{{ .ConfirmationURL }}" style="display:inline-block; background:#35605a; color:#ffffff; padding:12px 28px; border-radius:6px; text-decoration:none; font-family:Arial,sans-serif; font-size:16px; border:none;" class="email-button">Crear mi contraseña</a>
+          </p>
+          <p style="margin:0; color:#888; font-size:13px;">El enlace expira en 24 horas.</p>
+        </td></tr>
+        <tr><td style="padding:0 24px 24px; font-size:13px; color:#888; line-height:1.5;" class="email-body">
+          <hr style="border:none; border-top:1px solid #eee; margin:24px 0;" />
+          <p style="margin:0 0 8px; font-weight:bold; color:#35605a;" class="email-primary">Monarca Semijoyas</p>
+          <p style="margin:0 0 8px;"><a href="{{ .SiteURL }}" style="color:#35605a; text-decoration:underline;" class="email-primary">Visitar sitio</a></p>
+          <p style="margin:0 0 8px;">Este correo fue enviado automáticamente. No respondas a esta dirección.</p>
+          <p style="margin:0 0 8px;">¿Necesitás ayuda? Escríbenos por WhatsApp.</p>
+        </td></tr>
+      </table>
+    </td></tr>
+  </table>
+</body>
+</html>
 ```
 
 ---
@@ -440,6 +538,25 @@ export async function emailCandidaturaRechazada(params: {
 
 ---
 
+## Quando usar cada fluxo de convite
+
+Existem **dois mecanismos de convite** no sistema. É fundamental saber qual usar em cada situação:
+
+| | **Brevo `emailConviteUsuario`** | **Supabase Auth Invite** |
+|---|---|---|
+| **Propósito** | Fluxo **padrão** de onboarding de consultora/revendedora | Criação **direta/emergência** de usuário no Auth |
+| **Quem dispara** | Admin via `/admin/equipe` → Server Action | Dashboard Supabase ou API admin manual |
+| **Personalização** | ✅ Mensagem personalizada, dados da consultora, senha temporária, link de redefinição | ❌ Apenas template padrão do Auth com branding Monarca |
+| **Branding** | ✅ Completo (logo, cores, footer, dark mode) | ✅ Completo (logo, cores, footer, dark mode) — via sync script |
+| **Dados extras** | ✅ Nome, consultora, senha temp, link portal | ❌ Apenas `{{ .ConfirmationURL }}` |
+| **Quando usar** | SEMPRE que um admin criar uma nova revendedora pelo painel | Apenas em situações excepcionais (recuperação de acesso, testes, suporte) |
+
+### Regra de ouro
+
+> **Use o Brevo** (`emailConviteUsuario`) para todo onboarding novo. O Supabase Auth Invite é apenas para emergências ou criação direta no dashboard.
+
+---
+
 ## Estrutura de Arquivos
 
 ```
@@ -459,14 +576,24 @@ src/lib/
 
 ## Checklist de Configuração (pré-produção)
 
+### Brevo
 - [ ] Criar conta no Brevo em [brevo.com](https://brevo.com)
 - [ ] Adicionar e verificar domínio `monarcasemijoyas.com.py` (DNS: SPF + DKIM)
 - [ ] Gerar SMTP Key no Brevo → Settings → SMTP & API
 - [ ] Configurar SMTP no Supabase Dashboard apontando para Brevo
-- [ ] Testar email de reset de senha (revendedora + admin)
-- [ ] Testar email de convite de nova revendedora
 - [ ] Gerar API Key do Brevo e adicionar em `.env.local`
 - [ ] Instalar SDK: `npm install @getbrevo/brevo`
+
+### Supabase Auth Templates
+- [ ] Gerar **Management API Key** no Supabase Dashboard (Organization Settings → API Keys)
+- [ ] Adicionar `SUPABASE_MANAGEMENT_API_KEY` e `SUPABASE_PROJECT_REF` no `.env.local`
+- [ ] Adicionar secrets `SUPABASE_MANAGEMENT_API_KEY` e `SUPABASE_PROJECT_REF` no GitHub (Settings → Secrets)
+- [ ] Rodar sync manualmente uma vez: `npx tsx scripts/sync-supabase-auth-templates.ts`
+- [ ] Verificar templates no Supabase Dashboard (Auth → Email Templates)
+
+### Testes
+- [ ] Testar email de reset de senha (revendedora + admin)
+- [ ] Testar email de convite de nova revendedora
 - [ ] Testar emails transacionais em staging
 
 ---
