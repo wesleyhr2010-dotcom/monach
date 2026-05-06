@@ -41,16 +41,16 @@
 ## v1.1 — Visibilidade e Polimento
 
 **Started:** 2026-05-05
-**Status:** 🔄 PLANNING
+**Status:** 🔄 IN PROGRESS
 
 **Goal:** Lançar vitrina pública por revendedora com SEO, padronizar comunicação visual dos emails, e expandir analytics operacional no admin.
 
-**Phases:** TBD | **Plans:** TBD
+**Phases:** 2/3 complete | **Plans:** 7/7 complete
 
 **Target Features:**
-1. Vitrina pública `/vitrina/[slug]` com SEO e tracking
-2. Padronizar layout/branding dos emails transacionais
-3. Analytics agregados admin além de campanhas push
+1. ✅ Vitrina pública `/vitrina/[slug]` com SEO e tracking — Phase 6 concluída (2026-05-05)
+2. ✅ Padronizar layout/branding dos emails transacionais — Phase 7 concluída (2026-05-06)
+3. 🔄 Analytics agregados admin além de campanhas push — Phase 8 pendente
 
 ---
 

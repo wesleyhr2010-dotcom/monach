@@ -28,6 +28,30 @@ Planejar v1.1 via `/gsd-new-milestone`.
 
 ---
 
+## 2026-05-06 — Phase 7: Email Branding
+
+### Contexto
+Fase 7 do milestone v1.1 executada com 3 planos em 2 waves. Entrega padronização visual completa dos emails transacionais com wrapper unificado, dark mode, identidade Monarca e fallback plaintext.
+
+### Resumo por Plano
+
+**07-01 — Email Architecture & Base Utilities:** `renderEmailBase()` com DOCTYPE, dark mode `@media` CSS, logo banner, preview text, greeting, CTA e footer padronizados. Utilitários híbridos `emailButton()`, `emailTable()`, `emailAlert()`, `emailDivider()` retornando `{ html, text }`. Type `EmailContent` e modificação de `sendEmail()` para aceitar `textContent` (backward compatible). 23 testes unitários.
+
+**07-02 — Template Refactor & Standardization:** Refatoração dos 7 templates transacionais (`convite-usuario`, `candidatura-aprovada`, `candidatura-rechazada`, `documento-aprovado`, `documento-pendente`, `documento-rejeitado`, `acerto-confirmado`) para usar `renderEmailBase` + utilitários. Tabela visual de breakdown no email de acerto. Sanitização de inputs com DOMPurify. Tom de voz premium em espanhol paraguaio. 20 testes de regressão.
+
+**07-03 — Supabase Auth Sync, Dev Tools & CI/CD:** Templates HTML para reset de senha e invite do Supabase Auth com branding Monarca. Script de sync `sync-supabase-auth-templates.ts` com `--dry-run`, `--check` e exponential backoff. GitHub Actions workflow para sync automático em push para `main`. Documentação atualizada em `SPEC_EMAILS.md`.
+
+### Quality Gates
+- Build: ✓ pass
+- Testes: ✓ 272/272 passando (43 novos)
+- Lint: ✓ 0 erros nos novos arquivos
+- TypeScript: ✓ 0 erros em código de produção
+
+### Próximo Passo
+Phase 8 — Admin Analytics Extension (métricas de vitrina no dashboard).
+
+---
+
 ## 2026-05-05 — Phase 6: Vitrina Pública
 
 ### Contexto

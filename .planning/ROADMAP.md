@@ -22,7 +22,7 @@
 <summary>🔄 v1.1 Visibilidade e Polimento (Phases 6-8) — PLANNING</summary>
 
 - [x] Phase 6: Vitrina Pública — SEO, Tracking & WhatsApp Integration — completed 2026-05-05
-- [ ] Phase 7: Email Branding — Layout Padronizado & Identidade Visual
+- [x] Phase 7: Email Branding — Layout Padronizado & Identidade Visual — completed 2026-05-06
 - [ ] Phase 8: Admin Analytics Extension — Métricas de Vitrina no Dashboard
 
 </details>
@@ -37,7 +37,7 @@
 | 4. Build Optimization | 3/3 | Complete | 2026-05-04 |
 | 5. Validation & Hardening | 6/6 | Complete | 2026-05-05 |
 | 6. Vitrina Pública | 4/4 | Complete | 2026-05-05 |
-| 7. Email Branding | 0/TBD | Planning | — |
+| 7. Email Branding | 3/3 | Complete | 2026-05-06 |
 | 8. Admin Analytics Extension | 0/TBD | Planning | — |
 
 ---
@@ -116,6 +116,13 @@ Plans:
 - Templates Supabase Auth fora do repo → atualizar manualmente no dashboard
 - Vazamento PII em logs → usar IDs em vez de nomes/emails
 
+**Plans:** 3 plans in 2 waves
+
+Plans:
+- [ ] `07-01-PLAN.md` — Email Architecture & Base Utilities: renderEmailBase, emailButton, emailTable, emailAlert, dark mode CSS, types, sendEmail dual-format
+- [ ] `07-02-PLAN.md` — Template Refactor & Content Standardization: refactor 7 templates, tone of voice, emojis, plaintext fallback, breakdown table
+- [ ] `07-03-PLAN.md` — Supabase Auth Sync, Dev Tools & CI/CD: sync script, Auth HTML templates, GitHub Actions workflow, documentation
+
 ---
 
 ### Phase 8: Admin Analytics Extension
@@ -181,5 +188,5 @@ Plans:
 ---
 
 *Roadmap created: 2026-05-04*  
-*Last updated: 2026-05-05 — Milestone v1.1 roadmap created*  
+*Last updated: 2026-05-06 — Phase 7 planned (3 plans, 2 waves)*  
 *Milestone: v1.1 — Visibilidade e Polimento (PLANNING)*  
