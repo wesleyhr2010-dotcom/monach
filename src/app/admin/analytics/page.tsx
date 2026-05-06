@@ -7,9 +7,18 @@ import {
   getAnalyticsTopRevendedoras,
   getAnalyticsAlertasPrazo,
   getAnalyticsProdutosMaisVendidos,
+  getVitrinaKPIs,
+  getVitrinaVisitasSeries,
+  getVitrinaRankingRevendedoras,
+  exportVitrinaAnalyticsCSV,
+  getResellersForAnalytics,
 } from "../actions-analytics";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AnalyticsKpiCards } from "./AnalyticsKpiCards";
+import { AnalyticsVitrinaKpiCards } from "./AnalyticsVitrinaKpiCards";
+import { AnalyticsVisitasChart } from "./AnalyticsVisitasChart";
+import { AnalyticsVitrinaRanking } from "./AnalyticsVitrinaRanking";
+import { VitrinaCsvDownload } from "./VitrinaCsvDownload";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   Table,
@@ -122,23 +131,30 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
 export default async function AnalyticsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string }>;
+  searchParams: Promise<{ period?: string; reseller?: string }>;
 }) {
   const params = await searchParams;
   const periodParam = params.period || "30";
   const periodDays = parseInt(periodParam, 10);
+  const resellerParam = params.reseller || "";
+  const selectedResellerId = resellerParam || undefined;
 
   if (!PERIOD_OPTIONS.some((o) => o.days === periodDays)) {
     redirect("/admin/analytics?period=30");
   }
 
-  const [kpis, fluxo, distribuicao, topRevendedoras, alertas, produtos] = await Promise.all([
+  const [kpis, fluxo, distribuicao, topRevendedoras, alertas, produtos, vitrinaKPIs, vitrinaSeries, vitrinaRanking, resellersList, csvData] = await Promise.all([
     getAnalyticsKPIs(periodDays),
     getAnalyticsFluxoMaletas(periodDays),
     getAnalyticsDistribuicaoStatus(),
     getAnalyticsTopRevendedoras(periodDays, 10),
     getAnalyticsAlertasPrazo(),
     getAnalyticsProdutosMaisVendidos(periodDays, 10),
+    getVitrinaKPIs(periodDays, selectedResellerId),
+    getVitrinaVisitasSeries(periodDays, selectedResellerId),
+    getVitrinaRankingRevendedoras(periodDays, 50),
+    getResellersForAnalytics(),
+    exportVitrinaAnalyticsCSV(periodDays),
   ]);
 
   const statusColorMap: Record<string, string> = {
@@ -165,20 +181,42 @@ export default async function AnalyticsPage({
         title="Analytics"
         description="Métricas operacionales de maletas y revendedoras"
         action={
-          <div style={{ display: "flex", gap: "6px" }}>
-            {PERIOD_OPTIONS.map((opt) => (
-              <Link
-                key={opt.days}
-                href={`/admin/analytics?period=${opt.days}`}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  periodDays === opt.days
-                    ? "bg-[#35605A] text-white"
-                    : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
-                }`}
-              >
-                {opt.label}
-              </Link>
-            ))}
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            {/* Reseller Selector */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>Revendedora:</span>
+              <form method="GET" action="/admin/analytics">
+                <input type="hidden" name="period" value={periodDays} />
+                <select
+                  name="reseller"
+                  defaultValue={selectedResellerId || ""}
+                  onChange={(e) => e.currentTarget.form?.submit()}
+                  className="px-2 py-1.5 rounded-md text-xs font-medium bg-[#1a1a1a] text-[#888] border border-[#333]"
+                >
+                  <option value="">Todas las revendedoras</option>
+                  {resellersList.map((r) => (
+                    <option key={r.id} value={r.id}>{r.name}</option>
+                  ))}
+                </select>
+              </form>
+            </div>
+
+            {/* Period Filter */}
+            <div style={{ display: "flex", gap: "6px" }}>
+              {PERIOD_OPTIONS.map((opt) => (
+                <Link
+                  key={opt.days}
+                  href={`/admin/analytics?period=${opt.days}${selectedResellerId ? `&reseller=${selectedResellerId}` : ""}`}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    periodDays === opt.days
+                      ? "bg-[#35605A] text-white"
+                      : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
+                  }`}
+                >
+                  {opt.label}
+                </Link>
+              ))}
+            </div>
           </div>
         }
       />
@@ -546,6 +584,62 @@ export default async function AnalyticsPage({
             )}
           </CardContent>
         </Card>
+
+        {/* Seção Vitrina Pública */}
+        <div style={{ marginTop: "32px", marginBottom: "32px" }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "24px" }}>
+            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--admin-text)" }}>
+              Vitrina Pública
+            </h2>
+            <VitrinaCsvDownload
+              csv={csvData}
+              filename={`vitrina-analytics-${periodDays}d-${new Date().toISOString().slice(0, 10)}.csv`}
+            />
+          </div>
+
+          {/* KPI Cards */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
+              gap: "16px",
+              marginBottom: "32px",
+            }}
+          >
+            <AnalyticsVitrinaKpiCards kpis={vitrinaKPIs} />
+          </div>
+
+          {/* Chart + Ranking */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
+              gap: "24px",
+              marginBottom: "32px",
+            }}
+          >
+            <Card>
+              <CardHeader>
+                <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
+                  <TrendingUp className="w-4 h-4 text-[#35605A]" />
+                  Visitas a la Vitrina
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <AnalyticsVisitasChart data={vitrinaSeries} />
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <CardTitle style={{ fontSize: "16px" }}>Ranking por Engajamento</CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <AnalyticsVitrinaRanking items={vitrinaRanking} />
+              </CardContent>
+            </Card>
+          </div>
+        </div>
       </div>
     </>
   );

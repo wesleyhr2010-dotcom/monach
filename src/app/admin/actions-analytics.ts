@@ -413,20 +413,6 @@ export interface VitrinaRankingItem {
   ctrContato: number;
 }
 
-function buildAnalyticsScopeParams(
-  user: Awaited<ReturnType<typeof requireAuth>>,
-  baseParams: unknown[],
-  tableAlias: string
-): { sql: string; params: unknown[] } {
-  let sql = "";
-  const params = [...baseParams];
-  if (user.role !== "ADMIN" && user.profileId) {
-    sql += ` AND ${tableAlias}.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
-    params.push(user.profileId);
-  }
-  return { sql, params };
-}
-
 // ============================================
 // Vitrina KPIs
 // ============================================
