@@ -1,5 +1,31 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-06 — Phase 10: Observabilidade
+
+### Contexto
+Fase 10 do milestone v1.2 executada com 4 planos em 3 waves. Entrega visibilidade total do comportamento do sistema em produção: Sentry integrado (client + server), logs estruturados JSON, sanitização automática de PII, captura de erros em Server Actions com contexto de usuário, performance monitoring (Web Vitals) e release tracking via CI.
+
+### Resumo por Plano
+
+**10-01 — Sentry SDK Setup + Health Endpoint:** Instalação do `@sentry/nextjs`, configuração client/server (`sentry.client.config.ts`, `sentry.server.config.ts`, `instrumentation.ts`), wrapping de `next.config.ts` com `withSentryConfig`. Health endpoint `/api/health` com check de conectividade DB (HTTP 200/503). Variáveis de ambiente documentadas.
+
+**10-02 — Structured Logger + PII Sanitization:** Logger estruturado JSON (`src/lib/logger.ts`) com níveis debug/info/warn/error, sanitização automática via `sanitizeForLog`. Expansão da lista de campos sensíveis (15 campos incluindo phone, address, ruc, passport). Migração de 4 arquivos de Edge Functions para logs estruturados (zero free-form console calls em `supabase/functions/`).
+
+**10-03 — Server Action Integration + Error Context:** Helpers Sentry (`captureServerActionError`, `setUserContext`, `clearUserContext`). `safeAction` aceita `actionName` e `userId` opcionais e reporta erros ao Sentry. `getCurrentUser` seta contexto de usuário no Sentry. Global error boundary (`src/app/global-error.tsx`) para captura de erros client-side.
+
+**10-04 — Performance Monitoring + Alerts + Tests:** `browserTracingIntegration` e `replayIntegration` com privacy masking ativados no client. CI workflow passa `SENTRY_RELEASE` e cria release no Sentry para pushes em `main`. Testes unitários para logger (3 testes: JSON structure, PII redaction, nested PII) e Sentry helpers (3 testes: capture, setUser, clearUser). Documentação atualizada.
+
+### Quality Gates
+- Build: ✓ pass
+- Testes: ✓ 278/278 passando (6 novos)
+- Lint: ✓ 0 erros nos novos arquivos
+- TypeScript: ✓ 0 erros em código de produção
+
+### Próximo Passo
+Phase 11 — Rate Limiting (Upstash Redis).
+
+---
+
 ## 2026-05-05 — Milestone v1.0 Concluído: Operação e Visibilidade
 
 ### Contexto
