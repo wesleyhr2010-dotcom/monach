@@ -35,9 +35,13 @@ const nivelSchema = z.object({
 
 export async function getRegras() {
     await requireAuth(["ADMIN"]);
-    return prisma.gamificacaoRegra.findMany({
+    const rows = await prisma.gamificacaoRegra.findMany({
         orderBy: { ordem: "asc" },
     });
+    return rows.map((r) => ({
+        ...r,
+        meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+    }));
 }
 
 export async function atualizarRegra(
@@ -51,7 +55,7 @@ export async function atualizarRegra(
         data,
     });
     invalidateCache.gamificacaoConfig();
-    return result;
+    return { ...result, meta_valor: result.meta_valor != null ? Number(result.meta_valor) : null };
 }
 
 // ============================================
