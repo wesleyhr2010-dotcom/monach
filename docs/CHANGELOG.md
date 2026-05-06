@@ -52,6 +52,30 @@ Phase 8 — Admin Analytics Extension (métricas de vitrina no dashboard).
 
 ---
 
+## 2026-05-06 — Phase 8: Admin Analytics Extension
+
+### Contexto
+Fase 8 do milestone v1.1 executada com 3 planos em 3 waves. Estende o dashboard `/admin/analytics` com métricas de engajamento da vitrina pública (visitas, cliques WhatsApp, CTR), gráfico de visitas ao longo do tempo, ranking de revendedoras por engajamento, seletor de revendedora para drill-down e export CSV sem PII.
+
+### Resumo por Plano
+
+**08-01 — Backend Data Layer:** Cinco novas Server Actions em `actions-analytics.ts`: `getVitrinaKPIs` (KPIs com hybrid freshness: `AnalyticsDiario` histórico + `AnalyticsAcesso` em tempo real), `getVitrinaVisitasSeries` (série temporal gap-filled), `getVitrinaRankingRevendedoras` (ranking por visitas com pré-carregamento de nomes para evitar N+1), `exportVitrinaAnalyticsCSV` (exporta apenas `slug`, sem PII), `getResellersForAnalytics` (dropdown com escopo RBAC). Todas as actions usam SQL parametrizado e respeitam escopo COLABORADORA.
+
+**08-02 — Frontend Components:** Três componentes reutilizáveis: `AnalyticsVitrinaKpiCards` (5 cards usando `AdminStatCard` com ícones lucide), `AnalyticsVisitasChart` (recharts `BarChart` com tema dark, gradiente `#35605a` → `#60A5FA`, tooltip customizado), `AnalyticsVitrinaRanking` (tabela com avatar, top-3 destaque dourado `#C9A84C`, métricas de engajamento). Estados vazios em espanhol paraguaio.
+
+**08-03 — Dashboard Integration:** `page.tsx` integra a seção "Vitrina Pública" abaixo da operacional. Seletor de revendedora (`<select>` com auto-submit) posicionado ao lado do filtro de período. Links de período preservam a revendedora selecionada. Componente `VitrinaCsvDownload` (client-side) para download do CSV. Layout em grid reutilizando padrões existentes.
+
+### Quality Gates
+- Build: ✓ pass
+- Testes: ✓ 272/272 passando (pré-existentes)
+- Lint: ✓ 0 erros nos novos arquivos (1 warning pré-existente de `<img>`)
+- TypeScript: ✓ 0 erros em código de produção
+
+### Próximo Passo
+Milestone v1.1 concluído — revisar e arquivar via `/gsd-complete-milestone`, ou iniciar v1.2.
+
+---
+
 ## 2026-05-05 — Phase 6: Vitrina Pública
 
 ### Contexto
