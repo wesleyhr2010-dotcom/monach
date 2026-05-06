@@ -13,6 +13,9 @@
     "db:studio": "prisma studio",
     "test": "vitest run",
     "test:watch": "vitest",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
     "mcp:health": "bash scripts/mcp-health.sh",
     "prepare-opencode-config": "bash scripts/setup-opencode-mcp-host.sh",
     "prepare-config": "npm run prepare-opencode-config && cat opencode.json",
@@ -52,6 +55,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@playwright/test": "^1.59.1",
     "@prisma/client": "^7.4.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
