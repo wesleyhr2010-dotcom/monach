@@ -4,6 +4,7 @@ import { prisma } from "./prisma";
 import { BusinessError } from "./action-utils";
 import type { ActionResult } from "./action-utils";
 import type { Reseller } from "@/generated/prisma/client";
+import { setUserContext, clearUserContext } from "./sentry";
 
 export type Role = "ADMIN" | "COLABORADORA" | "REVENDEDORA";
 
@@ -73,8 +74,11 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
     // Se não há perfil no banco, não construir contexto com defaults permissivos.
     // Isso força requireAuth a rejeitar usuários não vinculados.
     if (!profile) {
+        clearUserContext();
         return null;
     }
+
+    setUserContext(profile.id, user.email);
 
     return {
         id: user.id,

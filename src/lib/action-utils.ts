@@ -2,6 +2,8 @@
 // Shared utilities for server actions
 // ============================================
 
+import { captureServerActionError } from "./sentry";
+
 /**
  * Standard result type for all server actions.
  * Eliminates the need for repetitive try/catch + error formatting.
@@ -59,12 +61,16 @@ export function mapError(err: unknown): string {
  * }
  */
 export async function safeAction<T = void>(
-    fn: () => Promise<T>
+    fn: () => Promise<T>,
+    options?: { actionName?: string; userId?: string }
 ): Promise<ActionResult<T>> {
     try {
         const result = await fn();
         return { success: true, data: result };
     } catch (err: unknown) {
+        if (options?.actionName) {
+            captureServerActionError(err, options.actionName, options.userId);
+        }
         return { success: false, error: mapError(err) };
     }
 }
