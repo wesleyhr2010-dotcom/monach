@@ -46,30 +46,39 @@
 
 ### Phase 6: Vitrina Pública
 
-**Goal:** Lançar vitrina pública por revendedora com SEO, tracking anônimo e integração WhatsApp.
+**Goal:** Lançar vitrina pública por revendedora com SEO, tracking anônimo, página de detalhe do produto, carrinho de compras e checkout via WhatsApp.
 
-**Requirements:** VITR-01 .. VITR-12 (12 requirements)
+**Requirements:** VITR-01 .. VITR-17 (17 requirements)
 
 **Success Criteria:**
 1. URL `/vitrina/{slug}` acessível publicamente sem autenticação
 2. Vitrina renderiza perfil + produtos da maleta ativa em < 2s
-3. CTA WhatsApp abre conversa com mensagem contextual preenchida
-4. Cookie `visitor_id` criado automaticamente (30 dias)
-5. Eventos de acesso e clique gravados em `AnalyticsAcesso`
-6. 404 para slug inexistente ou revendedora inativa
-7. SEO metadata dinâmica com OG tags para preview em redes sociais
-8. RLS permite SELECT anônimo em `Reseller`, `Maleta`, `MaletaItem`, `Product`, `ProductVariant`
+3. Grid de produtos leva para página de detalhe (`/vitrina/{slug}/{produtoId}`)
+4. Página de detalhe exibe fotos, descrição e botão "Agregar al carrito"
+5. Carrinho armazenado em localStorage com persistência entre navegações
+6. Badge flutuante sticky exibe contador de itens em todas as páginas da vitrina
+7. Drawer do carrinho exibe itens, quantidades, total e botão "Finalizar pedido"
+8. Checkout gera mensagem formatada para WhatsApp com lista de produtos + total
+9. Cookie `visitor_id` criado automaticamente (30 dias)
+10. Eventos de acesso e checkout gravados em `AnalyticsAcesso`
+11. 404 para slug inexistente ou revendedora inativa
+12. SEO metadata dinâmica com OG tags para preview em redes sociais
+13. RLS permite SELECT anônimo em `Reseller`, `Maleta`, `MaletaItem`, `Product`, `ProductVariant`
 
 **Dependencies:**
 - Schema Prisma: `Reseller.slug`, `AnalyticsAcesso`, `Maleta`, `MaletaItem` (já existem)
 - Infra: R2 para imagens, Supabase para banco
 - Design: Paper MCP para layout da vitrina
+- Página de catálogo existente (`/catalogo/[slug]`) — reusar como base visual
 
 **Pitfalls to Address:**
-- RLS bloqueando leituras anônimas → criar policies `anon`
-- Conflito ISR vs tracking dinâmico → avaliar `force-dynamic` vs ISR para vitrina
+- RLS bloqueando leituras anônimas → policies `anon` já existentes, verificar
+- Conflito ISR vs tracking dinâmico → resolvido: ISR (revalidate=300) para conteúdo + API client-side para tracking
 - URLs R2 expirando antes de unfurl → usar URLs públicas quando possível
 - N+1 ao carregar produtos → usar `include` otimizado no Prisma
+- Carrinho em localStorage não persiste entre dispositivos → aceitável para MVP
+- Badge flutuante pode sobrepor conteúdo em mobile → z-index e padding adequados
+- Mensagem WhatsApp pode exceder limite de caracteres → limitar a ~2000 chars
 
 ---
 
@@ -149,14 +158,17 @@
 
 | Category | Requirement IDs | Phase | Count |
 |----------|----------------|-------|-------|
-| Vitrina Pública | VITR-01 .. VITR-12 | 6 | 12 |
+| Vitrina Pública | VITR-01 .. VITR-17 | 6 | 17 |
 | Email Branding | EMAIL-01 .. EMAIL-08 | 7 | 8 |
 | Admin Analytics Extension | ANLT-01 .. ANLT-06 | 8 | 6 |
-| **Total v1.1** | | | **26** |
+| **Total v1.1** | | | **31** |
 
 ✓ All v1.1 requirements mapped to exactly one phase  
 ✓ No orphaned requirements  
 ✓ No duplicate assignments
+
+**Changelog do Escopo:**
+- 2026-05-05: Fase 6 expandida de 12 para 17 requisitos (adicionados VITR-13..VITR-17: página de detalhe, carrinho localStorage, badge flutuante, checkout WhatsApp formatado)
 
 ---
 

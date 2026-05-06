@@ -11,15 +11,20 @@
 - [ ] **VITR-01**: Cliente pode acessar vitrina pública via URL `/vitrina/{slug}`
 - [ ] **VITR-02**: Vitrina exibe foto de perfil, nome e CTA WhatsApp da revendedora
 - [ ] **VITR-03**: Vitrina exibe grid de produtos da maleta ativa com preços
-- [ ] **VITR-04**: Cada produto tem botão "Consultar por WhatsApp" com mensagem contextual (nome + preço)
+- [ ] **VITR-04**: Cada produto na grid é clicável e leva para página de detalhe (`/vitrina/{slug}/{produtoId}`)
 - [ ] **VITR-05**: Slug inexistente ou revendedora inativa retorna 404
-- [ ] **VITR-06**: Sem maleta ativa exibe mensagem "Próximamente artículos disponibles" + CTA WhatsApp
+- [ ] **VITR-06**: Sem maleta ativa exibe perfil + mensagem "No tiene artículos disponibles momentáneamente" + CTA WhatsApp genérico
 - [ ] **VITR-07**: SEO metadata gerada dinamicamente (título, descrição, OG tags, imagem perfil)
 - [ ] **VITR-08**: Página usa `robots: noindex` para evitar thin content no Google
 - [ ] **VITR-09**: Visitas são rastreadas anonimamente com `visitor_id` em cookie (30 dias, SameSite=Lax)
-- [ ] **VITR-10**: Cliques em WhatsApp são rastreados como evento `clique_whatsapp` via API pública
-- [ ] **VITR-11**: API de tracking aceita apenas eventos whitelist (`catalogo_revendedora`, `clique_whatsapp`)
+- [ ] **VITR-10**: Eventos de checkout WhatsApp são rastreados como evento `clique_whatsapp` via API pública
+- [ ] **VITR-11**: API de tracking dedicada `/api/vitrina/track` aceita apenas eventos whitelist (`catalogo_revendedora`, `clique_whatsapp`)
 - [ ] **VITR-12**: RLS permite leitura anônima de dados da vitrina sem autenticação
+- [ ] **VITR-13**: Página de detalhe do produto exibe fotos, descrição e botão "Agregar al carrito"
+- [ ] **VITR-14**: Produtos na grid levam para página de detalhe ao serem clicados
+- [ ] **VITR-15**: Carrinho de compras armazenado em localStorage do navegador com estrutura `{ items: [{ productId, variantId, name, price, quantity, image }] }`
+- [ ] **VITR-16**: Badge flutuante sticky no canto inferior direito exibe contador de itens do carrinho em todas as páginas da vitrina
+- [ ] **VITR-17**: "Finalizar pedido" gera mensagem formatada para WhatsApp com lista de produtos (nome + preço) e valor total
 
 ### Email Branding
 
@@ -56,7 +61,7 @@
 
 | Feature | Reason |
 |---------|--------|
-| Checkout próprio na vitrina | Carrinho atual é vitrina, não loja com pagamento integrado |
+| Checkout próprio na vitrina | Checkout é via WhatsApp (mensagem formatada), não loja com pagamento integrado |
 | Indexação Google da vitrina | `noindex` deliberado — evita thin content e concorrência entre URLs |
 | Imagens pesadas em emails | Performance — manter layout leve e mobile-friendly |
 | BI enterprise completo | Escopo é analytics operacional, não BI com drill-down |
@@ -78,6 +83,11 @@
 | VITR-10 | Phase 6 | Pending |
 | VITR-11 | Phase 6 | Pending |
 | VITR-12 | Phase 6 | Pending |
+| VITR-13 | Phase 6 | Pending |
+| VITR-14 | Phase 6 | Pending |
+| VITR-15 | Phase 6 | Pending |
+| VITR-16 | Phase 6 | Pending |
+| VITR-17 | Phase 6 | Pending |
 | EMAIL-01 | Phase 7 | Pending |
 | EMAIL-02 | Phase 7 | Pending |
 | EMAIL-03 | Phase 7 | Pending |
@@ -94,10 +104,10 @@
 | ANLT-06 | Phase 8 | Pending |
 
 **Coverage:**
-- v1.1 requirements: 26 total
-- Mapped to phases: 26
+- v1.1 requirements: 31 total
+- Mapped to phases: 31
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-05-05*
-*Last updated: 2026-05-05 after initial definition*
+*Last updated: 2026-05-05 — Fase 6 expandida de 12 para 17 requisitos (VITR-13..VITR-17: página de detalhe, carrinho localStorage, badge flutuante, checkout WhatsApp)*
