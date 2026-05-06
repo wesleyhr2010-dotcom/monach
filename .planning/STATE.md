@@ -10,8 +10,8 @@ progress:
   total_phases: 3
   completed_phases: 1
   total_plans: 3
-  completed_plans: 2
-  percent: 67
+  completed_plans: 3
+  percent: 100
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -36,13 +36,13 @@ See: .planning/PROJECT.md (updated 2026-05-05)
 
 ## Current Position
 
-Phase: 7 (Email Branding) — EXECUTING
-Plan: 2 of 3 — COMPLETED
-Next: Plan 3 of 3
-Status: Executing Phase 7
-Last activity: 2026-05-06 -- Plan 07-02 completed
+Phase: 7 (Email Branding) — COMPLETED
+Plan: 3 of 3 — COMPLETED
+Next: Phase 8
+Status: Phase 7 complete
+Last activity: 2026-05-06 -- Plan 07-03 completed
 
-Progress: [██████░░░░] 67% (1/3 phases) | 67% plans (2/3)
+Progress: [██████████] 100% (1/3 phases) | 100% plans (3/3)
 
 ## Performance Metrics
 
@@ -57,6 +57,10 @@ Progress: [██████░░░░] 67% (1/3 phases) | 67% plans (2/3)
 ### Decisions
 
 - **D-07-01** (2026-05-06): Template engine híbrida aprovada — utilitários `email-base` geram HTML + text simultaneamente. Dark mode via `@media (prefers-color-scheme: dark)` inline. Botões CTA nativos (`<a>` estilizado) em vez de bulletproof tables.
+- **D-09** (2026-05-06): Criar script de sync via Supabase Management API — implementado com `--dry-run` e `--check`
+- **D-10** (2026-05-06): Templates Supabase Auth usam MESMO branding completo — logo banner, cores, footer, dark mode
+- **D-11** (2026-05-06): Manter ambos fluxos de convite com propósitos distintos — documentado em SPEC_EMAILS.md com tabela comparativa
+- **D-12** (2026-05-06): CI/CD auto-sync no push para main — workflow GitHub Actions criado
 
 *(Carried forward from v1.0 — see MILESTONES.md for full history)*
 
@@ -84,8 +88,8 @@ Items acknowledged from previous milestone:
 ## Session Continuity
 
 Last session: 2026-05-06
-Stopped at: Plan 07-01 complete; next is Plan 07-02
-Resume file: `.planning/phases/07-email-branding/07-01-SUMMARY.md`
+Stopped at: Plan 07-03 complete; Phase 7 complete
+Resume file: `.planning/phases/07-email-branding/07-03-SUMMARY.md`
 
 ## Phase 6 Context
 
