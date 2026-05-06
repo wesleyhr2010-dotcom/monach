@@ -39,10 +39,13 @@ export default async function ProductDetailPage({
 
   // Convert Decimal to plain number before passing to Client Component
   const plainVariant = {
-    ...variant,
+    id: variant.id,
+    product_id: variant.product_id,
     price: variant.price ? Number(variant.price) : null,
+    image_url: variant.image_url,
     product: {
-      ...variant.product,
+      name: variant.product.name,
+      description: variant.product.description,
       images: variant.product.images as string[],
     },
   };
