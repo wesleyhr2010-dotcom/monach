@@ -44,6 +44,12 @@ function getYesterdayRangePy(): { start: string; end: string; dateKey: string } 
 }
 
 Deno.serve(async () => {
+  console.log(JSON.stringify({
+    job: "agrega-analytics-diario",
+    timestamp: new Date().toISOString(),
+    status: "started",
+  }));
+
   try {
     const { start, end, dateKey } = getYesterdayRangePy();
 
@@ -103,6 +109,17 @@ Deno.serve(async () => {
     if (errUpsert) throw errUpsert;
     upserted = rows.length;
 
+    console.log(JSON.stringify({
+      job: "agrega-analytics-diario",
+      timestamp: new Date().toISOString(),
+      status: "completed",
+      metrics: {
+        date: dateKey,
+        events_processed: events.length,
+        groups_upserted: upserted,
+      },
+    }));
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -114,7 +131,12 @@ Deno.serve(async () => {
     );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[agrega-analytics-diario] Error:", msg);
+    console.error(JSON.stringify({
+      job: "agrega-analytics-diario",
+      timestamp: new Date().toISOString(),
+      status: "failed",
+      error: msg,
+    }));
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

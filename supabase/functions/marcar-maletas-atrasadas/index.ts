@@ -11,6 +11,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 });
 
 Deno.serve(async () => {
+  console.log(JSON.stringify({
+    job: "marcar-maletas-atrasadas",
+    timestamp: new Date().toISOString(),
+    status: "started",
+  }));
+
   try {
     const nowIso = new Date().toISOString();
 
@@ -52,6 +58,15 @@ Deno.serve(async () => {
       });
     }
 
+    console.log(JSON.stringify({
+      job: "marcar-maletas-atrasadas",
+      timestamp: new Date().toISOString(),
+      status: "completed",
+      metrics: {
+        atrasadas_marcadas: maletas.length,
+      },
+    }));
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -61,7 +76,12 @@ Deno.serve(async () => {
     );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[marcar-maletas-atrasadas] Error:", msg);
+    console.error(JSON.stringify({
+      job: "marcar-maletas-atrasadas",
+      timestamp: new Date().toISOString(),
+      status: "failed",
+      error: msg,
+    }));
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

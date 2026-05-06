@@ -11,6 +11,12 @@ const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
 });
 
 Deno.serve(async () => {
+  console.log(JSON.stringify({
+    job: "check-maleta-prazo",
+    timestamp: new Date().toISOString(),
+    status: "started",
+  }));
+
   try {
     const now = new Date();
     const resultados = { d3: 0, d1: 0 };
@@ -58,7 +64,13 @@ Deno.serve(async () => {
         .filter("dados->>maleta_id", "eq", String(maleta.id));
 
       if (errCount) {
-        console.error("[check-maleta-prazo] Erro deduplicação:", errCount.message);
+        console.error(JSON.stringify({
+          job: "check-maleta-prazo",
+          timestamp: new Date().toISOString(),
+          status: "warning",
+          message: "deduplication_query_failed",
+          error: errCount.message,
+        }));
       }
       if ((jaNotificou ?? 0) > 0) continue;
 
@@ -87,6 +99,16 @@ Deno.serve(async () => {
       else resultados.d3++;
     }
 
+    console.log(JSON.stringify({
+      job: "check-maleta-prazo",
+      timestamp: new Date().toISOString(),
+      status: "completed",
+      metrics: {
+        d3_notified: resultados.d3,
+        d1_notified: resultados.d1,
+      },
+    }));
+
     return new Response(
       JSON.stringify({
         success: true,
@@ -97,7 +119,12 @@ Deno.serve(async () => {
     );
   } catch (err: unknown) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error("[check-maleta-prazo] Error:", msg);
+    console.error(JSON.stringify({
+      job: "check-maleta-prazo",
+      timestamp: new Date().toISOString(),
+      status: "failed",
+      error: msg,
+    }));
     return new Response(JSON.stringify({ error: msg }), {
       status: 500,
       headers: { "Content-Type": "application/json" },

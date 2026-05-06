@@ -39,7 +39,14 @@ export async function buscarTemplate(
     .single();
 
   if (error || !data) {
-    console.warn(`[buscarTemplate] Template não encontrado ou inativo: ${tipo}`, error?.message);
+    console.warn(JSON.stringify({
+      job: "buscarTemplate",
+      timestamp: new Date().toISOString(),
+      status: "warning",
+      message: "template_not_found_or_inactive",
+      tipo,
+      error: error?.message,
+    }));
     return null;
   }
   return data as NotificacaoTemplate;
@@ -95,7 +102,13 @@ export async function criarNotificacao(
   });
 
   if (error) {
-    console.error("[criarNotificacao] Erro ao persistir:", error.message);
+    console.error(JSON.stringify({
+      job: "criarNotificacao",
+      timestamp: new Date().toISOString(),
+      status: "failed",
+      message: "persist_error",
+      error: error.message,
+    }));
   }
 }
 
@@ -172,7 +185,13 @@ export async function notificarRevendedora(
   if (input.auth_user_id) {
     const permitido = await podeEnviarPush(supabase, input.reseller_id, input.tipo);
     if (!permitido) {
-      console.log(`[notificarRevendedora] Push bloqueado por preferência: ${input.tipo}`);
+      console.log(JSON.stringify({
+        job: "notificarRevendedora",
+        timestamp: new Date().toISOString(),
+        status: "skipped",
+        message: "push_blocked_by_preference",
+        tipo: input.tipo,
+      }));
       return;
     }
     try {
@@ -185,7 +204,13 @@ export async function notificarRevendedora(
         input.dados
       );
     } catch (err) {
-      console.error("[notificarRevendedora] Erro push:", err instanceof Error ? err.message : err);
+      console.error(JSON.stringify({
+        job: "notificarRevendedora",
+        timestamp: new Date().toISOString(),
+        status: "failed",
+        message: "push_error",
+        error: err instanceof Error ? err.message : String(err),
+      }));
     }
   }
 }
