@@ -633,3 +633,22 @@ model NotificacaoLog {
   @@map("notificacao_logs")
   @@index([tipo, created_at])
 }
+
+// ============================================
+// Módulo 10 — Templates de E-mail Transacional
+// ============================================
+
+model EmailTemplate {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  tipo      String   @unique
+  subject   String
+  body_html String
+  body_text String?
+  preview   String?
+  greeting  String?
+  ativo     Boolean  @default(true)
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  @@map("email_templates")
+}
