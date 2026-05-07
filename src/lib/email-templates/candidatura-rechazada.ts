@@ -1,12 +1,15 @@
 import { sendEmail } from "../emails";
 import { renderEmailBase, type EmailContent } from "../email-base";
 import { sanitizeTemplateVars } from "@/lib/notifications-server";
+import { getEmailContent } from "@/lib/email-logic";
 
 /**
  * Envia email de rechazo de candidatura para revendedora.
  *
  * Tom de voz: respeitoso, sem exclamação.
  * Emoji: 0 (proibido para rejeição).
+ *
+ * Suporta overrides via banco de dados (Phase 13).
  */
 export async function emailCandidaturaRechazada(params: {
   email: string;
@@ -14,6 +17,25 @@ export async function emailCandidaturaRechazada(params: {
 }): Promise<EmailContent> {
   const safeNome = sanitizeTemplateVars(params.nome);
 
+  const context = {
+    nome_revendedora: safeNome,
+    whatsapp_soporte: process.env.WHATSAPP_SUPORTE ?? "",
+  };
+
+  // Tenta obter override do banco de dados
+  const override = await getEmailContent("candidatura_rechazada", context);
+
+  if (override) {
+    await sendEmail({
+      to: { email: params.email, name: params.nome },
+      subject: override.subject,
+      htmlContent: override.html,
+      textContent: override.text,
+    });
+    return { html: override.html, text: override.text };
+  }
+
+  // Fallback para template TypeScript
   const bodyHtml = `
     <p>Gracias por tu interés en unirte a nuestra red de revendedoras.</p>
     <p>Lamentablemente, en esta oportunidad no podemos continuar con tu candidatura.</p>

@@ -1,6 +1,7 @@
 import { sendEmail } from "../emails";
 import { renderEmailBase, emailButton, emailTable, emailDivider, type EmailContent } from "../email-base";
 import { sanitizeTemplateVars } from "@/lib/notifications-server";
+import { getEmailContent } from "@/lib/email-logic";
 
 /**
  * Envia email de confirmação de acerto/consignação para revendedora.
@@ -8,6 +9,8 @@ import { sanitizeTemplateVars } from "@/lib/notifications-server";
  * Tom de voz: neutro (documentos/acertos).
  * Emoji máximo: 1 (apenas no título).
  * Destaque: tabela visual de breakdown com highlight na linha de comissão.
+ *
+ * Suporta overrides via banco de dados (Phase 13).
  */
 export async function emailAcertoConfirmado(
   resellerEmail: string,
@@ -26,6 +29,29 @@ export async function emailAcertoConfirmado(
   baseUrl = baseUrl.endsWith("/") ? baseUrl.slice(0, -1) : baseUrl;
   const portalUrl = `${baseUrl}/app/maleta`;
 
+  const context = {
+    nome_revendedora: safeName,
+    maleta_numero: maletaNumero,
+    valor_vendido: safeValor,
+    comissao: safeComissao,
+    pct_comissao: pctComissao,
+    portal_url: portalUrl,
+  };
+
+  // Tenta obter override do banco de dados
+  const override = await getEmailContent("acerto_confirmado", context);
+
+  if (override) {
+    await sendEmail({
+      to: { email: resellerEmail, name: resellerName },
+      subject: override.subject,
+      htmlContent: override.html,
+      textContent: override.text,
+    });
+    return { html: override.html, text: override.text };
+  }
+
+  // Fallback para template TypeScript
   const table = emailTable({
     headers: ["Concepto", "Monto"],
     rows: [

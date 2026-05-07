@@ -1,12 +1,15 @@
 import { sendEmail } from "../emails";
 import { renderEmailBase, emailButton, emailAlert, type EmailContent } from "../email-base";
 import { sanitizeTemplateVars } from "@/lib/notifications-server";
+import { getEmailContent } from "@/lib/email-logic";
 
 /**
  * Envia email de convite/criação de conta para consultora ou revendedora.
  *
  * Tom de voz: entusiasmado (aprovação/cadastro).
  * Emoji máximo: 2 (já presente no título).
+ *
+ * Suporta overrides via banco de dados (Phase 13).
  */
 export async function emailConviteUsuario(params: {
   email: string;
@@ -42,6 +45,27 @@ export async function emailConviteUsuario(params: {
   const safeSenha = sanitizeTemplateVars(senhaTemporaria);
   const safeSubtitulo = sanitizeTemplateVars(subtitulo);
 
+  const context = {
+    nome_convidado: safeNome,
+    nome_convidante: "", // TODO: passar quando disponível
+    url_registro: resetUrl,
+    whatsapp_soporte: process.env.WHATSAPP_SUPORTE ?? "",
+  };
+
+  // Tenta obter override do banco de dados
+  const override = await getEmailContent("convite_usuario", context);
+
+  if (override) {
+    await sendEmail({
+      to: { email, name: nome },
+      subject: override.subject,
+      htmlContent: override.html,
+      textContent: override.text,
+    });
+    return { html: override.html, text: override.text };
+  }
+
+  // Fallback para template TypeScript
   const alert = emailAlert({
     text: `Contraseña temporal: ${safeSenha}`,
     variant: "warning",
