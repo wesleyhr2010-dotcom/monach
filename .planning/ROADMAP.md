@@ -40,7 +40,7 @@
 
 ### 🚧 v1.3 Polimento, Segurança e UX Admin (Phases 12-15) — Active
 
-- [ ] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features
+- [ ] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features (5/5 plans)
 - [ ] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel
 - [ ] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado
 - [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper
@@ -60,7 +60,7 @@
 | 9. E2E Testing | v1.2 | 3/3 | Complete | 2026-05-06 |
 | 10. Observabilidade | v1.2 | 4/4 | Complete | 2026-05-06 |
 | 11. Rate Limiting | v1.2 | 3/3 | Complete | 2026-05-06 |
-| 12. Segurança e Dependências | v1.3 | 0/5 | Not started | - |
+| 12. Segurança e Dependências | v1.3 | 0/5 | Ready to execute | - |
 | 13. Email Templates Admin | v1.3 | 0/? | Not started | - |
 | 14. Analytics Período Personalizado | v1.3 | 0/? | Not started | - |
 | 15. Admin UI Consistência Visual | v1.3 | 0/? | Not started | - |
@@ -92,11 +92,19 @@
   4. Relatórios de analytics exibem o mesmo dia calendário no Paraguai (UTC-3) independente do horário UTC em que a query é executada
 **Plans**: 5 plans
 Plans:
+
+**Wave 1** *(paralelo — sem dependências)*
 - [ ] 12-01-PLAN.md — Auth guard em /api/export e /api/export/pdf + testes de regressão (SEC-01)
 - [ ] 12-02-PLAN.md — Atualizar Next.js 16.2.5 e serwist 9.5.11 (SEC-02, SEC-03)
+
+**Wave 2** *(bloqueado pela Wave 1 — requer build estável do Next.js 16.2.5)*
 - [ ] 12-03-PLAN.md — sanitize-html helper + integração em emails.ts + testes (SEC-04)
 - [ ] 12-04-PLAN.md — getSinceDate timezone fix UTC-3 + testes (SEC-05)
+
+**Wave 3** *(bloqueado pela Wave 1+2 — verificação final e documentação)*
 - [ ] 12-05-PLAN.md — Investigar jspdf@4.2.1 + documentar riscos aceitos xlsx/jspdf (SEC-06)
+
+Cross-cutting constraints: `requireAuth(["ADMIN","COLABORADORA"])` é o único mecanismo de auth para route handlers — nunca usar `getCurrentUser()` diretamente nos handlers de export.
 
 ---
 
