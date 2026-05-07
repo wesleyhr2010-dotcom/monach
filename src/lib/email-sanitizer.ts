@@ -28,6 +28,13 @@ export const EMAIL_ALLOWED_TAGS: string[] = [
   "h3",
   "span",
   "div",
+  // Table tags for rich email layouts (Pitfall 1 in RESEARCH.md)
+  "table",
+  "thead",
+  "tbody",
+  "tr",
+  "th",
+  "td",
 ];
 
 /**
