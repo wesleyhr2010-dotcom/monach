@@ -280,19 +280,7 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                 </CardContent>
             </Card>
 
-            {/* Toast */}
-            {toast && (
-                <div className="fixed bottom-4 right-4 z-50 p-4 rounded-md shadow-lg border" style={{
-                    background: toast.type === "success" ? "var(--admin-bg-success)" : "var(--admin-surface-row-atrasada)",
-                    color: toast.type === "success" ? "var(--admin-success)" : "var(--admin-danger)",
-                    borderColor: toast.type === "success" ? "var(--admin-border-success)" : "var(--admin-danger)",
-                }}>
-                    <div className="flex items-center gap-2">
-                        {toast.type === "success" ? <Check className="w-5 h-5" style={{ color: "var(--admin-success)" }} /> : <X className="w-5 h-5" style={{ color: "var(--admin-danger)" }} />}
-                        <p className="text-sm font-medium">{toast.msg}</p>
-                    </div>
-                </div>
-            )}
+
         </div>
     );
 }

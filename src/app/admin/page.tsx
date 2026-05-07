@@ -91,34 +91,39 @@ export default async function AdminDashboardPage({
                         {isSuperAdmin ? "Dashboard" : `Olá, ${user.name.split(" ")[0]}`}
                     </span>
                 </div>
-                <div style={{ position: "relative" }}>
-                    <div style={{
-                        width: 36,
-                        height: 36,
-                        borderRadius: 8,
-                        background: "var(--admin-accent-hover)",
-                        border: "1px solid var(--admin-border-focus)",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                    }}>
-                        <Bell size={15} color="var(--admin-success)" strokeWidth={1.5} />
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                    {/* Period selector */}
+                    <div style={{ display: "flex", gap: "6px" }}>
+                        {PERIOD_OPTIONS.map((opt) => (
+                            <Link
+                                key={opt.days}
+                                href={`/admin?period=${opt.days}`}
+                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                                    validPeriod === opt.days
+                                        ? "text-white"
+                                        : "hover:text-white"
+                                }`}
+                                style={validPeriod === opt.days
+                                    ? { backgroundColor: "var(--admin-accent)" }
+                                    : { backgroundColor: "var(--admin-surface)", color: "var(--admin-text-muted)", border: "1px solid var(--admin-border)" }
+                                }
+                            >
+                                {opt.label}
+                            </Link>
+                        ))}
                     </div>
                     <div style={{ position: "relative" }}>
                         <div style={{
-                            position: "absolute",
-                            top: -4,
-                            right: -4,
-                            width: 16,
-                            height: 16,
-                            borderRadius: "50%",
-                            background: "var(--admin-danger)",
-                            border: "1.5px solid var(--admin-bg)",
+                            width: 36,
+                            height: 36,
+                            borderRadius: 8,
+                            background: "var(--admin-accent-hover)",
+                            border: "1px solid var(--admin-border-focus)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
                         }}>
-                            <Bell size={15} color="#4ADE80" strokeWidth={1.5} />
+                            <Bell size={15} color="var(--admin-success)" strokeWidth={1.5} />
                         </div>
                         {metricas.totalAlertas > 0 && (
                             <div style={{
@@ -128,8 +133,8 @@ export default async function AdminDashboardPage({
                                 width: 16,
                                 height: 16,
                                 borderRadius: "50%",
-                                background: "#E05C5C",
-                                border: "1.5px solid #0A0A0A",
+                                background: "var(--admin-danger)",
+                                border: "1.5px solid var(--admin-bg)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",

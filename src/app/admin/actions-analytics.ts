@@ -78,11 +78,11 @@ function getSinceDate(days: number): Date {
   return new Date(nowPy.getTime() + PY_OFFSET_MS);
 }
 
-export function getRangeFromParams(
+export async function getRangeFromParams(
   period?: number,
   fromStr?: string,
   toStr?: string
-): { from: Date; to: Date } {
+): Promise<{ from: Date; to: Date }> {
   if (fromStr && toStr) {
     const from = new Date(`${fromStr}T00:00:00-03:00`);
     const to = new Date(`${toStr}T23:59:59.999-03:00`);

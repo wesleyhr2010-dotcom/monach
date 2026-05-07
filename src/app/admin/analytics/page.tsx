@@ -161,7 +161,7 @@ export default async function AnalyticsPage({
   let rangeError: string | null = null;
 
   if (hasCustomRange) {
-    const r = getRangeFromParams(undefined, fromStr, toStr);
+    const r = await getRangeFromParams(undefined, fromStr, toStr);
     from = r.from;
     to = r.to;
     const diffMs = to.getTime() - from.getTime();
@@ -173,7 +173,7 @@ export default async function AnalyticsPage({
     if (!PERIOD_OPTIONS.some((o) => o.days === periodDays)) {
       redirect("/admin/analytics?period=30");
     }
-    const r = getRangeFromParams(periodDays);
+    const r = await getRangeFromParams(periodDays);
     from = r.from;
     to = r.to;
   }
@@ -243,24 +243,45 @@ export default async function AnalyticsPage({
         title="Analytics"
         description="Métricas operacionales de maletas y revendedoras"
         action={
-          <div style={{ display: "flex", gap: "6px" }}>
-            {PERIOD_OPTIONS.map((opt) => (
-              <Link
-                key={opt.days}
-                href={`/admin/analytics?period=${opt.days}`}
-                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                  periodDays === opt.days
-                    ? "text-white"
-                    : "hover:text-white"
-                }`}
-                style={periodDays === opt.days
-                  ? { backgroundColor: "var(--admin-accent)" }
-                  : { backgroundColor: "var(--admin-surface)", color: "var(--admin-text-muted)", border: "1px solid var(--admin-border)" }
-                }
-              >
-                {opt.label}
-              </Link>
-            ))}
+          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
+            {/* Reseller Selector */}
+            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+              <span style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>Revendedora:</span>
+              <ResellerSelect
+                resellers={resellersList}
+                periodDays={periodDays}
+                selectedResellerId={selectedResellerId}
+                from={fromStr}
+                to={toStr}
+              />
+            </div>
+
+            {/* Date Range Picker */}
+            <DateRangeSelect
+              value={hasCustomRange ? { from, to } : undefined}
+              resellerId={selectedResellerId}
+            />
+
+            {/* Period Filter */}
+            <div style={{ display: "flex", gap: "6px" }}>
+              {PERIOD_OPTIONS.map((opt) => (
+                <Link
+                  key={opt.days}
+                  href={`/admin/analytics?period=${opt.days}${selectedResellerId ? `&reseller=${selectedResellerId}` : ""}`}
+                  className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    !hasCustomRange && periodDays === opt.days
+                      ? "text-white"
+                      : "hover:text-white"
+                  }`}
+                  style={!hasCustomRange && periodDays === opt.days
+                    ? { backgroundColor: "var(--admin-accent)" }
+                    : { backgroundColor: "var(--admin-surface)", color: "var(--admin-text-muted)", border: "1px solid var(--admin-border)" }
+                  }
+                >
+                  {opt.label}
+                </Link>
+              ))}
+            </div>
           </div>
         }
       />

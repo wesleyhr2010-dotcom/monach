@@ -1,78 +1,55 @@
 "use client";
 
-import { useState, useEffect, useTransition } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
+
+export const dynamic = "force-dynamic";
 import { getLeads, aprovarLead, recusarLead } from "../actions-leads";
-import { getColaboradoras } from "../actions-equipe";
 import type { LeadItem } from "../actions-leads";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserPlus, Check, X, Clock, Filter } from "lucide-react";
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export default function LeadsAdminPage() {
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
+    const [leads, setLeads] = useState<LeadItem[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [filter, setFilter] = useState<string>("");
+    const [comissaoMap, setComissaoMap] = useState<Record<string, number>>({});
+    const [processingId, setProcessingId] = useState<string | null>(null);
 
-  const tabFromUrl = searchParams.get("status") ?? "pendente";
-  const [activeTab, setActiveTab] = useState(tabFromUrl);
-  const [leads, setLeads] = useState<LeadItem[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [colaboradoras, setColaboradoras] = useState<{ id: string; name: string }[]>([]);
-  const [isPending, startTransition] = useTransition();
-
-  const [aprovarLeadItem, setAprovarLeadItem] = useState<LeadItem | null>(null);
-  const [recusarLeadItem, setRecusarLeadItem] = useState<LeadItem | null>(null);
-
-  useEffect(() => {
-    setActiveTab(tabFromUrl);
-  }, [tabFromUrl]);
-
-  useEffect(() => {
-    loadLeads();
-    loadColaboradoras();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab]);
-
-  async function loadLeads() {
-    setLoading(true);
-    const result = await getLeads(activeTab);
-    if (result.success) {
-      setLeads(result.data);
-    } else {
-      setLeads([]);
+    async function reload() {
+        const result = await getLeads(filter || undefined);
+        if (result.success) {
+            setLeads(result.data);
+        } else {
+            setLeads([]);
+        }
+        setLoading(false);
     }
-    setLoading(false);
-  }
 
-  async function loadColaboradoras() {
-    try {
-      const result = await getColaboradoras();
-      setColaboradoras(result.map((c) => ({ id: c.id, name: c.name })));
-    } catch {
-      setColaboradoras([]);
+    useEffect(() => { reload(); }, [filter]);
+
+    async function handleAprovar(lead: LeadItem) {
+        const taxa = comissaoMap[lead.id] || 10;
+        setProcessingId(lead.id);
+        const result = await aprovarLead(lead.id, { taxaComissao: taxa });
+        setProcessingId(null);
+        if (result.success) {
+            reload();
+        } else {
+            alert(result.error || "Erro ao aprovar");
+        }
     }
-  }
 
-  function setTab(tab: string) {
-    const params = new URLSearchParams(searchParams);
-    params.set("status", tab);
-    router.replace(`${pathname}?${params.toString()}`);
-  }
+    async function handleRecusar(lead: LeadItem) {
+        const obs = prompt("Motivo da recusa (opcional):", "");
+        if (obs === null) return;
+        setProcessingId(lead.id);
+        await recusarLead(lead.id, obs || "");
+        setProcessingId(null);
+        reload();
+    }
 
-  async function handleAprovar(colaboradoraId: string | undefined, taxaComissao: number) {
-    if (!aprovarLeadItem) return;
-    startTransition(async () => {
-      const result = await aprovarLead(aprovarLeadItem.id, { colaboradoraId, taxaComissao });
-      setAprovarLeadItem(null);
-      if (result.success) {
-        loadLeads();
-      } else {
-        alert(result.error || "Erro ao aprovar");
-      }
-    });
-  }
+    const pendentes = leads.filter((l) => l.status === "pendente").length;
 
     return (
         <>
@@ -83,7 +60,7 @@ export default function LeadsAdminPage() {
                     {pendentes > 0 && (
                         <span style={{
                             marginLeft: "8px", fontSize: "12px", fontWeight: 700, padding: "2px 8px",
-                            borderRadius: "12px", background: "var(--admin-orange)20", color: "var(--admin-orange)",
+                            borderRadius: "12px", background: "#f59e0b20", color: "#f59e0b",
                         }}>
                             {pendentes} pendentes
                         </span>
@@ -101,8 +78,8 @@ export default function LeadsAdminPage() {
                             onClick={() => setFilter(s)}
                             style={{
                                 fontSize: "12px", padding: "6px 14px", borderRadius: "6px", cursor: "pointer",
-                                border: filter === s ? "1px solid var(--admin-accent)" : "1px solid var(--admin-border)",
-                                background: filter === s ? "var(--admin-accent)" : "transparent",
+                                border: filter === s ? "1px solid #35605a" : "1px solid var(--admin-border)",
+                                background: filter === s ? "#35605a" : "transparent",
                                 color: filter === s ? "white" : "var(--admin-text)",
                             }}
                         >
@@ -117,7 +94,9 @@ export default function LeadsAdminPage() {
                         {loading ? (
                             <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>Carregando...</p>
                         ) : leads.length === 0 ? (
-                            <AdminEmptyState icon={UserPlus} title="Nenhuma lead encontrada" />
+                            <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>
+                                Nenhuma lead encontrada.
+                            </p>
                         ) : (
                             <Table>
                                 <TableHeader>
@@ -137,7 +116,7 @@ export default function LeadsAdminPage() {
                                             <TableCell className="font-medium">{lead.nome}</TableCell>
                                             <TableCell style={{ fontSize: "13px" }}>{lead.whatsapp}</TableCell>
                                             <TableCell style={{ fontSize: "13px" }}>{lead.email}</TableCell>
-                                            <TableCell style={{ fontSize: "13px" }}>{lead.cidade || "—"}</TableCell>
+                                            <TableCell style={{ fontSize: "13px" }}>{lead.direccion || "—"}</TableCell>
                                             <TableCell>
                                                 <StatusBadge status={lead.status} />
                                             </TableCell>
@@ -162,7 +141,7 @@ export default function LeadsAdminPage() {
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleAprovar(lead)}
                                                             style={{
-                                                                background: "var(--admin-emerald)", color: "white", border: "none",
+                                                                background: "#10b981", color: "white", border: "none",
                                                                 borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
                                                                 fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
                                                             }}
@@ -173,7 +152,7 @@ export default function LeadsAdminPage() {
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleRecusar(lead)}
                                                             style={{
-                                                                background: "var(--admin-danger)", color: "white", border: "none",
+                                                                background: "#ef4444", color: "white", border: "none",
                                                                 borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
                                                                 fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
                                                             }}
@@ -183,15 +162,15 @@ export default function LeadsAdminPage() {
                                                     </div>
                                                 )}
                                                 {lead.status === "aprovada" && (
-                                                    <span style={{ fontSize: "11px", color: "var(--admin-emerald)" }}>
+                                                    <span style={{ fontSize: "11px", color: "#10b981" }}>
                                                         ✓ {lead.taxa_comissao}% comissão
                                                     </span>
                                                 )}
-                                                {lead.status === "recusada" && lead.observacao && (
-                                                    <span style={{ fontSize: "11px", color: "var(--admin-danger)" }} title={lead.observacao}>
-                                                        {lead.observacao.slice(0, 30)}{lead.observacao.length > 30 ? "..." : ""}
-                                                    </span>
-                                                )}
+{lead.status === "rejeitado" && lead.observacao_admin && (
+                    <span style={{ fontSize: "11px", color: "#ef4444" }} title={lead.observacao_admin}>
+                        {lead.observacao_admin.slice(0, 30)}{lead.observacao_admin.length > 30 ? "..." : ""}
+                    </span>
+                )}
                                             </TableCell>
                                         </TableRow>
                                     ))}
@@ -207,9 +186,9 @@ export default function LeadsAdminPage() {
 
 function StatusBadge({ status }: { status: string }) {
     const styles: Record<string, { bg: string; color: string; icon: React.ReactNode }> = {
-        pendente: { bg: "var(--admin-orange)20", color: "var(--admin-orange)", icon: <Clock className="w-3 h-3" /> },
-        aprovada: { bg: "var(--admin-emerald)20", color: "var(--admin-emerald)", icon: <Check className="w-3 h-3" /> },
-        recusada: { bg: "var(--admin-danger)20", color: "var(--admin-danger)", icon: <X className="w-3 h-3" /> },
+        pendente: { bg: "#f59e0b20", color: "#f59e0b", icon: <Clock className="w-3 h-3" /> },
+        aprovada: { bg: "#10b98120", color: "#10b981", icon: <Check className="w-3 h-3" /> },
+        recusada: { bg: "#ef444420", color: "#ef4444", icon: <X className="w-3 h-3" /> },
     };
     const s = styles[status] || styles.pendente;
     return (
@@ -220,79 +199,5 @@ function StatusBadge({ status }: { status: string }) {
         }}>
             {s.icon} {status}
         </span>
-      </div>
-
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-          gap: "8px",
-          fontSize: "13px",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--admin-text-muted)" }}>
-          <FileText size={13} />
-          <span>{lead.cedula}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--admin-text-muted)" }}>
-          <Phone size={13} />
-          <span>{lead.whatsapp}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--admin-text-muted)" }}>
-          <Mail size={13} />
-          <span>{lead.email}</span>
-        </div>
-        <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--admin-text-muted)" }}>
-          <MapPin size={13} />
-          <span>{lead.direccion || "—"}</span>
-        </div>
-      </div>
-
-      {lead.colaboradora && (
-        <p style={{ fontSize: "12px", color: "var(--admin-text-muted)", margin: 0 }}>
-          Consultora: <strong>{lead.colaboradora.name}</strong>
-          {lead.taxa_comissao !== null && (
-            <span style={{ marginLeft: "8px" }}>• {lead.taxa_comissao}% comisión</span>
-          )}
-        </p>
-      )}
-
-      {lead.observacao_admin && (
-        <p style={{ fontSize: "12px", color: "#ef4444", margin: 0 }}>
-          Obs: {lead.observacao_admin}
-        </p>
-      )}
-
-      {lead.status === "pendente" && (
-        <div style={{ display: "flex", gap: "8px", marginTop: "4px" }}>
-          <button
-            onClick={onAprovar}
-            disabled={isPending}
-            className="admin-btn admin-btn-sm"
-            style={{
-              background: "#10b981",
-              borderColor: "#10b981",
-              color: "#fff",
-              opacity: isPending ? 0.6 : 1,
-            }}
-          >
-            <Check size={14} /> Aprobar
-          </button>
-          <button
-            onClick={onRecusar}
-            disabled={isPending}
-            className="admin-btn admin-btn-sm"
-            style={{
-              background: "#ef4444",
-              borderColor: "#ef4444",
-              color: "#fff",
-              opacity: isPending ? 0.6 : 1,
-            }}
-          >
-            <X size={14} /> Rechazar
-          </button>
-        </div>
-      )}
-    </div>
-  );
+    );
 }
