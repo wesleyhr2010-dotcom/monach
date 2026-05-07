@@ -41,7 +41,7 @@
 ### 🚧 v1.3 Polimento, Segurança e UX Admin (Phases 12-15) — Active
 
 - [ ] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features (5/5 plans)
-- [ ] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel
+- [ ] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel (3/3 plans)
 - [ ] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado
 - [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper
 
@@ -61,7 +61,7 @@
 | 10. Observabilidade | v1.2 | 4/4 | Complete | 2026-05-06 |
 | 11. Rate Limiting | v1.2 | 3/3 | Complete | 2026-05-06 |
 | 12. Segurança e Dependências | v1.3 | 0/5 | Ready to execute | - |
-| 13. Email Templates Admin | v1.3 | 0/? | Not started | - |
+| 13. Email Templates Admin | v1.3 | 0/3 | Ready to execute | - |
 | 14. Analytics Período Personalizado | v1.3 | 0/? | Not started | - |
 | 15. Admin UI Consistência Visual | v1.3 | 0/? | Not started | - |
 
@@ -104,8 +104,6 @@ Plans:
 **Wave 3** *(bloqueado pela Wave 1+2 — verificação final e documentação)*
 - [ ] 12-05-PLAN.md — Investigar jspdf@4.2.1 + documentar riscos aceitos xlsx/jspdf (SEC-06)
 
-Cross-cutting constraints: `requireAuth(["ADMIN","COLABORADORA"])` é o único mecanismo de auth para route handlers — nunca usar `getCurrentUser()` diretamente nos handlers de export.
-
 ---
 
 ### Phase 13: Email Templates Admin
@@ -117,7 +115,24 @@ Cross-cutting constraints: `requireAuth(["ADMIN","COLABORADORA"])` é o único m
   2. Admin abre o editor de um template, altera assunto e corpo HTML, insere variáveis via chips clicáveis, salva — e o próximo email desse tipo enviado pelo sistema usa o conteúdo editado
   3. Se o override for desativado ou deletado do banco, o sistema cai automaticamente para o template TypeScript hardcoded sem interrupção
   4. O wrapper `renderEmailBase()` envolve o corpo salvo em todos os envios — admin não precisa incluir o HTML do layout base no editor
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+
+**Wave 1** *(infraestrutura inicial)*
+- [ ] 13-01-PLAN.md — Prisma model, shared whitelists e helper getEmailContent (ETML-01, ETML-06, ETML-07)
+
+**Wave 2** *(bloqueado pela Wave 1 — requer model e helper)*
+- [ ] 13-02-PLAN.md — Admin UI: Lista de templates, Editor com chips e Server Actions (ETML-01, ETML-02, ETML-03, ETML-04, ETML-05)
+
+**Wave 3** *(bloqueado pela Wave 1+2 — integração final e testes)*
+- [ ] 13-03-PLAN.md — Refatoração de templates TS para suporte a override + Testes de integração (ETML-07)
+
+**Cross-cutting constraints:**
+- `requireAuth(["ADMIN"])` obrigatório em todas as rotas e actions de configuração de e-mail.
+- Todas as Server Actions devem retornar `ActionResult<T>`.
+- O wrapper `renderEmailBase` deve ser aplicado a todos os envios, independentemente da origem (DB ou TS).
+- Labels da interface devem seguir o Espanhol Paraguaio (ex: "Estándar", "Restablecer").
+
 **UI hint**: yes
 
 ---
@@ -152,4 +167,4 @@ Cross-cutting constraints: `requireAuth(["ADMIN","COLABORADORA"])` é o único m
 ---
 
 *Roadmap created: 2026-05-04*
-*Last updated: 2026-05-07 — Phase 12 planned (5 plans, 3 waves, SEC-01..SEC-06)*
+*Last updated: 2026-05-07 — Phase 13 planned (3 plans, 3 waves, ETML-01..ETML-07)*
