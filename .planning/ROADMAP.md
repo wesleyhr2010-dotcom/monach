@@ -5,7 +5,7 @@
 - ✅ **v1.0 Operação e Visibilidade** — Phases 1-5 (shipped 2026-05-05)
 - ✅ **v1.1 Visibilidade e Polimento** — Phases 6-8 (shipped 2026-05-06)
 - ✅ **v1.2 Produção e Qualidade** — Phases 9-11 (shipped 2026-05-07)
-- 🚧 **v1.3 Polimento, Segurança e UX Admin** — Phases 12-15 (in progress)
+- ✅ **v1.3 Polimento, Segurança e UX Admin** — Phases 12-15 (shipped 2026-05-07)
 
 ## Phases
 
@@ -38,12 +38,12 @@
 
 </details>
 
-### 🚧 v1.3 Polimento, Segurança e UX Admin (Phases 12-15) — Active
+### ✅ v1.3 Polimento, Segurança e UX Admin (Phases 12-15) — SHIPPED 2026-05-07
 
-- [ ] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features (5/5 plans)
-- [ ] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel (3/3 plans)
-- [ ] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado (3/3 plans)
-- [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper
+- [x] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features (5/5 plans) — completed 2026-05-07
+- [x] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel (3/3 plans) — completed 2026-05-07
+- [x] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado (3/3 plans) — completed 2026-05-07
+- [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper — planned
 
 ## Progress
 
@@ -60,9 +60,9 @@
 | 9. E2E Testing | v1.2 | 3/3 | Complete | 2026-05-06 |
 | 10. Observabilidade | v1.2 | 4/4 | Complete | 2026-05-06 |
 | 11. Rate Limiting | v1.2 | 3/3 | Complete | 2026-05-06 |
-| 12. Segurança e Dependências | v1.3 | 0/5 | Ready to execute | - |
-| 13. Email Templates Admin | v1.3 | 0/3 | Ready to execute | - |
-| 14. Analytics Período Personalizado | v1.3 | 0/3 | Ready to execute | - |
+| 12. Segurança e Dependências | v1.3 | 5/5 | Complete | 2026-05-07 |
+| 13. Email Templates Admin | v1.3 | 3/3 | Complete | 2026-05-07 |
+| 14. Analytics Período Personalizado | v1.3 | 3/3 | Complete | 2026-05-07 |
 | 15. Admin UI Consistência Visual | v1.3 | 0/3 | Ready to execute | - |
 
 ---
@@ -75,7 +75,7 @@
 
 **v1.2 Requirements:** 23 complete (see `.planning/milestones/v1.2-REQUIREMENTS.md`)
 
-**v1.3 Requirements:** 23 total, 0/23 complete (see `.planning/REQUIREMENTS.md`)
+**v1.3 Requirements:** 23 total, 19/23 complete (Phases 12-14 done, 15 pending)
 
 ## Phase Details
 
@@ -188,4 +188,4 @@ Plans:
 ---
 
 *Roadmap created: 2026-05-04*
-*Last updated: 2026-05-07 — Phase 15 planned (3 plans, 3 waves, ADUI-01..ADUI-05)*
+*Last updated: 2026-05-07 — Phases 12-13 completed, Phase 15 planned (3 plans, 3 waves, ADUI-01..ADUI-05)*
