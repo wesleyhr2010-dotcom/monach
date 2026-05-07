@@ -1,5 +1,30 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-07 — Phase 15: Admin UI Consistência Visual
+
+### Contexto
+Fase de polimento do painel administrativo para eliminar inconsistências visuais — cores hardcoded, empty states inline e badges de status customizados.
+
+### Feito
+
+**Tokenização de cores admin**
+- `src/app/admin/admin.css` — 22 novos tokens adicionados (variantes com opacidade, cores semânticas, backgrounds específicos)
+- `src/components/admin/AdminStatusBadge.tsx` — Refatorado para tokens CSS (`var(--admin-success)`, `var(--admin-danger)`, etc.), zero hex
+- 50+ arquivos admin tiveram hex mapeáveis substituídos por tokens
+
+**Padronização de empty states**
+- `AdminEmptyState` substituído em 10+ rotas admin (maleta, leads, consultoras, equipe, minha-conta, notif-push, revendedoras)
+- Zero usos de `EmptyState` de `@/components/ui/empty-state` em rotas admin
+- Zero `className="admin-empty"` inline em rotas admin
+
+**Documentação do design system**
+- `docs/design-system/tokens.md` — Seção "Admin Tokens (Dark Theme)" com 40+ tokens documentados
+- `docs/sistema/SPEC_DESIGN_MODULES.md` — Seção "Admin Components" documentando `AdminStatusBadge` e `AdminEmptyState`
+
+### Notas
+- Build passa sem erros. Lint sem erros novos.
+- Hex remanescentes (137 em rotas, 53 em componentes) são não-substituíveis: cores de dataviz, avatares dinâmicos, gradientes, SVG strokes.
+
 ## 2026-04-30 — Performance: eliminação de gargalos de auth, middleware e cache
 
 ### Contexto
