@@ -64,34 +64,31 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - ✓ RBAC scope leak suite (23 isolation tests, all passing) — Phase 5
 - ✓ CI/CD quality gate (GitHub Actions workflow: lint + typecheck + test + build) — Phase 5
 
-## Current Milestone: v1.2 Produção e Qualidade
+## Current Milestone: v1.3 Mobile e Infraestrutura
 
-**Goal:** Elevar a qualidade do sistema em produção com testes E2E, observabilidade completa e proteção de endpoints.
+**Goal:** Migrar para domínio oficial e transformar PWA em aplicativo mobile híbrido (Capacitor) com suporte offline.
 
 **Target features:**
-- Testes E2E com Playwright — golden paths (login → maleta → venda → devolução)
-- Observabilidade — Sentry + logs estruturados + alertas (SPEC: `sistema/SPEC_LOGGING_MONITORING.md`)
-- Rate limiting nos endpoints sensíveis via Upstash Redis (SPEC: `sistema/SPEC_SECURITY_API_ENDPOINTS.md`)
+- Migração para domínio oficial `monarcasemijoyas.com.py` (DNS, Vercel, Supabase Auth, Brevo SPF/DKIM, R2, OneSignal, PWA)
+- Migração PWA → Capacitor (iOS + Android) — push nativo APNs, Universal Links (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
+- Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
+
+
 
 ### Validated
 
 - ✓ Vitrina pública `/vitrina/[slug]` com SEO, tracking, carrinho e checkout WhatsApp — v1.1
 - ✓ Padronização de email branding — wrapper `renderEmailBase()`, 7 templates refatorados, Supabase Auth sync — v1.1
 - ✓ Analytics de vitrina no admin — KPIs, gráfico temporal, ranking, export CSV — v1.1
+- ✓ Testes E2E com Playwright — golden paths — v1.2
+- ✓ Observabilidade — Sentry + logs estruturados + alertas — v1.2
+- ✓ Rate limiting nos endpoints sensíveis — v1.2
 
 ### Active
 
-<!-- v1.2 — Produção e Qualidade -->
+<!-- v1.3 — Mobile e Infraestrutura -->
 
-- [ ] Testes E2E com Playwright — golden paths
-- [ ] Observabilidade — Sentry + logs estruturados + alertas
-- [ ] Rate limiting nos endpoints sensíveis
-
-### Future (v1.3)
-
-- [ ] Migração para domínio oficial `monarcasemijoyas.com.py` (DNS, Vercel, Supabase Auth, Brevo SPF/DKIM, R2, OneSignal, PWA)
-- [ ] Migração PWA → Capacitor (iOS + Android) — push nativo APNs, Universal Links (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
-- [ ] Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
+### Future (v1.4)
 
 ### Out of Scope
 
@@ -128,7 +125,8 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 
 **Shipped v1.0:** 5 phases, 19 plans, 229 tests, 33 commits, ~21.5h timeline.
 **Shipped v1.1:** 3 phases, 10 plans, 272 tests, 34 commits, ~1.5 days timeline.
-**Current:** v1.2 planning — E2E, observabilidade, rate limiting.
+**Shipped v1.2:** 3 phases, 10 plans, 23 requirements, ~2 days timeline.
+**Current:** v1.3 planning — Mobile e Infraestrutura.
 
 ## Constraints
 
@@ -175,4 +173,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-06 after v1.2 scope adjustment*
+*Last updated: 2026-05-07 after v1.2 milestone completion*
