@@ -30,7 +30,7 @@ export default function TemplateEditor({ template, tipo }: TemplateEditorProps) 
   const tipoWhitelist = EMAIL_VARIAVEIS_POR_TIPO[tipo] ?? [];
   const allVariables = useMemo(
     () => [...new Set([...tipoWhitelist, ...EMAIL_VARIAVEIS_GLOBAIS])],
-    [tipo, tipoWhitelist]
+    [tipoWhitelist]
   );
 
   // Detecta variables desconocidas en HTML
