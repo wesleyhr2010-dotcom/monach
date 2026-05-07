@@ -1,8 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import * as XLSX from "xlsx";
+import { requireAuth } from "@/lib/user";
 
 export async function GET(request: NextRequest) {
+    try {
+        await requireAuth(["ADMIN", "COLABORADORA"]);
+    } catch {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
     const format = request.nextUrl.searchParams.get("format") || "csv";
     const type = request.nextUrl.searchParams.get("type") || "produtos";
 

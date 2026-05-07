@@ -2,8 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
+import { requireAuth } from "@/lib/user";
 
 export async function GET(request: NextRequest) {
+    try {
+        await requireAuth(["ADMIN", "COLABORADORA"]);
+    } catch {
+        return NextResponse.json({ error: "No autorizado" }, { status: 401 });
+    }
+
     const type = request.nextUrl.searchParams.get("type") || "resumo";
 
     try {
