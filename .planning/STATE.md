@@ -24,10 +24,10 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 
 ## Current Position
 
-Phase: Phase 12 — Segurança e Dependências
+Phase: Phase 13 — Email Templates Admin
 Plan: —
-Status: Ready to execute — 5 plans in 3 waves
-Last activity: 2026-05-07 — Phase 12 planned (5 plans, 3 waves)
+Status: Context gathered — Ready for planning
+Last activity: 2026-05-07 — Phase 13 context gathered
 
 Progress: [░░░░░░░░░░] 0% (0/4 phases complete, 0/? plans complete) | Milestone v1.3 active
 
@@ -51,6 +51,10 @@ Progress: [░░░░░░░░░░] 0% (0/4 phases complete, 0/? plans co
 
 ### Decisions
 
+- **D-13-01** (2026-05-07): Sincronização Lazy + Fallback TS — DB vazio até edição; exclusão reseta para o padrão
+- **D-13-02** (2026-05-07): Validação estrita de variáveis em src/lib/emails-shared.ts — bloqueio no save se desconhecidas
+- **D-13-03** (2026-05-07): Editor com escopo ampliado — inclui Assunto, Corpo e Preview Text com Saudação editável
+- **D-13-04** (2026-05-07): Wrapper Centralizado no envio com cache por request e erro rigoroso se DB falhar
 - **D-07-01** (2026-05-06): Template engine híbrida aprovada — utilitários `email-base` geram HTML + text simultaneamente
 - **D-09** (2026-05-06): Script de sync via Supabase Management API — implementado com `--dry-run` e `--check`
 - **D-10** (2026-05-06): Templates Supabase Auth usam MESMO branding completo
@@ -83,5 +87,5 @@ Items deferred from v1.2 / acknowledged for future milestones:
 ## Session Continuity
 
 Last session: 2026-05-07
-Stopped at: v1.3 roadmap created — 4 phases defined, ready for Phase 12 planning
-Resume: Run `/gsd-plan-phase 12` to plan Phase 12 (Segurança e Dependências)
+Stopped at: Phase 13 context gathered — implementation decisions locked
+Resume: Run `/gsd:plan-phase 13` to plan Phase 13 (Email Templates Admin)
