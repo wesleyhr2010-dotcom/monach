@@ -6,6 +6,8 @@ import Link from "next/link";
 import { getPerfilRevendedora } from "../../actions-equipe";
 import type { RevendedoraPerfil } from "@/lib/types";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { type MaletaStatus } from "@/lib/maleta-helpers";
 import { Button } from "@/components/ui/button";
 import {
     MessageCircle,
@@ -384,7 +386,7 @@ export default function RevendedoraPerfilPage() {
                                                         : `Finalizada ${formatDateShort(m.data_envio)}`
                                                     }
                                                 </span>
-                                                <MaletaStatusBadge status={m.status} />
+                                                <AdminStatusBadge status={m.status as MaletaStatus} />
                                             </div>
                                         </div>
                                     ))
