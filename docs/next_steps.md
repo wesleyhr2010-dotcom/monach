@@ -26,6 +26,20 @@ Vulnerabilidades identificadas em auditoria da [`SPEC_SECURITY_RBAC.md`](./siste
 
 ---
 
+## Prioridade Crítica — Segurança da Gamificação (Pontos)
+
+Vulnerabilidades identificadas no motor de pontos (`awardPoints` + `pontosExtrato`) em revisão de 2026-05-06. O sistema de gamificação permite que um usuário autenticado manipule pontos próprios ou de terceiros através de Server Actions expostas. Corrigir antes de qualquer expansão do sistema de brindes/comissões.
+
+- [ ] **[CRÍTICO] `awardPoints` exportada publicamente — qualquer Server Action pode importar e conceder pontos arbitrariamente** — `src/lib/gamificacao.ts:96`. `awardPoints` deve ser removida do export público e transformada em função interna do módulo. Apenas funções wrapper validadas (`_awardPointsInternal`) devem ser chamadas por actions autorizadas. Ref.: [`sistema/SPEC_GAMIFICACAO_OVERVIEW.md`](./sistema/SPEC_GAMIFICACAO_OVERVIEW.md), [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md).
+- [ ] **[CRÍTICO] `registrarPuntosCompartirCatalogo` não valida se o catálogo foi realmente compartilhado** — `src/app/app/actions-revendedora.ts:587`. Um script pode chamar essa action repetidamente até esgotar o limite diário. Solução: exigir evidência de compartilhamento (ex: token de sessão do Web Share API, ou contador no client com assinatura) ou rate limiting por IP + userId. Ref.: [`revendedoras/SPEC_CATALOGO.md`](./revendedoras/SPEC_CATALOGO.md).
+- [ ] **[CRÍTICO] `awardPoints` não valida ownership do `resellerId`** — `src/lib/gamificacao.ts:96`. Quem chama pode passar qualquer `resellerId` (incluindo de outra pessoa). Adicionar validação obrigatória: caller deve ser o próprio `resellerId` ou ADMIN/COLABORADORA com `assertIsInGroup`. Ref.: [`sistema/SPEC_SECURITY_RBAC.md`](./sistema/SPEC_SECURITY_RBAC.md) §5.
+- [ ] **[ALTO] Não há rate limiting nas Server Actions de gamificação** — `registrarPuntosCompartirCatalogo`, `awardPrimeiroAcesso` e outras podem ser bombardeadas. Aplicar os mesmos limites Upstash Redis (Phase 11) nas actions de pontos: `compartilhou_catalogo` (10 req/min), `primeiro_acesso` (1 req/min), `perfil_completo` (1 req/min). Ref.: [`sistema/SPEC_SECURITY_API_ENDPOINTS.md`](./sistema/SPEC_SECURITY_API_ENDPOINTS.md), `docs/sistema/RATE_LIMITS.md`.
+- [ ] **[ALTO] Não há testes de segurança para gamificação** — Criar suite em `src/__tests__/security/gamificacao.test.ts` cobrindo: (a) usuário A não pode conceder pontos no perfil do usuário B; (b) tipo `unico` não pode ser violado por requisições paralelas; (c) limite diário bloqueia mesmo sob burst; (d) action sem `requireAuth` rejeita. Ref.: [`sistema/SPEC_TESTING_STRATEGY.md`](./sistema/SPEC_TESTING_STRATEGY.md).
+- [ ] **[MÉDIO] Não há audit trail em `pontosExtrato`** — Quando alguém ganha pontos, não registramos quem chamou, de qual IP ou user agent. Em caso de disputa, não há evidências. Adicionar campos `awarded_by` (userId do caller/admin), `ip_address`, `user_agent` ao modelo `PontosExtrato` + migration. Ref.: [`sistema/SPEC_GAMIFICACAO_OVERVIEW.md`](./sistema/SPEC_GAMIFICACAO_OVERVIEW.md).
+- [ ] **[MÉDIO] `awardPrimeiroAcesso` e `completeOnboarding` fazem verificação dupla de já-concedido fora do `awardPoints`** — O motor `awardPoints` (tipo `unico`) já previne duplicação, mas os callers também fazem `findFirst` manual. Simplificar callers para confiar no motor, mas garantir que o motor retorne `{ awarded: false }` em vez de `null` para facilitar a UI. Ref.: [`sistema/SPEC_GAMIFICACAO_OVERVIEW.md`](./sistema/SPEC_GAMIFICACAO_OVERVIEW.md).
+
+---
+
 ## Prioridade Alta — Base do ciclo de negócio
 
 Itens bloqueantes do produto principal (maleta em consignação) e da segurança.
