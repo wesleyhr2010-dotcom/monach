@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Produção e Qualidade
 status: executing
-last_updated: "2026-05-06T22:00:00.000Z"
-last_activity: 2026-05-06 -- Phase 11 Rate Limiting planned (3 plans)
+last_updated: "2026-05-06T23:00:00.000Z"
+last_activity: 2026-05-06 -- Phase 11 Rate Limiting completed (3/3 plans)
 progress:
   total_phases: 3
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 10
-  completed_plans: 7
-  percent: 70
+  completed_plans: 10
+  percent: 100
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -20,16 +20,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-06)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Planning v1.2 — Produção e Qualidade
+**Current focus:** Milestone v1.2 complete — Produção e Qualidade
 
 ## Current Position
 
-Phase: 11 — Rate Limiting (planned)
+Phase: 11 — Rate Limiting (complete)
 Plan: 11-01, 11-02, 11-03
-Status: Ready to execute
-Last activity: 2026-05-06 — Phase 11 Rate Limiting planned (3/3 plans)
+Status: Completed
+Last activity: 2026-05-06 — Phase 11 Rate Limiting executed (3/3 plans, 17 tests, 295/295 passing)
 
-Progress: [███████░░░] 70% (2/3 phases complete, 7/10 plans complete) | Phase 11 ready
+Progress: [██████████] 100% (3/3 phases complete, 10/10 plans complete) | Milestone v1.2 ready for completion
 
 ## Performance Metrics
 
