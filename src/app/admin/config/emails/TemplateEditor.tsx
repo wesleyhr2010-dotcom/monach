@@ -56,7 +56,7 @@ export default function TemplateEditor({ template, tipo }: TemplateEditorProps) 
     return false;
   }, [subject, bodyHtml]);
 
-  function insertVariable(varName: string, targetRef: React.RefObject<HTMLTextAreaElement>) {
+  function insertVariable(varName: string, targetRef: React.RefObject<HTMLTextAreaElement | null>) {
     const el = targetRef.current;
     if (!el) return;
 
