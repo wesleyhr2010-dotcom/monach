@@ -74,7 +74,7 @@ export async function getEmailContent(
   const tipoWhitelist = EMAIL_VARIAVEIS_POR_TIPO[tipo] ?? [];
   const whitelist = [...new Set([...tipoWhitelist, ...EMAIL_VARIAVEIS_GLOBAIS])];
 
-  // Interpola variáveis
+  // Interpola variáveis em todos os campos
   const subject = substituirVariaveis(override.subject, context, whitelist);
   const greeting = override.greeting
     ? substituirVariaveis(override.greeting, context, whitelist)
@@ -83,8 +83,11 @@ export async function getEmailContent(
     ? substituirVariaveis(override.preview, context, whitelist)
     : undefined;
 
+  // Interpola variáveis no HTML antes de sanitizar
+  const interpolatedHtml = substituirVariaveis(override.body_html, context, whitelist);
+
   // Sanitiza HTML do body
-  const sanitizedHtml = sanitizeEmailHtml(override.body_html);
+  const sanitizedHtml = sanitizeEmailHtml(interpolatedHtml);
 
   // D-11: Gera texto puro automaticamente se não fornecido
   const bodyText = override.body_text
