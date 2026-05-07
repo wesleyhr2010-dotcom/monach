@@ -149,13 +149,15 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
   if (!maleta) {
     return (
       <div className="admin-content">
-        <div className="admin-empty">
-          <Package className="w-12 h-12 mx-auto mb-4 opacity-30" />
-          <p className="text-lg font-medium">Consignación no encontrada</p>
-          <Link href="/admin/maleta">
-            <button className="admin-btn admin-btn-secondary mt-4">← Volver</button>
-          </Link>
-        </div>
+        <AdminEmptyState
+          icon={Package}
+          title="Consignación no encontrada"
+          action={
+            <Link href="/admin/maleta">
+              <button className="admin-btn admin-btn-secondary mt-4">← Volver</button>
+            </Link>
+          }
+        />
       </div>
     );
   }

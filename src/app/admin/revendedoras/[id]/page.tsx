@@ -7,6 +7,7 @@ import { getPerfilRevendedora } from "../../actions-equipe";
 import type { RevendedoraPerfil } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import {
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
     MessageCircle,
     UserCog,
     Ban,
@@ -361,7 +362,7 @@ export default function RevendedoraPerfilPage() {
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                 {perfil.maletas.length === 0 ? (
-                                    <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhuma maleta</p>
+                                    <AdminEmptyState title="Nenhuma maleta" />
                                 ) : (
                                     perfil.maletas.slice(0, 5).map((m) => (
                                         <div key={m.id} style={{
@@ -483,7 +484,7 @@ export default function RevendedoraPerfilPage() {
                                     )}
                                 </div>
                             ) : (
-                                <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhum dado bancário cadastrado</p>
+                                <AdminEmptyState title="Nenhum dado bancário cadastrado" />
                             )}
                         </div>
 

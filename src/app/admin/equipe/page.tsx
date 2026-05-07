@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export const dynamic = "force-dynamic";
 import { useRouter } from "next/navigation";
@@ -193,7 +194,7 @@ export default function EquipePage() {
                             <Card>
                                 <CardContent className="text-center py-12">
                                     <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                                    <p className="text-muted-foreground">Nenhuma colaboradora cadastrada</p>
+                                    <AdminEmptyState title="Nenhuma colaboradora cadastrada" />
                                 </CardContent>
                             </Card>
                         ) : (
@@ -300,7 +301,7 @@ export default function EquipePage() {
                             <Card>
                                 <CardContent className="text-center py-12">
                                     <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                                    <p className="text-muted-foreground">Nenhuma revendedora cadastrada</p>
+                                    <AdminEmptyState title="Nenhuma revendedora cadastrada" />
                                 </CardContent>
                             </Card>
                         ) : (

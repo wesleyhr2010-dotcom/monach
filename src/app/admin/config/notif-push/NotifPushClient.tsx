@@ -431,9 +431,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
               )}
 
               {revendedoras.length === 0 && !isLoadingRevendedoras && (
-                <div className="admin-empty" style={{ padding: "16px" }}>
-                  <p style={{ fontSize: "13px" }}>No hay revendedoras en este filtro.</p>
-                </div>
+                <AdminEmptyState title="No hay revendedoras en este filtro" />
               )}
 
               {/* Mensagem */}
@@ -501,9 +499,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
           </h3>
 
           {logs.length === 0 ? (
-            <div className="admin-empty" style={{ padding: "32px" }}>
-              <p>No hay envíos registrados aún.</p>
-            </div>
+            <AdminEmptyState title="No hay envíos registrados aún" />
           ) : (
             <div className="admin-table-wrap">
               <table className="admin-table">

@@ -8,6 +8,7 @@ import type { LeadItem } from "../actions-leads";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserPlus, Check, X, Clock, Filter } from "lucide-react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export default function LeadsAdminPage() {
     const [leads, setLeads] = useState<LeadItem[]>([]);
@@ -90,9 +91,7 @@ export default function LeadsAdminPage() {
                         {loading ? (
                             <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>Carregando...</p>
                         ) : leads.length === 0 ? (
-                            <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>
-                                Nenhuma lead encontrada.
-                            </p>
+                            <AdminEmptyState icon={UserPlus} title="Nenhuma lead encontrada" />
                         ) : (
                             <Table>
                                 <TableHeader>

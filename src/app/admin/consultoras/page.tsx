@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatGsCompact } from "@/lib/format";
 import { UserPlus, Search, Trash2, ArrowRight, Users, Phone, Percent } from "lucide-react";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export const dynamic = "force-dynamic";
 
@@ -193,16 +194,16 @@ export default function ConsultorasPage() {
                 {loading ? (
                     <Card>
                         <CardContent className="text-center py-12">
-                            <p className="text-muted-foreground">Carregando...</p>
+                            <AdminEmptyState title="Carregando..." />
                         </CardContent>
                     </Card>
                 ) : filtered.length === 0 ? (
                     <Card>
                         <CardContent className="text-center py-12">
                             <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                            <p className="text-muted-foreground">
+                            <AdminEmptyState title="
                                 {search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
-                            </p>
+                            " />
                         </CardContent>
                     </Card>
                 ) : (

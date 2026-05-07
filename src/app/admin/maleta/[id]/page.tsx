@@ -9,6 +9,7 @@ import {
 } from "@/app/admin/actions-maletas";
 import type { MaletaDetail } from "@/app/admin/actions-maletas";
 import { AdminStatusBadge } from "@/components/admin/AdminStatusBadge";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { fmtCurrency, daysRemaining, type MaletaStatus } from "@/lib/maleta-helpers";
 import {
   Upload, XCircle, Package, Plus,
@@ -107,11 +108,15 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
   if (!maleta) {
     return (
       <div className="admin-content">
-        <div className="admin-empty">
-          <Package className="w-12 h-12 mx-auto mb-4 opacity-30" />
-          <p className="text-lg font-medium">Consignación no encontrada</p>
-          <Link href="/admin/maleta"><button className="admin-btn admin-btn-secondary mt-4">← Volver</button></Link>
-        </div>
+        <AdminEmptyState
+          icon={Package}
+          title="Consignación no encontrada"
+          action={
+            <Link href="/admin/maleta">
+              <button className="admin-btn admin-btn-secondary mt-4">← Volver</button>
+            </Link>
+          }
+        />
       </div>
     );
   }
