@@ -1,5 +1,29 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-06 — Phase 11: Rate Limiting (Upstash Redis)
+
+### Contexto
+Fase 11 do milestone v1.2 executada com 3 planos em 2 waves. Entrega proteção contra abuso nos endpoints públicos e autenticados via Upstash Redis, com bypass por role e fallback graceful.
+
+### Resumo por Plano
+
+**11-01 — Infrastructure & Public Endpoints:** Instalação do `@upstash/ratelimit` e `@upstash/redis`. Criação de `src/lib/rate-limit.ts` (Redis client, limiters `trackEvento`/`upload`/`passwordReset`, `checkRateLimit()` com fallback graceful) e `src/lib/rate-limit-errors.ts` (factory de resposta 429 com mensagens em espanhol paraguaio). Proteção por IP (100 req/min) aplicada em `/api/track` e `/api/vitrina/track`. Headers `X-RateLimit-*` e `Retry-After` em todas as respostas. Variáveis `UPSTASH_REDIS_REST_URL` e `UPSTASH_REDIS_REST_TOKEN` documentadas em `.env.local.example`.
+
+**11-02 — Authenticated Endpoints & Admin Bypass:** Proteção por userId (10 req/min) aplicada em `/api/upload-r2`. Helper `isAdminRole()` adicionado — ADMIN e COLABORADORA bypassam rate limits completamente. Verificação ocorre após autenticação Supabase e lookup de role no Prisma, antes do parsing de FormData (operação cara). Toda a lógica de validação de arquivo, path e upload R2 preservada.
+
+**11-03 — Tests & Documentation:** 17 testes novos (13 unitários em `src/__tests__/lib/rate-limit.test.ts` + 4 integração em `src/__tests__/api/track-rate-limit.test.ts`) cobrindo: `isAdminRole` (todas as roles), `checkRateLimit` (fallback null e limiter real), `createRateLimitResponse` (status 429, headers, mensagens em espanhol paraguaio). Documentação operacional `docs/sistema/RATE_LIMITS.md` criada com matriz de endpoints, tabela de bypass por role, referência de headers, exemplo de resposta 429, estratégia de burst, configuração de ambiente e guia de extensão. `docs/sistema/SPEC_SECURITY_API_ENDPOINTS.md` atualizado com seção "Implementação" referenciando Phase 11.
+
+### Quality Gates
+- Build: ✓ pass
+- Testes: ✓ 295/295 passando (17 novos)
+- Lint: ✓ 0 erros nos novos arquivos
+- TypeScript: ✓ 0 erros em código de produção
+
+### Próximo Passo
+Milestone v1.2 concluído. Próximos itens pendentes: estratégia de cache (`SPEC_CACHING_STRATEGY.md`), error handling centralizado (`SPEC_ERROR_HANDLING.md`), skeleton/empty/error states (`SPEC_SKELETON_EMPTY_STATES.md`), migração de domínio (`SPEC_DOMAIN_MIGRATION.md`), deploy documentado (`SPEC_DEPLOY_STRATEGY.md`), Capacitor (`SPEC_CAPACITOR_MIGRATION.md`), modo offline (`SPEC_OFFLINE_SYNC.md`).
+
+---
+
 ## 2026-05-06 — Phase 10: Observabilidade
 
 ### Contexto
