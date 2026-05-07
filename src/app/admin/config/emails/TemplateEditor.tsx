@@ -27,11 +27,11 @@ export default function TemplateEditor({ template, tipo }: TemplateEditorProps) 
   const [success, setSuccess] = useState(false);
 
   const label = TIPO_EMAIL_OPTIONS.find((t) => t.value === tipo)?.label ?? tipo;
-  const tipoWhitelist = EMAIL_VARIAVEIS_POR_TIPO[tipo] ?? [];
-  const allVariables = useMemo(
-    () => [...new Set([...tipoWhitelist, ...EMAIL_VARIAVEIS_GLOBAIS])],
-    [tipoWhitelist]
-  );
+  
+  const allVariables = useMemo(() => {
+    const tipoWhitelist = EMAIL_VARIAVEIS_POR_TIPO[tipo] ?? [];
+    return [...new Set([...tipoWhitelist, ...EMAIL_VARIAVEIS_GLOBAIS])];
+  }, [tipo]);
 
   // Detecta variables desconocidas en HTML
   const unknownVars = useMemo(() => {
