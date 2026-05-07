@@ -69,11 +69,13 @@ function getResellerScope(user: Awaited<ReturnType<typeof requireAuth>>) {
   return { colaboradora_id: user.profileId };
 }
 
-function getSinceDate(days: number) {
-  const d = new Date();
-  d.setDate(d.getDate() - days);
-  d.setHours(0, 0, 0, 0);
-  return d;
+const PY_OFFSET_MS = 3 * 60 * 60 * 1000; // UTC-3, sem DST desde 2024 (D-07)
+
+function getSinceDate(days: number): Date {
+  const nowPy = new Date(Date.now() - PY_OFFSET_MS);
+  nowPy.setUTCDate(nowPy.getUTCDate() - days);
+  nowPy.setUTCHours(0, 0, 0, 0);
+  return new Date(nowPy.getTime() + PY_OFFSET_MS);
 }
 
 function startOfMonthDate() {
