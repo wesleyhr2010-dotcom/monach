@@ -21,6 +21,7 @@ import {
     LayoutDashboard,
     LineChart,
     LogOut,
+    Mail,
     Star,
     User,
     Users,
@@ -126,6 +127,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
         label: "Notif. Push",
         icon: <Bell size={16} strokeWidth={1.5} />,
         badge: { text: "SA", variant: "role" },
+        roles: ["ADMIN"],
+    },
+    {
+        href: "/admin/config/emails",
+        label: "Correos",
+        icon: <Mail size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
