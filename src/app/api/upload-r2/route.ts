@@ -4,6 +4,8 @@ import { createR2Client, R2_BUCKET } from "@/lib/r2";
 import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { z } from "zod";
 import { prisma } from "@/lib/prisma";
+import { rateLimiters, checkRateLimit, isAdminRole } from "@/lib/rate-limit";
+import { createRateLimitResponse, RATE_LIMIT_MESSAGES } from "@/lib/rate-limit-errors";
 
 const ALLOWED_TYPES = [
   "image/jpeg",
@@ -105,12 +107,28 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Perfil no encontrado" }, { status: 403 });
     }
 
-    // 2. Parsear FormData
+    // 2. Rate limit check (after auth, before expensive operations)
+    // Admin/COLABORADORA bypass rate limits per RATE-06
+    if (!isAdminRole(reseller.role)) {
+      const limitResult = await checkRateLimit(
+        rateLimiters.upload,
+        `user:${user.id}`
+      );
+
+      if (!limitResult.success) {
+        return createRateLimitResponse(
+          Math.ceil((limitResult.reset - Date.now()) / 1000),
+          RATE_LIMIT_MESSAGES.upload
+        );
+      }
+    }
+
+    // 3. Parsear FormData
     const formData = await request.formData();
     const file = formData.get("file") as File | null;
     const key = formData.get("key") as string | null;
 
-    // 3. Validar inputs
+    // 4. Validar inputs
     if (!file || !key) {
       return NextResponse.json(
         { error: "Archivo y key son requeridos" },
@@ -123,10 +141,10 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Key inválida" }, { status: 400 });
     }
 
-    // 4. Validar key (solo paths permitidos para el user)
+    // 5. Validar key (solo paths permitidos para el user)
     await validateKey(key, user.id, reseller.id, reseller.role);
 
-    // 5. Validar tipo y tamaño
+    // 6. Validar tipo y tamaño
     try {
       validateFile(file);
     } catch (err: unknown) {
@@ -134,7 +152,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: msg }, { status: 400 });
     }
 
-    // 6. Upload a R2
+    // 7. Upload a R2
     const r2 = createR2Client();
     const buffer = Buffer.from(await file.arrayBuffer());
 
