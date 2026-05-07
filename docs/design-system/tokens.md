@@ -52,6 +52,54 @@ Breakpoints
 - md: 1024px
 - xl: 1440px
 
+Admin Tokens (Dark Theme)
+
+| Token | Valor | Uso |
+|-------|-------|-----|
+| `--admin-bg` | `#0a0a0a` | Background geral do painel |
+| `--admin-surface` | `#171717` | Cards, tabelas, modais |
+| `--admin-surface-hover` | `#222222` | Hover em cards |
+| `--admin-surface-row-atrasada` | `#1a1010` | Linha de maleta atrasada |
+| `--admin-surface-row-aguardando` | `#1a1a10` | Linha de maleta aguardando revisão |
+| `--admin-border` | `#2a2a2a` | Bordas, divisores |
+| `--admin-border-focus` | `#35605a` | Borda em foco |
+| `--admin-text` | `#ededed` | Texto principal |
+| `--admin-text-muted` | `#888888` | Texto secundário |
+| `--admin-text-dim` | `#444444` | Texto terciário, placeholders |
+| `--admin-accent` | `#35605a` | Botões primários, CTAs |
+| `--admin-accent-hover` | `#2a4d48` | Hover em CTAs |
+| `--admin-danger` | `#e05c5c` | Erros, deleções |
+| `--admin-danger-hover` | `#c44545` | Hover em ações de perigo |
+| `--admin-success` | `#4ade80` | Sucesso, status ativo |
+| `--admin-success-10` | `rgba(74,222,128,0.1)` | Background sucesso com opacidade |
+| `--admin-success-15` | `rgba(74,222,128,0.15)` | Background sucesso com opacidade |
+| `--admin-warning` | `#facc15` | Avisos, status pendente |
+| `--admin-warning-10` | `rgba(250,204,21,0.1)` | Background aviso com opacidade |
+| `--admin-warning-15` | `rgba(250,204,21,0.15)` | Background aviso com opacidade |
+| `--admin-danger-10` | `rgba(224,92,92,0.1)` | Background perigo com opacidade |
+| `--admin-danger-15` | `rgba(224,92,92,0.15)` | Background perigo com opacidade |
+| `--admin-muted-10` | `rgba(136,136,136,0.1)` | Background neutro com opacidade |
+| `--admin-muted-15` | `rgba(136,136,136,0.15)` | Background neutro com opacidade |
+| `--admin-info` | `#6677dd` | Cor informativa |
+| `--admin-info-light` | `#60a5fa` | Cor informativa clara |
+| `--admin-brown` | `#917961` | Cor marrom/bege |
+| `--admin-beige` | `#b4aba2` | Cor bege |
+| `--admin-purple` | `#8b5cf6` | Cor roxa |
+| `--admin-purple-light` | `#a855f7` | Cor roxa clara |
+| `--admin-orange` | `#f59e0b` | Cor laranja |
+| `--admin-green-alt` | `#22c55e` | Verde alternativo |
+| `--admin-blue-alt` | `#3b82f6` | Azul alternativo |
+| `--admin-emerald` | `#10b981` | Verde esmeralda |
+| `--admin-bg-success` | `#0f3d1c` | Background verde escuro |
+| `--admin-border-success` | `#1a5a2a` | Borda verde escuro |
+| `--admin-bg-info` | `#1a1a2e` | Background azul escuro |
+| `--admin-radius` | `8px` | Border-radius padrão |
+| `--admin-radius-sm` | `4px` | Border-radius pequeno |
+| `--admin-radius-lg` | `12px` | Border-radius grande |
+| `--admin-radius-pill` | `9px` | Pills e badges |
+
+**Regra:** Nunca usar hex hardcoded em arquivos de rota admin. Sempre usar `var(--admin-*)`.
+
 Motion (transições entre telas — PWA `/app/*`)
 > Ver [`sistema/SPEC_TRANSICOES_TELAS.md`](../sistema/SPEC_TRANSICOES_TELAS.md) para a aplicação de cada token.
 
