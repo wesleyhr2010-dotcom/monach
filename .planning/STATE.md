@@ -4,13 +4,13 @@ milestone: v1.2
 milestone_name: Produção e Qualidade
 status: executing
 last_updated: "2026-05-06T22:00:00.000Z"
-last_activity: 2026-05-06 -- Phase 9 E2E Testing executed (3/3 plans complete)
+last_activity: 2026-05-06 -- Phase 11 Rate Limiting planned (3 plans)
 progress:
   total_phases: 3
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 3
-  percent: 33
+  completed_phases: 2
+  total_plans: 10
+  completed_plans: 7
+  percent: 70
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-06)
 
 ## Current Position
 
-Phase: 10 — Observabilidade (complete)
-Plan: 10-04
-Status: Phase complete
-Last activity: 2026-05-06 — Phase 10 Observabilidade executed (4/4 plans complete)
+Phase: 11 — Rate Limiting (planned)
+Plan: 11-01, 11-02, 11-03
+Status: Ready to execute
+Last activity: 2026-05-06 — Phase 11 Rate Limiting planned (3/3 plans)
 
-Progress: [████░░░░░░] 67% (2/3 phases) | 100% plans (4/4)
+Progress: [███████░░░] 70% (2/3 phases complete, 7/10 plans complete) | Phase 11 ready
 
 ## Performance Metrics
 
@@ -77,7 +77,7 @@ Items acknowledged from previous milestone:
 |----------|------|--------|-------------|
 | E2E Tests | Playwright golden paths (login → maleta → venda → devolução) | Pending | 2026-05-05 |
 | Observability | Sentry + logs estruturados + alertas | Pending | 2026-05-05 |
-| Security | Rate limiting via Upstash Redis | Pending | 2026-05-05 |
+| Security | Rate limiting via Upstash Redis | Planned (3 plans) | 2026-05-06 |
 | Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.3 | 2026-05-06 |
 | Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.3 | 2026-05-06 |
 | Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.3 | 2026-05-06 |
