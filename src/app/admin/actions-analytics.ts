@@ -78,22 +78,33 @@ function getSinceDate(days: number): Date {
   return new Date(nowPy.getTime() + PY_OFFSET_MS);
 }
 
-function startOfMonthDate() {
-  const now = new Date();
-  return new Date(now.getFullYear(), now.getMonth(), 1);
+export function getRangeFromParams(
+  period?: number,
+  fromStr?: string,
+  toStr?: string
+): { from: Date; to: Date } {
+  if (fromStr && toStr) {
+    const from = new Date(`${fromStr}T00:00:00-03:00`);
+    const to = new Date(`${toStr}T23:59:59.999-03:00`);
+    return { from, to };
+  }
+
+  const days = period ?? 30;
+  const from = getSinceDate(days);
+  const to = new Date();
+  to.setHours(23, 59, 59, 999);
+  return { from, to };
 }
 
 // ============================================
 // KPIs
 // ============================================
 
-export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> {
+export async function getAnalyticsKPIs(from: Date, to: Date): Promise<AnalyticsKPIs> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
   const scope = getMaletaResellerScope(user);
-  const since = getSinceDate(periodDays);
-  const inicioMes = startOfMonthDate();
 
-  const [ativasAgg, devolvidasMes, atrasadasCount, totalPeriodo, revComMaleta, tempoMedioRaw] =
+  const [ativasAgg, devolvidasPeriodo, atrasadasCount, totalPeriodo, revComMaleta, tempoMedioRaw] =
     await Promise.all([
       prisma.maleta.aggregate({
         where: { ...scope, status: "ativa" },
@@ -101,13 +112,13 @@ export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> 
         _avg: { valor_total_enviado: true },
       }),
       prisma.maleta.count({
-        where: { ...scope, status: "concluida", updated_at: { gte: inicioMes } },
+        where: { ...scope, status: "concluida", updated_at: { gte: from, lte: to } },
       }),
       prisma.maleta.count({
-        where: { ...scope, status: "atrasada", created_at: { gte: since } },
+        where: { ...scope, status: "atrasada", created_at: { gte: from, lte: to } },
       }),
       prisma.maleta.count({
-        where: { ...scope, created_at: { gte: since } },
+        where: { ...scope, created_at: { gte: from, lte: to } },
       }),
       prisma.maleta.groupBy({
         by: ["reseller_id"],
@@ -117,10 +128,11 @@ export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> 
         `SELECT AVG(EXTRACT(EPOCH FROM (updated_at - created_at)) / 86400.0) as avg_dias
          FROM maletas
          WHERE status = 'concluida'
-         AND created_at >= $1
-         ${user.role !== "ADMIN" ? `AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)` : ""}
+         AND created_at >= $1 AND created_at <= $2
+         ${user.role !== "ADMIN" ? `AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $3)` : ""}
         `,
-        since,
+        from,
+        to,
         ...(user.role !== "ADMIN" ? [user.profileId] : [])
       ),
     ]);
@@ -129,7 +141,7 @@ export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> 
 
   return {
     maletasAtivas: ativasAgg._count.id,
-    devolvidasMes,
+    devolvidasMes: devolvidasPeriodo,
     taxaAtraso: Math.round(taxaAtraso * 10) / 10,
     ticketMedio: Number(ativasAgg._avg.valor_total_enviado ?? 0),
     revendedorasComMaleta: revComMaleta.length,
@@ -141,16 +153,15 @@ export async function getAnalyticsKPIs(periodDays = 30): Promise<AnalyticsKPIs> 
 // Fluxo de Maletas (série temporal)
 // ============================================
 
-export async function getAnalyticsFluxoMaletas(periodDays = 30): Promise<FluxoDia[]> {
+export async function getAnalyticsFluxoMaletas(from: Date, to: Date): Promise<FluxoDia[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
   const whereClause =
     user.role === "ADMIN"
-      ? `created_at >= $1`
-      : `created_at >= $1 AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)`;
+      ? `created_at >= $1 AND created_at <= $2`
+      : `created_at >= $1 AND created_at <= $2 AND reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $3)`;
 
-  const params = user.role === "ADMIN" ? [since] : [since, user.profileId];
+  const params = user.role === "ADMIN" ? [from, to] : [from, to, user.profileId];
 
   const rows = await prisma.$queryRawUnsafe<Array<{ dia: Date; enviadas: bigint; devolvidas: bigint; atrasadas: bigint }>>(
     `SELECT
@@ -167,11 +178,11 @@ export async function getAnalyticsFluxoMaletas(periodDays = 30): Promise<FluxoDi
 
   // Preencher dias faltantes
   const result: FluxoDia[] = [];
-  const d = new Date(since);
-  const today = new Date();
+  const d = new Date(from);
+  const end = new Date(to);
   const rowMap = new Map(rows.map((r) => [r.dia.toISOString().slice(0, 10), r]));
 
-  while (d <= today) {
+  while (d <= end) {
     const key = d.toISOString().slice(0, 10);
     const r = rowMap.get(key);
     result.push({
@@ -190,13 +201,13 @@ export async function getAnalyticsFluxoMaletas(periodDays = 30): Promise<FluxoDi
 // Distribuição por Status
 // ============================================
 
-export async function getAnalyticsDistribuicaoStatus(): Promise<DistribuicaoStatus[]> {
+export async function getAnalyticsDistribuicaoStatus(from: Date, to: Date): Promise<DistribuicaoStatus[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
   const scope = getMaletaResellerScope(user);
 
   const rows = await prisma.maleta.groupBy({
     by: ["status"],
-    where: scope,
+    where: { ...scope, created_at: { gte: from, lte: to } },
     _count: { id: true },
   });
 
@@ -211,12 +222,12 @@ export async function getAnalyticsDistribuicaoStatus(): Promise<DistribuicaoStat
 // ============================================
 
 export async function getAnalyticsTopRevendedoras(
-  periodDays = 30,
+  from: Date,
+  to: Date,
   limit = 10
 ): Promise<TopRevendedoraVolume[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
   const resellerScope = getResellerScope(user);
-  const since = getSinceDate(periodDays);
 
   // Buscar revendedoras do escopo com métricas
   const revendedoras = await prisma.reseller.findMany({
@@ -235,13 +246,13 @@ export async function getAnalyticsTopRevendedoras(
   const [maletasAgg, atrasosAgg] = await Promise.all([
     prisma.maleta.groupBy({
       by: ["reseller_id", "status"],
-      where: { reseller_id: { in: ids }, created_at: { gte: since } },
+      where: { reseller_id: { in: ids }, created_at: { gte: from, lte: to } },
       _count: { id: true },
       _sum: { valor_total_enviado: true },
     }),
     prisma.maleta.groupBy({
       by: ["reseller_id"],
-      where: { reseller_id: { in: ids }, status: "atrasada" },
+      where: { reseller_id: { in: ids }, status: "atrasada", created_at: { gte: from, lte: to } },
       _count: { id: true },
     }),
   ]);
@@ -341,18 +352,18 @@ export async function getAnalyticsAlertasPrazo(): Promise<AlertaPrazo[]> {
 // ============================================
 
 export async function getAnalyticsProdutosMaisVendidos(
-  periodDays = 30,
+  from: Date,
+  to: Date,
   limit = 10
 ): Promise<ProdutoMaisVendido[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
   const whereClause =
     user.role === "ADMIN"
-      ? `m.created_at >= $1`
-      : `m.created_at >= $1 AND m.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $2)`;
+      ? `m.created_at >= $1 AND m.created_at <= $2`
+      : `m.created_at >= $1 AND m.created_at <= $2 AND m.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $3)`;
 
-  const params = user.role === "ADMIN" ? [since] : [since, user.profileId];
+  const params = user.role === "ADMIN" ? [from, to] : [from, to, user.profileId];
 
   const rows = await prisma.$queryRawUnsafe<
     Array<{
@@ -419,13 +430,12 @@ export interface VitrinaRankingItem {
 // Vitrina KPIs
 // ============================================
 
-export async function getVitrinaKPIs(periodDays = 30, resellerId?: string): Promise<VitrinaKPIs> {
+export async function getVitrinaKPIs(from: Date, to: Date, resellerId?: string): Promise<VitrinaKPIs> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
   // --- Historical: AnalyticsDiario ---
-  let diarioSql = "WHERE ad.data >= $1";
-  const diarioParams: unknown[] = [since];
+  let diarioSql = "WHERE ad.data >= $1 AND ad.data <= $2";
+  const diarioParams: unknown[] = [from, to];
 
   if (user.role !== "ADMIN" && user.profileId) {
     diarioSql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${diarioParams.length + 1})`;
@@ -450,39 +460,48 @@ export async function getVitrinaKPIs(periodDays = 30, resellerId?: string): Prom
     ...diarioParams
   );
 
-  // --- Today: AnalyticsAcesso ---
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
-  let todaySql = "WHERE aa.data_acesso >= $1";
-  const todayParams: unknown[] = [today];
+  // --- Today: AnalyticsAcesso (only if today is within [from, to]) ---
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const includeToday = to.getTime() >= todayStart.getTime();
 
-  if (user.role !== "ADMIN" && user.profileId) {
-    todaySql += ` AND aa.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${todayParams.length + 1})`;
-    todayParams.push(user.profileId);
-  }
-  if (resellerId) {
-    todaySql += ` AND aa.reseller_id = $${todayParams.length + 1}`;
-    todayParams.push(resellerId);
-  }
+  let todayVisitas: [{ count: bigint }] = [{ count: BigInt(0) }];
+  let todayUnicos: [{ count: bigint }] = [{ count: BigInt(0) }];
+  let todayCliques: [{ count: bigint }] = [{ count: BigInt(0) }];
+  let todayCheckoutClicks: [{ count: bigint }] = [{ count: BigInt(0) }];
 
-  const [todayVisitas, todayUnicos, todayCliques, todayCheckoutClicks] = await Promise.all([
-    prisma.$queryRawUnsafe<[{ count: bigint }]>(
-      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
-      ...todayParams
-    ),
-    prisma.$queryRawUnsafe<[{ count: bigint }]>(
-      `SELECT COUNT(DISTINCT visitor_id) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
-      ...todayParams
-    ),
-    prisma.$queryRawUnsafe<[{ count: bigint }]>(
-      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp'`,
-      ...todayParams
-    ),
-    prisma.$queryRawUnsafe<[{ count: bigint }]>(
-      `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp' AND (aa.produto_id IS NULL OR aa.page_url LIKE '%/carrinho%')`,
-      ...todayParams
-    ),
-  ]);
+  if (includeToday) {
+    let todaySql = "WHERE aa.data_acesso >= $1";
+    const todayParams: unknown[] = [todayStart];
+
+    if (user.role !== "ADMIN" && user.profileId) {
+      todaySql += ` AND aa.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${todayParams.length + 1})`;
+      todayParams.push(user.profileId);
+    }
+    if (resellerId) {
+      todaySql += ` AND aa.reseller_id = $${todayParams.length + 1}`;
+      todayParams.push(resellerId);
+    }
+
+    [todayVisitas, todayUnicos, todayCliques, todayCheckoutClicks] = await Promise.all([
+      prisma.$queryRawUnsafe<[{ count: bigint }]>(
+        `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
+        ...todayParams
+      ),
+      prisma.$queryRawUnsafe<[{ count: bigint }]>(
+        `SELECT COUNT(DISTINCT visitor_id) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'catalogo_revendedora'`,
+        ...todayParams
+      ),
+      prisma.$queryRawUnsafe<[{ count: bigint }]>(
+        `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp'`,
+        ...todayParams
+      ),
+      prisma.$queryRawUnsafe<[{ count: bigint }]>(
+        `SELECT COUNT(*) as count FROM analytics_acessos aa ${todaySql} AND aa.tipo_evento = 'clique_whatsapp' AND (aa.produto_id IS NULL OR aa.page_url LIKE '%/carrinho%')`,
+        ...todayParams
+      ),
+    ]);
+  }
 
   const totalVisitas = Number(diarioRows[0].total_visitas) + Number(todayVisitas[0].count);
   const totalUnicos = Number(diarioRows[0].visitantes_unicos) + Number(todayUnicos[0].count);
@@ -505,12 +524,11 @@ export async function getVitrinaKPIs(periodDays = 30, resellerId?: string): Prom
 // Vitrina Visitas Series
 // ============================================
 
-export async function getVitrinaVisitasSeries(periodDays = 30, resellerId?: string): Promise<VitrinaDia[]> {
+export async function getVitrinaVisitasSeries(from: Date, to: Date, resellerId?: string): Promise<VitrinaDia[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
-  let sql = "WHERE ad.data >= $1";
-  const params: unknown[] = [since];
+  let sql = "WHERE ad.data >= $1 AND ad.data <= $2";
+  const params: unknown[] = [from, to];
 
   if (user.role !== "ADMIN" && user.profileId) {
     sql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
@@ -534,11 +552,11 @@ export async function getVitrinaVisitasSeries(periodDays = 30, resellerId?: stri
 
   // Fill missing days
   const result: VitrinaDia[] = [];
-  const d = new Date(since);
-  const today = new Date();
+  const d = new Date(from);
+  const end = new Date(to);
   const rowMap = new Map(rows.map((r) => [r.dia.toISOString().slice(0, 10), r]));
 
-  while (d <= today) {
+  while (d <= end) {
     const key = d.toISOString().slice(0, 10);
     const r = rowMap.get(key);
     result.push({ dia: key, visitas: Number(r?.visitas ?? 0) });
@@ -553,11 +571,11 @@ export async function getVitrinaVisitasSeries(periodDays = 30, resellerId?: stri
 // ============================================
 
 export async function getVitrinaRankingRevendedoras(
-  periodDays = 30,
+  from: Date,
+  to: Date,
   limit = 50
 ): Promise<VitrinaRankingItem[]> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
   // Get resellers in scope
   const resellerWhere: Prisma.ResellerWhereInput = { is_active: true, role: "REVENDEDORA" };
@@ -588,9 +606,10 @@ export async function getVitrinaRankingRevendedoras(
        COALESCE(SUM(visitantes_unicos), 0) as unicos,
        COALESCE(SUM(cliques_whatsapp), 0) as cliques
      FROM analytics_diario
-     WHERE data >= $1 AND reseller_id = ANY($2)
+     WHERE data >= $1 AND data <= $2 AND reseller_id = ANY($3)
      GROUP BY reseller_id`,
-    since,
+    from,
+    to,
     ids
   );
 
@@ -622,12 +641,11 @@ export async function getVitrinaRankingRevendedoras(
 // Vitrina CSV Export
 // ============================================
 
-export async function exportVitrinaAnalyticsCSV(periodDays = 30): Promise<string> {
+export async function exportVitrinaAnalyticsCSV(from: Date, to: Date): Promise<string> {
   const user = await requireAuth(["ADMIN", "COLABORADORA"]);
-  const since = getSinceDate(periodDays);
 
-  let scopeSql = "WHERE ad.data >= $1";
-  const params: unknown[] = [since];
+  let scopeSql = "WHERE ad.data >= $1 AND ad.data <= $2";
+  const params: unknown[] = [from, to];
 
   if (user.role !== "ADMIN" && user.profileId) {
     scopeSql += ` AND ad.reseller_id IN (SELECT id FROM resellers WHERE colaboradora_id = $${params.length + 1})`;
@@ -654,7 +672,7 @@ export async function exportVitrinaAnalyticsCSV(periodDays = 30): Promise<string
   );
 
   const header = "slug,periodo,total_visitas,visitantes_unicos,cliques_whatsapp,ctr_checkout,ctr_contato\n";
-  const periodo = `${since.toISOString().slice(0, 10)}_a_${new Date().toISOString().slice(0, 10)}`;
+  const periodo = `${from.toISOString().slice(0, 10)}_a_${to.toISOString().slice(0, 10)}`;
 
   const lines = rows.map((row) => {
     const visitas = Number(row.total_visitas);
