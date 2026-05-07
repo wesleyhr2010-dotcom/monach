@@ -3,7 +3,6 @@ import { createSupabaseSSRClient } from "./supabase-ssr";
 import { prisma } from "./prisma";
 import { BusinessError } from "./action-utils";
 import type { ActionResult } from "./action-utils";
-import type { Reseller } from "@/generated/prisma/client";
 import { setUserContext, clearUserContext } from "./sentry";
 
 export type Role = "ADMIN" | "COLABORADORA" | "REVENDEDORA";
@@ -19,6 +18,43 @@ export type CurrentUser = {
     rawUser: { id: string; email?: string };
 };
 
+const PROFILE_SELECT = {
+    id: true,
+    name: true,
+    role: true,
+    taxa_comissao: true,
+    is_active: true,
+    colaboradora_id: true,
+} as const;
+
+/** Busca o perfil no banco; retorna null se não encontrado ou se o DB falhar. */
+async function resolveProfile(authUserId: string, email: string | null) {
+    try {
+        let profile = await prisma.reseller.findFirst({
+            where: { auth_user_id: authUserId },
+            select: PROFILE_SELECT,
+        });
+
+        if (!profile && email) {
+            profile = await prisma.reseller.findFirst({
+                where: { email, auth_user_id: null, role: "REVENDEDORA" },
+                select: PROFILE_SELECT,
+            });
+            if (profile) {
+                await prisma.reseller.update({
+                    where: { id: profile.id },
+                    data: { auth_user_id: authUserId },
+                });
+            }
+        }
+
+        return profile;
+    } catch (err) {
+        console.error("[getCurrentUser] DB error:", err instanceof Error ? err.message : String(err));
+        return null;
+    }
+}
+
 /**
  * Retorna o usuário autenticado com perfil do banco.
  * Envolvido com React.cache() para deduplicação por request —
@@ -33,43 +69,7 @@ export const getCurrentUser = cache(async (): Promise<CurrentUser | null> => {
         return null;
     }
 
-    // 1. Tentar encontrar pela auth_user_id (caminho normal)
-    let profile = await prisma.reseller.findFirst({
-        where: { auth_user_id: user.id },
-        select: {
-            id: true,
-            name: true,
-            role: true,
-            taxa_comissao: true,
-            is_active: true,
-            colaboradora_id: true,
-        }
-    });
-
-    // 2. Fallback: buscar por email e auto-vincular auth_user_id
-    // SEGURANÇA: apenas revendedoras podem ser auto-vinculadas.
-    // ADMIN/COLABORADORA exigem processo explícito de vinculação por outro ADMIN.
-    if (!profile && user.email) {
-        profile = await prisma.reseller.findFirst({
-            where: { email: user.email, auth_user_id: null, role: "REVENDEDORA" },
-            select: {
-                id: true,
-                name: true,
-                role: true,
-                taxa_comissao: true,
-                is_active: true,
-                colaboradora_id: true,
-            }
-        });
-
-        if (profile) {
-            // Auto-vincular para futuros logins
-            await prisma.reseller.update({
-                where: { id: profile.id },
-                data: { auth_user_id: user.id }
-            });
-        }
-    }
+    const profile = await resolveProfile(user.id, user.email ?? null);
 
     // Se não há perfil no banco, não construir contexto com defaults permissivos.
     // Isso força requireAuth a rejeitar usuários não vinculados.
