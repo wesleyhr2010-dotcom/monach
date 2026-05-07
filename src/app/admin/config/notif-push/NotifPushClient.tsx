@@ -18,6 +18,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from "@/components/ui/dialog";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Bell, Pencil, Power, Send, AlertCircle, CheckCircle2 } from "lucide-react";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";

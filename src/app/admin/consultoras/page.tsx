@@ -200,10 +200,10 @@ export default function ConsultorasPage() {
                 ) : filtered.length === 0 ? (
                     <Card>
                         <CardContent className="text-center py-12">
-                            <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                            <AdminEmptyState title="
-                                {search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
-                            " />
+                            <AdminEmptyState
+                                icon={Users}
+                                title={search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
+                            />
                         </CardContent>
                     </Card>
                 ) : (

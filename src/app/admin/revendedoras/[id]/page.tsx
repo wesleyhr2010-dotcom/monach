@@ -5,9 +5,9 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { getPerfilRevendedora } from "../../actions-equipe";
 import type { RevendedoraPerfil } from "@/lib/types";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Button } from "@/components/ui/button";
 import {
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
     MessageCircle,
     UserCog,
     Ban,

@@ -9,10 +9,10 @@ import {
 } from "./actions";
 import type { DocumentoRevendedora } from "./actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
   FileText,
   CheckCircle2,
   XCircle,
