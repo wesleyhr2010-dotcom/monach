@@ -1,6 +1,6 @@
 import { redirect, notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/user";
-import { getEmailTemplateByTipo } from "./actions";
+import { getEmailTemplateByTipo } from "../actions";
 import { TIPO_EMAIL_OPTIONS } from "@/lib/emails-shared";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import TemplateEditor from "./TemplateEditor";
