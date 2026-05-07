@@ -42,7 +42,7 @@
 
 - [ ] **Phase 12: Segurança e Dependências** — Fechar vulnerabilidades Snyk e achados críticos antes de iniciar features (5/5 plans)
 - [ ] **Phase 13: Email Templates Admin** — Admin pode editar templates de email transacional diretamente no painel (3/3 plans)
-- [ ] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado
+- [ ] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado (3/3 plans)
 - [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper
 
 ## Progress
@@ -62,8 +62,8 @@
 | 11. Rate Limiting | v1.2 | 3/3 | Complete | 2026-05-06 |
 | 12. Segurança e Dependências | v1.3 | 0/5 | Ready to execute | - |
 | 13. Email Templates Admin | v1.3 | 0/3 | Ready to execute | - |
-| 14. Analytics Período Personalizado | v1.3 | 0/? | Not started | - |
-| 15. Admin UI Consistência Visual | v1.3 | 0/? | Not started | - |
+| 14. Analytics Período Personalizado | v1.3 | 0/3 | Ready to execute | - |
+| 15. Admin UI Consistência Visual | v1.3 | 0/3 | Ready to execute | - |
 
 ---
 
@@ -147,7 +147,12 @@ Plans:
   3. A URL reflete o período selecionado (`?from=YYYY-MM-DD&to=YYYY-MM-DD` ou `?period=N`) — compartilhar o link reproduz o mesmo filtro
   4. Tentar selecionar um range superior a 366 dias exibe mensagem de erro e não executa a query
   5. O botão de export CSV gera o arquivo com os dados do período atualmente selecionado no filtro
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] 14-01-PLAN.md — Refatoração do Backend para suporte a range customizado (SEC-05, ANLT-07, ANLT-11)
+- [ ] 14-02-PLAN.md — DateRangePicker UI e integração com URL State (ANLT-07, ANLT-08, ANLT-09, ANLT-10)
+- [ ] 14-03-PLAN.md — Export CSV range-aware e Verificação de Integração (ANLT-11)
+
 **UI hint**: yes
 
 ---
@@ -161,10 +166,26 @@ Plans:
   2. Inspeção do CSS em produção não encontra valores hex hardcoded (`#35605A`, `#4ADE80`, `#E05C5C` e similares) em nenhum arquivo de rota admin — todos substituídos por `var(--admin-*)`
   3. Status de maleta, status de lead, status de contrato e demais badges de estado usam `AdminStatusBadge` em todas as rotas — nenhum usa classes inline `bg-green-*` ou `bg-red-*` para comunicar estado
   4. Empty states em listas admin usam `AdminEmptyState` — nenhum usa `<p>Sem resultados</p>` ou markup ad-hoc inline
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+
+**Wave 1** *(auditoria e tokenização — sem dependências)*
+- [ ] 15-01-PLAN.md — Auditoria de desvios visuais por rota + substituição de hex hardcoded por tokens CSS (ADUI-01, ADUI-02)
+
+**Wave 2** *(bloqueado pela Wave 1 — requer audit e tokens)*
+- [ ] 15-02-PLAN.md — Padronização de status badges (AdminStatusBadge) e empty states (AdminEmptyState) em todas as rotas admin (ADUI-03, ADUI-04)
+
+**Wave 3** *(bloqueado pela Wave 1+2 — verificação final)*
+- [ ] 15-03-PLAN.md — Verificação automatizada (grep gates) + atualização da documentação do design system (ADUI-05)
+
+**Cross-cutting constraints:**
+- Paper MCP deve ser consultado para cada rota modificada (registrado no audit)
+- Texto da UI em espanhol paraguaio
+- `git push` para remote `client`
+
 **UI hint**: yes
 
 ---
 
 *Roadmap created: 2026-05-04*
-*Last updated: 2026-05-07 — Phase 13 planned (3 plans, 3 waves, ETML-01..ETML-07)*
+*Last updated: 2026-05-07 — Phase 15 planned (3 plans, 3 waves, ADUI-01..ADUI-05)*
