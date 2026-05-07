@@ -366,3 +366,60 @@ A implementação do rate limiting foi concluída na **Phase 11** (2026-05-06).
 - `src/app/api/vitrina/track/route.ts` — proteção por IP (100 req/min)
 - `src/app/api/upload-r2/route.ts` — proteção por userId (10 req/min) com bypass para ADMIN/COLABORADORA
 - Documentação operacional: `docs/sistema/RATE_LIMITS.md`
+
+---
+
+## Riscos Aceitos — Dependências com CVE
+
+> Última revisão: 2026-05-07
+> Revisor: Phase 12 — Segurança e Dependências
+
+As seguintes dependências possuem CVEs conhecidos sem fix upstream disponível ou sem impacto prático no perfil de uso deste projeto. Cada risco foi analisado, documentado e aceito explicitamente.
+
+---
+
+### xlsx — Prototype Pollution
+
+| Campo | Valor |
+|-------|-------|
+| Pacote | `xlsx@^0.18.5` |
+| CVEs | Verificar `npm audit` para IDs atuais |
+| Severidade | High (CVSS varia por CVE) |
+| Fix upstream | Não disponível |
+| Decisão | **ACEITO** |
+
+**Perfil de uso:** `xlsx` é usado **exclusivamente** no path de escrita (write-only) em `src/app/api/export/route.ts`:
+- `XLSX.utils.json_to_sheet(data)` — converte array JS para sheet
+- `XLSX.utils.book_append_sheet(wb, ws, name)` — adiciona sheet ao workbook
+- `XLSX.write(wb, { type: "buffer", bookType: "xlsx" })` — serializa para buffer
+
+**O projeto NUNCA usa** `XLSX.read()`, `XLSX.readFile()` ou qualquer operação de parse de arquivo externo. A superfície de ataque de prototype pollution via parse não é atingível.
+
+**Mitigações adicionais:**
+- Rota `/api/export` protegida por `requireAuth(["ADMIN", "COLABORADORA"])` (SEC-01, Phase 12)
+- Dados exportados são queries lidas do banco via Prisma — sem input externo não-confiável na cadeia de serialização
+
+**Próxima revisão:** Verificar npm audit no início de cada milestone se fix upstream surgir.
+
+---
+
+### jspdf — GHSA-7x6v-j9x4-qf24, GHSA-wfv2-pwc8-crg5
+
+| Campo | Valor |
+|-------|-------|
+| Pacote | `jspdf@4.2.1` (atualizado de 4.2.0 em Phase 12) |
+| CVEs | GHSA-7x6v-j9x4-qf24, GHSA-wfv2-pwc8-crg5 |
+| Fix disponível | Não — 4.2.1 não fecha estes CVEs |
+| Decisão | **ACEITO** |
+
+**Perfil de uso:** `jspdf` é usado **exclusivamente** no path de escrita em `src/app/api/export/pdf/route.ts`:
+- `new jsPDF()` — instancia documento
+- `autoTable(doc, {...})` — adiciona tabelas
+- `doc.output("arraybuffer")` — serializa para buffer
+
+**O projeto NUNCA** faz parse de PDFs externos. Superfície de ataque via input externo não é atingível.
+
+**Mitigações adicionais:**
+- Rota `/api/export/pdf` protegida por `requireAuth(["ADMIN", "COLABORADORA"])` (SEC-01, Phase 12)
+
+**Próxima revisão:** Verificar npm audit no início de cada milestone.
