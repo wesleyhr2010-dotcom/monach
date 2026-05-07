@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ResellerSelect } from "./ResellerSelect";
+import { DateRangeSelect } from "./DateRangeSelect";
 import { redirect } from "next/navigation";
 import {
   getAnalyticsKPIs,
@@ -13,6 +14,16 @@ import {
   getVitrinaRankingRevendedoras,
   exportVitrinaAnalyticsCSV,
   getResellersForAnalytics,
+  getRangeFromParams,
+  type AnalyticsKPIs,
+  type FluxoDia,
+  type DistribuicaoStatus,
+  type TopRevendedoraVolume,
+  type AlertaPrazo,
+  type ProdutoMaisVendido,
+  type VitrinaKPIs,
+  type VitrinaDia,
+  type VitrinaRankingItem,
 } from "../actions-analytics";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { AnalyticsKpiCards } from "./AnalyticsKpiCards";
@@ -132,31 +143,81 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
 export default async function AnalyticsPage({
   searchParams,
 }: {
-  searchParams: Promise<{ period?: string; reseller?: string }>;
+  searchParams: Promise<{ period?: string; reseller?: string; from?: string; to?: string }>;
 }) {
   const params = await searchParams;
   const periodParam = params.period || "30";
   const periodDays = parseInt(periodParam, 10);
   const resellerParam = params.reseller || "";
   const selectedResellerId = resellerParam || undefined;
+  const fromStr = params.from;
+  const toStr = params.to;
 
-  if (!PERIOD_OPTIONS.some((o) => o.days === periodDays)) {
-    redirect("/admin/analytics?period=30");
+  const hasCustomRange = !!fromStr && !!toStr;
+
+  // Compute date range
+  let from: Date;
+  let to: Date;
+  let rangeError: string | null = null;
+
+  if (hasCustomRange) {
+    const r = getRangeFromParams(undefined, fromStr, toStr);
+    from = r.from;
+    to = r.to;
+    const diffMs = to.getTime() - from.getTime();
+    const diffDays = diffMs / (1000 * 60 * 60 * 24);
+    if (diffDays > 366) {
+      rangeError = "El rango seleccionado no puede superar 366 días.";
+    }
+  } else {
+    if (!PERIOD_OPTIONS.some((o) => o.days === periodDays)) {
+      redirect("/admin/analytics?period=30");
+    }
+    const r = getRangeFromParams(periodDays);
+    from = r.from;
+    to = r.to;
   }
 
-  const [kpis, fluxo, distribuicao, topRevendedoras, alertas, produtos, vitrinaKPIs, vitrinaSeries, vitrinaRanking, resellersList, csvData] = await Promise.all([
-    getAnalyticsKPIs(periodDays),
-    getAnalyticsFluxoMaletas(periodDays),
-    getAnalyticsDistribuicaoStatus(),
-    getAnalyticsTopRevendedoras(periodDays, 10),
-    getAnalyticsAlertasPrazo(),
-    getAnalyticsProdutosMaisVendidos(periodDays, 10),
-    getVitrinaKPIs(periodDays, selectedResellerId),
-    getVitrinaVisitasSeries(periodDays, selectedResellerId),
-    getVitrinaRankingRevendedoras(periodDays, 50),
-    getResellersForAnalytics(),
-    exportVitrinaAnalyticsCSV(periodDays),
-  ]);
+  // Fetch data (or use empty values if range error)
+  let kpis: AnalyticsKPIs;
+  let fluxo: FluxoDia[];
+  let distribuicao: DistribuicaoStatus[];
+  let topRevendedoras: TopRevendedoraVolume[];
+  let alertas: AlertaPrazo[];
+  let produtos: ProdutoMaisVendido[];
+  let vitrinaKPIs: VitrinaKPIs;
+  let vitrinaSeries: VitrinaDia[];
+  let vitrinaRanking: VitrinaRankingItem[];
+  let resellersList: Awaited<ReturnType<typeof getResellersForAnalytics>>;
+  let csvData: string;
+
+  if (!rangeError) {
+    [kpis, fluxo, distribuicao, topRevendedoras, alertas, produtos, vitrinaKPIs, vitrinaSeries, vitrinaRanking, resellersList, csvData] = await Promise.all([
+      getAnalyticsKPIs(from, to),
+      getAnalyticsFluxoMaletas(from, to),
+      getAnalyticsDistribuicaoStatus(from, to),
+      getAnalyticsTopRevendedoras(from, to, 10),
+      getAnalyticsAlertasPrazo(),
+      getAnalyticsProdutosMaisVendidos(from, to, 10),
+      getVitrinaKPIs(from, to, selectedResellerId),
+      getVitrinaVisitasSeries(from, to, selectedResellerId),
+      getVitrinaRankingRevendedoras(from, to, 50),
+      getResellersForAnalytics(),
+      exportVitrinaAnalyticsCSV(from, to),
+    ]);
+  } else {
+    kpis = { maletasAtivas: 0, devolvidasMes: 0, taxaAtraso: 0, ticketMedio: 0, revendedorasComMaleta: 0, tempoMedioDevolucaoDias: 0 };
+    fluxo = [];
+    distribuicao = [];
+    topRevendedoras = [];
+    alertas = [];
+    produtos = [];
+    vitrinaKPIs = { totalVisitas: 0, visitantesUnicos: 0, cliquesWhatsApp: 0, ctrCheckout: 0, ctrContato: 0 };
+    vitrinaSeries = [];
+    vitrinaRanking = [];
+    resellersList = [];
+    csvData = "";
+  }
 
   const statusColorMap: Record<string, string> = {
     ativa: "#4ADE80",
@@ -190,8 +251,16 @@ export default async function AnalyticsPage({
                 resellers={resellersList}
                 periodDays={periodDays}
                 selectedResellerId={selectedResellerId}
+                from={fromStr}
+                to={toStr}
               />
             </div>
+
+            {/* Date Range Picker */}
+            <DateRangeSelect
+              value={hasCustomRange ? { from, to } : undefined}
+              resellerId={selectedResellerId}
+            />
 
             {/* Period Filter */}
             <div style={{ display: "flex", gap: "6px" }}>
@@ -200,7 +269,7 @@ export default async function AnalyticsPage({
                   key={opt.days}
                   href={`/admin/analytics?period=${opt.days}${selectedResellerId ? `&reseller=${selectedResellerId}` : ""}`}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                    periodDays === opt.days
+                    !hasCustomRange && periodDays === opt.days
                       ? "bg-[#35605A] text-white"
                       : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
                   }`}
@@ -214,6 +283,24 @@ export default async function AnalyticsPage({
       />
 
       <div className="admin-content">
+        {/* Range Error Banner */}
+        {rangeError && (
+          <div
+            style={{
+              marginBottom: "24px",
+              padding: "12px 16px",
+              borderRadius: "var(--admin-radius)",
+              background: "#E05C5C1A",
+              border: "1px solid var(--admin-danger)",
+              color: "var(--admin-danger)",
+              fontSize: "14px",
+              fontWeight: 500,
+            }}
+          >
+            {rangeError}
+          </div>
+        )}
+
         {/* KPIs */}
         <div
           style={{
@@ -585,7 +672,7 @@ export default async function AnalyticsPage({
             </h2>
             <VitrinaCsvDownload
               csv={csvData}
-              filename={`vitrina-analytics-${periodDays}d-${new Date().toISOString().slice(0, 10)}.csv`}
+              filename={`vitrina-${from.toISOString().slice(0, 10).replace(/-/g, "")}-${to.toISOString().slice(0, 10).replace(/-/g, "")}.csv`}
             />
           </div>
 

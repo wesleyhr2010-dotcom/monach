@@ -4,12 +4,16 @@ type Props = {
     resellers: { id: string; name: string }[];
     periodDays: number;
     selectedResellerId?: string;
+    from?: string;
+    to?: string;
 };
 
-export function ResellerSelect({ resellers, periodDays, selectedResellerId }: Props) {
+export function ResellerSelect({ resellers, periodDays, selectedResellerId, from, to }: Props) {
     return (
         <form method="GET" action="/admin/analytics">
             <input type="hidden" name="period" value={periodDays} />
+            {from && <input type="hidden" name="from" value={from} />}
+            {to && <input type="hidden" name="to" value={to} />}
             <select
                 name="reseller"
                 defaultValue={selectedResellerId ?? ""}

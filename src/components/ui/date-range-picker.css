@@ -1,0 +1,124 @@
+/* Custom dark-theme overrides for react-day-picker v9 */
+
+.rdp-root {
+  --rdp-accent-color: var(--admin-accent);
+  --rdp-background-color: var(--admin-surface);
+  color: var(--admin-text);
+  font-family: inherit;
+}
+
+.rdp-months {
+  display: flex;
+  gap: 16px;
+}
+
+.rdp-month {
+  min-width: 260px;
+}
+
+.rdp-caption {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--admin-text);
+}
+
+.rdp-nav {
+  display: flex;
+  gap: 4px;
+}
+
+.rdp-button_previous,
+.rdp-button_next {
+  background: transparent;
+  border: 1px solid var(--admin-border);
+  border-radius: var(--admin-radius-sm);
+  color: var(--admin-text);
+  cursor: pointer;
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.rdp-button_previous:hover,
+.rdp-button_next:hover {
+  background: var(--admin-surface-hover);
+}
+
+.rdp-month_grid {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.rdp-weekday {
+  font-size: 11px;
+  color: var(--admin-text-muted);
+  padding: 6px 0;
+  text-align: center;
+}
+
+.rdp-week {
+  display: flex;
+}
+
+.rdp-day {
+  text-align: center;
+  padding: 2px;
+  flex: 1;
+}
+
+.rdp-day_button {
+  width: 32px;
+  height: 32px;
+  border-radius: var(--admin-radius-sm);
+  border: none;
+  background: transparent;
+  color: var(--admin-text);
+  cursor: pointer;
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rdp-day_button:hover:not(:disabled) {
+  background: var(--admin-surface-hover);
+}
+
+.rdp-selected .rdp-day_button {
+  background: var(--admin-accent);
+  color: #fff;
+}
+
+.rdp-range_start .rdp-day_button {
+  background: var(--admin-accent);
+  color: #fff;
+  border-radius: var(--admin-radius-sm) 0 0 var(--admin-radius-sm);
+}
+
+.rdp-range_end .rdp-day_button {
+  background: var(--admin-accent);
+  color: #fff;
+  border-radius: 0 var(--admin-radius-sm) var(--admin-radius-sm) 0;
+}
+
+.rdp-range_middle .rdp-day_button {
+  background: var(--admin-accent-hover);
+  color: #fff;
+  border-radius: 0;
+}
+
+.rdp-today .rdp-day_button {
+  border: 1px solid var(--admin-accent);
+}
+
+.rdp-outside .rdp-day_button {
+  color: var(--admin-text-dim);
+}
+
+.rdp-disabled .rdp-day_button {
+  color: var(--admin-text-dim);
+  cursor: not-allowed;
+}
