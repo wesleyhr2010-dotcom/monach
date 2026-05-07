@@ -145,7 +145,7 @@ export default async function AnalyticsPage({
     ativa: "#4ADE80",
     atrasada: "#E05C5C",
     aguardando_revisao: "#FACC15",
-    concluida: "#60A5FA",
+    concluida: "var(--admin-info-light)",
   };
 
   const donutData = distribuicao.map((d) => ({
@@ -172,9 +172,13 @@ export default async function AnalyticsPage({
                 href={`/admin/analytics?period=${opt.days}`}
                 className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
                   periodDays === opt.days
-                    ? "bg-[#35605A] text-white"
-                    : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
+                    ? "text-white"
+                    : "hover:text-white"
                 }`}
+                style={periodDays === opt.days
+                  ? { backgroundColor: "var(--admin-accent)" }
+                  : { backgroundColor: "var(--admin-surface)", color: "var(--admin-text-muted)", border: "1px solid var(--admin-border)" }
+                }
               >
                 {opt.label}
               </Link>
@@ -209,7 +213,7 @@ export default async function AnalyticsPage({
           <Card>
             <CardHeader>
               <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <TrendingUp className="w-4 h-4 text-[#35605A]" />
+                <TrendingUp className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
                 Fluxo de Maletas
               </CardTitle>
             </CardHeader>
@@ -249,7 +253,7 @@ export default async function AnalyticsPage({
                           <div
                             style={{
                               height: `${(d.atrasadas / maxFluxo) * 100}%`,
-                              background: isToday ? "#E05C5C" : "#E05C5C99",
+                               background: isToday ? "var(--admin-danger)" : "rgba(224, 92, 92, 0.6)",
                               borderRadius: "1px 1px 0 0",
                               minHeight: d.atrasadas > 0 ? "2px" : "0",
                             }}
@@ -257,14 +261,14 @@ export default async function AnalyticsPage({
                           <div
                             style={{
                               height: `${(d.devolvidas / maxFluxo) * 100}%`,
-                              background: isToday ? "#60A5FA" : "#60A5FA99",
+                              background: isToday ? "var(--admin-info-light)" : "var(--admin-info-light)99",
                               minHeight: d.devolvidas > 0 ? "2px" : "0",
                             }}
                           />
                           <div
                             style={{
                               height: `${(d.enviadas / maxFluxo) * 100}%`,
-                              background: isToday ? "#4ADE80" : "#4ADE8099",
+                               background: isToday ? "var(--admin-success)" : "rgba(74, 222, 128, 0.6)",
                               borderRadius: d.devolvidas + d.atrasadas === 0 ? "1px 1px 0 0" : "0",
                               minHeight: d.enviadas > 0 ? "2px" : "0",
                             }}
@@ -291,15 +295,15 @@ export default async function AnalyticsPage({
                   </div>
                   <div style={{ display: "flex", gap: "20px", marginTop: "12px", justifyContent: "center" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "#4ADE80" }} />
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-success)" }} />
                       Enviadas
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "#60A5FA" }} />
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-info-light)" }} />
                       Devueltas
                     </div>
                     <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "#E05C5C" }} />
+                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-danger)" }} />
                       Atrasadas
                     </div>
                   </div>
@@ -312,7 +316,7 @@ export default async function AnalyticsPage({
           <Card>
             <CardHeader>
               <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <BarChart3 className="w-4 h-4 text-[#35605A]" />
+                <BarChart3 className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
                 Distribución por Estado
               </CardTitle>
             </CardHeader>
@@ -355,7 +359,7 @@ export default async function AnalyticsPage({
                   <TableBody>
                     {topRevendedoras.map((r, i) => (
                       <TableRow key={r.id}>
-                        <TableCell style={{ fontWeight: 600, color: i < 3 ? "#8b5cf6" : "var(--admin-text-muted)" }}>
+                        <TableCell style={{ fontWeight: 600, color: i < 3 ? "var(--admin-purple)" : "var(--admin-text-muted)" }}>
                           {i + 1}
                         </TableCell>
                         <TableCell>
@@ -365,7 +369,7 @@ export default async function AnalyticsPage({
                                 width: 32,
                                 height: 32,
                                 borderRadius: "50%",
-                                background: "#a855f7",
+                                background: "var(--admin-purple-light)",
                                 color: "white",
                                 display: "flex",
                                 alignItems: "center",
@@ -398,16 +402,16 @@ export default async function AnalyticsPage({
                               borderRadius: "4px",
                               background:
                                 r.statusAtual === "Atrasada"
-                                  ? "#E05C5C26"
+                                  ? "var(--admin-danger-15)"
                                   : r.statusAtual === "Ativa"
-                                  ? "#4ADE801A"
-                                  : "#333",
+                                  ? "var(--admin-success-10)"
+                                  : "var(--admin-border)",
                               color:
                                 r.statusAtual === "Atrasada"
-                                  ? "#E05C5C"
+                                  ? "var(--admin-danger)"
                                   : r.statusAtual === "Ativa"
-                                  ? "#4ADE80"
-                                  : "#888",
+                                  ? "var(--admin-success)"
+                                  : "var(--admin-text-muted)",
                             }}
                           >
                             {r.statusAtual}
@@ -425,7 +429,7 @@ export default async function AnalyticsPage({
           <Card>
             <CardHeader>
               <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <AlertCircle className="w-4 h-4 text-[#E05C5C]" />
+                <AlertCircle className="w-4 h-4" style={{ color: "var(--admin-danger)" }} />
                 Alertas de Prazo (≤7 días)
               </CardTitle>
             </CardHeader>
@@ -456,7 +460,7 @@ export default async function AnalyticsPage({
                             style={{
                               fontSize: "12px",
                               fontWeight: 700,
-                              color: a.diasRestantes <= 2 ? "#E05C5C" : "#FACC15",
+                              color: a.diasRestantes <= 2 ? "var(--admin-danger)" : "var(--admin-warning)",
                             }}
                           >
                             {a.diasRestantes <= 0 ? "Vencida" : `${a.diasRestantes} rest.`}
@@ -465,7 +469,7 @@ export default async function AnalyticsPage({
                         <TableCell style={{ textAlign: "right" }}>
                           <Link
                             href={`/admin/maleta/${a.id}`}
-                            style={{ color: "#35605A", fontSize: "12px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
+                            style={{ color: "var(--admin-accent)", fontSize: "12px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
                           >
                             Ver <ChevronRight className="w-3 h-3" />
                           </Link>
@@ -484,12 +488,12 @@ export default async function AnalyticsPage({
           <CardHeader>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
               <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <PackageCheck className="w-4 h-4 text-[#35605A]" />
+                <PackageCheck className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
                 Productos Más Vendidos
               </CardTitle>
               <Link
                 href="/admin/produtos"
-                style={{ fontSize: "12px", color: "#35605A", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
+                style={{ fontSize: "12px", color: "var(--admin-accent)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
               >
                 Ver catálogo <ChevronRight className="w-3 h-3" />
               </Link>
@@ -520,12 +524,12 @@ export default async function AnalyticsPage({
                         <TableCell style={{ fontWeight: 500 }}>{p.nome}</TableCell>
                         <TableCell>
                           <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ flex: 1, height: 6, background: "#1a1a1a", borderRadius: 3, overflow: "hidden" }}>
+                            <div style={{ flex: 1, height: 6, background: "var(--admin-surface)", borderRadius: 3, overflow: "hidden" }}>
                               <div
                                 style={{
                                   width: `${pct}%`,
                                   height: "100%",
-                                  background: "#35605A",
+                                  background: "var(--admin-accent)",
                                   borderRadius: 3,
                                 }}
                               />

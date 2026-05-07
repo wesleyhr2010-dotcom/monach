@@ -514,7 +514,7 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
                 className="admin-btn admin-btn-primary"
                 onClick={handleConfirm}
                 disabled={saving || additionalItems.length === 0}
-                style={{ background: "var(--admin-success)", color: "#0f0f0f" }}
+                style={{ background: "var(--admin-success)", color: "var(--admin-bg)" }}
               >
                 {saving ? "Guardando..." : "✓ Guardar Cambios"}
               </button>

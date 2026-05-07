@@ -14,16 +14,16 @@ type AdminStatCardProps = {
 
 const colorMap = {
   default: "",
-  success: "text-[#4ADE80]",
-  danger: "text-[#E05C5C]",
-  warning: "text-[#FACC15]",
-  info: "text-[#60A5FA]",
+  success: "text-[var(--admin-success)]",
+  danger: "text-[var(--admin-danger)]",
+  warning: "text-[var(--admin-warning)]",
+  info: "text-[var(--admin-info-light)]",
 };
 
 export function AdminStatCard({ label, value, icon: Icon, color = "default", onClick, className }: AdminStatCardProps) {
   return (
     <div
-      className={cn("admin-stat-card", onClick && "cursor-pointer hover:border-[#35605A55] transition-colors", className)}
+      className={cn("admin-stat-card", onClick && "cursor-pointer hover:border-[var(--admin-accent)55] transition-colors", className)}
       onClick={onClick}
       role={onClick ? "button" : undefined}
       tabIndex={onClick ? 0 : undefined}

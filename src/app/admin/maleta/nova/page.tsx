@@ -388,7 +388,7 @@ export default function NovaMaletaPage() {
             className="admin-btn admin-btn-primary"
             onClick={handleConfirm}
             disabled={saving}
-            style={{ background: "var(--admin-success)", color: "#0f0f0f" }}
+            style={{ background: "var(--admin-success)", color: "var(--admin-bg)" }}
           >
             {saving ? "Creando..." : "✓ Confirmar y Crear Consignación"}
           </button>

@@ -20,7 +20,7 @@ export const dynamic = "force-dynamic";
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const avatarColors = [
-    "#35605A", "#7C3A2D", "#2D5A7C", "#5A2D7C", "#7C5A2D", "#2D7C5A", "#3A2D7C", "#7C2D5A",
+    "var(--admin-accent)", "#7C3A2D", "#2D5A7C", "#5A2D7C", "#7C5A2D", "#2D7C5A", "#3A2D7C", "#7C2D5A",
 ];
 
 function getAvatarColor(name: string) {
@@ -49,10 +49,10 @@ function formatDateShort(dateStr: string) {
 
 function MaletaStatusBadge({ status }: { status: string }) {
     const configs: Record<string, { bg: string; color: string; label: string }> = {
-        ativa: { bg: "#1C3A35", color: "#4ADE80", label: "ATIVA" },
-        atrasada: { bg: "#3A1C1C", color: "#E05555", label: "ATRASADA" },
-        aguardando_revisao: { bg: "#3A3A1C", color: "#FACC15", label: "AG. REVISÃO" },
-        concluida: { bg: "#1A2A20", color: "#52B788", label: "CONCLUÍDA" },
+        ativa: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", label: "ATIVA" },
+        atrasada: { bg: "#3A1C1C", color: "var(--admin-danger)", label: "ATRASADA" },
+        aguardando_revisao: { bg: "#3A3A1C", color: "var(--admin-warning)", label: "AG. REVISÃO" },
+        concluida: { bg: "#1A2A20", color: "var(--admin-success)", label: "CONCLUÍDA" },
     };
     const cfg = configs[status] || configs.ativa;
     return (
@@ -74,7 +74,7 @@ function DocStatusBadge({ status }: { status: string }) {
             padding: "2px 9px", borderRadius: "10px",
             fontSize: "10px", fontWeight: 600, lineHeight: "12px",
             background: isAprovado ? "#1A2A20" : "#2A1F0A",
-            color: isAprovado ? "#52B788" : "#D4A017",
+            color: isAprovado ? "var(--admin-success)" : "var(--admin-warning)",
             border: isAprovado ? "none" : "1px solid #3A2A0A",
         }}>
             {isAprovado ? "APROVADO" : "PENDENTE"} {isAprovado && <Check className="w-3 h-3" />}
@@ -118,7 +118,7 @@ export default function RevendedoraPerfilPage() {
     }
 
     const avatarColor = getAvatarColor(perfil.name);
-    const colabColor = perfil.colaboradora ? getAvatarColor(perfil.colaboradora.name) : "#555";
+    const colabColor = perfil.colaboradora ? getAvatarColor(perfil.colaboradora.name) : "var(--admin-text-muted)";
     const faturamentoTotal = perfil.maletas.reduce((s, m) => s + (m.valor_total_vendido || 0), 0);
     const faturamentoMes = perfil.maletas
         .filter((m) => {
@@ -137,25 +137,25 @@ export default function RevendedoraPerfilPage() {
         <>
             {/* ── Header ─────────────────────────────────────────────────── */}
             <header style={{
-                padding: "28px 36px 20px", borderBottom: "1px solid #222222",
+                padding: "28px 36px 20px", borderBottom: "1px solid var(--admin-surface-hover)",
             }}>
                 {/* Breadcrumb */}
                 <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-                    <Link href="/admin/revendedoras" style={{ color: "#444444", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
+                    <Link href="/admin/revendedoras" style={{ color: "var(--admin-text-dim)", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
                         ADMIN
                     </Link>
-                    <span style={{ color: "#333333", fontSize: "11px" }}>/</span>
-                    <Link href="/admin/revendedoras" style={{ color: "#444444", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
+                    <span style={{ color: "var(--admin-border)", fontSize: "11px" }}>/</span>
+                    <Link href="/admin/revendedoras" style={{ color: "var(--admin-text-dim)", fontSize: "11px", letterSpacing: "0.12em", textDecoration: "none" }}>
                         REVENDEDORAS
                     </Link>
-                    <span style={{ color: "#333333", fontSize: "11px" }}>/</span>
-                    <span style={{ color: "#666666", fontSize: "11px", letterSpacing: "0.12em" }}>{perfil.name.toUpperCase()}</span>
+                    <span style={{ color: "var(--admin-border)", fontSize: "11px" }}>/</span>
+                    <span style={{ color: "var(--admin-text-dim)", fontSize: "11px", letterSpacing: "0.12em" }}>{perfil.name.toUpperCase()}</span>
                 </div>
 
                 {/* Title + Actions */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                     <h1 style={{
-                        color: "#E8E8E8", fontSize: "20px", lineHeight: "24px",
+                        color: "var(--admin-text)", fontSize: "20px", lineHeight: "24px",
                         fontFamily: "'Playfair Display', system-ui, serif", margin: 0,
                     }}>
                         Perfil da Revendedora
@@ -169,8 +169,8 @@ export default function RevendedoraPerfilPage() {
                             style={{
                                 display: "inline-flex", alignItems: "center", gap: "6px",
                                 padding: "7px 14px", borderRadius: "6px",
-                                background: "#1A2A20", border: "1px solid #2D6A4F",
-                                color: "#52B788", fontSize: "12px", fontWeight: 600,
+                                background: "#1A2A20", border: "1px solid var(--admin-accent-hover)",
+                                color: "var(--admin-success)", fontSize: "12px", fontWeight: 600,
                                 textDecoration: "none",
                             }}
                         >
@@ -180,8 +180,8 @@ export default function RevendedoraPerfilPage() {
                         <button style={{
                             display: "inline-flex", alignItems: "center", gap: "6px",
                             padding: "7px 14px", borderRadius: "6px",
-                            background: "#1E1E1E", border: "1px solid #2A2A2A",
-                            color: "#888888", fontSize: "12px", fontWeight: 500,
+                            background: "var(--admin-surface-hover)", border: "1px solid var(--admin-border)",
+                            color: "var(--admin-text-muted)", fontSize: "12px", fontWeight: 500,
                             cursor: "pointer",
                         }}>
                             <UserCog className="w-3.5 h-3.5" /> Alterar Consultora
@@ -190,8 +190,8 @@ export default function RevendedoraPerfilPage() {
                         <button style={{
                             display: "inline-flex", alignItems: "center", gap: "6px",
                             padding: "7px 14px", borderRadius: "6px",
-                            background: "#1E1E1E", border: "1px solid #3A1515",
-                            color: "#E05555", fontSize: "12px", fontWeight: 500,
+                            background: "var(--admin-surface-hover)", border: "1px solid #3A1515",
+                            color: "var(--admin-danger)", fontSize: "12px", fontWeight: 500,
                             cursor: "pointer",
                         }}>
                             <Ban className="w-3.5 h-3.5" /> Desativar Conta
@@ -204,14 +204,14 @@ export default function RevendedoraPerfilPage() {
                 {/* ── Identity Card ────────────────────────────────────────── */}
                 <div style={{
                     display: "flex", alignItems: "center", gap: "24px",
-                    padding: "24px", background: "#171717",
-                    border: "1px solid #2A2A2A", borderRadius: "10px",
+                    padding: "24px", background: "var(--admin-surface)",
+                    border: "1px solid var(--admin-border)", borderRadius: "10px",
                 }}>
                     {/* Avatar */}
                     <div style={{
                         width: "64px", height: "64px", borderRadius: "50%",
-                        background: "#2A3A30", border: "2px solid #2D6A4F",
-                        color: "#52B788", display: "flex", alignItems: "center", justifyContent: "center",
+                        background: "#2A3A30", border: "2px solid var(--admin-accent-hover)",
+                        color: "var(--admin-success)", display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: "22px", fontWeight: 700, flexShrink: 0,
                         overflow: "hidden",
                     }}>
@@ -225,11 +225,11 @@ export default function RevendedoraPerfilPage() {
                     {/* Info */}
                     <div style={{ flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "6px" }}>
                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <span style={{ color: "#E8E8E8", fontSize: "17px", fontWeight: 700 }}>{perfil.name}</span>
+                            <span style={{ color: "var(--admin-text)", fontSize: "17px", fontWeight: 700 }}>{perfil.name}</span>
                             {perfil.nivel && (
                                 <span style={{
                                     padding: "3px 10px", borderRadius: "20px",
-                                    background: "#2D6A4F", color: "#D8F3DC",
+                                    background: "var(--admin-accent-hover)", color: "var(--admin-success)",
                                     fontSize: "10px", fontWeight: 700, letterSpacing: "0.06em",
                                 }}>
                                     {perfil.nivel.nome.toUpperCase()}
@@ -238,21 +238,21 @@ export default function RevendedoraPerfilPage() {
                             {perfil.documentos.some((d) => d.status === "pendente" || d.status === "em_analise") && (
                                 <span style={{
                                     padding: "3px 10px", borderRadius: "20px",
-                                    background: "#252525", color: "#888888",
-                                    border: "1px solid #333333",
+                                    background: "var(--admin-surface-hover)", color: "var(--admin-text-muted)",
+                                    border: "1px solid var(--admin-border)",
                                     fontSize: "10px", fontWeight: 500,
                                 }}>
                                     CI PENDENTE
                                 </span>
                             )}
                         </div>
-                        <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "#555555", fontSize: "12px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "16px", color: "var(--admin-text-muted)", fontSize: "12px" }}>
                             <span>{perfil.email || "—"}</span>
-                            <span style={{ color: "#333333" }}>·</span>
+                            <span style={{ color: "var(--admin-border)" }}>·</span>
                             <span>CI: {perfil.cedula || "—"}</span>
-                            <span style={{ color: "#333333" }}>·</span>
+                            <span style={{ color: "var(--admin-border)" }}>·</span>
                             <span>{perfil.whatsapp}</span>
-                            <span style={{ color: "#333333" }}>·</span>
+                            <span style={{ color: "var(--admin-border)" }}>·</span>
                             <span>{[perfil.endereco_cidade, perfil.endereco_estado].filter(Boolean).join(" / ") || "—"}</span>
                         </div>
                     </div>
@@ -260,27 +260,27 @@ export default function RevendedoraPerfilPage() {
                     {/* Stats */}
                     <div style={{
                         display: "flex", flexShrink: 0, paddingLeft: "24px",
-                        borderLeft: "1px solid #252525",
+                        borderLeft: "1px solid var(--admin-surface-hover)",
                     }}>
                         {/* Pontos */}
                         <div style={{
                             display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
-                            paddingInline: "20px", borderRight: "1px solid #252525",
+                            paddingInline: "20px", borderRight: "1px solid var(--admin-surface-hover)",
                         }}>
-                            <span style={{ color: "#E8E8E8", fontSize: "18px", fontWeight: 700 }}>
+                            <span style={{ color: "var(--admin-text)", fontSize: "18px", fontWeight: 700 }}>
                                 {perfil.pontos_total.toLocaleString("es-PY")}
                             </span>
-                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>PONTOS</span>
+                            <span style={{ color: "var(--admin-text-muted)", fontSize: "10px", letterSpacing: "0.08em" }}>PONTOS</span>
                         </div>
                         {/* Comissão */}
                         <div style={{
                             display: "flex", flexDirection: "column", alignItems: "center", gap: "3px",
-                            paddingInline: "20px", borderRight: "1px solid #252525",
+                            paddingInline: "20px", borderRight: "1px solid var(--admin-surface-hover)",
                         }}>
-                            <span style={{ color: "#52B788", fontSize: "18px", fontWeight: 700 }}>
+                            <span style={{ color: "var(--admin-success)", fontSize: "18px", fontWeight: 700 }}>
                                 {perfil.taxa_comissao}%
                             </span>
-                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>COMISSÃO</span>
+                            <span style={{ color: "var(--admin-text-muted)", fontSize: "10px", letterSpacing: "0.08em" }}>COMISSÃO</span>
                         </div>
                         {/* Consultora */}
                         <div style={{
@@ -290,17 +290,17 @@ export default function RevendedoraPerfilPage() {
                             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                 <div style={{
                                     width: "22px", height: "22px", borderRadius: "50%",
-                                    background: "#2A3A30", color: "#52B788",
+                                    background: "#2A3A30", color: "var(--admin-success)",
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                     fontSize: "8px", fontWeight: 700, flexShrink: 0,
                                 }}>
                                     {perfil.colaboradora ? getInitials(perfil.colaboradora.name).slice(0, 2) : "—"}
                                 </div>
-                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 600 }}>
+                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 600 }}>
                                     {perfil.colaboradora ? `M. ${perfil.colaboradora.name.split(" ").pop()}` : "—"}
                                 </span>
                             </div>
-                            <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>CONSULTORA</span>
+                            <span style={{ color: "var(--admin-text-muted)", fontSize: "10px", letterSpacing: "0.08em" }}>CONSULTORA</span>
                         </div>
                     </div>
                 </div>
@@ -311,11 +311,11 @@ export default function RevendedoraPerfilPage() {
                     <div style={{ flex: "1.1 1 0%", display: "flex", flexDirection: "column", gap: "16px" }}>
                         {/* Dados de Candidatura */}
                         <div style={{
-                            padding: "20px 24px", background: "#171717",
-                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                            padding: "20px 24px", background: "var(--admin-surface)",
+                            border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <h3 style={{
-                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                color: "var(--admin-text-muted)", fontSize: "11px", fontWeight: 600,
                                 letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "16px",
                             }}>
                                 DADOS DE CANDIDATURA
@@ -330,13 +330,13 @@ export default function RevendedoraPerfilPage() {
                                     { label: "EMPRESA", value: perfil.empresa || "—" },
                                 ].map((item) => (
                                     <div key={item.label} style={{ flex: "0 0 33.33%", display: "flex", flexDirection: "column", gap: "4px" }}>
-                                        <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>{item.label}</span>
-                                        <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>{item.value}</span>
+                                        <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>{item.label}</span>
+                                        <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>{item.value}</span>
                                     </div>
                                 ))}
                                 <div style={{ flex: "0 0 100%", display: "flex", flexDirection: "column", gap: "4px" }}>
-                                    <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>INFORMCONF</span>
-                                    <span style={{ color: "#52B788", fontSize: "13px", fontWeight: 500 }}>
+                                    <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>INFORMCONF</span>
+                                    <span style={{ color: "var(--admin-success)", fontSize: "13px", fontWeight: 500 }}>
                                         {perfil.informconf || "Sin deudas registradas al momento de la solicitud"}
                                     </span>
                                 </div>
@@ -346,22 +346,22 @@ export default function RevendedoraPerfilPage() {
                         {/* Maletas */}
                         <div style={{
                             padding: "20px 24px", background: "#161616",
-                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                            border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
                                 <h3 style={{
-                                    color: "#555555", fontSize: "11px", fontWeight: 600,
+                                    color: "var(--admin-text-muted)", fontSize: "11px", fontWeight: 600,
                                     letterSpacing: "0.12em", lineHeight: "14px",
                                 }}>
                                     MALETAS
                                 </h3>
-                                <Link href={`/admin/maleta?reseller=${perfil.id}`} style={{ color: "#2D6A4F", fontSize: "11px", fontWeight: 500, textDecoration: "none" }}>
+                                <Link href={`/admin/maleta?reseller=${perfil.id}`} style={{ color: "var(--admin-accent-hover)", fontSize: "11px", fontWeight: 500, textDecoration: "none" }}>
                                     Ver todas →
                                 </Link>
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                 {perfil.maletas.length === 0 ? (
-                                    <p style={{ color: "#555555", fontSize: "13px" }}>Nenhuma maleta</p>
+                                    <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhuma maleta</p>
                                 ) : (
                                     perfil.maletas.slice(0, 5).map((m) => (
                                         <div key={m.id} style={{
@@ -369,15 +369,15 @@ export default function RevendedoraPerfilPage() {
                                             padding: "10px 12px", background: "#161616", borderRadius: "7px",
                                         }}>
                                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <span style={{ color: "#888888", fontSize: "12px", fontWeight: 600 }}>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "12px", fontWeight: 600 }}>
                                                     #{m.numero}
                                                 </span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     Maleta #{m.numero}
                                                 </span>
                                             </div>
                                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                <span style={{ color: "#555555", fontSize: "11px" }}>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "11px" }}>
                                                     {m.status === "ativa" || m.status === "atrasada"
                                                         ? `Vence ${formatDateShort(m.data_limite)}`
                                                         : `Finalizada ${formatDateShort(m.data_envio)}`
@@ -396,11 +396,11 @@ export default function RevendedoraPerfilPage() {
                     <div style={{ width: "340px", flexShrink: 0, display: "flex", flexDirection: "column", gap: "16px" }}>
                         {/* Documentos */}
                         <div style={{
-                            padding: "20px 24px", background: "#171717",
-                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                            padding: "20px 24px", background: "var(--admin-surface)",
+                            border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <h3 style={{
-                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                color: "var(--admin-text-muted)", fontSize: "11px", fontWeight: 600,
                                 letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
                             }}>
                                 DOCUMENTOS
@@ -416,8 +416,8 @@ export default function RevendedoraPerfilPage() {
                                         padding: "10px 12px", background: "#161616", borderRadius: "7px",
                                     }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                            <FileText className="w-3.5 h-3.5" style={{ color: "#555555", flexShrink: 0 }} />
-                                            <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>{item.label}</span>
+                                            <FileText className="w-3.5 h-3.5" style={{ color: "var(--admin-text-muted)", flexShrink: 0 }} />
+                                            <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>{item.label}</span>
                                         </div>
                                         <DocStatusBadge status={item.doc?.status || "pendente"} />
                                     </div>
@@ -427,11 +427,11 @@ export default function RevendedoraPerfilPage() {
 
                         {/* Dados Bancários */}
                         <div style={{
-                            padding: "20px 24px", background: "#171717",
-                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                            padding: "20px 24px", background: "var(--admin-surface)",
+                            border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <h3 style={{
-                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                color: "var(--admin-text-muted)", fontSize: "11px", fontWeight: 600,
                                 letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
                             }}>
                                 DADOS BANCÁRIOS
@@ -439,22 +439,22 @@ export default function RevendedoraPerfilPage() {
                             {perfil.dados_bancarios ? (
                                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
                                     <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                        <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TIPO</span>
-                                        <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                        <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TIPO</span>
+                                        <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                             {perfil.dados_bancarios.tipo === "alias" ? "Bancard — Alias" : "Cuenta Bancaria"}
                                         </span>
                                     </div>
                                     {perfil.dados_bancarios.tipo === "alias" ? (
                                         <>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>ALIAS</span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>ALIAS</span>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     {perfil.dados_bancarios.alias_valor || "—"}
                                                 </span>
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     {perfil.dados_bancarios.alias_titular || "—"}
                                                 </span>
                                             </div>
@@ -462,20 +462,20 @@ export default function RevendedoraPerfilPage() {
                                     ) : (
                                         <>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>BANCO</span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>BANCO</span>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     {perfil.dados_bancarios.banco || "—"}
                                                 </span>
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>CUENTA</span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>CUENTA</span>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     {perfil.dados_bancarios.cuenta || "—"}
                                                 </span>
                                             </div>
                                             <div style={{ display: "flex", flexDirection: "column", gap: "4px" }}>
-                                                <span style={{ color: "#444444", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
-                                                <span style={{ color: "#BBBBBB", fontSize: "13px", fontWeight: 500 }}>
+                                                <span style={{ color: "var(--admin-text-dim)", fontSize: "10px", fontWeight: 500, letterSpacing: "0.08em" }}>TITULAR</span>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "13px", fontWeight: 500 }}>
                                                     {perfil.dados_bancarios.titular || "—"}
                                                 </span>
                                             </div>
@@ -483,17 +483,17 @@ export default function RevendedoraPerfilPage() {
                                     )}
                                 </div>
                             ) : (
-                                <p style={{ color: "#555555", fontSize: "13px" }}>Nenhum dado bancário cadastrado</p>
+                                <p style={{ color: "var(--admin-text-muted)", fontSize: "13px" }}>Nenhum dado bancário cadastrado</p>
                             )}
                         </div>
 
                         {/* Faturamento */}
                         <div style={{
-                            padding: "20px 24px", background: "#171717",
-                            border: "1px solid #2A2A2A", borderRadius: "10px",
+                            padding: "20px 24px", background: "var(--admin-surface)",
+                            border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <h3 style={{
-                                color: "#555555", fontSize: "11px", fontWeight: 600,
+                                color: "var(--admin-text-muted)", fontSize: "11px", fontWeight: 600,
                                 letterSpacing: "0.12em", lineHeight: "14px", marginBottom: "14px",
                             }}>
                                 FATURAMENTO
@@ -501,21 +501,21 @@ export default function RevendedoraPerfilPage() {
                             <div style={{ display: "flex" }}>
                                 <div style={{
                                     flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "4px",
-                                    paddingRight: "16px", borderRight: "1px solid #252525",
+                                    paddingRight: "16px", borderRight: "1px solid var(--admin-surface-hover)",
                                 }}>
-                                    <span style={{ color: "#E8E8E8", fontSize: "17px", fontWeight: 700 }}>
+                                    <span style={{ color: "var(--admin-text)", fontSize: "17px", fontWeight: 700 }}>
                                         {formatGsCompact(faturamentoTotal)}
                                     </span>
-                                    <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>TOTAL ACUMULADO</span>
+                                    <span style={{ color: "var(--admin-text-muted)", fontSize: "10px", letterSpacing: "0.08em" }}>TOTAL ACUMULADO</span>
                                 </div>
                                 <div style={{
                                     flex: "1 1 0%", display: "flex", flexDirection: "column", gap: "4px",
                                     paddingLeft: "16px",
                                 }}>
-                                    <span style={{ color: "#52B788", fontSize: "17px", fontWeight: 700 }}>
+                                    <span style={{ color: "var(--admin-success)", fontSize: "17px", fontWeight: 700 }}>
                                         {formatGsCompact(faturamentoMes)}
                                     </span>
-                                    <span style={{ color: "#555555", fontSize: "10px", letterSpacing: "0.08em" }}>ESTE MÊS</span>
+                                    <span style={{ color: "var(--admin-text-muted)", fontSize: "10px", letterSpacing: "0.08em" }}>ESTE MÊS</span>
                                 </div>
                             </div>
                         </div>

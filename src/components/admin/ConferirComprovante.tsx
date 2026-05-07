@@ -12,8 +12,8 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
   return (
     <div
       style={{
-        backgroundColor: "#171717",
-        border: "1px solid #222222",
+        backgroundColor: "var(--admin-surface)",
+        border: "1px solid var(--admin-surface-hover)",
         borderRadius: 12,
         padding: "20px 22px",
         display: "flex",
@@ -23,7 +23,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
     >
       <div
         style={{
-          color: "#444444",
+          color: "var(--admin-text-dim)",
           fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
           fontSize: 11,
           fontWeight: 700,
@@ -41,7 +41,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
             style={{
               position: "relative",
               borderRadius: 10,
-              border: "1px solid #2A2A2A",
+              border: "1px solid var(--admin-border)",
               overflow: "hidden",
               height: 160,
               cursor: "pointer",
@@ -106,7 +106,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
           style={{
             position: "relative",
             borderRadius: 10,
-            border: "1px solid #2A2A2A",
+            border: "1px solid var(--admin-border)",
             overflow: "hidden",
             height: 160,
             display: "flex",
@@ -156,7 +156,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
           </div>
           <div
             style={{
-              color: "#4ADE80",
+              color: "var(--admin-success)",
               fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
               fontSize: 12,
               fontWeight: 600,
@@ -170,7 +170,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
 
       <div
         style={{
-          color: "#444444",
+          color: "var(--admin-text-dim)",
           fontSize: 11,
           fontFamily: "Raleway,system-ui,sans-serif",
           textAlign: "center",

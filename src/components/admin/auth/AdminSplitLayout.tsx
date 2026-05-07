@@ -9,7 +9,7 @@ const BULLETS = [
 
 export function AdminSplitLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex min-h-screen" style={{ backgroundColor: "#111111" }}>
+    <div className="flex min-h-screen" style={{ backgroundColor: "var(--admin-bg)" }}>
       {/* ── Left panel ─────────────────────────────────────────── */}
       <div
         className="hidden lg:flex flex-col relative overflow-hidden"
@@ -75,7 +75,7 @@ export function AdminSplitLayout({ children }: { children: React.ReactNode }) {
               fontFamily: "var(--font-playfair, 'Playfair Display', serif)",
               fontSize: "52px",
               fontWeight: 400,
-              color: "#FFFFFF",
+              color: "#fff",
               lineHeight: 1.1,
               letterSpacing: "-0.01em",
               margin: 0,
@@ -150,7 +150,7 @@ export function AdminSplitLayout({ children }: { children: React.ReactNode }) {
         style={{
           minHeight: "100vh",
           padding: "60px 80px",
-          backgroundColor: "#111111",
+          backgroundColor: "var(--admin-bg)",
         }}
       >
         {children}

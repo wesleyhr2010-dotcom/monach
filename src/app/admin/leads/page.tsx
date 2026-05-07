@@ -56,7 +56,7 @@ export default function LeadsAdminPage() {
                     {pendentes > 0 && (
                         <span style={{
                             marginLeft: "8px", fontSize: "12px", fontWeight: 700, padding: "2px 8px",
-                            borderRadius: "12px", background: "#f59e0b20", color: "#f59e0b",
+                            borderRadius: "12px", background: "var(--admin-orange)20", color: "var(--admin-orange)",
                         }}>
                             {pendentes} pendentes
                         </span>
@@ -74,8 +74,8 @@ export default function LeadsAdminPage() {
                             onClick={() => setFilter(s)}
                             style={{
                                 fontSize: "12px", padding: "6px 14px", borderRadius: "6px", cursor: "pointer",
-                                border: filter === s ? "1px solid #35605a" : "1px solid var(--admin-border)",
-                                background: filter === s ? "#35605a" : "transparent",
+                                border: filter === s ? "1px solid var(--admin-accent)" : "1px solid var(--admin-border)",
+                                background: filter === s ? "var(--admin-accent)" : "transparent",
                                 color: filter === s ? "white" : "var(--admin-text)",
                             }}
                         >
@@ -137,7 +137,7 @@ export default function LeadsAdminPage() {
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleAprovar(lead)}
                                                             style={{
-                                                                background: "#10b981", color: "white", border: "none",
+                                                                background: "var(--admin-emerald)", color: "white", border: "none",
                                                                 borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
                                                                 fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
                                                             }}
@@ -148,7 +148,7 @@ export default function LeadsAdminPage() {
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleRecusar(lead)}
                                                             style={{
-                                                                background: "#ef4444", color: "white", border: "none",
+                                                                background: "var(--admin-danger)", color: "white", border: "none",
                                                                 borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
                                                                 fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
                                                             }}
@@ -158,12 +158,12 @@ export default function LeadsAdminPage() {
                                                     </div>
                                                 )}
                                                 {lead.status === "aprovada" && (
-                                                    <span style={{ fontSize: "11px", color: "#10b981" }}>
+                                                    <span style={{ fontSize: "11px", color: "var(--admin-emerald)" }}>
                                                         ✓ {lead.taxa_comissao}% comissão
                                                     </span>
                                                 )}
                                                 {lead.status === "recusada" && lead.observacao && (
-                                                    <span style={{ fontSize: "11px", color: "#ef4444" }} title={lead.observacao}>
+                                                    <span style={{ fontSize: "11px", color: "var(--admin-danger)" }} title={lead.observacao}>
                                                         {lead.observacao.slice(0, 30)}{lead.observacao.length > 30 ? "..." : ""}
                                                     </span>
                                                 )}
@@ -182,9 +182,9 @@ export default function LeadsAdminPage() {
 
 function StatusBadge({ status }: { status: string }) {
     const styles: Record<string, { bg: string; color: string; icon: React.ReactNode }> = {
-        pendente: { bg: "#f59e0b20", color: "#f59e0b", icon: <Clock className="w-3 h-3" /> },
-        aprovada: { bg: "#10b98120", color: "#10b981", icon: <Check className="w-3 h-3" /> },
-        recusada: { bg: "#ef444420", color: "#ef4444", icon: <X className="w-3 h-3" /> },
+        pendente: { bg: "var(--admin-orange)20", color: "var(--admin-orange)", icon: <Clock className="w-3 h-3" /> },
+        aprovada: { bg: "var(--admin-emerald)20", color: "var(--admin-emerald)", icon: <Check className="w-3 h-3" /> },
+        recusada: { bg: "var(--admin-danger)20", color: "var(--admin-danger)", icon: <X className="w-3 h-3" /> },
     };
     const s = styles[status] || styles.pendente;
     return (

@@ -323,7 +323,7 @@ export default function EquipePage() {
                                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                             <div style={{
                                                                 width: 32, height: 32, borderRadius: "50%",
-                                                                background: "#a855f7", color: "white",
+                                                                background: "var(--admin-purple-light)", color: "white",
                                                                 display: "flex", alignItems: "center", justifyContent: "center",
                                                                 fontSize: "13px", fontWeight: 600,
                                                                 overflow: "hidden", flexShrink: 0,

@@ -114,7 +114,7 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
               position: "absolute",
               top: "2px",
               right: "2px",
-              background: "#E05C5C",
+              background: "var(--admin-danger)",
               color: "#fff",
               borderRadius: "50%",
               minWidth: "18px",
@@ -285,7 +285,7 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
                         style={{
                           fontSize: "11px",
                           fontWeight: 600,
-                          color: "#FACC15",
+                          color: "var(--admin-warning)",
                           background: "rgba(250,204,21,0.1)",
                           padding: "2px 8px",
                           borderRadius: "4px",
@@ -317,7 +317,7 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
                         gap: "4px",
                         fontSize: "13px",
                         fontWeight: 600,
-                        color: "#35605A",
+                        color: "var(--admin-accent)",
                         textDecoration: "none",
                         marginTop: "4px",
                       }}

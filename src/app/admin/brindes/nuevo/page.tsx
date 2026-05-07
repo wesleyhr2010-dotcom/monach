@@ -54,7 +54,7 @@ export default function NuevoBrindePage() {
 
                 {/* Imagem */}
                 <div>
-                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#ccc", marginBottom: 6 }}>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
                         Imagen URL
                     </label>
                     <input
@@ -69,7 +69,7 @@ export default function NuevoBrindePage() {
                         <img
                             src={imagemUrl}
                             alt="Preview"
-                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "#2a2a2a" }}
+                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "var(--admin-border)" }}
                         />
                     )}
                 </div>
@@ -79,7 +79,7 @@ export default function NuevoBrindePage() {
                     <FormField label="Stock (-1 = ilimitado)" name="estoque" type="number" min={-1} required />
                 </div>
 
-                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "#ccc", cursor: "pointer" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--admin-text-muted)", cursor: "pointer" }}>
                     <input type="checkbox" name="ativo" defaultChecked style={{ width: 18, height: 18 }} />
                     Activo (visible para revendedoras)
                 </label>
@@ -89,7 +89,7 @@ export default function NuevoBrindePage() {
                     disabled={loading}
                     style={{
                         padding: "14px 24px",
-                        background: "#35605A",
+                        background: "var(--admin-accent)",
                         color: "#fff",
                         borderRadius: 10,
                         fontSize: 15,
@@ -110,7 +110,7 @@ export default function NuevoBrindePage() {
 function FormField({ label, name, type, required, min }: { label: string; name: string; type: string; required?: boolean; min?: number }) {
     return (
         <div>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#ccc", marginBottom: 6 }}>
+            <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
                 {label}
             </label>
             {type === "textarea" ? (
@@ -125,8 +125,8 @@ function FormField({ label, name, type, required, min }: { label: string; name: 
 const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "12px 14px",
-    background: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+    background: "var(--admin-surface)",
+    border: "1px solid var(--admin-border)",
     borderRadius: 8,
     color: "#fff",
     fontSize: 14,

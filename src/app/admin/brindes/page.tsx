@@ -26,7 +26,7 @@ export default async function BrindesPage() {
                             alignItems: "center",
                             gap: 6,
                             padding: "8px 14px",
-                            background: "#35605A",
+                            background: "var(--admin-accent)",
                             color: "#fff",
                             borderRadius: 8,
                             fontSize: 13,
@@ -83,7 +83,7 @@ export default async function BrindesPage() {
                                 alignItems: "center",
                                 gap: 6,
                                 padding: "8px 14px",
-                                background: "#35605A",
+                                background: "var(--admin-accent)",
                                 color: "#fff",
                                 borderRadius: 8,
                                 fontSize: 13,
@@ -109,16 +109,16 @@ export default async function BrindesPage() {
 
 function BrindeCard({ brinde }: { brinde: { id: string; nome: string; descricao: string; imagem_url: string; custo_pontos: number; estoque: number; ativo: boolean } }) {
     const estoqueLabel = brinde.estoque < 0 ? "Ilimitado" : `${brinde.estoque} unid.`;
-    const estoqueColor = brinde.estoque === 0 ? "#C0392B" : brinde.estoque < 0 ? "#777" : "#35605A";
+    const estoqueColor = brinde.estoque === 0 ? "#C0392B" : brinde.estoque < 0 ? "var(--admin-text-dim)" : "var(--admin-accent)";
 
     return (
         <div style={{
             display: "flex",
             gap: 16,
             padding: 16,
-            background: "#1a1a1a",
+            background: "var(--admin-surface)",
             borderRadius: 12,
-            border: "1px solid #2a2a2a",
+            border: "1px solid var(--admin-border)",
             opacity: brinde.ativo ? 1 : 0.6,
         }}>
             <img
@@ -129,7 +129,7 @@ function BrindeCard({ brinde }: { brinde: { id: string; nome: string; descricao:
                     height: 80,
                     objectFit: "cover",
                     borderRadius: 10,
-                    background: "#2a2a2a",
+                    background: "var(--admin-border)",
                     flexShrink: 0,
                 }}
             />
@@ -142,8 +142,8 @@ function BrindeCard({ brinde }: { brinde: { id: string; nome: string; descricao:
                         <span style={{
                             fontSize: 11,
                             fontWeight: 600,
-                            color: "#777",
-                            background: "#2a2a2a",
+                            color: "var(--admin-text-dim)",
+                            background: "var(--admin-border)",
                             padding: "2px 8px",
                             borderRadius: 4,
                         }}>
@@ -151,10 +151,10 @@ function BrindeCard({ brinde }: { brinde: { id: string; nome: string; descricao:
                         </span>
                     )}
                 </div>
-                <p style={{ fontSize: 13, color: "#999", margin: "0 0 8px", lineHeight: 1.4 }}>
+                <p style={{ fontSize: 13, color: "var(--admin-text-muted)", margin: "0 0 8px", lineHeight: 1.4 }}>
                     {brinde.descricao || "Sin descripción"}
                 </p>
-                <div style={{ display: "flex", gap: 16, fontSize: 13, color: "#ccc" }}>
+                <div style={{ display: "flex", gap: 16, fontSize: 13, color: "var(--admin-text-muted)" }}>
                     <span>⭐ {brinde.custo_pontos.toLocaleString("es-PY")} pts</span>
                     <span style={{ color: estoqueColor }}>📦 Stock: {estoqueLabel}</span>
                 </div>
@@ -164,7 +164,7 @@ function BrindeCard({ brinde }: { brinde: { id: string; nome: string; descricao:
                     href={`/admin/brindes/${brinde.id}/editar`}
                     style={{
                         padding: "6px 14px",
-                        background: "#2a2a2a",
+                        background: "var(--admin-border)",
                         color: "#fff",
                         borderRadius: 6,
                         fontSize: 12,

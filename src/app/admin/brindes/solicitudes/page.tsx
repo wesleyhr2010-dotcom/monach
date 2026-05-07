@@ -13,7 +13,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.
     pendente: { label: "Pendiente", color: "#e6a23c", icon: <Clock size={14} /> },
     separado: { label: "Separado", color: "#5b8bf7", icon: <Package size={14} /> },
     entregado: { label: "Entregado", color: "#27ae60", icon: <CheckCircle size={14} /> },
-    cancelado: { label: "Cancelado", color: "#777", icon: <Clock size={14} /> },
+    cancelado: { label: "Cancelado", color: "var(--admin-text-dim)", icon: <Clock size={14} /> },
 };
 
 export default async function SolicitudesPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
@@ -39,9 +39,9 @@ export default async function SolicitudesPage({ searchParams }: { searchParams: 
                             fontSize: 13,
                             fontWeight: 500,
                             textDecoration: "none",
-                            background: (status || "todas") === s ? "#35605A" : "#1a1a1a",
-                            color: (status || "todas") === s ? "#fff" : "#999",
-                            border: "1px solid #2a2a2a",
+                            background: (status || "todas") === s ? "var(--admin-accent)" : "var(--admin-surface)",
+                            color: (status || "todas") === s ? "#fff" : "var(--admin-text-muted)",
+                            border: "1px solid var(--admin-border)",
                         }}
                     >
                         {s === "todas" ? "Todas" : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -74,9 +74,9 @@ function SolicitudCard({ solicitud }: { solicitud: { id: string; status: string;
             display: "flex",
             gap: 16,
             padding: 16,
-            background: "#1a1a1a",
+            background: "var(--admin-surface)",
             borderRadius: 12,
-            border: "1px solid #2a2a2a",
+            border: "1px solid var(--admin-border)",
         }}>
             <img
                 src={solicitud.brinde.imagem_url}
@@ -86,7 +86,7 @@ function SolicitudCard({ solicitud }: { solicitud: { id: string; status: string;
                     height: 64,
                     objectFit: "cover",
                     borderRadius: 8,
-                    background: "#2a2a2a",
+                    background: "var(--admin-border)",
                     flexShrink: 0,
                 }}
             />
@@ -110,10 +110,10 @@ function SolicitudCard({ solicitud }: { solicitud: { id: string; status: string;
                         {statusConfig.label}
                     </span>
                 </div>
-                <p style={{ fontSize: 13, color: "#ccc", margin: "0 0 4px" }}>
+                <p style={{ fontSize: 13, color: "var(--admin-text-muted)", margin: "0 0 4px" }}>
                     🎁 {solicitud.brinde.nome} · -{solicitud.pontos_debitados} pts
                 </p>
-                <p style={{ fontSize: 12, color: "#777", margin: 0 }}>
+                <p style={{ fontSize: 12, color: "var(--admin-text-dim)", margin: 0 }}>
                     📅 {new Date(solicitud.created_at).toLocaleDateString("es-PY", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })}
                 </p>
             </div>

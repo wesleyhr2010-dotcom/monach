@@ -43,7 +43,7 @@ export function SituacaoBadge({ situacao }: SituacaoBadgeProps) {
         </svg>
         <span
           style={{
-            color: "#4ADE80",
+            color: "var(--admin-success)",
             fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
             fontSize: 10,
             fontWeight: 700,
@@ -66,7 +66,7 @@ export function SituacaoBadge({ situacao }: SituacaoBadgeProps) {
       >
         <span
           style={{
-            color: "#E05C5C",
+            color: "var(--admin-danger)",
             fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
             fontSize: 10,
             fontWeight: 700,
@@ -88,7 +88,7 @@ export function SituacaoBadge({ situacao }: SituacaoBadgeProps) {
     >
       <span
         style={{
-          color: "#FACC15",
+          color: "var(--admin-warning)",
           fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
           fontSize: 10,
           fontWeight: 700,
@@ -109,15 +109,15 @@ interface QuantidadeStepperProps {
 
 export function QuantidadeStepper({ value, max, situacao, onChange }: QuantidadeStepperProps) {
   const valueColor =
-    situacao === "ok" ? "#4ADE80" : situacao === "perda" ? "#E05C5C" : "#FACC15";
+    situacao === "ok" ? "var(--admin-success)" : situacao === "perda" ? "var(--admin-danger)" : "var(--admin-warning)";
 
   return (
     <div
       style={{
         display: "flex",
         alignItems: "center",
-        backgroundColor: "#1E1E1E",
-        border: "1px solid #2A2A2A",
+        backgroundColor: "var(--admin-surface-hover)",
+        border: "1px solid var(--admin-border)",
         borderRadius: 8,
         overflow: "hidden",
       }}
@@ -136,11 +136,11 @@ export function QuantidadeStepper({ value, max, situacao, onChange }: Quantidade
           cursor: "pointer",
           flexShrink: 0,
           border: "none",
-          borderRight: "1px solid #2A2A2A",
+          borderRight: "1px solid var(--admin-border)",
         }}
         disabled={value <= 0}
       >
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={value <= 0 ? "#333" : "#666666"} strokeWidth="2" strokeLinecap="round">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={value <= 0 ? "var(--admin-border)" : "var(--admin-text-dim)"} strokeWidth="2" strokeLinecap="round">
           <path d="M2 5h6" />
         </svg>
       </button>
@@ -150,7 +150,7 @@ export function QuantidadeStepper({ value, max, situacao, onChange }: Quantidade
         style={{
           width: 40,
           height: 32,
-          backgroundColor: "#252525",
+          backgroundColor: "var(--admin-surface-hover)",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
@@ -183,11 +183,11 @@ export function QuantidadeStepper({ value, max, situacao, onChange }: Quantidade
           cursor: "pointer",
           flexShrink: 0,
           border: "none",
-          borderLeft: "1px solid #2A2A2A",
+          borderLeft: "1px solid var(--admin-border)",
         }}
         disabled={value >= max}
       >
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={value >= max ? "#333" : "#666666"} strokeWidth="2" strokeLinecap="round">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" stroke={value >= max ? "var(--admin-border)" : "var(--admin-text-dim)"} strokeWidth="2" strokeLinecap="round">
           <path d="M5 2v6M2 5h6" />
         </svg>
       </button>
@@ -223,7 +223,7 @@ export function ConferirItemRow({
         height: 60,
         paddingInline: 22,
         backgroundColor: rowBg,
-        borderBottom: isLast ? "none" : "1px solid #1E1E1E",
+        borderBottom: isLast ? "none" : "1px solid var(--admin-surface-hover)",
         flexShrink: 0,
       }}
     >
@@ -239,7 +239,7 @@ export function ConferirItemRow({
       >
         <div
           style={{
-            color: "#CCCCCC",
+            color: "var(--admin-text-muted)",
             fontSize: 13,
             fontFamily: "Raleway,system-ui,sans-serif",
             overflow: "hidden",
@@ -249,14 +249,14 @@ export function ConferirItemRow({
         >
           {nome}
         </div>
-        <div style={{ color: "#444444", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif" }}>
+        <div style={{ color: "var(--admin-text-dim)", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif" }}>
           Devolver {esperado} un.{variante ? ` · ${variante}` : ""}
         </div>
       </div>
 
       {/* Esperado */}
       <div style={{ width: 120, flexShrink: 0, textAlign: "center" }}>
-        <span style={{ color: "#666666", fontSize: 14, fontFamily: "Raleway,system-ui,sans-serif" }}>
+        <span style={{ color: "var(--admin-text-dim)", fontSize: 14, fontFamily: "Raleway,system-ui,sans-serif" }}>
           {esperado} un.
         </span>
       </div>

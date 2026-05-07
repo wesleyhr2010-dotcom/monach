@@ -129,13 +129,13 @@ export default function RelatoriosPage() {
 
             <div className="admin-content">
                 {/* PDF Summary Report */}
-                <Card style={{ marginBottom: "24px", border: "1px solid #35605a22" }}>
+                <Card style={{ marginBottom: "24px", border: "1px solid var(--admin-accent)22" }}>
                     <CardContent className="pt-6">
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
                             <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                                 <div style={{
                                     width: 44, height: 44, borderRadius: 10,
-                                    background: "#35605a", color: "white",
+                                    background: "var(--admin-accent)", color: "white",
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                 }}>
                                     <FileText className="w-5 h-5" />
@@ -150,7 +150,7 @@ export default function RelatoriosPage() {
                             <Button
                                 onClick={() => handleExport("resumo", "pdf")}
                                 disabled={downloading === "resumo-pdf"}
-                                style={{ background: "#35605a" }}
+                                style={{ background: "var(--admin-accent)" }}
                             >
                                 {downloading === "resumo-pdf" ? (
                                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />

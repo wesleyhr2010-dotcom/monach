@@ -3,11 +3,11 @@
 import { cn } from "@/lib/utils";
 import { maletaStatusConfig, type MaletaStatus } from "@/lib/maleta-helpers";
 
-const statusStyles: Record<string, { dot: string; bg: string; text: string; rowBg?: string }> = {
-  ativa:           { dot: "bg-[#4ADE80]", bg: "bg-[#4ADE801A]", text: "text-[#4ADE80]" },
-  atrasada:        { dot: "bg-[#E05C5C]", bg: "bg-[#E05C5C26]", text: "text-[#E05C5C]", rowBg: "var(--admin-surface-row-atrasada)" },
-  aguardando_revisao: { dot: "bg-[#FACC15]", bg: "bg-[#FACC151A]", text: "text-[#FACC15]", rowBg: "var(--admin-surface-row-aguardando)" },
-  concluida:       { dot: "bg-[#555555]", bg: "bg-[#64646426]", text: "text-[#777777]" },
+const statusStyles: Record<string, { dotColor: string; bgColor: string; textColor: string; rowBg?: string }> = {
+  ativa:           { dotColor: "var(--admin-success)", bgColor: "var(--admin-success-10)", textColor: "var(--admin-success)" },
+  atrasada:        { dotColor: "var(--admin-danger)", bgColor: "var(--admin-danger-15)", textColor: "var(--admin-danger)", rowBg: "var(--admin-surface-row-atrasada)" },
+  aguardando_revisao: { dotColor: "var(--admin-warning)", bgColor: "var(--admin-warning-10)", textColor: "var(--admin-warning)", rowBg: "var(--admin-surface-row-aguardando)" },
+  concluida:       { dotColor: "var(--admin-text-muted)", bgColor: "var(--admin-muted-15)", textColor: "var(--admin-text-muted)" },
 };
 
 type AdminStatusBadgeProps = {
@@ -22,13 +22,12 @@ export function AdminStatusBadge({ status, className }: AdminStatusBadgeProps) {
     <span
       className={cn(
         "inline-flex items-center rounded-md py-1 px-2.5 gap-1.5",
-        style.bg,
-        style.text,
         "font-['RalewayRoman-Bold','Raleway',system-ui,sans-serif] font-bold text-[11px]",
         className
       )}
+      style={{ backgroundColor: style.bgColor, color: style.textColor }}
     >
-      <span className={cn("w-1.5 h-1.5 shrink-0 rounded-full", style.dot)} />
+      <span className="w-1.5 h-1.5 shrink-0 rounded-full" style={{ backgroundColor: style.dotColor }} />
       {config.label}
     </span>
   );

@@ -65,7 +65,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
                 <FormField label="Descripción" name="descricao" type="textarea" defaultValue={brinde.descricao} />
 
                 <div>
-                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#ccc", marginBottom: 6 }}>
+                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
                         Imagen URL
                     </label>
                     <input
@@ -90,7 +90,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
                     <FormField label="Stock (-1 = ilimitado)" name="estoque" type="number" min={-1} defaultValue={String(brinde.estoque)} required />
                 </div>
 
-                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "#ccc", cursor: "pointer" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 14, color: "var(--admin-text-muted)", cursor: "pointer" }}>
                     <input type="checkbox" name="ativo" defaultChecked={brinde.ativo} style={{ width: 18, height: 18 }} />
                     Activo (visible para revendedoras)
                 </label>
@@ -121,7 +121,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
 function FormField({ label, name, type, required, min, defaultValue }: { label: string; name: string; type: string; required?: boolean; min?: number; defaultValue?: string }) {
     return (
         <div>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "#ccc", marginBottom: 6 }}>
+            <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
                 {label}
             </label>
             {type === "textarea" ? (

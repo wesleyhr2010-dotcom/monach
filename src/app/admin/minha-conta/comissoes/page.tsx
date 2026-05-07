@@ -94,7 +94,7 @@ export default function ExtratoComissoesPage() {
             <div className="mt-6">
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#35605A]" />
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--admin-accent)]" />
                     </div>
                 ) : !data || data.extrato.length === 0 ? (
                     <div className="admin-empty-state">

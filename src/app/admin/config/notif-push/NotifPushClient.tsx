@@ -174,9 +174,9 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                 }}
               >
                 {isConfigured ? (
-                  <CheckCircle2 size={22} color="#4ADE80" />
+                  <CheckCircle2 size={22} color="var(--admin-success)" />
                 ) : (
-                  <AlertCircle size={22} color="#E05C5C" />
+                  <AlertCircle size={22} color="var(--admin-danger)" />
                 )}
               </div>
               <div>
@@ -418,12 +418,12 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                         <div style={{ fontSize: "11px", color: "var(--admin-text-muted)" }}>
                           {r.whatsapp}
                           {r.hasMaletaAtiva && (
-                            <span style={{ marginLeft: "8px", color: "#4ADE80", fontWeight: 600 }}>● Maleta activa</span>
+                            <span style={{ marginLeft: "8px", color: "var(--admin-success)", fontWeight: 600 }}>● Maleta activa</span>
                           )}
                         </div>
                       </div>
                       {!r.auth_user_id && (
-                        <span style={{ fontSize: "10px", color: "#E05C5C", fontWeight: 600 }}>Sin push</span>
+                        <span style={{ fontSize: "10px", color: "var(--admin-danger)", fontWeight: 600 }}>Sin push</span>
                       )}
                     </label>
                   ))}
@@ -545,7 +545,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                               padding: "2px 8px",
                               borderRadius: "4px",
                               background: "rgba(74,222,128,0.12)",
-                              color: "#4ADE80",
+                              color: "var(--admin-success)",
                             }}
                           >
                             ✅ Enviado
@@ -558,7 +558,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                               padding: "2px 8px",
                               borderRadius: "4px",
                               background: "rgba(224,92,92,0.12)",
-                              color: "#E05C5C",
+                              color: "var(--admin-danger)",
                             }}
                           >
                             ⚠️ Parcial

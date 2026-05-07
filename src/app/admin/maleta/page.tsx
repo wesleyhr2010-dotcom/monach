@@ -157,7 +157,7 @@ export default function MaletasPage() {
                       <td>
                         <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                           <AdminAvatar src={m.reseller.avatar_url} name={m.reseller.name} size="sm" />
-                          <span style={{ color: "#dddddd", fontFamily: "Raleway, system-ui, sans-serif", fontSize: 13 }}>{m.reseller.name}</span>
+                          <span style={{ color: "var(--admin-text)", fontFamily: "Raleway, system-ui, sans-serif", fontSize: 13 }}>{m.reseller.name}</span>
                         </div>
                       </td>
                       <td>
@@ -190,14 +190,14 @@ export default function MaletasPage() {
                             className="admin-btn-icon"
                             style={{
                               borderRadius: 7,
-                              background: m.status === "atrasada" ? "#2A1A1A" :
-                                          m.status === "aguardando_revisao" ? "#2A2A1A" :
-                                          "#1E1E1E",
+                              background: m.status === "atrasada" ? "var(--admin-surface-row-atrasada)" :
+                                          m.status === "aguardando_revisao" ? "var(--admin-surface-row-aguardando)" :
+                                          "var(--admin-surface-hover)",
                             }}
                           >
                             <ArrowRight
                               className="w-3 h-3"
-                              style={{ color: m.status === "atrasada" ? "#E05C5C" : m.status === "aguardando_revisao" ? "#FACC15" : "#666666" }}
+                              style={{ color: m.status === "atrasada" ? "var(--admin-danger)" : m.status === "aguardando_revisao" ? "var(--admin-warning)" : "var(--admin-text-dim)" }}
                             />
                           </button>
                         </Link>

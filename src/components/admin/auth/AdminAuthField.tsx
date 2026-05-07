@@ -9,7 +9,7 @@ const FIELD_STYLES = {
     fontWeight: 600,
     letterSpacing: "0.5px",
     textTransform: "uppercase" as const,
-    color: "#999999",
+    color: "var(--admin-text-muted)",
     display: "block",
     marginBottom: "7px",
   },
@@ -26,9 +26,9 @@ const FIELD_STYLES = {
     borderRadius: "8px",
     paddingLeft: "44px",
     paddingRight: "16px",
-    backgroundColor: "#1A1A1A",
-    border: "1px solid #2A2A2A",
-    color: "#EDEDED",
+    backgroundColor: "var(--admin-surface)",
+    border: "1px solid var(--admin-border)",
+    color: "var(--admin-text)",
     fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
     fontSize: "14px",
     outline: "none",
@@ -58,7 +58,7 @@ const FIELD_STYLES = {
     background: "none",
     border: "none",
     padding: 0,
-    color: "#EDEDED",
+    color: "var(--admin-text)",
   },
 } as const;
 
@@ -136,8 +136,8 @@ export function AdminAuthField({
             paddingRight: isPassword ? "44px" : "16px",
             opacity: disabled ? 0.5 : 1,
           }}
-          onFocus={(e) => { e.currentTarget.style.borderColor = "#35605A"; }}
-          onBlur={(e) => { e.currentTarget.style.borderColor = "#2A2A2A"; }}
+          onFocus={(e) => { e.currentTarget.style.borderColor = "var(--admin-accent)"; }}
+          onBlur={(e) => { e.currentTarget.style.borderColor = "var(--admin-border)"; }}
         />
         <span style={FIELD_STYLES.iconWrapper}>
           {isPassword ? <LockIcon /> : <EmailIcon />}

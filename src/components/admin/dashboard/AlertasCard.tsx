@@ -6,22 +6,22 @@ const statusConfig = {
     atrasada: {
         bg: "#1E1212",
         border: "#2E1A1A",
-        badgeBg: "#E05C5C26",
-        badgeColor: "#E05C5C",
+        badgeBg: "var(--admin-danger)26",
+        badgeColor: "var(--admin-danger)",
         label: (dias?: number) => `ATRASADA${dias ? ` — ${dias} dia${dias > 1 ? "s" : ""}` : ""}`,
     },
     acerto_pendente: {
         bg: "#1A1A12",
         border: "#2A2A1A",
-        badgeBg: "#FACC151A",
-        badgeColor: "#FACC15",
+        badgeBg: "var(--admin-warning)1A",
+        badgeColor: "var(--admin-warning)",
         label: () => "ACERTO PENDENTE",
     },
     vence_amanha: {
         bg: "#141A14",
         border: "#1E2A1E",
-        badgeBg: "#4ADE8014",
-        badgeColor: "#4ADE80",
+        badgeBg: "var(--admin-success)14",
+        badgeColor: "var(--admin-success)",
         label: () => "Vence amanhã",
     },
 };
@@ -34,8 +34,8 @@ interface AlertasCardProps {
 export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardProps) {
     return (
         <div style={{
-            background: "#171717",
-            border: "1px solid #222222",
+            background: "var(--admin-surface)",
+            border: "1px solid var(--admin-surface-hover)",
             borderRadius: 12,
             padding: "20px 22px",
             display: "flex",
@@ -44,17 +44,17 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
             flex: "1.2 1 0",
         }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ color: "#CCCCCC", fontFamily: "Raleway, sans-serif", fontWeight: 600, fontSize: 13 }}>
+                <span style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontWeight: 600, fontSize: 13 }}>
                     Maletas com Atenção
                 </span>
-                <Link href="/admin/maleta" style={{ color: "#35605A", fontFamily: "Raleway, sans-serif", fontSize: 12, textDecoration: "none" }}>
+                <Link href="/admin/maleta" style={{ color: "var(--admin-accent)", fontFamily: "Raleway, sans-serif", fontSize: 12, textDecoration: "none" }}>
                     Ver todas →
                 </Link>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {items.length === 0 && (
-                    <div style={{ color: "#555", fontFamily: "Raleway, sans-serif", fontSize: 13, padding: "12px 0" }}>
+                    <div style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13, padding: "12px 0" }}>
                         Nenhuma maleta requer atenção.
                     </div>
                 )}
@@ -73,7 +73,7 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
                             <span style={{
                                 width: 32,
                                 flexShrink: 0,
-                                color: "#555",
+                                color: "var(--admin-text-muted)",
                                 fontFamily: "Raleway, sans-serif",
                                 fontWeight: 700,
                                 fontSize: 12,
@@ -82,7 +82,7 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
                             </span>
                             <span style={{
                                 flex: "1 1 0",
-                                color: "#BBBBBB",
+                                color: "var(--admin-text-muted)",
                                 fontFamily: "Raleway, sans-serif",
                                 fontSize: 13,
                                 overflow: "hidden",
@@ -100,14 +100,14 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
                                 width: 28,
                                 height: 28,
                                 borderRadius: 7,
-                                background: "#222222",
+                                background: "var(--admin-surface-hover)",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "center",
                                 flexShrink: 0,
                                 textDecoration: "none",
                             }}>
-                                <ArrowRight size={12} color="#666666" strokeWidth={1.5} />
+                                <ArrowRight size={12} color="var(--admin-text-dim)" strokeWidth={1.5} />
                             </Link>
                         </div>
                     );
