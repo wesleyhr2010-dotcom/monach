@@ -1,4 +1,5 @@
 import { BrevoClient } from "@getbrevo/brevo";
+import { sanitizeEmailHtml } from "@/lib/email-sanitizer";
 
 const client = new BrevoClient({ apiKey: process.env.BREVO_API_KEY ?? "" });
 
@@ -55,7 +56,7 @@ export async function sendEmail(
     sender: FROM,
     to: recipients,
     subject: params.subject,
-    htmlContent: params.htmlContent,
+    htmlContent: sanitizeEmailHtml(params.htmlContent),
   };
 
   if ("textContent" in params && params.textContent) {
