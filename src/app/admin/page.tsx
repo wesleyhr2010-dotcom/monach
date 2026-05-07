@@ -80,41 +80,40 @@ export default async function AdminDashboardPage({
                 justifyContent: "space-between",
                 height: 60,
                 paddingInline: 32,
-                borderBottom: "1px solid #1A1A1A",
+                borderBottom: "1px solid var(--admin-border)",
                 flexShrink: 0,
             }}>
                 <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
-                    <span style={{ color: "#444", fontFamily: "Raleway, sans-serif", fontSize: 10, letterSpacing: 1, textTransform: "uppercase" }}>
+                    <span style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, sans-serif", fontSize: 10, letterSpacing: 1, textTransform: "uppercase" }}>
                         Admin / Dashboard
                     </span>
-                    <span style={{ color: "#EDEDED", fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: "24px", fontWeight: 600 }}>
+                    <span style={{ color: "var(--admin-text)", fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: "24px", fontWeight: 600 }}>
                         {isSuperAdmin ? "Dashboard" : `Olá, ${user.name.split(" ")[0]}`}
                     </span>
                 </div>
-                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                    {/* Period selector */}
-                    <div style={{ display: "flex", gap: "6px" }}>
-                        {PERIOD_OPTIONS.map((opt) => (
-                            <Link
-                                key={opt.days}
-                                href={`/admin?period=${opt.days}`}
-                                className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                                    validPeriod === opt.days
-                                        ? "bg-[#35605A] text-white"
-                                        : "bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333]"
-                                }`}
-                            >
-                                {opt.label}
-                            </Link>
-                        ))}
+                <div style={{ position: "relative" }}>
+                    <div style={{
+                        width: 36,
+                        height: 36,
+                        borderRadius: 8,
+                        background: "var(--admin-accent-hover)",
+                        border: "1px solid var(--admin-border-focus)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}>
+                        <Bell size={15} color="var(--admin-success)" strokeWidth={1.5} />
                     </div>
                     <div style={{ position: "relative" }}>
                         <div style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: 8,
-                            background: "#1C3A35",
-                            border: "1px solid #35605A55",
+                            position: "absolute",
+                            top: -4,
+                            right: -4,
+                            width: 16,
+                            height: 16,
+                            borderRadius: "50%",
+                            background: "var(--admin-danger)",
+                            border: "1.5px solid var(--admin-bg)",
                             display: "flex",
                             alignItems: "center",
                             justifyContent: "center",
@@ -154,7 +153,7 @@ export default async function AdminDashboardPage({
                         value={formatCurrency(metricas.faturamento)}
                         iconBg="#35605A18"
                         iconColor="#35605A"
-                        icon={<CircleDollarSign size={15} color="#35605A" strokeWidth={1.5} />}
+                        icon={<CircleDollarSign size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
                         subValue={metricas.faturamentoVariacao !== 0 ? {
                             type: metricas.faturamentoVariacao > 0 ? "up" : "down",
                             text: `${metricas.faturamentoVariacao > 0 ? "+" : ""}${metricas.faturamentoVariacao}%`,
@@ -167,7 +166,7 @@ export default async function AdminDashboardPage({
                             value={formatCurrency(minhaComissao)}
                             iconBg="#35605A18"
                             iconColor="#35605A"
-                            icon={<TrendingUp size={15} color="#35605A" strokeWidth={1.5} />}
+                            icon={<TrendingUp size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
                             subValue={{ type: "neutral", text: "10% sobre grupo" }}
                         />
                     )}
@@ -175,9 +174,9 @@ export default async function AdminDashboardPage({
                     <MetricCard
                         label="Maletas"
                         value={`${metricas.maletasAtivas} ativas`}
-                        iconBg="#9179611A"
-                        iconColor="#917961"
-                        icon={<Briefcase size={15} color="#917961" strokeWidth={1.5} />}
+                        iconBg="var(--admin-brown)1A"
+                        iconColor="var(--admin-brown)"
+                        icon={<Briefcase size={15} color="var(--admin-brown)" strokeWidth={1.5} />}
                         subValue={metricas.maletasAtrasadas > 0 ? {
                             type: "down",
                             text: `${metricas.maletasAtrasadas} atrasada${metricas.maletasAtrasadas > 1 ? "s" : ""}`,
@@ -187,9 +186,9 @@ export default async function AdminDashboardPage({
                     <MetricCard
                         label="Revendedoras"
                         value={`${metricas.revendedorasAtivas} ativas`}
-                        iconBg="#B4ABA214"
-                        iconColor="#B4ABA2"
-                        icon={<Users size={15} color="#B4ABA2" strokeWidth={1.5} />}
+                        iconBg="var(--admin-beige)14"
+                        iconColor="var(--admin-beige)"
+                        icon={<Users size={15} color="var(--admin-beige)" strokeWidth={1.5} />}
                         subValue={metricas.revendedorasNovas > 0 ? {
                             type: "up",
                             text: `+${metricas.revendedorasNovas} novas`,
@@ -201,9 +200,9 @@ export default async function AdminDashboardPage({
                         value={String(metricas.totalAlertas)}
                         iconBg="#E05C5C1A"
                         iconColor="#E05C5C"
-                        icon={<TriangleAlert size={15} color="#E05C5C" strokeWidth={1.5} />}
+                        icon={<TriangleAlert size={15} color="var(--admin-danger)" strokeWidth={1.5} />}
                         variant="danger"
-                        valueColor="#E05C5C"
+                        valueColor="var(--admin-danger)"
                     />
                 </div>
 

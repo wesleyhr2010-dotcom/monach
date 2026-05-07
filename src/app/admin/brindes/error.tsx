@@ -18,10 +18,10 @@ export default function BrindesError({
             <h1 style={{ color: "#e74c3c", fontSize: 20, marginBottom: 16 }}>
                 Error al cargar Brindes
             </h1>
-            <p style={{ color: "#ccc", marginBottom: 8 }}>
+            <p style={{ color: "var(--admin-text-muted)", marginBottom: 8 }}>
                 <strong>Digest:</strong> {error.digest}
             </p>
-            <p style={{ color: "#999", marginBottom: 24, whiteSpace: "pre-wrap", fontFamily: "monospace", fontSize: 13 }}>
+            <p style={{ color: "var(--admin-text-muted)", marginBottom: 24, whiteSpace: "pre-wrap", fontFamily: "monospace", fontSize: 13 }}>
                 {error.message}
             </p>
             {error.stack && (

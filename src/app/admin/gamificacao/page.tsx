@@ -62,7 +62,7 @@ export default function GamificacaoAdminPage() {
                         </CardTitle>
                         <button
                             onClick={() => setShowNovoNivel(!showNovoNivel)}
-                            style={{ fontSize: "12px", background: "#35605a", color: "white", border: "none", borderRadius: "6px", padding: "6px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}
+                            style={{ fontSize: "12px", background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "6px", padding: "6px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}
                         >
                             <Plus className="w-3 h-3" /> Nuevo Nivel
                         </button>
@@ -104,7 +104,7 @@ export default function GamificacaoAdminPage() {
                                                             }
                                                         }
                                                     }}
-                                                    style={{ background: "none", border: "none", cursor: "pointer", color: "#ef4444" }}
+                                                    style={{ background: "none", border: "none", cursor: "pointer", color: "var(--admin-danger)" }}
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -165,7 +165,7 @@ export default function GamificacaoAdminPage() {
                                                         alert(err instanceof Error ? err.message : "Error al actualizar");
                                                     }
                                                 }}
-                                                style={{ background: "none", border: "none", cursor: "pointer", color: r.ativo ? "#10b981" : "#6b7280" }}
+                                                style={{ background: "none", border: "none", cursor: "pointer", color: r.ativo ? "var(--admin-emerald)" : "#6b7280" }}
                                             >
                                                 {r.ativo ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
                                             </button>
@@ -210,8 +210,8 @@ export default function GamificacaoAdminPage() {
                                             <TableCell>
                                                 <span style={{
                                                     fontSize: "11px", fontWeight: 600, padding: "2px 8px", borderRadius: "4px",
-                                                    background: r.status === "pendente" ? "#f59e0b20" : r.status === "aprovado" ? "#10b98120" : "#6b728020",
-                                                    color: r.status === "pendente" ? "#f59e0b" : r.status === "aprovado" ? "#10b981" : "#6b7280",
+                                                    background: r.status === "pendente" ? "var(--admin-orange)20" : r.status === "aprovado" ? "var(--admin-emerald)20" : "#6b728020",
+                                                    color: r.status === "pendente" ? "var(--admin-orange)" : r.status === "aprovado" ? "var(--admin-emerald)" : "#6b7280",
                                                 }}>
                                                     {r.status}
                                                 </span>
@@ -221,18 +221,18 @@ export default function GamificacaoAdminPage() {
                                                     <div style={{ display: "flex", gap: "4px" }}>
                                                         <button
                                                             onClick={async () => { await atualizarStatusResgate(r.id, "aprovado"); reload(); }}
-                                                            style={{ background: "#10b981", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
+                                                            style={{ background: "var(--admin-emerald)", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
                                                         ><Check className="w-3 h-3" /></button>
                                                         <button
                                                             onClick={async () => { await atualizarStatusResgate(r.id, "recusado"); reload(); }}
-                                                            style={{ background: "#ef4444", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
+                                                            style={{ background: "var(--admin-danger)", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
                                                         ><X className="w-3 h-3" /></button>
                                                     </div>
                                                 )}
                                                 {r.status === "aprovado" && (
                                                     <button
                                                         onClick={async () => { await atualizarStatusResgate(r.id, "entregue"); reload(); }}
-                                                        style={{ fontSize: "11px", background: "#35605a", color: "white", border: "none", borderRadius: "4px", padding: "4px 8px", cursor: "pointer" }}
+                                                        style={{ fontSize: "11px", background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "4px", padding: "4px 8px", cursor: "pointer" }}
                                                     >Entregar</button>
                                                 )}
                                             </TableCell>
@@ -251,7 +251,7 @@ export default function GamificacaoAdminPage() {
 function NovoNivelForm({ onCreated }: { onCreated: () => void }) {
     const [nome, setNome] = useState("");
     const [pontosMinimos, setPontosMinimos] = useState(0);
-    const [cor, setCor] = useState("#35605a");
+    const [cor, setCor] = useState("var(--admin-accent)");
     const [ordem, setOrdem] = useState(0);
     const [saving, setSaving] = useState(false);
 
@@ -274,7 +274,7 @@ function NovoNivelForm({ onCreated }: { onCreated: () => void }) {
                         setSaving(false);
                     }
                 }}
-                style={{ background: "#35605a", color: "white", border: "none", borderRadius: "6px", padding: "8px 16px", cursor: "pointer", fontSize: "12px" }}
+                style={{ background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "6px", padding: "8px 16px", cursor: "pointer", fontSize: "12px" }}
             >
                 {saving ? "..." : "Crear"}
             </button>

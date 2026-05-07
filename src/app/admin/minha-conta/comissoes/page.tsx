@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getExtratoComissoes } from "../actions";
 import { formatGs } from "@/lib/format";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -94,14 +95,10 @@ export default function ExtratoComissoesPage() {
             <div className="mt-6">
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
-                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#35605A]" />
+                        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--admin-accent)]" />
                     </div>
                 ) : !data || data.extrato.length === 0 ? (
-                    <div className="admin-empty-state">
-                        <p style={{ color: "var(--admin-text-muted)" }}>
-                            No hay comisiones registradas para {ano}
-                        </p>
-                    </div>
+                    <AdminEmptyState title={`No hay comisiones registradas para ${ano}`} />
                 ) : (
                     <div className="flex flex-col gap-3">
                         {data.extrato.map((mes) => {

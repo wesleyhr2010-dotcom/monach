@@ -716,6 +716,24 @@ flex items-center gap-3
 
 ---
 
+## Admin Components
+
+### AdminStatusBadge
+- **Uso:** Todos os status em rotas admin (maleta, lead, contrato, brinde, etc.)
+- **Props:** `{ status: string; className?: string }`
+- **Tokens:** Usa `var(--admin-success)`, `var(--admin-danger)`, `var(--admin-warning)`, `var(--admin-text-muted)`
+- **Regra:** Nunca implementar badge de status inline — sempre usar este componente
+- **Localização:** `src/components/admin/AdminStatusBadge.tsx`
+
+### AdminEmptyState
+- **Uso:** Todos os estados vazios em rotas admin
+- **Props:** `{ icon?: LucideIcon; title: string; description?: string; action?: React.ReactNode; className?: string }`
+- **Tokens:** Usa `var(--admin-text)` e `var(--admin-text-muted)`
+- **Regra:** Nunca usar `<p>Nenhum...</p>` inline ou `EmptyState` de `@/components/ui/empty-state` em admin
+- **Localização:** `src/components/admin/AdminEmptyState.tsx`
+
+---
+
 ## Checklist de Conformidade por Tela
 
 Antes de marcar qualquer tela como concluída, verificar:

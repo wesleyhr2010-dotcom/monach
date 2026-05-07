@@ -66,7 +66,7 @@ export function AdminAuthButton({
         backgroundColor: isPrimary
           ? disabled || loading
             ? "#2E5E53"
-            : "#35605A"
+            : "var(--admin-accent)"
           : "transparent",
         cursor: disabled || loading ? "not-allowed" : "pointer",
         transition: "background-color 0.15s ease, opacity 0.15s ease",
@@ -77,7 +77,7 @@ export function AdminAuthButton({
         color: isPrimary
           ? disabled || loading
             ? "rgba(255,255,255,0.5)"
-            : "#FFFFFF"
+            : "#fff"
           : "#6A9A8A",
         opacity: disabled && !loading ? 0.6 : 1,
       }}
@@ -88,7 +88,7 @@ export function AdminAuthButton({
       }}
       onMouseLeave={(e) => {
         if (!disabled && !loading && isPrimary) {
-          e.currentTarget.style.backgroundColor = "#35605A";
+          e.currentTarget.style.backgroundColor = "var(--admin-accent)";
         }
       }}
     >

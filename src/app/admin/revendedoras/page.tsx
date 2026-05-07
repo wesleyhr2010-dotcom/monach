@@ -39,7 +39,7 @@ import { SkeletonCard } from "@/components/ui/skeleton-card";
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 const avatarColors = [
-    "#35605A", "#7C3A2D", "#2D5A7C", "#5A2D7C", "#7C5A2D", "#2D7C5A", "#3A2D7C", "#7C2D5A",
+    "var(--admin-accent)", "#7C3A2D", "#2D5A7C", "#5A2D7C", "#7C5A2D", "#2D7C5A", "#3A2D7C", "#7C2D5A",
 ];
 
 function getAvatarColor(name: string) {
@@ -69,19 +69,19 @@ function MaletaBadge({ status }: { status: string | null | undefined }) {
                 borderRadius: "6px",
                 fontSize: "10px",
                 fontWeight: 600,
-                background: "#1a1a1a",
-                color: "#666666",
-                border: "1px solid #2a2a2a",
+                background: "var(--admin-surface)",
+                color: "var(--admin-text-dim)",
+                border: "1px solid var(--admin-border)",
             }}>
                 Sem maleta
             </span>
         );
     }
     const configs: Record<string, { bg: string; color: string; border: string; label: string }> = {
-        ativa: { bg: "#1C3A35", color: "#4ADE80", border: "#2A5A2A", label: "Ativa" },
-        atrasada: { bg: "#3A1C1C", color: "#E05C5C", border: "#5A2A2A", label: "Atrasada" },
-        aguardando_revisao: { bg: "#3A3A1C", color: "#FACC15", border: "#5A5A2A", label: "Ag. revisão" },
-        concluida: { bg: "#1C3A35", color: "#4ADE80", border: "#2A5A2A", label: "Concluída" },
+        ativa: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "#2A5A2A", label: "Ativa" },
+        atrasada: { bg: "#3A1C1C", color: "var(--admin-danger)", border: "#5A2A2A", label: "Atrasada" },
+        aguardando_revisao: { bg: "#3A3A1C", color: "var(--admin-warning)", border: "#5A5A2A", label: "Ag. revisão" },
+        concluida: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "#2A5A2A", label: "Concluída" },
     };
     const cfg = configs[status] || configs.ativa;
     return (
@@ -110,8 +110,8 @@ function StatusBadge({ active }: { active: boolean }) {
             borderRadius: "6px",
             fontSize: "10px",
             fontWeight: 600,
-            background: "#1C3A35",
-            color: "#4ADE80",
+            background: "var(--admin-accent-hover)",
+            color: "var(--admin-success)",
             border: "1px solid #2A5A2A",
         }}>
             Ativa
@@ -123,9 +123,9 @@ function StatusBadge({ active }: { active: boolean }) {
             borderRadius: "6px",
             fontSize: "10px",
             fontWeight: 600,
-            background: "#1a1a1a",
-            color: "#666666",
-            border: "1px solid #2a2a2a",
+            background: "var(--admin-surface)",
+            color: "var(--admin-text-dim)",
+            border: "1px solid var(--admin-border)",
         }}>
             Inativa
         </span>
@@ -145,8 +145,8 @@ function DocBadge({ status, label }: { status: string | null | undefined; label:
             borderRadius: "4px",
             fontSize: "10px",
             fontWeight: 500,
-            background: ok ? "#1C3A35" : "#3A1C1C",
-            color: ok ? "#4ADE80" : "#E05C5C",
+            background: ok ? "var(--admin-accent-hover)" : "#3A1C1C",
+            color: ok ? "var(--admin-success)" : "var(--admin-danger)",
         }}>
             {label} {ok && <Check className="w-3 h-3" />}
         </span>
@@ -286,18 +286,18 @@ export default function RevendedorasPage() {
                     <span style={{
                         display: "inline-flex", alignItems: "center", gap: "6px",
                         padding: "5px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500,
-                        background: "#1C3A35", color: "#4ADE80", border: "1px solid #2A5A2A",
+                        background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid #2A5A2A",
                     }}>
-                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#4ADE80" }} />
+                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--admin-success)" }} />
                         {ativas} ativas
                     </span>
                     {/* Badge pendentes */}
                     <span style={{
                         display: "inline-flex", alignItems: "center", gap: "6px",
                         padding: "5px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500,
-                        background: "#3A3A1C", color: "#FACC15", border: "1px solid #5A5A2A",
+                        background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
                     }}>
-                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "#FACC15" }} />
+                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--admin-warning)" }} />
                         {pendentes} pendentes
                     </span>
                     {/* Nova revendedora */}
@@ -491,8 +491,8 @@ export default function RevendedorasPage() {
                         <div style={{
                             display: "flex", alignItems: "center",
                             height: "34px", paddingInline: "24px",
-                            background: "#111111",
-                            borderBottom: "1px solid #1E1E1E",
+                            background: "var(--admin-bg)",
+                            borderBottom: "1px solid var(--admin-surface-hover)",
                             fontSize: "10px", fontWeight: 700,
                             textTransform: "uppercase", letterSpacing: "1px",
                             color: "var(--admin-text-dim)",
@@ -509,13 +509,13 @@ export default function RevendedorasPage() {
                         {/* Rows */}
                         {filtered.map((r) => {
                             const avatarColor = getAvatarColor(r.name);
-                            const colabColor = r.colaboradora ? getAvatarColor(r.colaboradora.name) : "#555";
+                            const colabColor = r.colaboradora ? getAvatarColor(r.colaboradora.name) : "var(--admin-text-muted)";
                             return (
                                 <div key={r.id} style={{
                                     display: "flex", alignItems: "center",
                                     height: "58px", paddingInline: "24px",
                                     background: "#141A12",
-                                    borderBottom: "1px solid #1A1A1A",
+                                    borderBottom: "1px solid var(--admin-surface)",
                                     fontSize: "12px", lineHeight: "16px",
                                 }}>
                                     {/* Revendedora */}
@@ -534,20 +534,20 @@ export default function RevendedorasPage() {
                                             )}
                                         </div>
                                         <div>
-                                            <div style={{ color: "#DDDDDD", fontSize: "13px", fontWeight: 600, lineHeight: "16px" }}>
+                                            <div style={{ color: "var(--admin-text)", fontSize: "13px", fontWeight: 600, lineHeight: "16px" }}>
                                                 {r.name}
                                                 {r.documentos_pendentes > 0 && (
                                                     <span style={{
                                                         marginLeft: "8px",
                                                         padding: "1px 6px", borderRadius: "4px",
                                                         fontSize: "9px", fontWeight: 600,
-                                                        background: "#3A3A1C", color: "#FACC15",
+                                                        background: "#3A3A1C", color: "var(--admin-warning)",
                                                     }}>
                                                         CI pendente
                                                     </span>
                                                 )}
                                             </div>
-                                            <div style={{ color: "#555555", fontSize: "11px", lineHeight: "14px" }}>
+                                            <div style={{ color: "var(--admin-text-muted)", fontSize: "11px", lineHeight: "14px" }}>
                                                 {r.email} · CI: {r.cedula || "—"}
                                             </div>
                                         </div>
@@ -565,14 +565,14 @@ export default function RevendedorasPage() {
                                                 }}>
                                                     {getInitials(r.colaboradora.name).slice(0, 2)}
                                                 </div>
-                                                <span style={{ color: "#888888", fontSize: "12px" }}>
+                                                <span style={{ color: "var(--admin-text-muted)", fontSize: "12px" }}>
                                                     {r.colaboradora.name.split(" ").map((n) => n[0]).join("").toUpperCase() === getInitials(r.colaboradora.name)
                                                         ? r.colaboradora.name
                                                         : `M. ${r.colaboradora.name.split(" ").pop()}`}
                                                 </span>
                                             </>
                                         ) : (
-                                            <span style={{ color: "#555555", fontSize: "12px" }}>—</span>
+                                            <span style={{ color: "var(--admin-text-muted)", fontSize: "12px" }}>—</span>
                                         )}
                                     </div>
 
@@ -590,7 +590,7 @@ export default function RevendedorasPage() {
                                     {/* Faturamento */}
                                     <div style={{ width: "110px", flexShrink: 0, textAlign: "right" }}>
                                         <span style={{
-                                            color: "#BBBBBB", fontSize: "13px",
+                                            color: "var(--admin-text-muted)", fontSize: "13px",
                                             fontFamily: "'Playfair Display', system-ui, serif",
                                         }}>
                                             {formatGsCompact(r.faturamento_total || 0)}
@@ -604,7 +604,7 @@ export default function RevendedorasPage() {
 
                                     {/* Ação */}
                                     <div style={{ width: "40px", flexShrink: 0, display: "flex", justifyContent: "center", gap: "4px" }}>
-                                        <Link href={`/admin/revendedoras/${r.id}`} style={{ color: "#444444" }} title="Ver perfil">
+                                        <Link href={`/admin/revendedoras/${r.id}`} style={{ color: "var(--admin-text-dim)" }} title="Ver perfil">
                                             <ArrowRight className="w-4 h-4" />
                                         </Link>
                                     </div>

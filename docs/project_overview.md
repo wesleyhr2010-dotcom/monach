@@ -188,6 +188,7 @@ Rotas implementadas em `src/app/admin/`:
   - `gamificacao/`, `analytics/`, `relatorios/` — páginas placeholder/base.
   - Server Actions: `actions-products.ts`, `actions-categories.ts`, `actions-maletas.ts`, `actions-equipe.ts`, `actions-gamificacao.ts`, `actions-leads.ts`, `actions-dashboard.ts`, `actions-analytics.ts`, `actions-config.ts`.
 - Shell `layout.tsx` admin + `admin.css` + `BottomNav.tsx`.
+- **Design system admin tokenizado (Phase 15)** — 22+ tokens CSS adicionados em `admin.css` (`--admin-success`, `--admin-danger`, `--admin-warning`, etc. com variantes de opacidade). `AdminStatusBadge` refatorado para 100% tokens (zero hex). `AdminEmptyState` padronizado em 10+ rotas admin. Documentação em `docs/design-system/tokens.md` e `docs/sistema/SPEC_DESIGN_MODULES.md`.
 
 ### 6.3 Portal Revendedora (`/app/*`)
 

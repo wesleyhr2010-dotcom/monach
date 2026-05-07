@@ -10,6 +10,15 @@ import {
   type RevendedoraCampanha,
   type FiltroCampanha,
 } from "./actions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { Bell, Pencil, Power, Send, AlertCircle, CheckCircle2 } from "lucide-react";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
@@ -175,9 +184,9 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                 }}
               >
                 {isConfigured ? (
-                  <CheckCircle2 size={22} color="#4ADE80" />
+                  <CheckCircle2 size={22} color="var(--admin-success)" />
                 ) : (
-                  <AlertCircle size={22} color="#E05C5C" />
+                  <AlertCircle size={22} color="var(--admin-danger)" />
                 )}
               </div>
               <div>
@@ -419,12 +428,12 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                         <div style={{ fontSize: "11px", color: "var(--admin-text-muted)" }}>
                           {r.whatsapp}
                           {r.hasMaletaAtiva && (
-                            <span style={{ marginLeft: "8px", color: "#4ADE80", fontWeight: 600 }}>● Maleta activa</span>
+                            <span style={{ marginLeft: "8px", color: "var(--admin-success)", fontWeight: 600 }}>● Maleta activa</span>
                           )}
                         </div>
                       </div>
                       {!r.auth_user_id && (
-                        <span style={{ fontSize: "10px", color: "#E05C5C", fontWeight: 600 }}>Sin push</span>
+                        <span style={{ fontSize: "10px", color: "var(--admin-danger)", fontWeight: 600 }}>Sin push</span>
                       )}
                     </label>
                   ))}
@@ -432,9 +441,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
               )}
 
               {revendedoras.length === 0 && !isLoadingRevendedoras && (
-                <div className="admin-empty" style={{ padding: "16px" }}>
-                  <p style={{ fontSize: "13px" }}>No hay revendedoras en este filtro.</p>
-                </div>
+                <AdminEmptyState title="No hay revendedoras en este filtro" />
               )}
 
               {/* Mensagem */}
@@ -502,9 +509,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
           </h3>
 
           {logs.length === 0 ? (
-            <div className="admin-empty" style={{ padding: "32px" }}>
-              <p>No hay envíos registrados aún.</p>
-            </div>
+            <AdminEmptyState title="No hay envíos registrados aún" />
           ) : (
             <div className="admin-table-wrap">
               <table className="admin-table">
@@ -546,7 +551,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                               padding: "2px 8px",
                               borderRadius: "4px",
                               background: "rgba(74,222,128,0.12)",
-                              color: "#4ADE80",
+                              color: "var(--admin-success)",
                             }}
                           >
                             ✅ Enviado
@@ -559,7 +564,7 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
                               padding: "2px 8px",
                               borderRadius: "4px",
                               background: "rgba(224,92,92,0.12)",
-                              color: "#E05C5C",
+                              color: "var(--admin-danger)",
                             }}
                           >
                             ⚠️ Parcial

@@ -67,7 +67,7 @@ export function LoginForm() {
               fontSize: "32px",
               fontWeight: 400,
               lineHeight: 1.15,
-              color: "#EDEDED",
+              color: "var(--admin-text)",
               margin: 0,
             }}
           >
@@ -77,7 +77,7 @@ export function LoginForm() {
             style={{
               fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
               fontSize: "14px",
-              color: "#666666",
+              color: "var(--admin-text-dim)",
               lineHeight: 1.5,
               margin: 0,
             }}
@@ -190,7 +190,7 @@ export function LoginForm() {
           <svg
             viewBox="0 0 16 16"
             fill="none"
-            stroke="#B4ABA2"
+            stroke="var(--admin-beige)"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"

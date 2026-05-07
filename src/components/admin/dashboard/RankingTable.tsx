@@ -29,8 +29,8 @@ interface RankingTableProps {
 export function RankingTable({ title, items }: RankingTableProps) {
     return (
         <div style={{
-            background: "#171717",
-            border: "1px solid #222222",
+            background: "var(--admin-surface)",
+            border: "1px solid var(--admin-surface-hover)",
             borderRadius: 12,
             padding: "20px 22px",
             display: "flex",
@@ -39,22 +39,22 @@ export function RankingTable({ title, items }: RankingTableProps) {
             flex: "1 1 0",
         }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                <span style={{ color: "#CCCCCC", fontFamily: "Raleway, sans-serif", fontWeight: 600, fontSize: 13 }}>
+                <span style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontWeight: 600, fontSize: 13 }}>
                     {title}
                 </span>
                 <div style={{
-                    background: "#1E1E1E",
-                    border: "1px solid #2A2A2A",
+                    background: "var(--admin-surface-hover)",
+                    border: "1px solid var(--admin-border)",
                     borderRadius: 6,
                     padding: "3px 9px",
                 }}>
-                    <span style={{ color: "#555", fontFamily: "Raleway, sans-serif", fontSize: 10 }}>Este mês</span>
+                    <span style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 10 }}>Este mês</span>
                 </div>
             </div>
 
             <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                 {items.length === 0 && (
-                    <div style={{ color: "#555", fontFamily: "Raleway, sans-serif", fontSize: 13, padding: "8px 0" }}>
+                    <div style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13, padding: "8px 0" }}>
                         Sem dados para este período.
                     </div>
                 )}
@@ -76,20 +76,20 @@ export function RankingTable({ title, items }: RankingTableProps) {
                                         {item.initials}
                                     </span>
                                 </div>
-                                <span style={{ color: "#BBBBBB", fontFamily: "Raleway, sans-serif", fontSize: 12 }}>
+                                <span style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 12 }}>
                                     {item.nome}
                                     {item.totalRevendedoras !== undefined && (
-                                        <span style={{ color: "#444", marginLeft: 6, fontSize: 11 }}>
+                                        <span style={{ color: "var(--admin-text-dim)", marginLeft: 6, fontSize: 11 }}>
                                             {item.totalRevendedoras} revend.
                                         </span>
                                     )}
                                 </span>
                             </div>
-                            <span style={{ color: "#EDEDED", fontFamily: "'Playfair Display', serif", fontSize: 12 }}>
+                            <span style={{ color: "var(--admin-text)", fontFamily: "'Playfair Display', serif", fontSize: 12 }}>
                                 {formatCurrency(item.faturamento)}
                             </span>
                         </div>
-                        <div style={{ background: "#1E1E1E", borderRadius: 3, height: 5, overflow: "hidden" }}>
+                        <div style={{ background: "var(--admin-surface-hover)", borderRadius: 3, height: 5, overflow: "hidden" }}>
                             <div style={{
                                 height: "100%",
                                 width: `${item.percentMeta}%`,
@@ -98,7 +98,7 @@ export function RankingTable({ title, items }: RankingTableProps) {
                                 transition: "width 0.3s ease",
                             }} />
                         </div>
-                        <div style={{ color: "#444", fontFamily: "Raleway, sans-serif", fontSize: 10, textAlign: "right" }}>
+                        <div style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, sans-serif", fontSize: 10, textAlign: "right" }}>
                             {item.percentMeta}% da meta
                         </div>
                     </div>

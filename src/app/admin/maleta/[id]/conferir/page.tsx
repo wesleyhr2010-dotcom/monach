@@ -29,7 +29,7 @@ function ConferirLoading() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "#444",
+        color: "var(--admin-text-dim)",
         fontFamily: "Raleway,system-ui,sans-serif",
         fontSize: 14,
       }}
@@ -40,7 +40,7 @@ function ConferirLoading() {
             width: 32,
             height: 32,
             borderRadius: "50%",
-            border: "2px solid #35605A",
+            border: "2px solid var(--admin-accent)",
             borderTop: "2px solid transparent",
             margin: "0 auto 12px",
             animation: "spin 0.8s linear infinite",
@@ -68,7 +68,7 @@ function ConferirGuard({ children }: { children: React.ReactNode }) {
         style={{
           textAlign: "center",
           maxWidth: 360,
-          color: "#888",
+          color: "var(--admin-text-muted)",
           fontFamily: "Raleway,system-ui,sans-serif",
         }}
       >
@@ -99,7 +99,7 @@ function ConferirHeader({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        borderBottom: "1px solid #1A1A1A",
+        borderBottom: "1px solid var(--admin-surface)",
         height: 60,
         paddingInline: 32,
         flexShrink: 0,
@@ -112,8 +112,8 @@ function ConferirHeader({
             style={{
               width: 32,
               height: 32,
-              backgroundColor: "#171717",
-              border: "1px solid #2A2A2A",
+              backgroundColor: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
               borderRadius: 8,
               display: "flex",
               alignItems: "center",
@@ -121,7 +121,7 @@ function ConferirHeader({
               cursor: "pointer",
             }}
           >
-            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="#666666" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="var(--admin-text-dim)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M8 2L4 6l4 4" />
             </svg>
           </div>
@@ -129,7 +129,7 @@ function ConferirHeader({
         <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
           <div
             style={{
-              color: "#444444",
+              color: "var(--admin-text-dim)",
               fontFamily: "Raleway,system-ui,sans-serif",
               fontSize: 10,
               letterSpacing: 1,
@@ -140,7 +140,7 @@ function ConferirHeader({
           </div>
           <div
             style={{
-              color: "#EDEDED",
+              color: "var(--admin-text)",
               fontFamily: '"Playfair Display",system-ui,sans-serif',
               fontSize: 20,
             }}
@@ -169,13 +169,13 @@ function ConferirHeader({
               width: 6,
               height: 6,
               borderRadius: "50%",
-              backgroundColor: "#FACC15",
+              backgroundColor: "var(--admin-warning)",
               flexShrink: 0,
             }}
           />
           <span
             style={{
-              color: "#FACC15",
+              color: "var(--admin-warning)",
               fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
               fontSize: 12,
               fontWeight: 700,
@@ -197,20 +197,20 @@ function ConferirHeader({
                 display: "flex",
                 alignItems: "center",
                 gap: 7,
-                backgroundColor: "#0F3D1C",
-                border: "1px solid #1A5A2A",
+                backgroundColor: "var(--admin-bg-success)",
+                border: "1px solid var(--admin-border-success)",
                 borderRadius: 8,
                 height: 36,
                 paddingInline: 14,
                 cursor: "pointer",
               }}
             >
-              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#4ADE80" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--admin-success)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M7 1a6 6 0 016 6 6 6 0 01-6 6 5.96 5.96 0 01-3.1-.87L1 13l.87-2.9A5.96 5.96 0 011 7a6 6 0 016-6z" />
               </svg>
               <span
                 style={{
-                  color: "#4ADE80",
+                  color: "var(--admin-success)",
                   fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
                   fontSize: 12,
                   fontWeight: 600,
@@ -243,8 +243,8 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
   return (
     <div
       style={{
-        backgroundColor: "#171717",
-        border: "1px solid #222222",
+        backgroundColor: "var(--admin-surface)",
+        border: "1px solid var(--admin-surface-hover)",
         borderRadius: 12,
         overflow: "hidden",
         display: "flex",
@@ -259,14 +259,14 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
           alignItems: "center",
           justifyContent: "space-between",
           padding: "16px 22px",
-          borderBottom: "1px solid #1E1E1E",
+          borderBottom: "1px solid var(--admin-surface-hover)",
           flexShrink: 0,
         }}
       >
         <div>
           <div
             style={{
-              color: "#CCCCCC",
+              color: "var(--admin-text-muted)",
               fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
               fontSize: 13,
               fontWeight: 600,
@@ -274,18 +274,18 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
           >
             Confirmar Itens Recebidos
           </div>
-          <div style={{ color: "#555555", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif", marginTop: 2 }}>
+          <div style={{ color: "var(--admin-text-muted)", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif", marginTop: 2 }}>
             Ajuste as quantidades realmente recebidas de volta
           </div>
         </div>
         <div
           style={{
-            backgroundColor: "#1E1E1E",
+            backgroundColor: "var(--admin-surface-hover)",
             borderRadius: 8,
             padding: "5px 12px",
           }}
         >
-          <span style={{ color: "#555555", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif" }}>
+          <span style={{ color: "var(--admin-text-muted)", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif" }}>
             {itensParaDevolver.length} {itensParaDevolver.length === 1 ? "item" : "itens"} para devolver
           </span>
         </div>
@@ -298,8 +298,8 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
           alignItems: "center",
           height: 36,
           paddingInline: 22,
-          backgroundColor: "#141414",
-          borderBottom: "1px solid #1E1E1E",
+          backgroundColor: "var(--admin-bg)",
+          borderBottom: "1px solid var(--admin-surface-hover)",
           flexShrink: 0,
         }}
       >
@@ -342,7 +342,7 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
             style={{
               padding: "40px 22px",
               textAlign: "center",
-              color: "#444",
+              color: "var(--admin-text-dim)",
               fontSize: 13,
               fontFamily: "Raleway,system-ui,sans-serif",
             }}
@@ -359,7 +359,7 @@ function ColLabel({ children }: { children: React.ReactNode }) {
   return (
     <span
       style={{
-        color: "#444444",
+        color: "var(--admin-text-dim)",
         fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
         fontSize: 10,
         fontWeight: 700,
@@ -397,39 +397,39 @@ function ConferirBottomBar({
         display: "flex",
         alignItems: "center",
         justifyContent: "space-between",
-        borderTop: "1px solid #1A1A1A",
+        borderTop: "1px solid var(--admin-surface)",
         padding: "0 32px",
         height: 60,
         flexShrink: 0,
-        backgroundColor: "#0A0A0A",
+        backgroundColor: "var(--admin-bg)",
       }}
     >
       {/* Warning / feedback */}
       <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
         {successMsg ? (
           <>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#4ADE80" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--admin-success)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M2 7l3.5 3.5L12 3" />
             </svg>
-            <span style={{ color: "#4ADE80", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
+            <span style={{ color: "var(--admin-success)", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
               {successMsg}
             </span>
           </>
         ) : error ? (
           <>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#E05C5C" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--admin-danger)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M7 1L13.5 12H0.5L7 1z" /><path d="M7 5v3M7 10h.01" />
             </svg>
-            <span style={{ color: "#E05C5C", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
+            <span style={{ color: "var(--admin-danger)", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
               {error}
             </span>
           </>
         ) : (
           <>
-            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="#FACC15" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--admin-warning)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M7 1L13.5 12H0.5L7 1z" /><path d="M7 5v3M7 10h.01" />
             </svg>
-            <span style={{ color: "#666666", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
+            <span style={{ color: "var(--admin-text-dim)", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
               Após confirmar, o estoque será restaurado e a maleta será encerrada permanentemente.
             </span>
           </>
@@ -449,17 +449,17 @@ function ConferirBottomBar({
               borderRadius: 9,
               height: 38,
               paddingInline: 18,
-              border: "1px solid #E05C5C",
+              border: "1px solid var(--admin-danger)",
               cursor: "pointer",
               transition: "background 0.2s",
             }}
           >
-            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#E05C5C" strokeWidth="1.5" strokeLinecap="round">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="var(--admin-danger)" strokeWidth="1.5" strokeLinecap="round">
               <path d="M6.5 1L1 12h11L6.5 1z" /><path d="M6.5 5v3M6.5 9.5h.01" />
             </svg>
             <span
               style={{
-                color: "#E05C5C",
+                color: "var(--admin-danger)",
                 fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
                 fontSize: 13,
                 fontWeight: 600,
@@ -476,7 +476,7 @@ function ConferirBottomBar({
             display: "flex",
             alignItems: "center",
             gap: 7,
-            backgroundColor: confirmando ? "#29494A" : "#35605A",
+            backgroundColor: confirmando ? "var(--admin-accent-hover)" : "var(--admin-accent)",
             borderRadius: 9,
             height: 38,
             paddingInline: 18,
@@ -486,12 +486,12 @@ function ConferirBottomBar({
             transition: "background 0.2s",
           }}
         >
-          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#FFFFFF" strokeWidth="1.5" strokeLinecap="round">
+          <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#fff" strokeWidth="1.5" strokeLinecap="round">
             <path d="M2 7l3.5 3.5L11 3" />
           </svg>
           <span
             style={{
-              color: "#FFFFFF",
+              color: "#fff",
               fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
               fontSize: 13,
               fontWeight: 600,
@@ -615,10 +615,10 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
         <Link href="/admin/maleta">
           <button
             style={{
-              background: "#1E1E1E",
-              border: "1px solid #333",
+              background: "var(--admin-surface-hover)",
+              border: "1px solid var(--admin-border)",
               borderRadius: 8,
-              color: "#CCCCCC",
+              color: "var(--admin-text-muted)",
               padding: "8px 16px",
               cursor: "pointer",
               fontFamily: "Raleway,system-ui,sans-serif",
@@ -638,10 +638,10 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
         <Link href={`/admin/maleta/${id}`}>
           <button
             style={{
-              background: "#1E1E1E",
-              border: "1px solid #333",
+              background: "var(--admin-surface-hover)",
+              border: "1px solid var(--admin-border)",
               borderRadius: 8,
-              color: "#CCCCCC",
+              color: "var(--admin-text-muted)",
               padding: "8px 16px",
               cursor: "pointer",
               fontFamily: "Raleway,system-ui,sans-serif",
@@ -762,8 +762,8 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
         >
           <div
             style={{
-              background: "#171717",
-              border: "1px solid #2A2A2A",
+              background: "var(--admin-surface)",
+              border: "1px solid var(--admin-border)",
               borderRadius: 12,
               padding: "24px",
               width: 440,
@@ -771,14 +771,14 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
             }}
             onClick={(e) => e.stopPropagation()}
           >
-            <h3 style={{ color: "#EDEDED", marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
+            <h3 style={{ color: "var(--admin-text)", marginBottom: 8, fontSize: 16, fontWeight: 600 }}>
               Cerrar sin Comprobante
             </h3>
-            <p style={{ fontSize: 13, color: "#888", marginBottom: 16 }}>
+            <p style={{ fontSize: 13, color: "var(--admin-text-muted)", marginBottom: 16 }}>
               Vas a cerrar esta consignación sin comprobante de devolución. Se asumirá que todos los artículos no vendidos fueron recibidos.
             </p>
             <div style={{ marginBottom: 16 }}>
-              <label style={{ display: "block", fontSize: 12, color: "#666", marginBottom: 6, fontFamily: "Raleway,system-ui,sans-serif" }}>
+              <label style={{ display: "block", fontSize: 12, color: "var(--admin-text-dim)", marginBottom: 6, fontFamily: "Raleway,system-ui,sans-serif" }}>
                 Justificación (opcional)
               </label>
               <input
@@ -788,11 +788,11 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
                 onChange={(e) => setNotaCierreManual(e.target.value)}
                 style={{
                   width: "100%",
-                  background: "#0A0A0A",
-                  border: "1px solid #2A2A2A",
+                  background: "var(--admin-bg)",
+                  border: "1px solid var(--admin-border)",
                   borderRadius: 8,
                   padding: "8px 12px",
-                  color: "#EDEDED",
+                  color: "var(--admin-text)",
                   fontSize: 13,
                   fontFamily: "Raleway,system-ui,sans-serif",
                 }}
@@ -804,9 +804,9 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
                 style={{
                   padding: "8px 16px",
                   borderRadius: 8,
-                  border: "1px solid #2A2A2A",
+                  border: "1px solid var(--admin-border)",
                   background: "transparent",
-                  color: "#888",
+                  color: "var(--admin-text-muted)",
                   cursor: "pointer",
                   fontSize: 13,
                   fontFamily: "Raleway,system-ui,sans-serif",
@@ -821,7 +821,7 @@ export default function ConferirMaletaPage({ params }: ConferirPageProps) {
                   padding: "8px 16px",
                   borderRadius: 8,
                   border: "none",
-                  background: "#E05C5C",
+                  background: "var(--admin-danger)",
                   color: "#fff",
                   cursor: cerrandoSinComp ? "not-allowed" : "pointer",
                   opacity: cerrandoSinComp ? 0.7 : 1,

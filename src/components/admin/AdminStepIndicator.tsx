@@ -19,7 +19,7 @@ export function AdminStepIndicator({ steps, currentStep, className }: AdminStepI
           <div
             className={cn(
               "flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-colors",
-              idx === currentStep && "bg-[var(--admin-accent)] text-[#0f0f0f]",
+              idx === currentStep && "bg-[var(--admin-accent)] text-[var(--admin-bg)]",
               idx < currentStep && "bg-emerald-500/15 text-emerald-400",
               idx > currentStep && "bg-[var(--admin-surface)] text-[var(--admin-text-muted)]"
             )}

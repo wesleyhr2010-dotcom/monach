@@ -28,7 +28,7 @@ const T = {
 } as const;
 
 const CheckIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
     <path d="M5 12L10 17L19 8" />
   </svg>
 );
@@ -117,7 +117,7 @@ export default function AdminResetPasswordPage() {
 
   if (state === "success") {
     return (
-      <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center px-6">
+      <div className="min-h-screen bg-[var(--admin-bg)] flex items-center justify-center px-6">
         <div
           style={{
             width: "100%",
@@ -136,7 +136,7 @@ export default function AdminResetPasswordPage() {
               width: "56px",
               height: "56px",
               borderRadius: "50%",
-              backgroundColor: "#35605A",
+              backgroundColor: "var(--admin-accent)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -152,7 +152,7 @@ export default function AdminResetPasswordPage() {
               fontFamily: "var(--font-playfair, 'Playfair Display', serif)",
               fontSize: "32px",
               fontWeight: 400,
-              color: "#F5F0E8",
+              color: "var(--admin-text)",
               margin: "0 0 16px",
               letterSpacing: "-0.01em",
               textAlign: "center",
@@ -196,7 +196,7 @@ export default function AdminResetPasswordPage() {
             transform: "translateX(-50%)",
             fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
             fontSize: "11px",
-            color: "#2A2A2A",
+            color: "var(--admin-border)",
             letterSpacing: "0.04em",
             whiteSpace: "nowrap",
             margin: 0,
@@ -209,7 +209,7 @@ export default function AdminResetPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex flex-col items-center justify-center px-6">
+    <div className="min-h-screen bg-[var(--admin-bg)] flex flex-col items-center justify-center px-6">
       <form
         onSubmit={handleSubmit}
         noValidate
@@ -232,7 +232,7 @@ export default function AdminResetPasswordPage() {
               fontSize: "32px",
               fontWeight: 400,
               lineHeight: 1.15,
-              color: "#EDEDED",
+              color: "var(--admin-text)",
               margin: 0,
             }}
           >
@@ -242,7 +242,7 @@ export default function AdminResetPasswordPage() {
             style={{
               fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
               fontSize: "14px",
-              color: "#666666",
+              color: "var(--admin-text-dim)",
               lineHeight: 1.5,
               margin: 0,
             }}
@@ -266,7 +266,7 @@ export default function AdminResetPasswordPage() {
               style={{
                 fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
                 fontSize: "13px",
-                color: "#ef4444",
+                color: "var(--admin-danger)",
                 margin: 0,
                 textAlign: "center",
               }}
@@ -311,7 +311,7 @@ export default function AdminResetPasswordPage() {
               fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
               fontSize: "13px",
               fontWeight: 500,
-              color: "#35605A",
+              color: "var(--admin-accent)",
               textDecoration: "none",
             }}
           >
@@ -329,7 +329,7 @@ export default function AdminResetPasswordPage() {
           transform: "translateX(-50%)",
           fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
           fontSize: "11px",
-          color: "#2A2A2A",
+          color: "var(--admin-border)",
           letterSpacing: "0.04em",
           whiteSpace: "nowrap",
           margin: 0,

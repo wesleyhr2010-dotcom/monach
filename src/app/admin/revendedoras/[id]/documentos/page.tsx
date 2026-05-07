@@ -9,6 +9,7 @@ import {
 } from "./actions";
 import type { DocumentoRevendedora } from "./actions";
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -112,14 +113,14 @@ export default function DocumentosRevendedoraPage() {
         {loading ? (
           <Card>
             <CardContent className="text-center py-12">
-              <p className="text-muted-foreground">Cargando documentos...</p>
+              <AdminEmptyState title="Cargando documentos..." />
             </CardContent>
           </Card>
         ) : documentos.length === 0 ? (
           <Card>
             <CardContent className="text-center py-12">
               <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <p className="text-muted-foreground">Nenhum documento enviado</p>
+              <AdminEmptyState title="Nenhum documento enviado" />
             </CardContent>
           </Card>
         ) : (

@@ -173,7 +173,7 @@ export default function ConsultoraPerfilPage() {
                                     <h2 style={{ fontSize: "18px", fontWeight: 600, margin: 0 }}>{perfil.name}</h2>
                                     <span className="admin-badge" style={{
                                         background: perfil.is_active ? "rgba(74, 222, 128, 0.12)" : "rgba(136, 136, 136, 0.12)",
-                                        color: perfil.is_active ? "#4ade80" : "#888",
+                                        color: perfil.is_active ? "var(--admin-success)" : "var(--admin-text-muted)",
                                     }}>
                                         {perfil.is_active ? "ATIVA" : "INATIVA"}
                                     </span>
@@ -189,7 +189,7 @@ export default function ConsultoraPerfilPage() {
                             </div>
                             <div style={{ display: "flex", gap: "20px", flexWrap: "wrap" }}>
                                 <div style={{ textAlign: "center" }}>
-                                    <div style={{ fontSize: "22px", fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "#4ade80" }}>
+                                    <div style={{ fontSize: "22px", fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "var(--admin-success)" }}>
                                         {formatPct(perfil.taxa_comissao)}
                                     </div>
                                     <div style={{ fontSize: "10px", textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>Comissão</div>
@@ -314,7 +314,7 @@ export default function ConsultoraPerfilPage() {
                                                 <td>
                                                     <span className="admin-badge" style={{
                                                         background: rev.is_active ? "rgba(74, 222, 128, 0.12)" : "rgba(136, 136, 136, 0.12)",
-                                                        color: rev.is_active ? "#4ade80" : "#888",
+                                                        color: rev.is_active ? "var(--admin-success)" : "var(--admin-text-muted)",
                                                     }}>
                                                         {rev.is_active ? "ATIVA" : "INATIVA"}
                                                     </span>

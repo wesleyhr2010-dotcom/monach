@@ -36,7 +36,7 @@ export function SolicitudActions({ id, status }: { id: string; status: string })
 
     if (isPending) {
         return (
-            <div style={{ display: "flex", alignItems: "center", color: "#999", fontSize: 13 }}>
+            <div style={{ display: "flex", alignItems: "center", color: "var(--admin-text-muted)", fontSize: 13 }}>
                 Procesando...
             </div>
         );

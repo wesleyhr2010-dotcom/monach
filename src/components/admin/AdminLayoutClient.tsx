@@ -194,7 +194,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                                 }}>
                                     <div style={{ height: 1, background: "#1D1D1D", flexShrink: 0 }} />
                                     <span style={{
-                                        color: "#333333",
+                                        color: "var(--admin-border)",
                                         fontFamily: "Raleway, sans-serif",
                                         fontWeight: 700,
                                         fontSize: 9,
@@ -242,7 +242,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                                 {entry.badge?.variant === "role" && (
                                     <span style={{
                                         background: "#1C3A35",
-                                        color: "#35605A",
+                                        color: "var(--admin-accent)",
                                         borderRadius: 4,
                                         padding: "2px 5px",
                                         fontFamily: "Raleway, sans-serif",

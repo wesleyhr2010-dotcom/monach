@@ -20,8 +20,8 @@ export function ConferirRevendedoraDeclarou({
   return (
     <div
       style={{
-        backgroundColor: "#171717",
-        border: "1px solid #222222",
+        backgroundColor: "var(--admin-surface)",
+        border: "1px solid var(--admin-surface-hover)",
         borderRadius: 12,
         padding: "20px 22px",
         display: "flex",
@@ -32,7 +32,7 @@ export function ConferirRevendedoraDeclarou({
       {/* Header label */}
       <div
         style={{
-          color: "#444444",
+          color: "var(--admin-text-dim)",
           fontFamily: '"RalewayRoman-Bold","Raleway",system-ui,sans-serif',
           fontSize: 11,
           fontWeight: 700,
@@ -77,7 +77,7 @@ export function ConferirRevendedoraDeclarou({
             <div>
               <div
                 style={{
-                  color: "#4ADE80",
+                  color: "var(--admin-success)",
                   fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
                   fontSize: 12,
                   fontWeight: 600,
@@ -92,7 +92,7 @@ export function ConferirRevendedoraDeclarou({
           </div>
           <div
             style={{
-              color: "#4ADE80",
+              color: "var(--admin-success)",
               fontFamily: '"Playfair Display",system-ui,sans-serif',
               fontSize: 16,
             }}
@@ -133,7 +133,7 @@ export function ConferirRevendedoraDeclarou({
             <div>
               <div
                 style={{
-                  color: "#6677DD",
+                  color: "var(--admin-info)",
                   fontFamily: '"RalewayRoman-SemiBold","Raleway",system-ui,sans-serif',
                   fontSize: 12,
                   fontWeight: 600,
@@ -148,7 +148,7 @@ export function ConferirRevendedoraDeclarou({
           </div>
           <div
             style={{
-              color: "#6677DD",
+              color: "var(--admin-info)",
               fontFamily: '"Playfair Display",system-ui,sans-serif',
               fontSize: 16,
             }}
@@ -159,16 +159,16 @@ export function ConferirRevendedoraDeclarou({
       </div>
 
       {/* Divider */}
-      <div style={{ height: 1, backgroundColor: "#1E1E1E" }} />
+      <div style={{ height: 1, backgroundColor: "var(--admin-surface-hover)" }} />
 
       {/* Total enviado */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ color: "#555555", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
+        <div style={{ color: "var(--admin-text-muted)", fontSize: 12, fontFamily: "Raleway,system-ui,sans-serif" }}>
           Total enviado originalmente
         </div>
         <div
           style={{
-            color: "#888888",
+            color: "var(--admin-text-muted)",
             fontFamily: '"Playfair Display",system-ui,sans-serif',
             fontSize: 14,
           }}
@@ -194,7 +194,7 @@ export function ConferirRevendedoraDeclarou({
           height="13"
           viewBox="0 0 13 13"
           fill="none"
-          stroke="#FACC15"
+          stroke="var(--admin-warning)"
           strokeWidth="1.5"
           strokeLinecap="round"
           style={{ flexShrink: 0, marginTop: 1 }}
@@ -202,7 +202,7 @@ export function ConferirRevendedoraDeclarou({
           <path d="M6.5 1L12.5 11.5H0.5L6.5 1z" />
           <path d="M6.5 5v3M6.5 10h.01" />
         </svg>
-        <div style={{ color: "#FACC15", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif", lineHeight: 1.5 }}>
+        <div style={{ color: "var(--admin-warning)", fontSize: 11, fontFamily: "Raleway,system-ui,sans-serif", lineHeight: 1.5 }}>
           Confirme as quantidades reais recebidas. Os valores finais serão calculados após a conferência.
         </div>
       </div>

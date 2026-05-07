@@ -17,7 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { formatGsCompact } from "@/lib/format";
 import { UserPlus, Search, Trash2, ArrowRight, Users, Phone, Percent } from "lucide-react";
-import { toast } from "sonner";
+import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 
 export const dynamic = "force-dynamic";
 
@@ -98,11 +98,11 @@ export default function ConsultorasPage() {
                 <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
                     <div style={{ display: "flex", gap: "8px" }}>
                         <Badge variant="secondary" style={{ fontSize: "12px", padding: "4px 10px" }}>
-                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#4ade80", marginRight: 6 }} />
+                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "var(--admin-success)", marginRight: 6 }} />
                             {ativas} ativas
                         </Badge>
                         <Badge variant="secondary" style={{ fontSize: "12px", padding: "4px 10px" }}>
-                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "#888", marginRight: 6 }} />
+                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "var(--admin-text-muted)", marginRight: 6 }} />
                             {inativas} inativa{inativas !== 1 ? "s" : ""}
                         </Badge>
                     </div>
@@ -178,16 +178,16 @@ export default function ConsultorasPage() {
                 {loading ? (
                     <Card>
                         <CardContent className="text-center py-12">
-                            <p className="text-muted-foreground">Carregando...</p>
+                            <AdminEmptyState title="Carregando..." />
                         </CardContent>
                     </Card>
                 ) : filtered.length === 0 ? (
                     <Card>
                         <CardContent className="text-center py-12">
-                            <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                            <p className="text-muted-foreground">
-                                {search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
-                            </p>
+                            <AdminEmptyState
+                                icon={Users}
+                                title={search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
+                            />
                         </CardContent>
                     </Card>
                 ) : (
@@ -257,7 +257,7 @@ export default function ConsultorasPage() {
                                                 <td>
                                                     <span className="admin-badge" style={{
                                                         background: c.is_active ? "rgba(74, 222, 128, 0.12)" : "rgba(136, 136, 136, 0.12)",
-                                                        color: c.is_active ? "#4ade80" : "#888",
+                                                        color: c.is_active ? "var(--admin-success)" : "var(--admin-text-muted)",
                                                     }}>
                                                         {c.is_active ? "ATIVA" : "INATIVA"}
                                                     </span>
