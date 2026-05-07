@@ -353,3 +353,16 @@ export async function checkRateLimit(
 
 > Se `UPSTASH_REDIS_REST_URL` não estiver configurado, rate limiting é desabilitado gracefully.
 > Obrigatório em produção. Opcional em desenvolvimento.
+
+---
+
+## Implementação
+
+A implementação do rate limiting foi concluída na **Phase 11** (2026-05-06).
+
+- `src/lib/rate-limit.ts` — client Redis e limiters
+- `src/lib/rate-limit-errors.ts` — factory de resposta 429 com mensagens em espanhol paraguaio
+- `src/app/api/track/route.ts` — proteção por IP (100 req/min)
+- `src/app/api/vitrina/track/route.ts` — proteção por IP (100 req/min)
+- `src/app/api/upload-r2/route.ts` — proteção por userId (10 req/min) com bypass para ADMIN/COLABORADORA
+- Documentação operacional: `docs/sistema/RATE_LIMITS.md`
