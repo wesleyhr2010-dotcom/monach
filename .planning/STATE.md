@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.3
 milestone_name: Polimento, Segurança e UX Admin
-status: planning
+status: active
 last_updated: "2026-05-07T00:00:00.000Z"
-last_activity: 2026-05-07 -- Milestone v1.3 started
+last_activity: 2026-05-07 -- Roadmap created, 4 phases defined
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-07)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 12 — Segurança e Dependências (next)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-07 — Milestone v1.3 started
+Status: Roadmap defined — ready for planning Phase 12
+Last activity: 2026-05-07 — v1.3 roadmap created (4 phases, 23 requirements)
 
-Progress: [░░░░░░░░░░] 0% (0/? phases complete, 0/? plans complete) | Milestone v1.3 in planning
+Progress: [░░░░░░░░░░] 0% (0/4 phases complete, 0/? plans complete) | Milestone v1.3 active
 
 ## Performance Metrics
 
@@ -59,7 +59,7 @@ Progress: [░░░░░░░░░░] 0% (0/? phases complete, 0/? plans co
 - **D-13** (2026-05-06): CSV exports only `slug` to prevent PII leakage
 - **D-14** (2026-05-06): Hybrid freshness — `AnalyticsDiario` for historical + `AnalyticsAcesso` for today
 
-*(Carried forward from v1.0 — see MILESTONES.md for full history)*
+*(Carried forward from v1.0/v1.1/v1.2 — see MILESTONES.md for full history)*
 
 ### Pending Todos
 
@@ -83,5 +83,5 @@ Items deferred from v1.2 / acknowledged for future milestones:
 ## Session Continuity
 
 Last session: 2026-05-07
-Stopped at: Milestone v1.3 initialized — requirements phase
-Resume: Define requirements and create roadmap for v1.3
+Stopped at: v1.3 roadmap created — 4 phases defined, ready for Phase 12 planning
+Resume: Run `/gsd-plan-phase 12` to plan Phase 12 (Segurança e Dependências)
