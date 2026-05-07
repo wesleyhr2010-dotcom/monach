@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.2
-milestone_name: Produção e Qualidade
-status: executing
-last_updated: "2026-05-06T23:00:00.000Z"
-last_activity: 2026-05-06 -- Phase 11 Rate Limiting completed (3/3 plans)
+milestone: v1.3
+milestone_name: Polimento, Segurança e UX Admin
+status: planning
+last_updated: "2026-05-07T00:00:00.000Z"
+last_activity: 2026-05-07 -- Milestone v1.3 started
 progress:
-  total_phases: 3
-  completed_phases: 3
-  total_plans: 10
-  completed_plans: 10
-  percent: 100
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # STATE.md — NEXT-MONARCA
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-06)
+See: .planning/PROJECT.md (updated 2026-05-07)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Milestone v1.2 complete — Produção e Qualidade
+**Current focus:** Milestone v1.3 — Polimento, Segurança e UX Admin
 
 ## Current Position
 
-Phase: 11 — Rate Limiting (complete)
-Plan: 11-01, 11-02, 11-03
-Status: Completed
-Last activity: 2026-05-06 — Phase 11 Rate Limiting executed (3/3 plans, 17 tests, 295/295 passing)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-07 — Milestone v1.3 started
 
-Progress: [██████████] 100% (3/3 phases complete, 10/10 plans complete) | Milestone v1.2 ready for completion
+Progress: [░░░░░░░░░░] 0% (0/? phases complete, 0/? plans complete) | Milestone v1.3 in planning
 
 ## Performance Metrics
 
@@ -71,19 +71,17 @@ None.
 
 ## Deferred Items
 
-Items acknowledged from previous milestone:
+Items deferred from v1.2 / acknowledged for future milestones:
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| E2E Tests | Playwright golden paths (login → maleta → venda → devolução) | Pending | 2026-05-05 |
-| Observability | Sentry + logs estruturados + alertas | Pending | 2026-05-05 |
-| Security | Rate limiting via Upstash Redis | Planned (3 plans) | 2026-05-06 |
-| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.3 | 2026-05-06 |
-| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.3 | 2026-05-06 |
-| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.3 | 2026-05-06 |
+| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.4 | 2026-05-07 |
+| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.4 | 2026-05-07 |
+| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.4 | 2026-05-07 |
+| Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.4 | 2026-05-07 |
 
 ## Session Continuity
 
-Last session: 2026-05-06
-Stopped at: Milestone v1.2 scope adjustment and initialization
-Resume: Define requirements and create roadmap
+Last session: 2026-05-07
+Stopped at: Milestone v1.3 initialized — requirements phase
+Resume: Define requirements and create roadmap for v1.3
