@@ -1,14 +1,19 @@
-import DOMPurify from "isomorphic-dompurify";
+const ALLOWED_TAGS = new Set(["b", "i", "strong", "em", "br", "p", "a"]);
 
-/**
- * Sanitiza HTML de template, permitindo apenas tags de formatação básicas.
- * Remove scripts, handlers de evento e atributos perigosos.
- *
- * NOTA: Este arquivo é server-only. Não importar em componentes client-side.
- */
+// Sanitiza variáveis de template: mantém tags básicas de formatação,
+// remove scripts, handlers de evento e atributos perigosos.
+// Usa regex simples para evitar dependência em jsdom (incompatível com Turbopack SSR).
 export function sanitizeTemplateVars(input: string): string {
-  return DOMPurify.sanitize(input, {
-    ALLOWED_TAGS: ["b", "i", "strong", "em", "br", "p", "a"],
-    ALLOWED_ATTR: ["href"],
-  });
+  return input
+    // Remove event handlers em qualquer tag
+    .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, "")
+    // Remove href com javascript:
+    .replace(/href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, 'href="#"')
+    // Remove tags não permitidas (mantém conteúdo interno)
+    .replace(/<\/?([a-zA-Z][a-zA-Z0-9]*)\b[^>]*>/g, (match, tag: string) => {
+      return ALLOWED_TAGS.has(tag.toLowerCase()) ? match : "";
+    })
+    // Remove scripts e seus conteúdos completamente
+    .replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "")
+    .replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
 }
