@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimiters, checkRateLimit } from "@/lib/rate-limit";
+import { createRateLimitResponse, RATE_LIMIT_MESSAGES } from "@/lib/rate-limit-errors";
 
 // Known bot user-agent patterns
 const BOT_PATTERNS = [
@@ -18,6 +20,17 @@ function isBot(userAgent: string): boolean {
 const ALLOWED_EVENTS = ["catalogo_revendedora", "clique_whatsapp"] as const;
 
 export async function POST(request: NextRequest) {
+  // Rate limit check first
+  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+  const limitResult = await checkRateLimit(rateLimiters.trackEvento, `ip:${ip}`);
+
+  if (!limitResult.success) {
+    return createRateLimitResponse(
+      Math.ceil((limitResult.reset - Date.now()) / 1000),
+      RATE_LIMIT_MESSAGES.track
+    );
+  }
+
   try {
     const body = await request.json();
     const { reseller_id, tipo_evento, produto_id } = body;
@@ -49,7 +62,13 @@ export async function POST(request: NextRequest) {
       },
     }).catch(() => {});
 
-    return NextResponse.json({ ok: true });
+    const response = NextResponse.json({ ok: true });
+
+    // Add rate limit headers
+    response.headers.set("X-RateLimit-Limit", String(limitResult.limit));
+    response.headers.set("X-RateLimit-Remaining", String(limitResult.remaining));
+
+    return response;
   } catch {
     return NextResponse.json({ ok: true }); // Fail silently
   }
