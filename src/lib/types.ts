@@ -262,3 +262,25 @@ export interface MaletaItemDetail {
         };
     };
 }
+
+// ============================================
+// Clientes (PDV v1.4)
+// ============================================
+
+export interface ClienteItem {
+    id: string;
+    nombre: string;
+    ruc: string;
+    ciudad: string;
+    telefono: string;
+    origen: "LOJA" | "REVENDEDORA";
+    created_at: string;
+    updated_at: string;
+}
+
+export interface ClienteFormData {
+    nombre: string;
+    ruc: string;
+    ciudad: string;
+    telefono: string;
+}
