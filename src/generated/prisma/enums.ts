@@ -37,11 +37,29 @@ export const LeadStatus = {
 export type LeadStatus = (typeof LeadStatus)[keyof typeof LeadStatus]
 
 
+export const ClienteOrigem = {
+  LOJA: 'LOJA',
+  REVENDEDORA: 'REVENDEDORA'
+} as const
+
+export type ClienteOrigem = (typeof ClienteOrigem)[keyof typeof ClienteOrigem]
+
+
+export const Moneda = {
+  PYG: 'PYG',
+  USD: 'USD',
+  BRL: 'BRL'
+} as const
+
+export type Moneda = (typeof Moneda)[keyof typeof Moneda]
+
+
 export const EstoqueMovimentoTipo = {
   reserva_maleta: 'reserva_maleta',
   devolucao_maleta: 'devolucao_maleta',
   ajuste_manual: 'ajuste_manual',
-  venda_direta: 'venda_direta'
+  venda_direta: 'venda_direta',
+  venda_loja: 'venda_loja'
 } as const
 
 export type EstoqueMovimentoTipo = (typeof EstoqueMovimentoTipo)[keyof typeof EstoqueMovimentoTipo]

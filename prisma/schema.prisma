@@ -41,6 +41,21 @@ enum LeadStatus {
   @@map("lead_status")
 }
 
+enum ClienteOrigem {
+  LOJA
+  REVENDEDORA
+
+  @@map("cliente_origem")
+}
+
+enum Moneda {
+  PYG
+  USD
+  BRL
+
+  @@map("moneda")
+}
+
 // ============================================
 // Módulo 1 — Identidade e Autenticação
 // ============================================
@@ -210,9 +225,10 @@ model ProductVariant {
   ativo           Boolean  @default(true)
   created_at      DateTime @default(now()) @db.Timestamptz()
 
-product            Product             @relation(fields: [product_id], references: [id], onDelete: Cascade)
+  product            Product             @relation(fields: [product_id], references: [id], onDelete: Cascade)
   maleta_itens       MaletaItem[]
   estoque_movimentos EstoqueMovimento[]
+  venta_loja_itens   VentaLojaItem[]
   @@unique([product_id, attribute_name, attribute_value])
   @@index([product_id])
   @@index([sku])
@@ -354,6 +370,7 @@ enum EstoqueMovimentoTipo {
   devolucao_maleta
   ajuste_manual
   venda_direta
+  venda_loja
 
   @@map("estoque_movimento_tipo")
 }
@@ -369,9 +386,12 @@ model EstoqueMovimento {
 
   product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
   maleta         Maleta?        @relation(fields: [maleta_id], references: [id])
+  venta_loja    VentaLoja? @relation(fields: [venta_loja_id], references: [id])
+  venta_loja_id String?    @db.Uuid
 
   @@index([product_variant_id])
   @@index([tipo])
+  @@index([venta_loja_id])
   @@index([created_at])
   @@map("estoque_movimentos")
 }
@@ -651,4 +671,74 @@ model EmailTemplate {
   updated_at DateTime @updatedAt @db.Timestamptz()
 
   @@map("email_templates")
+}
+
+// ============================================
+// Módulo 11 — PDV e Gestão de Clientes
+// ============================================
+
+model CotizacionDia {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  brl_to_py Decimal  @db.Decimal(12, 2)
+  usd_to_py Decimal  @db.Decimal(12, 2)
+  created_at DateTime @default(now()) @db.Timestamptz()
+
+  @@map("cotizacion_dia")
+}
+
+model Cliente {
+  id        String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nombre    String
+  ruc       String   @unique
+  ciudad    String   @default("")
+  telefono  String   @default("")
+  origen    ClienteOrigem @default(LOJA)
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  ventas    VentaLoja[]
+
+  @@index([origen])
+  @@index([ruc])
+  @@map("clientes")
+}
+
+model VentaLoja {
+  id                 String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cliente_id         String   @db.Uuid
+  total              Decimal  @db.Decimal(12, 2)
+  moneda             Moneda
+  total_pyg          Decimal  @db.Decimal(12, 2)
+  talonario          String?
+  numero_factura     String?
+  tipo_operacion     String?
+  cotizacion_snapshot Json    @default("{}")
+  created_by         String   @db.Uuid
+  created_at         DateTime @default(now()) @db.Timestamptz()
+  updated_at         DateTime @default(now()) @updatedAt @db.Timestamptz()
+
+  cliente      Cliente         @relation(fields: [cliente_id], references: [id])
+  itens        VentaLojaItem[]
+  estoque_movimentos EstoqueMovimento[]
+
+  @@index([cliente_id])
+  @@index([created_at])
+  @@map("ventas_loja")
+}
+
+model VentaLojaItem {
+  id                  String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  venta_loja_id       String   @db.Uuid
+  product_variant_id  String   @db.Uuid
+  cantidad            Int
+  precio_unitario     Decimal  @db.Decimal(12, 2)
+  subtotal            Decimal  @db.Decimal(12, 2)
+  created_at          DateTime @default(now()) @db.Timestamptz()
+
+  venta_loja      VentaLoja      @relation(fields: [venta_loja_id], references: [id], onDelete: Cascade)
+  product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
+
+  @@index([venta_loja_id])
+  @@index([product_variant_id])
+  @@map("venta_loja_itens")
 }

@@ -429,6 +429,40 @@ export type EnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
   _max?: Prisma.NestedEnumLeadStatusFilter<$PrismaModel>
 }
 
+export type EnumClienteOrigemFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteOrigem | Prisma.EnumClienteOrigemFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel> | $Enums.ClienteOrigem
+}
+
+export type EnumClienteOrigemWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteOrigem | Prisma.EnumClienteOrigemFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteOrigemWithAggregatesFilter<$PrismaModel> | $Enums.ClienteOrigem
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel>
+}
+
+export type EnumMonedaFilter<$PrismaModel = never> = {
+  equals?: $Enums.Moneda | Prisma.EnumMonedaFieldRefInput<$PrismaModel>
+  in?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMonedaFilter<$PrismaModel> | $Enums.Moneda
+}
+
+export type EnumMonedaWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Moneda | Prisma.EnumMonedaFieldRefInput<$PrismaModel>
+  in?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMonedaWithAggregatesFilter<$PrismaModel> | $Enums.Moneda
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMonedaFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMonedaFilter<$PrismaModel>
+}
+
 export type NestedUuidFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -824,6 +858,40 @@ export type NestedEnumLeadStatusWithAggregatesFilter<$PrismaModel = never> = {
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumLeadStatusFilter<$PrismaModel>
   _max?: Prisma.NestedEnumLeadStatusFilter<$PrismaModel>
+}
+
+export type NestedEnumClienteOrigemFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteOrigem | Prisma.EnumClienteOrigemFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel> | $Enums.ClienteOrigem
+}
+
+export type NestedEnumClienteOrigemWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.ClienteOrigem | Prisma.EnumClienteOrigemFieldRefInput<$PrismaModel>
+  in?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  notIn?: $Enums.ClienteOrigem[] | Prisma.ListEnumClienteOrigemFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumClienteOrigemWithAggregatesFilter<$PrismaModel> | $Enums.ClienteOrigem
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumClienteOrigemFilter<$PrismaModel>
+}
+
+export type NestedEnumMonedaFilter<$PrismaModel = never> = {
+  equals?: $Enums.Moneda | Prisma.EnumMonedaFieldRefInput<$PrismaModel>
+  in?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMonedaFilter<$PrismaModel> | $Enums.Moneda
+}
+
+export type NestedEnumMonedaWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.Moneda | Prisma.EnumMonedaFieldRefInput<$PrismaModel>
+  in?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  notIn?: $Enums.Moneda[] | Prisma.ListEnumMonedaFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumMonedaWithAggregatesFilter<$PrismaModel> | $Enums.Moneda
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumMonedaFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumMonedaFilter<$PrismaModel>
 }
 
 
