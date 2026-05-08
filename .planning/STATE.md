@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: PDV e Ventas de Loja
-status: planning
+status: ready
 last_updated: "2026-05-08T00:00:00.000Z"
-last_activity: 2026-05-08 -- Milestone v1.4 started
+last_activity: 2026-05-08 -- Roadmap created (Phases 16-18)
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
-  total_plans: 0
+  total_plans: 9
   completed_plans: 0
   percent: 0
 ---
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-08 — Milestone v1.4 started
+Phase: 16 — Foundation: Schema + Gestão de Clientes
+Plan: Not started
+Status: Roadmap created — ready to execute Phase 16
+Last activity: 2026-05-08 — Roadmap created (Phases 16-18 defined)
 
-Progress: [░░░░░░░░░░░░] 0% (0/0 phases complete) | Milestone v1.4 planning
+Progress: [░░░░░░░░░░░░] 0% (0/3 phases complete) | Milestone v1.4
 
 ## Performance Metrics
 
@@ -51,6 +51,12 @@ Progress: [░░░░░░░░░░░░] 0% (0/0 phases complete) | Mile
 
 ### Decisions
 
+- **D-16-01** (2026-05-08): Migration única para todos os 5 itens de schema v1.4 — `ClienteOrigem`, `Moneda`, `venda_loja` em enum, `CotizacionDia`, `Cliente`, `VentaLoja`, `VentaLojaItem`
+- **D-16-02** (2026-05-08): Lista unificada de clientes via two-query merge — `prisma.cliente.findMany()` + `prisma.vendaMaleta.findMany({ distinct: [...] })`; filtro por `origem` por branch na Server Action
+- **D-17-01** (2026-05-08): `CotizacionDia` insert-por-update (não singleton upsert) — histórico preservado; `findFirst({ orderBy: { createdAt: "desc" } })` para taxa corrente
+- **D-17-02** (2026-05-08): `criarVentaLoja` espelha `criarMaleta` — pré-leitura de estoque fora da transaction (fail fast), `$transaction([...ops])` array form; snapshot imutável de cotização gravado nas colunas na criação
+- **D-17-03** (2026-05-08): Cotização SEMPRE relida do DB na Server Action — nunca aceitar taxa do payload do cliente
+- **D-17-04** (2026-05-08): Precisão monetária — `Math.round(Number(price) * Number(rate))` por linha; somar inteiros para evitar acumulação de float em PYG
 - **D-14-01** (2026-05-07): Refatorar `actions-analytics.ts` — Assinaturas mudam de `periodDays` para `(from: Date, to: Date)` integralmente
 - **D-14-02** (2026-05-07): UI Component `DatePickerWithRange` (Shadcn/ui) — Padronizado para seleção de range visual
 - **D-14-03** (2026-05-07): Timezone UTC-3 (PY) para limites de query — `to` representa o fim do dia no Paraguai (23:59:59)
@@ -61,7 +67,7 @@ Progress: [░░░░░░░░░░░░] 0% (0/0 phases complete) | Mile
 - **D-13-04** (2026-05-07): Wrapper Centralizado no envio com cache por request e erro rigoroso se DB falhar
 - **D-07-01** (2026-05-06): Template engine híbrida aprovada — utilitários `email-base` geram HTML + text simultaneamente
 
-*(Carried forward from v1.0/v1.1/v1.2 — see MILESTONES.md for full history)*
+*(Carried forward from v1.0/v1.1/v1.2/v1.3 — see MILESTONES.md for full history)*
 
 ### Pending Todos
 
@@ -84,5 +90,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-08
-Stopped at: Milestone v1.4 initialized — requirements defined, roadmap pending
-Resume: `/gsd-plan-phase 16` (Clientes — CRUD e lista unificada)
+Stopped at: Roadmap created — Phases 16-18 defined for v1.4
+Resume: `/gsd-plan-phase 16` (Schema migration + Gestão de Clientes)
