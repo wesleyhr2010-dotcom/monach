@@ -64,17 +64,17 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - ✓ RBAC scope leak suite (23 isolation tests, all passing) — Phase 5
 - ✓ CI/CD quality gate (GitHub Actions workflow: lint + typecheck + test + build) — Phase 5
 
-## Current Milestone: v1.3 Polimento, Segurança e UX Admin
+## Current Milestone: v1.4 PDV e Ventas de Loja
 
-**Goal:** Corrigir vulnerabilidades de dependências (Snyk), adicionar templates de email editáveis no painel admin, refatorar a UI admin para consistência visual com o Paper, e adicionar seletor de período personalizado no Analytics.
+**Goal:** Admin registra vendas físicas da loja com cliente identificado por RUC, multi-moeda e controle de estoque integrado — base de dados para futura emissão de factura paraguaia.
 
 **Target features:**
-- Segurança (Snyk): atualizar Next.js para 16.2.3, corrigir brace-expansion transitiva, avaliar xlsx/jspdf
-- Email templates editáveis no admin — CRUD no `/admin/config/emails` com edição de assunto/corpo, integração com `src/lib/emails.ts` + Brevo
-- Admin UI refatoração — auditoria contra artboards do Paper, tokens do design system, dark theme uniforme
-- Analytics período personalizado — date range picker além dos filtros fixos 7d/30d/3m/12m
-
-
+- Clientes — `/admin/clientes`: CRUD com nome, RUC, cidade, telefone; lista unificada (loja + revendedoras) com filtro por origem
+- PDV — `/admin/pdv`: busca cliente por RUC, adiciona produtos do catálogo, seleciona moeda (Guaraní/Dólar/Real), total convertido, confirma venda contado
+- Cotação do dia — `/admin/config/cotizacion`: admin define taxa BRL→PYG e USD→PYG usada no PDV
+- Controle de estoque — `estoqueMovimento` tipo `venda_loja` decrementa estoque (mesmo fluxo das maletas)
+- Histórico de vendas — `/admin/ventas-loja`: lista com cliente, valor, moeda, data
+- Campos reservados para factura futura (talonario, número, tipo de operação) salvos no banco sem UI de emissão
 
 ### Validated
 
@@ -84,13 +84,19 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 - ✓ Testes E2E com Playwright — golden paths — v1.2
 - ✓ Observabilidade — Sentry + logs estruturados + alertas — v1.2
 - ✓ Rate limiting nos endpoints sensíveis — v1.2
+- ✓ Vulnerabilidades Snyk fechadas, Next.js atualizado, auth guard nos endpoints export — v1.3
+- ✓ CRUD de templates de email editáveis no painel admin — v1.3
+- ✓ Date range picker no Analytics (período customizado, URL state, export CSV range-aware) — v1.3
+- ✓ Admin UI: tokens CSS substituídos, AdminStatusBadge e AdminEmptyState padronizados — v1.3
 
 ### Active
 
-<!-- v1.3 — Mobile e Infraestrutura -->
+<!-- v1.4 — PDV e Ventas de Loja -->
 
-### Future (v1.4)
+### Future (v1.5+)
 
+- Emissão de factura paraguaia (talonario, numeração sequencial, PDF) — base está no banco desde v1.4
+- CRM completo (crédito, cuotas, desconto, histórico por cliente)
 - Migração para domínio oficial `monarcasemijoyas.com.py` (DNS, Vercel, Supabase Auth, Brevo SPF/DKIM, R2, OneSignal, PWA)
 - Migração PWA → Capacitor (iOS + Android) — push nativo APNs, Universal Links (SPEC: `sistema/SPEC_CAPACITOR_MIGRATION.md`)
 - Modo offline do PWA — outbox, sync idempotente, resolução de conflitos (SPEC: `sistema/SPEC_OFFLINE_SYNC.md`)
@@ -131,7 +137,8 @@ Revendedoras conseguem receber, registrar vendas e devolver maletas com comprova
 **Shipped v1.0:** 5 phases, 19 plans, 229 tests, 33 commits, ~21.5h timeline.
 **Shipped v1.1:** 3 phases, 10 plans, 272 tests, 34 commits, ~1.5 days timeline.
 **Shipped v1.2:** 3 phases, 10 plans, 23 requirements, ~2 days timeline.
-**Current:** v1.3 planning — Polimento, Segurança e UX Admin.
+**Shipped v1.3:** 4 phases (12-15), 14 plans, 23 requirements — Polimento, Segurança e UX Admin.
+**Current:** v1.4 — PDV e Ventas de Loja.
 
 ## Constraints
 
@@ -178,4 +185,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-07 after v1.3 milestone initialization*
+*Last updated: 2026-05-08 after v1.4 milestone initialization*

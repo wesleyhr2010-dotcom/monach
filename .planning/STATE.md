@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Polimento, Segurança e UX Admin
-status: active
-last_updated: "2026-05-07T00:00:00.000Z"
-last_activity: 2026-05-07 -- Phase 14 executed (3 plans, 3 waves, 3 commits)
+milestone: v1.4
+milestone_name: PDV e Ventas de Loja
+status: planning
+last_updated: "2026-05-08T00:00:00.000Z"
+last_activity: 2026-05-08 -- Milestone v1.4 started
 progress:
-  total_phases: 4
-  completed_phases: 3
-  total_plans: 14
-  completed_plans: 11
-  percent: 79
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # STATE.md — NEXT-MONARCA
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-07)
+See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Milestone v1.3 — Polimento, Segurança e UX Admin
+**Current focus:** Milestone v1.4 — PDV e Ventas de Loja
 
 ## Current Position
 
-Phase: Phase 15 — Admin UI Consistência Visual
-Plan: 3 plans in 3 waves
-Status: Ready to execute
-Last activity: 2026-05-07 — Phase 14 complete (3/3 plans)
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-08 — Milestone v1.4 started
 
-Progress: [██████████░░] 79% (3/4 phases complete, 11/14 plans complete) | Milestone v1.3 active
+Progress: [░░░░░░░░░░░░] 0% (0/0 phases complete) | Milestone v1.4 planning
 
 ## Performance Metrics
 
@@ -73,17 +73,16 @@ None.
 
 ## Deferred Items
 
-Items deferred from v1.2 / acknowledged for future milestones:
-
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.4 | 2026-05-07 |
-| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.4 | 2026-05-07 |
-| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.4 | 2026-05-07 |
-| Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.4 | 2026-05-07 |
+| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.5 | 2026-05-08 |
+| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.5 | 2026-05-08 |
+| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.5 | 2026-05-08 |
+| Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.5 | 2026-05-08 |
+| PDV | Emissão de factura paraguaia (talonario, PDF) | Deferred to v1.5 | 2026-05-08 |
 
 ## Session Continuity
 
-Last session: 2026-05-07
-Stopped at: Phase 14 complete — All waves executed and verified
-Resume: Execute `/gsd-execute-phase 15` (Admin UI Consistência Visual)
+Last session: 2026-05-08
+Stopped at: Milestone v1.4 initialized — requirements defined, roadmap pending
+Resume: `/gsd-plan-phase 16` (Clientes — CRUD e lista unificada)
