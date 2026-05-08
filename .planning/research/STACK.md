@@ -1,290 +1,256 @@
-# Technology Stack — v1.3 Additions
+# Stack Research
 
-**Project:** next-monarca  
-**Milestone:** v1.3 Polimento, Segurança e UX Admin  
-**Researched:** 2026-05-07  
-**Overall confidence:** HIGH (all findings verified via npm registry, Context7, direct audit output)
+**Project:** next-monarca — v1.4 PDV e Ventas de Loja
+**Researched:** 2026-05-08
+**Confidence:** HIGH — all conclusions drawn from direct inspection of the actual codebase
 
 ---
 
 ## Summary
 
-v1.3 requires zero new runtime library categories. The four features map to:
-1. **Date range picker** — add `react-day-picker@9.14.0` (brings `date-fns` as a direct dep; no other dep needed)
-2. **Email template editor** — no new library; use a native `<textarea>` approach described below
-3. **Next.js update** — bump to `16.2.5` (not 16.2.3; npm audit identifies 16.2.5 as the clean fix version)
-4. **Vulnerability fixes** — upgrade serwist to `9.5.11` (fixes brace-expansion transitively); overrides are a fallback only
-
-The `next.config.ts` already uses `turbopack: {}` at the top level, which is the correct structure for Next.js 16. No config migration needed.
+v1.4 requires zero new npm packages. Every capability needed for the PDV multi-currency,
+client management with RUC, and store stock movement milestone is already present in the
+existing stack.
 
 ---
 
-## Date Range Picker
+## New Dependencies Needed
 
-### Recommendation: `react-day-picker@9.14.0`
+None.
 
-**Why this library:**
-- Already the underlying engine for shadcn/ui Calendar components — consistent with the project's Radix UI ecosystem
-- The shadcn/ui "Calendar" and "Date Range Picker" recipes are thin wrappers over react-day-picker; adding the library directly allows the same component pattern without adding another abstraction
-- First-class `mode="range"` support with `DateRange` type, `min`/`max` day constraints, and `excludeDisabled`
-- Full Tailwind CSS v4 integration via the `classNames` prop using `getDefaultClassNames()` as a base — no separate stylesheet import required
-- React 19 compatible (peerDep: `>=16.8.0`, actively used with React 19 in the current shadcn ecosystem)
+| Package | Version | Purpose | Justification |
+|---------|---------|---------|---------------|
+| (none) | — | — | All capabilities already exist in the installed stack |
 
-**Bundle impact:** ~1.3MB unpacked, ~40KB gzip. Brings `date-fns@^4.1.0` and `@date-fns/tz@^1.4.1` as direct deps. `date-fns` is not currently in the project, so this is a real addition. For an admin-only feature this is acceptable; the bundle is tree-shaken per route.
+---
 
-**Confidence: HIGH** — verified via npm info, Context7 docs
+## No New Dependencies Needed For
 
-**Why NOT native `<input type="date">` pair:**
-The analytics page validates the `period` param as an integer day count. Switching to `from`/`to` ISO date strings is a more significant refactor of `getAnalyticsKPIs` and all downstream action signatures (currently 8 functions take `periodDays: number`). A date picker component provides visual range feedback essential for multi-week selections. Native date inputs on admin desktop are fine but give no range highlighting or min/max day enforcement.
+### Client Entity with RUC Field
+**Covered by:** Prisma schema + `zod ^4.3.6`
 
-**Integration pattern:**
+`Cliente` is a standard Prisma model addition. RUC validation (`/^\d{6,8}-\d$/`) is a
+single `z.string().regex()` call — no external validation library needed. The `P2002`
+unique constraint violation on RUC is already handled by the existing `mapError()` helper
+in `src/lib/action-utils.ts`.
 
-```tsx
-// src/components/admin/DateRangePicker.tsx
-"use client";
-import { useState } from "react";
-import { DayPicker, getDefaultClassNames, type DateRange } from "react-day-picker";
+### Multi-Currency Support (PYG / USD / BRL)
+**Covered by:** Native `Intl.NumberFormat` (Node.js 20+, zero dependency)
 
-interface Props {
-  onRangeSelect: (range: DateRange | undefined) => void;
-  initialRange?: DateRange;
-  maxDays?: number; // default: 365
+Currency conversion is `amount_foreign * exchange_rate = amount_pyg`. No currency library
+needed. `Prisma Decimal(12,2)` backed by PostgreSQL NUMERIC already handles monetary
+precision. Display formatting uses `Intl.NumberFormat` which ships with Node.js — no `dinero.js`,
+`currency.js`, or similar package is warranted for two conversion rates.
+
+### Exchange Rate Storage (COT-01 BRL→PYG, COT-02 USD→PYG)
+**Covered by:** Prisma + PostgreSQL via a new `ConfigSistema` model
+
+Exchange rates are admin-entered daily values — not live rates. A simple key-value Prisma
+model (`chave`, `valor`) follows the same CRUD pattern already used by `CommissionTier`,
+`NivelRegra`, and `Contrato` in `actions-config.ts`. No external rate API, no Redis, no
+additional caching layer needed. The existing `@upstash/redis` must not be repurposed here —
+it is optional infrastructure used exclusively for rate limiting.
+
+### New `venda_loja` Stock Movement Type
+**Covered by:** Existing `EstoqueMovimentoTipo` enum (schema migration only)
+
+Adding `venda_loja` to the enum is one line in `schema.prisma` + a Prisma migration.
+The stock decrement logic in `actions-maletas.ts` is the direct reference implementation.
+
+### PDV Sale Transaction (atomicity across multiple tables)
+**Covered by:** Prisma 7 batch `$transaction([...ops])` pattern
+
+The batch format `$transaction([...operations])` is already the established and documented
+pattern in this codebase. The interactive form `$transaction(async tx => {...})` is NOT
+supported with the `PrismaPg` driver adapter — this is documented in `actions-maletas.ts`
+and in `PROJECT.md` Key Decisions. The PDV sale action must follow the same batch approach
+used for maleta close/return operations.
+
+### PDV UI (product search, RUC lookup, currency selector, totals)
+**Covered by:** TanStack React Query 5 (already installed) + Tailwind v4 + existing Radix primitives
+
+Product search with debounce uses TanStack Query which is already installed and used in the
+admin dashboard. The `react-day-picker ^9.14.0` and `DatePickerWithRange` component confirm
+that Radix/Shadcn UI patterns are already integrated. No new UI library needed.
+
+### Histórico de Vendas (`/admin/ventas-loja`)
+**Covered by:** Existing table/list component pattern from `/admin/maleta`, `/admin/leads`, `/admin/relatorios`
+
+### Currency Formatting
+**Covered by:** `src/lib/currency.ts` — new file, no import, pure TypeScript using `Intl.NumberFormat`
+
+---
+
+## Integration Points
+
+### New: `ConfigSistema` Prisma model (exchange rates + extensible system config)
+
+```prisma
+model ConfigSistema {
+  chave      String   @id          // "COT-01" | "COT-02"
+  valor      String                // stringified decimal, e.g. "7500"
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  @@map("config_sistema")
 }
+```
 
-export function DateRangePicker({ onRangeSelect, initialRange, maxDays = 365 }: Props) {
-  const [range, setRange] = useState<DateRange | undefined>(initialRange);
-  const defaultClassNames = getDefaultClassNames();
+Read in PDV server action: `prisma.configSistema.findMany({ where: { chave: { in: ["COT-01","COT-02"] } } })`.
+Upsert at `/admin/config/cotizacion` following the `upsertCommissionTier` pattern in `actions-config.ts`.
+No dedicated cache tag needed — pages that use this are `force-dynamic`.
 
-  const handleSelect = (r: DateRange | undefined) => {
-    setRange(r);
-    onRangeSelect(r);
+### New: `Cliente` Prisma model
+
+```prisma
+model Cliente {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  ruc        String   @unique
+  nombre     String
+  ciudad     String   @default("")
+  telefono   String   @default("")
+  origen     String   @default("loja")   // "loja" | "revendedora"
+  created_at DateTime @default(now()) @db.Timestamptz()
+  updated_at DateTime @updatedAt @db.Timestamptz()
+
+  ventas_loja VendaLoja[]
+
+  @@index([ruc])
+  @@map("clientes")
+}
+```
+
+RUC lookup at PDV: `prisma.cliente.findUnique({ where: { ruc } })`. Returns match or null
+(prompts client creation inline).
+
+### New: `venda_loja` enum value on `EstoqueMovimentoTipo`
+
+```prisma
+enum EstoqueMovimentoTipo {
+  reserva_maleta
+  devolucao_maleta
+  ajuste_manual
+  venda_direta
+  venda_loja      // NEW — store sale via PDV
+
+  @@map("estoque_movimento_tipo")
+}
+```
+
+The existing `EstoqueMovimento` model requires no structural changes — `maleta_id` is
+already nullable (`String? @db.Uuid`), so `venda_loja` movements simply leave it null.
+
+### New: `VendaLoja` + `VendaLojaItem` Prisma models
+
+`VendaLoja` fields: `cliente_id`, `operador_id` (ADMIN/COLABORADORA Reseller FK),
+`moeda` (PYG/USD/BRL — String enum), `taxa_cotizacion_aplicada` (Decimal snapshot —
+immutable after creation), `total_pyg` (converted total snapshot — immutable),
+`created_at`. Fields reserved for factura without UI: `talonario String?`,
+`numero_factura String?`, `tipo_operacion String?`.
+
+`VendaLojaItem` fields: `venda_loja_id`, `product_variant_id`, `cantidad Int`,
+`precio_unitario_pyg Decimal` (snapshot at sale time — immutable, follows the same
+snapshot-immutability rule as `VendaMaleta.preco_unitario`).
+
+### Transaction pattern — batch only (not interactive)
+
+```typescript
+// Correct pattern — from actions-maletas.ts
+const ops = [
+  prisma.vendaLoja.create({ data: ventaData }),
+  prisma.vendaLojaItem.createMany({ data: itemsData }),
+  // one update per variant (batch form, not updateMany with different values)
+  ...variants.map(v =>
+    prisma.productVariant.update({
+      where: { id: v.id },
+      data: { stock_quantity: { decrement: v.cantidad } },
+    })
+  ),
+  ...variants.map(v =>
+    prisma.estoqueMovimento.create({
+      data: {
+        product_variant_id: v.id,
+        quantidade: -v.cantidad,
+        tipo: "venda_loja",
+        motivo: `PDV venda #${ventaId}`,
+      },
+    })
+  ),
+];
+await prisma.$transaction(ops);
+```
+
+### New utility: `src/lib/currency.ts` (zero dependencies)
+
+```typescript
+export type Moeda = "PYG" | "USD" | "BRL";
+
+export function formatCurrency(amount: number, moeda: Moeda): string {
+  const configs: Record<Moeda, Intl.NumberFormatOptions> = {
+    PYG: { style: "currency", currency: "PYG", maximumFractionDigits: 0 },
+    USD: { style: "currency", currency: "USD", minimumFractionDigits: 2 },
+    BRL: { style: "currency", currency: "BRL", minimumFractionDigits: 2 },
   };
+  return new Intl.NumberFormat("es-PY", configs[moeda]).format(amount);
+}
 
-  return (
-    <DayPicker
-      mode="range"
-      selected={range}
-      onSelect={handleSelect}
-      max={maxDays}
-      disabled={{ after: new Date() }}
-      classNames={{
-        root: `${defaultClassNames.root} bg-[var(--admin-surface)] rounded-lg border border-[var(--admin-border)] p-4`,
-        today: "border border-[var(--admin-primary)]",
-        selected: "bg-[var(--admin-primary)] text-white rounded",
-        range_start: "rounded-l bg-[var(--admin-primary)] text-white",
-        range_end: "rounded-r bg-[var(--admin-primary)] text-white",
-        range_middle: "bg-[var(--admin-primary-light)] text-[var(--admin-text)]",
-      }}
-    />
-  );
+export function toPYG(
+  amount: number,
+  moeda: Moeda,
+  rates: { "COT-01": number; "COT-02": number }
+): number {
+  if (moeda === "PYG") return amount;
+  if (moeda === "BRL") return Math.round(amount * rates["COT-01"]);
+  if (moeda === "USD") return Math.round(amount * rates["COT-02"]);
+  return amount;
 }
 ```
 
-**URL param strategy for analytics page:**
-Extend `searchParams` with `from` and `to` ISO date strings (YYYY-MM-DD). When both are present, bypass the `periodDays` integer and pass explicit dates to actions. Add a `"custom"` option to `PERIOD_OPTIONS` that renders the picker popover. The existing presets continue to work unchanged.
+### Cache invalidation
 
-**Installation:**
-```bash
-npm install react-day-picker@9.14.0
-```
-
----
-
-## Email Template Editor Approach
-
-### Recommendation: Native `<textarea>` — NO new library
-
-**Verdict: Raw textarea is correct for this use case.**
-
-**Context from codebase:** The project already stores and renders push notification templates via `NotificacaoTemplate` (Prisma model) with a `substituirVariaveis` helper and a DOMPurify-based sanitizer. Email templates are currently hardcoded HTML strings in `src/lib/emails.ts` called via `sendEmail({ htmlContent, textContent })`. The goal is to move the HTML body and subject into DB records editable via the admin panel.
-
-**Why not WYSIWYG (e.g., TipTap, Quill, React Quill):**
-- Brevo sends raw HTML; what the admin edits must match exactly what Brevo sends. A WYSIWYG editor produces its own HTML dialect (often with inline styles or span wrappers) that diverges from the branded `renderEmailBase()` wrapper the project already uses.
-- The admin users for Monarca are 1-3 internal operators, not marketing teams needing a drag-and-drop canvas.
-- WYSIWYG editors add 200-500KB to bundle and are notoriously hard to style within Tailwind v4 constraint environments.
-- The existing push notification template editor (v1.0) already established the pattern: textarea + variable chip insertion. Email templates should follow the same pattern for consistency.
-
-**Recommended approach:**
-1. Create an `EmailTemplate` Prisma model with fields: `id`, `slug` (e.g., `"convite_revendedora"`), `subject`, `htmlBody`, `textBody`, `updatedAt`
-2. Admin editor at `/admin/config/emails/[slug]` shows:
-   - Subject: `<input>` field
-   - HTML body: `<textarea>` with monospace font, auto-resize, minimum 20 rows
-   - Text body: second `<textarea>` for plain-text fallback
-   - Available variables: chip list (same pattern as push template editor) — click chips to insert `{{VARIABLE_NAME}}` at cursor
-   - Preview button: opens a modal rendering the HTML via `dangerouslySetInnerHTML` (sandboxed in an `<iframe srcdoc>` for XSS containment)
-3. On save: Server Action applies `substituirVariaveis` dry-run against a test payload, then updates DB. `sendEmail` reads from DB at call time with a module-level cache to avoid N+1 per send.
-
-**Sanitization:** Apply the existing server-side sanitizer before storing. Email HTML needs a wider whitelist than push templates — allow `table`, `td`, `tr`, `img`, `a`, `p`, `strong`, `em`, `br`, `div`, `span` — the standard email-safe tag set.
-
-**Confidence: HIGH** — based on direct analysis of existing codebase patterns
-
-**No new npm dependency needed.** Zero bundle impact.
+Reuse the existing `invalidateCache` helper pattern. Add entries for:
+- `ventas_loja` list: `revalidatePath("/admin/ventas-loja")`
+- `config/cotizacion`: `revalidatePath("/admin/config/cotizacion")`
+- Stock changes (existing): `invalidateCache.catalog()` for public product pages if PDV
+  causes an out-of-stock state.
 
 ---
 
-## Next.js 16.2.3 Migration
+## Recommendation
 
-### Recommendation: Bump to `16.2.5`, not `16.2.3`
+**Add zero new npm packages.** The PDV milestone is implementable with:
 
-**Why 16.2.5 instead of 16.2.3:**
-npm audit output (verified 2026-05-07) shows:
-- `next | high | fixAvailable: {"name":"next","version":"16.2.5","isSemVerMajor":false}`
-- `postcss | moderate | fixAvailable: {"name":"next","version":"16.2.5"}`
-- The CVE `GHSA-q4gf-8mx6-v5v3` (range `<16.2.3`) is fixed in 16.2.3, but the bundled `postcss <8.5.10` is only fixed in 16.2.5. Jumping directly to 16.2.5 closes both in one update.
+1. Two new Prisma models: `ConfigSistema` + `Cliente`
+2. Two new Prisma models: `VendaLoja` + `VendaLojaItem`
+3. One enum value addition: `venda_loja` on `EstoqueMovimentoTipo`
+4. One new utility file: `src/lib/currency.ts` (pure TypeScript, no imports)
+5. New server action files following the established `safeAction()` / `requireAuth()` /
+   `ActionResult<T>` / batch `$transaction` pattern in `src/app/admin/actions-pdv.ts`
+   and `src/app/admin/actions-clientes.ts`
+6. New admin pages at `/admin/pdv`, `/admin/clientes`, `/admin/ventas-loja`,
+   `/admin/config/cotizacion` using Tailwind v4 + design system tokens
 
-**Confidence: HIGH** — verified via npm audit run against current lockfile
+### What NOT to add
 
-### Breaking Changes: 16.1.6 to 16.2.5
+| Do NOT add | Reason |
+|-----------|--------|
+| `dinero.js` / `currency.js` / `big.js` | Two multiplication operations + `Intl.NumberFormat` cover all needs. Adding a library for 10 lines of arithmetic is over-engineering. |
+| External exchange rate API | Business requirement is admin-entered daily rates, not live rates. No API key, no network dependency, no failure mode. |
+| `@upstash/redis` for rate caching | Rates are fetched once per PDV page load from Postgres — one query, no caching layer needed. Redis is already optional infrastructure for rate limiting only. |
+| `react-hook-form` | Not in the codebase. PDV form uses controlled components + Zod validation in the server action, consistent with every other form in the project. |
+| Supabase Realtime | PDV is a sequential single-operator admin action. No multi-user live sync required. |
+| New UI library for PDV interface | The select, input, table, button, and drawer primitives needed for PDV are already available via Radix UI + Tailwind v4. |
+| `zxcvbn` or barcode-scan libraries | Not scoped — PDV uses text-based RUC and product search. Barcode scanning is a v2+ feature. |
 
-**The 16.1.x to 16.2.x increment is a MINOR patch series with NO breaking changes.** All major breaking changes that Next.js 16.0 introduced are already handled in this codebase. Confirmed via Context7 docs and peer dep comparison.
+### Critical constraint to enforce in implementation
 
-**Changes already handled in this codebase:**
-
-| Change | Status | Evidence |
-|--------|--------|---------|
-| Async `params` / `searchParams` | Already async | `analytics/page.tsx` line 137: `const params = await searchParams` |
-| `turbopack` at top level (not `experimental.turbopack`) | Already correct | `next.config.ts` line 5: `turbopack: {}` |
-| Turbopack is default for `next dev` + `next build` | No webpack config | No custom `webpack()` in `next.config.ts` |
-| AMP removed | Never used | Not present in codebase |
-
-**Remaining item to verify during upgrade:**
-`experimental.serverActions.bodySizeLimit: "10mb"` in `next.config.ts` — Context7 docs confirm this is still under `experimental` in 16.x (not promoted to stable). No change needed.
-
-**Peer dep check — 16.1.6 vs 16.2.5:**
-Both versions have identical peer deps. No peer dep updates required.
-```
-react: "^18.2.0 || 19.0.0-rc-de68d2f4-20241204 || ^19.0.0"
-node: ">=20.9.0"
-```
-
-**Migration steps:**
-
-```bash
-# Update next and eslint-config-next together (must stay in sync)
-npm install next@16.2.5 eslint-config-next@16.2.5
-
-# Verify
-npm run lint && npm run typecheck && npm run build && npm test
-```
-
-`eslint-config-next@16.2.5` peerDeps: `eslint >=9.0.0, typescript >=3.3.1` — compatible with current `eslint@^9` and `typescript@^5`.
-
-**CVEs fixed by this update:**
-
-| GHSA | Severity | Fixed In |
-|------|----------|----------|
-| GHSA-ggv3-7p47-pfv8 | High | 16.1.7 |
-| GHSA-3x4c-7xq6-9pq8 | High | 16.1.7 |
-| GHSA-h27x-g6w4-24gq | High | 16.1.7 |
-| GHSA-mq59-m269-xvcx | High | 16.1.7 |
-| GHSA-jcc7-9wpm-mj36 | High | 16.1.7 |
-| GHSA-q4gf-8mx6-v5v3 | High | 16.2.3 |
-| postcss GHSA-qx2v-qp2m-jg93 | Moderate | 16.2.5 |
+`$transaction(async tx => {...})` interactive form is NOT supported with Prisma 7 +
+PrismaPg driver adapter. The PDV sale Server Action MUST use `$transaction([...ops])`
+batch format (array of pre-built operations), matching the pattern in `actions-maletas.ts`.
+Attempting the interactive form will fail silently or throw at runtime.
 
 ---
 
-## Dependency Vulnerability Fixes
-
-### brace-expansion (GHSA-f886-m6hf-6m8v, Moderate)
-
-**Vulnerable range:** `<1.1.13`, `>=2.0.0 <2.0.3`, `>=4.0.0 <5.0.5`
-
-**Confirmed dependency tree (from `npm ls brace-expansion` in project):**
-
-| Chain | Version | Status |
-|-------|---------|--------|
-| `@serwist/next@9.5.6` → `glob@10.5.0` → `minimatch@9.0.9` → `brace-expansion` | 2.0.2 | VULNERABLE |
-| `@sentry/nextjs@10.51.0` → `glob@13.0.6` → `minimatch@10.x` → `brace-expansion` | 5.0.5 | SAFE |
-| `eslint-config-next@16.1.6` → `typescript-eslint@8.56.1` → `minimatch@10.2.2` → `brace-expansion` | 5.0.3 | VULNERABLE (< 5.0.5) |
-| `eslint@9.39.3` → `minimatch@3.1.3` → `brace-expansion` | 1.1.12 | VULNERABLE (< 1.1.13) |
-
-**Fix strategy:**
-
-**Option A (Preferred): Upgrade serwist to 9.5.11**
-
-`@serwist/next@9.5.11` changed its dep chain to `glob@13.0.6` → `minimatch@^10.2.2` → `brace-expansion@^5.0.5` (resolves to 5.0.5, safe). Verified: `@serwist/next@9.5.11` peerDeps `next >=14.0.0, react >=18.0.0` — all satisfied by current stack.
-
-```bash
-npm install @serwist/next@9.5.11 serwist@9.5.11
-```
-
-**Option B (Fallback): npm `overrides` if not upgrading serwist**
-
-```json
-{
-  "overrides": {
-    "brace-expansion": "2.0.3"
-  }
-}
-```
-
-Caveat: A global override forces ALL brace-expansion installs to 2.0.3. This breaks the 1.x chain used by `eslint@9` (which expects brace-expansion@1.x API). Test ESLint after applying with `npm run lint`.
-
-**Recommendation: Option A** — upgrade serwist. Option B is a temporary workaround that creates a different breakage risk.
-
-**brace-expansion via eslint-config-next and eslint — separate issue:**
-
-The 5.0.3 (from eslint-config-next) and 1.1.12 (from eslint) chains are addressed by:
-- `eslint-config-next@16.2.5` upgrade will pull newer `typescript-eslint` which uses brace-expansion 5.0.5
-- The `eslint@9` chain (brace-expansion 1.1.12) requires either upgrading eslint or adding a scoped override for the 1.x range:
-```json
-{
-  "overrides": {
-    "minimatch@^3": "3.1.4"
-  }
-}
-```
-This forces the 3.1.x minimatch (used by eslint) to 3.1.4 which depends on brace-expansion `^1.1.13`. Verify with `npm ls minimatch` after applying.
-
-**Remaining non-fixable vulnerabilities:**
-
-| Package | CVE | Fix Available | Recommendation |
-|---------|-----|---------------|----------------|
-| `xlsx@0.18.5` | GHSA-4r6h-8v6p-xvw6, GHSA-5pgg-2g8v-p4x9 | `fixAvailable: false` | Keep as-is; used only for admin CSV export, no public input vector. Document as accepted risk in PR. |
-| `jspdf@4.2.0` | GHSA-7x6v-j9x4-qf24, GHSA-wfv2-pwc8-crg5 | CVE range `<=4.2.0` | Check if jspdf 4.2.1+ exists on npm and upgrade if so. If still `<=4.2.0`, document accepted risk. |
-
-**Additional vulnerabilities found by npm audit (outside v1.3 scope, triage separately):**
-
-| Package | Severity | Suggested Fix |
-|---------|----------|---------------|
-| `vite` (via vitest@4) | High (3 CVEs, `<=7.3.1`) | `npm install -D vitest@latest` |
-| `prisma@7.4.2` | High | `npm install prisma@latest @prisma/client@latest` |
-
----
-
-## What NOT to Add
-
-- **WYSIWYG editors** (TipTap, Quill, React Quill, Lexical, Slate): Overkill for 1-3 internal admin operators. The textarea + variable chips pattern is already established for push templates.
-- **date-fns as a standalone dep**: It arrives as a transitive dep of `react-day-picker`. Do not add it separately.
-- **react-datepicker** (alternative): Smaller ecosystem, no Tailwind classNames API, would require CSS overrides.
-- **flatpickr or Pikaday**: Not React-native; require DOM ref management that conflicts with React 19 Server Component patterns.
-- **shadcn Calendar codemod**: Adds a file to `src/components/ui/` that just wraps react-day-picker — skip the wrapper, use react-day-picker directly for the admin analytics use case.
-
----
-
-## Installation Summary
-
-```bash
-# Feature: date range picker (adds date-fns as transitive dep)
-npm install react-day-picker@9.14.0
-
-# Security: Next.js + eslint-config-next (always update together)
-npm install next@16.2.5 eslint-config-next@16.2.5
-
-# Security: serwist (fixes brace-expansion transitive vuln)
-npm install @serwist/next@9.5.11 serwist@9.5.11
-```
-
-Net new direct deps: 1 (`react-day-picker`)
-Net new transitive deps: 2 (`date-fns@^4`, `@date-fns/tz@^1`)
-
----
-
-## Sources
-
-- npm registry direct queries: `npm info next@16.2.5`, `npm info @serwist/next@9.5.11`, `npm info react-day-picker@9.14.0`, `npm info brace-expansion`, `npm info minimatch@10.2.5`, `npm info glob@13.0.6`
-- `npm audit --json` run against project lockfile (2026-05-07) — full advisory list with CVE ranges and fix versions
-- `npm ls brace-expansion` — confirmed dependency tree with exact versions
-- Context7 `/vercel/next.js` (v16.2.2): breaking changes guide, turbopack config, serverActions, upgrade codemods
-- Context7 `/gpbl/react-day-picker` (v9.14.0): range mode, Tailwind CSS integration, PropsRange interface
-- Direct codebase analysis: `next.config.ts`, `package.json`, `src/app/admin/analytics/page.tsx`, `src/lib/emails.ts`, `src/components/ui/`
+*Sources: direct inspection of `prisma/schema.prisma`, `package.json`, `src/lib/action-utils.ts`,
+`src/app/admin/actions-maletas.ts`, `src/app/admin/actions-config.ts`,
+`src/lib/cache/invalidate.ts`, `src/lib/config.ts`, `.planning/PROJECT.md`,
+`.planning/codebase/STACK.md`*

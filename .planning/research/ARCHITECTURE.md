@@ -1,328 +1,381 @@
-# Architecture: v1.3 Integration Analysis
+# Architecture Research
 
-**Project:** next-monarca  
-**Milestone:** v1.3 — Polimento, Segurança e UX Admin  
-**Researched:** 2026-05-07  
-**Confidence:** HIGH (all conclusions drawn from direct codebase inspection)
-
----
-
-## Build Order
-
-Recommended phase sequence based on risk, independence, and dependencies:
-
-```
-Phase 1: Dependency Update (Next.js 16.1.6 → 16.2.3)
-   │  — No feature dependencies; must go first to avoid shipping new features on vulnerable version
-   │
-Phase 2: Email Templates Admin CRUD
-   │  — Independent of analytics; depends only on Prisma migration and emails.ts
-   │
-Phase 3: Analytics Custom Date Range
-   │  — Extends existing analytics; depends only on actions-analytics.ts pattern (no schema change)
-   │
-Phase 4: Admin UI Audit
-      — No code dependencies; visual polish can happen last without blocking anything
-```
-
-**Rationale:**
-- Security fix first: Snyk vulnerabilities should not be carried into new feature development
-- Email templates second: requires a Prisma migration (new `EmailTemplate` model) — migrations should stabilize before UI polish begins
-- Analytics date range third: zero schema changes, surgical edit to actions-analytics.ts + page.tsx, can be validated in isolation
-- UI audit last: no functional risk, can be done incrementally per route without blocking other phases
+**Project:** NEXT-MONARCA v1.4 — PDV e Ventas de Loja
+**Researched:** 2026-05-08
+**Scope:** PDV, Client Management, Multi-Currency integration with existing Next.js 15 + Prisma codebase
 
 ---
 
-## Email Templates Integration
+## New Prisma Models
 
-### Current State
+Add to `prisma/schema.prisma` after Module 3a (EstoqueMovimento). All models belong in a new "Module 3b — PDV" section.
 
-The current email system has two layers:
-
-1. **`src/lib/email-base.ts`** — rendering engine: `renderEmailBase()`, `emailButton()`, `emailTable()`, `emailAlert()`, `emailDivider()`. Returns `EmailContent { html, text }`. Handles branding, dark mode, footer.
-
-2. **`src/lib/email-templates/*.ts`** — 7 template functions (`emailCandidaturaAprovada`, `emailConviteUsuario`, `emailAcertoConfirmado`, `emailDocumentoPendente`, `emailDocumentoAprovado`, `emailDocumentoRejeitado`, `emailCandidaturaRechazada`). Each:
-   - Receives typed params (e.g. `{ email, nome, senhaTemp }`)
-   - Sanitizes inputs via `sanitizeTemplateVars()`
-   - Builds bodyHtml/bodyText strings
-   - Calls `renderEmailBase()` → `sendEmail()`
-   - Returns `EmailContent`
-
-3. **`src/lib/emails.ts`** — Brevo SDK transport layer. `sendEmail({ to, subject, htmlContent, textContent? })`. Stateless, no template logic.
-
-### What Needs to Change for Editable Templates
-
-The feature goal is an admin CRUD at `/admin/config/emails` where admins can edit email subject and body. Integration must not break the existing 7 templates.
-
-**Recommended approach: DB-override pattern (not DB-replace).**
-
-The 7 template TypeScript functions remain as the default fallback. The DB stores overrides keyed by template type. At send time, if a DB override exists for that tipo, use it; otherwise fall through to the TypeScript default.
-
-### New Prisma Model
+### Enums
 
 ```prisma
-model EmailTemplate {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  tipo       String   @unique   // matches template key, e.g. "candidatura_aprovada"
-  assunto    String             // editable subject line
-  corpo_html String             // editable HTML body (inner body only, NOT full wrapper)
-  corpo_text String             // editable plaintext body
-  ativo      Boolean  @default(true)
-  updated_at DateTime @updatedAt @db.Timestamptz()
-  updated_by String?  @db.Uuid  // reseller_id of the ADMIN who last edited
+enum ClienteOrigem {
+  LOJA
+  REVENDEDORA
 
-  @@map("email_templates")
+  @@map("cliente_origem")
+}
+
+enum Moneda {
+  PYG
+  USD
+  BRL
+
+  @@map("moneda")
 }
 ```
 
-**Tipo keys** (must match existing templates exactly to avoid ambiguity):
-- `candidatura_aprovada`
-- `candidatura_rechazada`
-- `convite_usuario`
-- `acerto_confirmado`
-- `documento_pendente`
-- `documento_aprovado`
-- `documento_rejeitado`
+### Cliente
 
-### Send Flow After Change
+```prisma
+model Cliente {
+  id         String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  nome       String
+  ruc        String?       @unique
+  cidade     String?
+  telefone   String
+  origem     ClienteOrigem @default(LOJA)
+  created_at DateTime      @default(now()) @db.Timestamptz()
+  updated_at DateTime      @default(now()) @updatedAt @db.Timestamptz()
 
-```
-Server Action calls emailCandidaturaAprovada(params)
-  │
-  ├── sanitizeTemplateVars(params)
-  ├── lookup: prisma.emailTemplate.findUnique({ tipo: 'candidatura_aprovada', ativo: true })
-  │       │
-  │       ├── found: substituirVariaveis(corpo_html, vars) → use as bodyHtml
-  │       │          subject = override.assunto
-  │       │
-  │       └── not found: use existing hardcoded bodyHtml/bodyText (no change)
-  │
-  └── renderEmailBase({ bodyHtml, bodyText, ... }) → sendEmail()
+  vendas_loja VentaLoja[]
+
+  @@index([ruc])
+  @@index([origem])
+  @@index([created_at])
+  @@map("clientes")
+}
 ```
 
-**Variable substitution:** use the existing `substituirVariaveis()` from `src/lib/notifications-server.ts` (already used for push templates — same pattern, same security guarantees). The DB body stores `{{nome}}`, `{{email}}` placeholders; the template function passes a vars map.
+`ruc` is `String? @unique`. PostgreSQL treats each NULL as distinct, so multiple REVENDEDORA-origin clients without a RUC will not trigger a unique violation — correct behavior.
 
-### New Files
+### CotizacionDia
 
-| File | Type | What |
-|------|------|------|
-| `prisma/schema.prisma` | Modified | Add `EmailTemplate` model |
-| `prisma/migrations/...` | New | Migration for `email_templates` table |
-| `src/app/admin/config/emails/page.tsx` | New | CRUD list route (Server Component) |
-| `src/app/admin/config/emails/[tipo]/page.tsx` | New | Edit form route |
-| `src/app/admin/config/emails/actions.ts` | New | Server Actions: `getEmailTemplates`, `upsertEmailTemplate`, `resetEmailTemplate` |
+```prisma
+model CotizacionDia {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  brl_pyg    Decimal  @db.Decimal(12, 4)
+  usd_pyg    Decimal  @db.Decimal(12, 4)
+  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
+  updated_by String   @db.Uuid
 
-### Modified Files
+  @@map("cotizacion_dia")
+}
+```
 
-| File | Change |
+Singleton-style: the application always reads the latest row (`ORDER BY updated_at DESC LIMIT 1`). `updated_by` stores the admin's `reseller.id` as a plain UUID — no FK declared to avoid bidirectional dependency with Reseller.
+
+### VentaLoja
+
+```prisma
+model VentaLoja {
+  id                    String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  cliente_id            String   @db.Uuid
+  vendedor_id           String   @db.Uuid
+  moneda                Moneda
+  total_moneda_original Decimal  @db.Decimal(12, 2)
+  total_pyg             Decimal  @db.Decimal(12, 2)
+  cotizacion_brl_pyg    Decimal? @db.Decimal(12, 4)
+  cotizacion_usd_pyg    Decimal? @db.Decimal(12, 4)
+  condicion_venta       String   @default("CONTADO")
+  nota_factura          String?
+  talonario             String?
+  numero_factura        String?
+  tipo_operacion        String?
+  created_at            DateTime @default(now()) @db.Timestamptz()
+
+  cliente Cliente       @relation(fields: [cliente_id], references: [id])
+  itens   VentaLojaItem[]
+
+  @@index([cliente_id])
+  @@index([vendedor_id])
+  @@index([created_at])
+  @@map("ventas_loja")
+}
+```
+
+`cotizacion_brl_pyg` and `cotizacion_usd_pyg` are immutable snapshots of the rate at the time of sale. For PYG-denominated sales they are stored as `null`. `talonario`, `numero_factura`, `tipo_operacion` are persisted without UI in v1.4 — reserved for factura emissão in v1.5.
+
+### VentaLojaItem
+
+```prisma
+model VentaLojaItem {
+  id                     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  venta_loja_id          String   @db.Uuid
+  product_variant_id     String   @db.Uuid
+  cantidad               Int
+  precio_unitario_moneda Decimal  @db.Decimal(12, 2)
+  precio_unitario_pyg    Decimal  @db.Decimal(12, 2)
+
+  venta_loja      VentaLoja      @relation(fields: [venta_loja_id], references: [id], onDelete: Cascade)
+  product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
+
+  @@index([venta_loja_id])
+  @@index([product_variant_id])
+  @@map("ventas_loja_itens")
+}
+```
+
+---
+
+## Modified Models
+
+### `EstoqueMovimentoTipo` enum — add `venda_loja`
+
+```prisma
+enum EstoqueMovimentoTipo {
+  reserva_maleta
+  devolucao_maleta
+  ajuste_manual
+  venda_direta   // existing — do not rename
+  venda_loja     // NEW — PDV store sale
+
+  @@map("estoque_movimento_tipo")
+}
+```
+
+The existing schema uses `venda_direta` (not `venda_loja`). Add `venda_loja` as a new value alongside `venda_direta` — renaming the existing value would be a destructive migration.
+
+### `EstoqueMovimento` — add optional `venta_loja_id` FK
+
+```prisma
+model EstoqueMovimento {
+  // ... all existing fields unchanged ...
+  venta_loja_id String? @db.Uuid  // NEW
+
+  // existing relations:
+  product_variant ProductVariant @relation(...)
+  maleta          Maleta?        @relation(...)
+  // NEW:
+  venta_loja      VentaLoja?     @relation(fields: [venta_loja_id], references: [id])
+}
+```
+
+Mirrors the existing nullable `maleta_id` pattern. Provides auditability without making the FK mandatory.
+
+### `ProductVariant` — back-relation for `VentaLojaItem`
+
+```prisma
+model ProductVariant {
+  // ... existing fields and relations ...
+  ventas_loja_itens VentaLojaItem[]  // NEW back-relation
+}
+```
+
+### `VentaLoja` back-relation for `EstoqueMovimento`
+
+```prisma
+model VentaLoja {
+  // ... existing fields ...
+  estoque_movimentos EstoqueMovimento[]  // back-relation (add after VentaLojaItem[] relation)
+}
+```
+
+---
+
+## New Files
+
+### Schema layer
+
+| File | Action |
 |------|--------|
-| `src/lib/email-templates/candidatura-aprovada.ts` | Add DB lookup before building bodyHtml; fall through if no override |
-| (same pattern for all 7 templates) | Same |
-| `src/app/admin/config/` sidebar/nav | Add "Emails" link |
+| `prisma/schema.prisma` | 4 new models + 2 new enums + modifications above |
+| `prisma/migrations/YYYYMMDD_add_pdv/migration.sql` | Generated by `prisma migrate dev` — run once for all new models |
 
-### Constraints
+### Validators (`src/lib/validators/`)
 
-- The DB body stores **inner HTML only** (the content that goes into `bodyHtml` param of `renderEmailBase`), never the full wrapper. The wrapper (logo, footer, dark mode) is always generated by `renderEmailBase()`. This prevents admins from breaking email structure.
-- Sanitization is mandatory: `substituirVariaveis()` already strips unknown tokens; XSS sanitization must be applied to `corpo_html` on write (same regex sanitizer used elsewhere in the project after `isomorphic-dompurify` was removed).
-- No Brevo template IDs: system stays with transactional API sends (no Brevo template feature), keeping full control of rendering.
+| File | Contents |
+|------|----------|
+| `src/lib/validators/cliente.schema.ts` | `createClienteSchema`, `updateClienteSchema` (nome, ruc, cidade, telefone, origem) |
+| `src/lib/validators/pdv.schema.ts` | `criarVentaLojaSchema` (cliente_id, moneda, items array), `setCotizacionSchema` (brl_pyg, usd_pyg) |
 
----
+### Server Actions (`src/app/admin/`)
 
-## Analytics Date Range Integration
+| File | Exports |
+|------|---------|
+| `src/app/admin/actions-clientes.ts` | `getClientes`, `createCliente`, `updateCliente`, `buscarClientePorRuc` |
+| `src/app/admin/actions-pdv.ts` | `getCotizacion`, `setCotizacion`, `criarVentaLoja`, `getVentasLoja` |
 
-### Current State
+All follow the established pattern: `"use server"`, `requireAuth(["ADMIN"])`, `safeAction()`, return `ActionResult<T>`.
 
-The period filter is a **URL search param `?period=N`** where N is the number of days (7, 30, 90, 365). The page validates against `PERIOD_OPTIONS` and redirects to `?period=30` on invalid values.
+### Types (`src/lib/types.ts`) — append
 
-`getSinceDate(days: number)` in `actions-analytics.ts` computes `now - days` as the start boundary. All 8 exported functions in `actions-analytics.ts` accept `periodDays: number` and pass it to `getSinceDate()`.
+| Type | Shape |
+|------|-------|
+| `ClienteListItem` | `{ id, nome, ruc, cidade, telefone, origem, created_at }` |
+| `VentaLojaListItem` | `{ id, cliente: {nome, ruc}, vendedor_nombre, moneda, total_moneda_original, total_pyg, created_at, itens_count }` |
+| `CotizacionDiaDTO` | `{ id, brl_pyg, usd_pyg, updated_at }` |
 
-The `ResellerSelect` component shows the existing select+form pattern for client-side URL navigation without JavaScript router calls.
+### Pages and Client Components
 
-### What Changes for Custom Date Range
+| Route | Files |
+|-------|-------|
+| `/admin/clientes` | `src/app/admin/clientes/page.tsx`, `ClientesClient.tsx`, `ClienteForm.tsx` |
+| `/admin/pdv` | `src/app/admin/pdv/page.tsx`, `PdvClient.tsx` |
+| `/admin/config/cotizacion` | `src/app/admin/config/cotizacion/page.tsx`, `CotizacionClient.tsx` |
+| `/admin/ventas-loja` | `src/app/admin/ventas-loja/page.tsx`, `VentasLojaClient.tsx` |
 
-Custom date range means the URL must carry two dates instead of one period number: `?from=YYYY-MM-DD&to=YYYY-MM-DD`. The preset buttons (7d/30d/3m/12m) remain; they compute `from` from today and set `to` to today.
+All page.tsx files must include `export const dynamic = "force-dynamic"` (authenticated admin routes).
 
-### Data Flow Changes
+### Navigation (`src/components/admin/AdminLayoutClient.tsx`)
 
-**URL shape change:**
-
-```
-Before: /admin/analytics?period=30
-After:  /admin/analytics?from=2026-04-07&to=2026-05-07
-```
-
-The preset buttons become Link components that compute from/to client-side:
-- "7d" → `?from={today-7}&to={today}`
-- "30d" → `?from={today-30}&to={today}`
-
-**`getSinceDate()` replacement:**
-
-`getSinceDate(days)` is replaced by a `getDateRange(from: Date, to: Date)` pattern. All 8 functions in `actions-analytics.ts` change their signature from `periodDays: number` to `from: Date, to: Date`.
-
-```typescript
-// Before
-export async function getAnalyticsKPIs(periodDays = 30)
-  const since = getSinceDate(periodDays);
-  WHERE created_at >= since
-
-// After
-export async function getAnalyticsKPIs(from: Date, to: Date)
-  WHERE created_at >= from AND created_at <= to
-```
-
-**`$queryRawUnsafe` changes:**
-
-The 3 functions using raw SQL (`getAnalyticsKPIs`, `getAnalyticsFluxoMaletas`, and RBAC-scoped variants) pass `since` as `$1`. After the change they pass `from` as `$1` and `to` as `$2`, adding `AND created_at <= $2` to each raw query.
-
-**Page.tsx changes:**
-
-```typescript
-// Before
-const periodParam = params.period || "30";
-const periodDays = parseInt(periodParam, 10);
-if (!PERIOD_OPTIONS.some(o => o.days === periodDays)) redirect(...)
-
-// After
-const fromParam = params.from;
-const toParam = params.to;
-// parse + validate: fromParam and toParam are YYYY-MM-DD, from < to, to <= today
-// if invalid → redirect to ?from={today-30}&to={today}
-const from = new Date(fromParam);
-const to = new Date(toParam);
-// pass from/to to all action calls
-```
-
-### New Component
-
-A `DateRangePicker` Client Component in `src/app/admin/analytics/DateRangePicker.tsx` replaces the current `<div>` of Link period buttons. It renders the 4 preset buttons AND a custom date input (two `<input type="date">` fields or a shadcn Popover with Calendar). On change it navigates to `?from=...&to=...` using `useRouter().push()`.
-
-No new library needed — shadcn/ui already provides `Calendar` and `Popover` components. Avoid importing a heavy date-picker library (react-day-picker is already a transitive dependency of shadcn).
-
-### Files Changed (No New Files Needed)
-
-| File | Change Type | What |
-|------|-------------|------|
-| `src/app/admin/actions-analytics.ts` | Modified | All 8 functions: `periodDays` → `(from: Date, to: Date)`; `getSinceDate` → direct range |
-| `src/app/admin/analytics/page.tsx` | Modified | Parse `?from`/`?to` instead of `?period`; pass `from`/`to` to actions |
-| `src/app/admin/analytics/DateRangePicker.tsx` | New | Client Component: preset buttons + custom date inputs |
-| `src/app/admin/analytics/ResellerSelect.tsx` | Modified | Replace hidden `period` input with hidden `from`/`to` inputs |
-| `src/app/admin/analytics/VitrinaCsvDownload.tsx` | Possibly modified | Filename contains period — update to use from/to dates |
-
-### Backward Compatibility Note
-
-The URL change from `?period=30` to `?from=...&to=...` breaks any bookmarks or links to the old format. Since this is an internal admin page with no external links, this is acceptable. Add a redirect in the page: if `params.period` exists and `params.from` is absent, redirect to the equivalent `?from=...&to=...` URL.
+Add a new `{ type: "section", label: "Ventas", roles: ["ADMIN"] }` section with entries for Clientes, PDV, and Ventas Loja. Add Cotización under the existing "Configurações" section. ADMIN-only for all new entries.
 
 ---
 
-## Admin UI Audit Scope
+## Integration Points
 
-### Routes to Audit
+### 1. Stock Decrement via `estoqueMovimento` (central integration)
 
-All routes under `src/app/admin/` — each directory is one page:
+`criarVentaLoja` orchestrates the same sequential-operations pattern as `criarMaleta`:
 
-| Route | File | Priority |
-|-------|------|----------|
-| `/admin` (dashboard) | `src/app/admin/page.tsx` | High |
-| `/admin/analytics` | `src/app/admin/analytics/page.tsx` | High |
-| `/admin/maleta/*` | `src/app/admin/maleta/` | High |
-| `/admin/equipe` | `src/app/admin/equipe/` | Medium |
-| `/admin/revendedoras` | `src/app/admin/revendedoras/` | Medium |
-| `/admin/consultoras` | `src/app/admin/consultoras/` | Medium |
-| `/admin/produtos` | `src/app/admin/produtos/` | Medium |
-| `/admin/categorias` | `src/app/admin/categorias/` | Low |
-| `/admin/brindes` | `src/app/admin/brindes/` | Low |
-| `/admin/leads` | `src/app/admin/leads/` | Low |
-| `/admin/gamificacao` | `src/app/admin/gamificacao/` | Low |
-| `/admin/config/*` | `src/app/admin/config/` | Low |
+1. Create `VentaLoja` + `VentaLojaItem` records.
+2. For each item: `prisma.productVariant.update({ data: { stock_quantity: { decrement: cantidad } } })`.
+3. For each successfully decremented item: `prisma.estoqueMovimento.create({ tipo: "venda_loja", venta_loja_id })`.
+4. On any decrement failure: `prisma.ventaLoja.delete({ id })` (cascades to items via `onDelete: Cascade`), return `{ success: false }`.
 
-### Components to Audit
+No `$transaction(async)` — the PrismaPg adapter does not support it (documented in PROJECT.md Key Decisions). The compensation pattern is the same as in `criarMaleta`.
 
-All files in `src/components/admin/`:
+### 2. Product catalog reuse
 
-- `AdminPageHeader.tsx` — used on every route; inconsistency here is global
-- `AdminStatCard.tsx` — KPI cards; check token usage
-- `AdminStatusBadge.tsx` — check hardcoded color values
-- `AdminFilterBar.tsx` — layout consistency
-- `AdminEmptyState.tsx` — typography, spacing tokens
-- `AdminAlertBell.tsx` — icon sizing, color tokens
-- `AdminLayoutClient.tsx` — sidebar structure
+The PDV product picker reads from the existing `Product` + `ProductVariant` tables. The `getAvailableVariants` query used in `actions-maletas.ts` can be called directly from `actions-pdv.ts` or extracted to a shared function in `actions-products.ts`. No new catalog table needed.
 
-### What "Audit" Means
+### 3. Admin user as `vendedor`
 
-The audit checks each file against:
-1. **CSS variables** — `--admin-text`, `--admin-text-muted`, `--admin-bg`, `--admin-border` used consistently. Replace any hardcoded hex values (e.g. `#888`, `#1a1a1a`, `#333`) found in `style={}` props.
-2. **Tailwind classes** — Replace ad-hoc `bg-[#1a1a1a]`, `text-[#888]` with admin CSS variables or design system tokens from `docs/design-system/tokens.md`.
-3. **Paper artboard match** — Each page is compared against its artboard in Paper MCP before changes. No layout changes without Paper reference.
-4. **Dark theme** — Verify cards/tables render correctly against `--admin-bg-card` without light mode artifacts.
+`VentaLoja.vendedor_id` = `user.profileId` from `requireAuth(["ADMIN"])`. This is the `resellers.id` UUID of the logged-in admin. When displaying the responsible vendor on sales history, join `resellers` by `vendedor_id` to get the name.
 
-**Observed issues in current code** (from reading `analytics/page.tsx`):
-- Hardcoded `bg-[#35605A]`, `bg-[#1a1a1a]`, `text-[#888]`, `border border-[#333]` inside Tailwind `className` strings — should use CSS variables
-- Inline `style={{ color: "var(--admin-text-muted)" }}` mixed with className Tailwind — inconsistent approach across the page
-- `#4ADE80`, `#E05C5C`, `#60A5FA`, `#FACC15`, `#a855f7` hardcoded in status color maps — these should be design system semantic tokens
+### 4. Cotizacion snapshot at sale time
 
-The audit scope is **visual only** — no functional changes to actions, no schema changes.
+`criarVentaLoja` reads the latest `CotizacionDia` row immediately before writing the `VentaLoja` record. The rates are written into `cotizacion_brl_pyg` / `cotizacion_usd_pyg` on the sale row and never updated after. This follows the same immutability principle as maleta financial snapshots.
 
----
+### 5. Unified client list (CLI-04)
 
-## Dependency Update Impact
+`getClientes` uses a SQL UNION strategy in Prisma raw query or two separate queries merged in application code:
 
-### Versions
+- Branch A: `prisma.cliente.findMany()` — loja + revendedora origins from the `clientes` table.
+- Branch B: `prisma.vendaMaleta.findMany({ distinct: ["cliente_nome", "cliente_telefone"] })` — unique name+phone pairs from maleta sales, mapped to synthetic `ClienteListItem` with `origem: "REVENDEDORA"` and no ruc/cidade.
 
-- Current: `next@16.1.6`
-- Target: `next@16.2.3`
-- Increment: patch release within major version 16
+Merge and deduplicate in the action before returning. Filter by `origem` is applied to the appropriate branch. This avoids adding a sync step to `VendaMaleta` creation.
 
-### Risk Assessment
+### 6. Cache invalidation
 
-Next.js follows semver. A patch release (16.x.y → 16.x.z) should contain no breaking changes. However, within the same minor version (16.1 → 16.2) there may be App Router behavior changes.
+`criarVentaLoja` calls:
+- `revalidatePath("/admin/pdv")` — stock counts updated
+- `revalidatePath("/admin/ventas-loja")` — new sale in list
+- `invalidateCache.catalog()` — public catalog stock counts changed
 
-**Files most likely to be affected:**
+`setCotizacion` calls:
+- `revalidatePath("/admin/config/cotizacion")`
+- `revalidatePath("/admin/pdv")` — cotizacion affects PDV display
 
-| File | Why |
-|------|-----|
-| `src/app/admin/analytics/page.tsx` | Uses `Promise<{ period?: string }>` for `searchParams` — Next.js 15+ made searchParams a Promise; verify the API is stable in 16.2 |
-| Any `layout.tsx` or `page.tsx` using `cookies()` / `headers()` | These are async in Next.js 15+; if 16.2 changes anything about async request APIs, these pages are the surface area |
-| `next.config.ts` | New config options may have changed defaults |
-| Middleware (`src/middleware.ts`) | Edge runtime behavior; check for any breaking matcher changes |
-| Serwist PWA config (`@serwist/next@^9.5.6`) | Serwist pinned to Next.js peer dep; may need `@serwist/next` update if it locks to 16.1 |
+`createCliente` / `updateCliente` call:
+- `revalidatePath("/admin/clientes")`
 
-**`brace-expansion` vulnerability:** This is a transitive dep of `glob` which is used by Next.js bundling internals. Updating Next.js to 16.2.3 likely resolves it automatically if Next.js already updated its own `glob` dep. Verify with `npm ls brace-expansion` after update.
-
-**`xlsx`/`jspdf` evaluation:** If these packages are not in `package.json` currently, no action needed. If present, evaluate whether usage can be replaced with server-side CSV generation (already done for vitrina analytics export) or removed.
-
-### Update Procedure
-
-1. `npm install next@16.2.3 eslint-config-next@16.2.3` — always update eslint-config-next in lockstep
-2. `npm run build` — catch any breaking changes at build time
-3. `npm run typecheck` — Next.js type exports may have minor changes
-4. Run existing test suite — 229+ unit/integration tests provide coverage
-5. Manual smoke test: login flow, admin dashboard, analytics page, maleta CRUD
-
-**No migrations, no schema changes, no environment variable changes** are expected for this update.
+No new `revalidateTag` keys needed for v1.4.
 
 ---
 
-## Dependency Graph Summary
+## Suggested Build Order
+
+### Phase 16 — Foundation: Schema + Client Management (CLI-01..05, VIS-01..02)
+
+All downstream phases depend on schema migrations and the `Cliente` model existing.
+
+Steps:
+1. Add all 4 new models + 2 new enums + modifications to `schema.prisma`. Run `prisma migrate dev` once to generate a single migration covering everything. Running all schema changes together avoids sequential migration dependencies.
+2. Create `src/lib/validators/cliente.schema.ts`.
+3. Create `src/app/admin/actions-clientes.ts`.
+4. Build `/admin/clientes` — page + client + form.
+5. Wire nav in `AdminLayoutClient.tsx`.
+
+Deliver: Working client list with create/edit, unified UNION view of loja + revendedora clients, RUC deduplication check on create.
+
+### Phase 17 — PDV Core: Cotizacion + Sale Flow (PDV-01..06, COT-01..02)
+
+Requires Phase 16 migration to be applied. The cotizacion config is a prerequisite for PDV total calculation.
+
+Steps:
+1. Create `src/lib/validators/pdv.schema.ts`.
+2. Create `src/app/admin/actions-pdv.ts` — `getCotizacion`, `setCotizacion`, `criarVentaLoja`.
+3. Build `/admin/config/cotizacion`.
+4. Build `/admin/pdv` (multi-step flow: client selection → item builder → currency/total → confirmation).
+5. Wire nav entries.
+
+`criarVentaLoja` is the most complex action in v1.4. It must: validate input, auth guard, read cotizacion snapshot, create VentaLoja + items, decrement stock sequentially, create estoqueMovimento entries, compensate on failure, invalidate cache.
+
+### Phase 18 — Sales History (VLJ-01..02)
+
+Pure read path. No schema work. Depends on Phase 17 producing real data to display.
+
+Steps:
+1. Add `getVentasLoja` with date range filter to `actions-pdv.ts`.
+2. Build `/admin/ventas-loja` — page + client table with date range filter.
+
+The date range filter UI should reuse the same pattern as the analytics date range picker introduced in v1.3 (already validated in the codebase).
+
+---
+
+## Data Flow: PDV Sale (end to end)
 
 ```
-EmailTemplate model (new)
-  └─► /admin/config/emails CRUD (new route + actions)
-  └─► src/lib/email-templates/*.ts (modified: DB lookup before TypeScript fallback)
+Admin navigates to /admin/pdv
+  page.tsx (Server Component)
+    getCotizacion()       → latest CotizacionDia row
+    getAvailableVariants() → ProductVariant[] with stock > 0
 
-Date range (from/to)
-  └─► actions-analytics.ts (modified: all 8 functions)
-  └─► analytics/page.tsx (modified: parse from/to, pass to actions)
-  └─► analytics/DateRangePicker.tsx (new client component)
-  └─► analytics/ResellerSelect.tsx (modified: pass from/to instead of period)
+  PdvClient.tsx (Client Component, "use client")
+    Step 1: search client by RUC → buscarClientePorRuc(ruc)
+    Step 2: add items → quantity selector per ProductVariant
+    Step 3: select Moneda (PYG/USD/BRL)
+    Step 4: review total (client-side calc using cotizacion from props)
+    Step 5: confirm → criarVentaLoja(payload)
 
-Admin UI audit
-  └─► src/app/admin/**/*.tsx (modified: token replacements only)
-  └─► src/components/admin/*.tsx (modified: token replacements only)
+  criarVentaLoja — Server Action
+    requireAuth(["ADMIN"])
+    validate with criarVentaLojaSchema
+    read getCotizacion() → snapshot rates
+    prisma.ventaLoja.create({ data: {...snapshots}, itens: { create: [...] } })
+    for each item:
+      prisma.productVariant.update({ decrement: cantidad })
+      on error → prisma.ventaLoja.delete({ id }) + return failure
+    for each item:
+      prisma.estoqueMovimento.create({ tipo: "venda_loja", venta_loja_id })
+    invalidateCache
+    return { success: true, data: { id } }
 
-Next.js update
-  └─► package.json (modified)
-  └─► package-lock.json (modified)
-  └─► No source file changes expected
+  PdvClient.tsx
+    toast.success("Venta registrada")
+    reset form state
 ```
 
-No circular dependencies. Each phase modifies a distinct surface area. The email templates phase requires a migration, which is the only infrastructure change in this milestone.
+---
+
+## Scalability Considerations
+
+| Concern | v1.4 Approach | Future Note |
+|---------|---------------|-------------|
+| Client deduplication | RUC unique constraint + pre-create check in action | Full merge/dedupe UI in CRM v1.5 |
+| Concurrent stock decrements | Sequential ops with compensation (no distributed lock) | Advisory lock or optimistic stock field if concurrency becomes real |
+| Cotizacion freshness | Admin-managed singleton row | Automated rate pull from BCP/API in future |
+| Unified client list performance | Two-query merge in application code | Materialized view if list exceeds 50K rows |
+| Factura fields | Stored as nullable strings, no UI | Full emission flow in v1.5 |
+
+---
+
+## Sources
+
+- Codebase (HIGH confidence — direct inspection):
+  - `prisma/schema.prisma` — existing models, enums, patterns
+  - `src/app/admin/actions-maletas.ts` — `criarMaleta` sequential-ops pattern, estoqueMovimento creation, compensation
+  - `src/lib/action-utils.ts` — `ActionResult<T>`, `safeAction`, `BusinessError`
+  - `src/lib/cache/invalidate.ts` — `invalidateCache` helper
+  - `src/lib/user.ts` — `requireAuth`, `getCurrentUser`
+  - `src/app/admin/actions-config.ts` — config CRUD pattern with Zod validation
+  - `src/components/admin/AdminLayoutClient.tsx` — nav structure
+  - `src/lib/types.ts` — DTO conventions
+- PROJECT.md Key Decisions: PrismaPg `$transaction(async)` limitation documented
+- REQUIREMENTS.md v1.4: CLI-01..05, PDV-01..06, COT-01..02, VLJ-01..02

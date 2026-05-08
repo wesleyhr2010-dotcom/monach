@@ -1,285 +1,448 @@
-# Domain Pitfalls — v1.3 Feature Integration
+# Pitfalls Research — PDV / Multi-Currency (v1.4)
 
-**Project:** NEXT-MONARCA
-**Researched:** 2026-05-07
-**Scope:** Pitfalls specific to adding v1.3 features to the existing production system.
-
----
-
-## 1. Email Template DB Editing
-
-### 1.1 XSS via admin-edited HTML injected into emails
-
-**Problem:** When an admin edits an email template body in the UI and that HTML is stored in the DB and later passed directly to `sendEmail({ htmlContent })`, any `<script>`, event handler, or `javascript:` href in the body reaches the recipient's inbox. Modern email clients strip most active content, but some (`<img onerror=...>`, CSS expression) survive in older clients. More critically, if the admin-edited HTML is ever rendered in the browser (e.g., a preview pane using `dangerouslySetInnerHTML`), the XSS executes in the admin's own browser — allowing session theft.
-
-**Why it happens:** The existing `renderEmailBase()` function in `email-base.ts` is explicitly documented as "presentation pure — consumers MUST sanitize inputs." The existing email templates call `escapeHtml()` on individual text variables but were never designed to accept a raw HTML body from a database field. Storing a rich HTML body breaks this assumption entirely. The existing `sanitizeTemplateVars()` in `notifications-server.ts` was designed for push notification plain text — its regex whitelist (`b`, `i`, `strong`, `em`, `br`, `p`, `a`) has a known bypass: `href='javascript:...'` (single quotes) passes through the current rule, which only blocks `href="javascript:..."` in double quotes. The regex is insufficient for HTML email bodies.
-
-**Prevention:**
-- Store templates as a structured object (`subject: string, bodyParts: EmailContent[]`) rather than raw HTML blobs. If HTML must be stored, sanitize on read-out (at the point of calling `sendEmail()`), not on write-in. Sanitizing on write silently corrupts legitimate content added by future admins.
-- Run the stored HTML through `sanitize-html` (maintained, allowlist of tags plus attributes, no DOM runtime, no ESM/Turbopack SSR issues) rather than the existing regex approach. The regex in `notifications-server.ts` is not sufficient for HTML email bodies.
-- For the in-admin preview pane, never use `dangerouslySetInnerHTML`. Render the preview inside a sandboxed `<iframe srcDoc={sanitizedHtml}>` — the iframe sandbox attribute blocks JS execution and same-origin access.
-- RBAC: the `/admin/config/emails` route must be `ADMIN`-only, matching the existing pattern in `/admin/config/notif-push/page.tsx`.
-
-**Phase to address:** Phase 1 (template CRUD server action) — sanitization must be in place before the first save action is written, not added later.
+**Domain:** POS (PDV) with multi-currency (PYG/USD/BRL) on existing Next.js 15 + Prisma 7 + Supabase admin
+**Researched:** 2026-05-08
+**Overall confidence:** HIGH — based on direct codebase inspection + established technical facts about Prisma/PostgreSQL/POS patterns
 
 ---
 
-### 1.2 Migration breaking the 7 hardcoded templates
+## Critical Pitfalls
 
-**Problem:** The 7 existing transactional email templates are hardcoded TypeScript functions in `src/lib/email-templates/*.ts` and are called directly by server actions (e.g., `emailDocumentoAprovado()` in document approval actions, `emailCandidaturaAprovada()` in lead approval). If the v1.3 implementation stores template content in the DB and the server actions are refactored to read from the DB, a missing or malformed DB row causes the email to silently fail — `sendEmail()` already swallows errors with `console.error`. The CI pipeline has no email integration tests.
-
-**Why it happens:** The current architecture has zero coupling between the `NotificacaoTemplate` DB table (push notifications) and the email system (hardcoded TypeScript). If v1.3 introduces a parallel `EmailTemplate` model, any migration that deletes or renames existing code paths before the DB is seeded will break the email flow. The existing `CONCERNS.md` entry #2 documents a related problem: the push `NotificacaoTemplate` table is populated but the send logic still uses hardcoded strings — the pattern of "table exists, code ignores it" has already happened once.
-
-**Prevention:**
-- Do not replace the hardcoded TypeScript functions. Keep them as the canonical fallback. Implement a `getEmailTemplate(tipo)` helper that reads from DB and falls back to the hardcoded function if the row is absent or inactive.
-- Seed the DB with the current template content as the initial values when the `EmailTemplate` migration runs. Use a Prisma seed script, not a manual admin action. A missing seed = silent email failure = hard to diagnose in production.
-- The new `EmailTemplate` Prisma model needs a `tipo` field with a unique constraint matching the enum values used in code. If this constraint is wrong, the fallback lookup will fail to find rows even when they exist.
-
-**Phase to address:** Phase 1 (DB migration + seed).
-
----
-
-### 1.3 Brevo rate limit exhaustion via test-send button
-
-**Problem:** The free tier allows 300 emails/day. A test-send button in the admin editor that calls `sendEmail()` on each click has no rate limit. An admin could accidentally exhaust the daily quota during a template editing session, blocking all transactional emails (document approvals, lead welcome emails) for the rest of the day. The existing `sendEmail()` swallows errors, so a 429 from Brevo will log silently — the admin sees no feedback.
-
-**Why it happens:** The existing `rateLimiters` in `src/lib/rate-limit.ts` covers `trackEvento`, `upload`, and `passwordReset`. There is no email send limiter. The Upstash fallback (`checkRateLimit` returns `{ success: true }` when Redis is not configured) means test environments also have no gate.
-
-**Prevention:**
-- Gate the test-send action behind a per-user Upstash rate limit: `Ratelimit.fixedWindow(5, "1 h")` keyed on the admin's user ID. This mirrors the existing `passwordReset` limiter pattern in `rate-limit.ts`.
-- The test-send must always send to the authenticated admin's own email address. Validate the recipient server-side against `user.email` from `getCurrentUser()`. Never accept an arbitrary address from the request body.
-- Log every test-send call (template ID, sender user ID, timestamp) to the existing structured logger so quota exhaustion events are traceable in Sentry.
-- Propagate the Brevo 429 error back to the UI as a toast rather than swallowing it. The current `sendEmail()` catch block must be bypassed or the test-send path should not use `sendEmail()` directly.
-
-**Phase to address:** Phase 1 (test-send server action).
+| Pitfall | Impact | Prevention | Phase |
+|---------|--------|------------|-------|
+| `Number(decimal)` on currency values before arithmetic | Silent floating-point rounding errors accumulate in multi-currency totals | Round each line to integer PYG before summing; never chain `toNumber()` for financial math | Phase 1 (schema + action layer) |
+| Using `$transaction(async tx => {})` for sale + stock decrement | Runtime crash in production — PrismaPg adapter does not support interactive transactions | Always use `$transaction([...ops])` batch array form | Phase 1 (any action touching estoque) |
+| Exchange rate NOT snapshotted on the sale record | Historical totals recalculate differently every time rate changes | Store `cotizacion_usd_pyg`, `cotizacion_brl_pyg`, `total_pyg` as columns on `VentaLoja` at creation | Phase 1 (schema design) |
+| Reading cotizacion from client payload instead of DB | Rate manipulation by tampered requests | Always re-read rate from DB inside the Server Action — never trust client-supplied rate | Phase 1 (PDV action) |
+| Stock read-then-write race condition without DB-level check | Two concurrent operations pass stock validation but together decrement below zero | Add `CHECK (stock_quantity >= 0)` constraint so PostgreSQL rejects the second decrement | Phase 1 (schema migration) |
+| `venda_loja` enum value missing from `EstoqueMovimentoTipo` | Prisma validation error at runtime when creating stock movement for PDV sale | Add `venda_loja` to the enum in `schema.prisma` before implementing the PDV action | Phase 1 (schema migration) |
+| RUC stored without normalisation | Same client stored twice as `80001234-5` and `800012345` | Normalise on write: strip hyphens and spaces, re-insert canonical hyphen before last digit | Phase 1 (validator layer) |
+| PYG displayed with decimal places (Gs. 5.000,00) | Looks wrong — Guarani has no sub-unit | `maximumFractionDigits: 0` in all `Intl.NumberFormat` calls for PYG | Phase 1 (formatting helpers) |
+| No seed row in cotizacion table | PDV crashes on first use if no rate exists | Include seed INSERT in the migration file | Phase 1 (schema migration) |
 
 ---
 
-## 2. Custom Date Range Analytics
+## Currency Precision
 
-### 2.1 UTC midnight vs Asuncion midnight in `getSinceDate`
+### The Core Risk: `Number()` Coercion Before Arithmetic
 
-**Problem:** The existing `getSinceDate(days)` function in `actions-analytics.ts` does:
+Prisma maps `@db.Decimal(12,2)` columns to a `Decimal` object from `decimal.js`. When you call `Number(decimal)` the value becomes an IEEE 754 double, which cannot exactly represent many decimal fractions.
+
+**The existing codebase already carries this pattern** in `conferirEFecharMaleta` (`actions-maletas.ts`):
 
 ```ts
-const d = new Date();
-d.setHours(0, 0, 0, 0);
+// Existing pattern — works for single-currency PYG because PYG values are integers
+const valorTotalVendido = maleta.itens.reduce(
+  (sum, item) => sum + Number(item.preco_fixado ?? 0) * item.quantidade_vendida,
+  0
+);
 ```
 
-`setHours(0,0,0,0)` sets UTC midnight because Vercel serverless functions run in UTC. Paraguay (America/Asuncion) is UTC-4 in winter (April to September) and UTC-3 in summer (October to March). UTC midnight = 8pm or 9pm Asuncion time of the previous day. The existing fixed-period buttons (7d, 30d, 90d, 365d) have this flaw silently, but it is invisible at coarse period granularity. A custom date range picker that lets the admin select a specific day makes the error immediately visible: selecting "May 7" would include records from May 6 20:00 Asuncion time.
+For single-currency PYG totals with a small number of items this rarely causes observable errors because PYG prices are typically whole integers (1000 Gs, 5000 Gs). For multi-currency totals — especially when multiplying a USD or BRL price by an exchange rate — the compounding rounding error becomes observable in the last 1–2 digits.
 
-**Why it happens:** The flaw is pre-existing in the codebase. `getSinceDate` is called at 7 locations in `actions-analytics.ts`. The day-fill loop uses `toISOString().slice(0, 10)` which produces UTC date strings, compounding the mismatch. A custom date range exposes it because the user has explicit date expectations.
+**Concrete example:**
+```
+USD price = 12.99
+Rate = 7580.50 PYG/USD
+Correct result: 12.99 * 7580.50 = 98,490.195 -> rounds to 98,490 Gs.
+JS result: 12.99 * 7580.50 = 98490.19499999999...
+// Math.round gives 98490 -- fine here in isolation
+// BUT: sum of 5 items with different USD prices and the same rate:
+// floating-point accumulation can produce +/-1 Gs divergence from
+// the sum of individually-rounded lines
+```
+
+For the v1.4 report layer a 1-Gs discrepancy is cosmetically acceptable. For v1.5 factura emission (where the total stored MUST equal the sum of line totals for SET compliance), even a 1-Gs mismatch is a conformity issue.
+
+**Prevention strategy for v1.4:**
+
+Round each line total to an integer PYG value before summing. Sum integers — no floating-point accumulation:
+```ts
+// In the PDV sale action:
+const lineTotalPYG = Math.round(
+  Number(item.precio_unitario) * Number(cotizacion.usd_a_pyg) * item.cantidad
+);
+// Sum of integer PYGs has no rounding error
+const totalPYG = lineItems.reduce((sum, line) => sum + line.lineTotalPYG, 0);
+```
+
+**Do NOT use** `toNumber()` from `action-utils.ts` for intermediate multiplication in the PDV action. Use it only for display formatting where sub-1-unit errors are irrelevant.
+
+**Rule for PYG storage:** `@db.Decimal(12,0)` for any column that stores an amount in Guaranies. No fractions exist in PYG.
+
+**Rule for rates:** `@db.Decimal(12,4)` minimum. BRL->PYG is ~1245.67 and USD->PYG is ~7580.50 — four decimal places give adequate precision for the multiplication.
+
+---
+
+## Atomic Stock Decrement Without `$transaction(async)`
+
+### Exactly What the Constraint Means
+
+From the Key Decisions in PROJECT.md and the comment at the top of `actions-maletas.ts`:
+
+> "Prisma 7 com operacoes sequenciais em vez de `$transaction(async)` -- Driver adapter PrismaPg nao suporta `$transaction(async tx)`"
+
+The `$transaction(async tx => { ... })` form (interactive transaction) requires the driver adapter to hold a connection open for the duration of the async callback. PrismaPg (the Neon/Supabase-compatible pooler adapter) does not support this.
+
+**What DOES work — confirmed in `conferirEFecharMaleta`:**
+```ts
+const ops: Prisma.PrismaPromise<unknown>[] = [];
+ops.push(prisma.maletaItem.update({ ... }));
+ops.push(prisma.productVariant.update({ data: { stock_quantity: { increment: n } } }));
+ops.push(prisma.estoqueMovimento.create({ data: { tipo: "devolucao_maleta", ... } }));
+await prisma.$transaction(ops); // batch array form -- WORKS
+```
+
+### For PDV: Use the Same Batch Form
+
+A PDV sale requires three writes to succeed together:
+1. `VentaLoja.create` — the sale record
+2. `ProductVariant.update` — decrement `stock_quantity`
+3. `EstoqueMovimento.create` — `tipo: "venda_loja"` audit trail
+
+Model it exactly like `conferirEFecharMaleta`:
+```ts
+// Pre-read: validate stock BEFORE building ops (outside transaction)
+const variant = await prisma.productVariant.findUnique({
+  where: { id: input.product_variant_id },
+  select: { stock_quantity: true },
+});
+if (!variant || variant.stock_quantity < input.cantidad) {
+  throw new BusinessError("Stock insuficiente para este producto.");
+}
+
+// Pre-generate UUID so it can be referenced in the movement log
+const ventaId = crypto.randomUUID();
+
+const ops: Prisma.PrismaPromise<unknown>[] = [
+  prisma.ventaLoja.create({ data: { id: ventaId, ...rest } }),
+  prisma.productVariant.update({
+    where: { id: input.product_variant_id },
+    data: { stock_quantity: { decrement: input.cantidad } },
+  }),
+  prisma.estoqueMovimento.create({
+    data: {
+      product_variant_id: input.product_variant_id,
+      cantidad: input.cantidad,
+      tipo: "venda_loja",
+      motivo: `Venta PDV #${ventaId.slice(-8)}`,
+      // No maleta_id -- this is a direct store sale
+    },
+  }),
+];
+
+await prisma.$transaction(ops);
+```
+
+**The static array form limitation:** You cannot use the result of `op1` inside `op2` within the same ops array. By pre-generating the UUID with `crypto.randomUUID()`, the sale ID is available before any DB writes — solving the most common cross-op dependency.
+
+### The Remaining Gap: Race Condition on Last Unit
+
+The stock validation (pre-read) runs in a separate query before `$transaction`. Between the read and the transaction, another concurrent operation (another PDV sale, a maleta creation) could decrement the same variant to 0.
+
+**Severity in this context:** Low-moderate. The PDV is operated by a single admin user. Two concurrent PDV sales on the exact same variant within a 50ms window are unlikely. However, a maleta creation could compete with a PDV sale.
+
+**Prevention:** Add a PostgreSQL `CHECK` constraint:
+```sql
+ALTER TABLE product_variants ADD CONSTRAINT stock_non_negative
+  CHECK (stock_quantity >= 0);
+```
+
+With this constraint, if the race condition occurs, PostgreSQL rejects the decrement and `$transaction` throws a `P2002`-class error. The existing `mapError` in `action-utils.ts` already returns a user-friendly message for constraint violations. Cost: one line in a Prisma migration file.
+
+Do NOT try to implement optimistic concurrency (version columns + retries) for v1.4 — it is over-engineered for the usage pattern.
+
+### Do NOT Replicate the `criarMaleta` Pattern for PDV
+
+`criarMaleta` uses sequential ops with compensating rollback (create maleta first, then decrement in a loop, then delete maleta if decrement fails). This approach was used because it involves a `create` with nested `create` (itens) which cannot be expressed as a flat array of `PrismaPromise`. PDV sales are simpler: flat ops that fit cleanly into the batch form. Use `$transaction([...ops])` — do not reach for the sequential + compensate pattern unless the batch form genuinely cannot express the writes.
+
+---
+
+## Exchange Rate Staleness
+
+### The Three Distinct Problems
+
+**Problem 1: Rate applied at display time, not confirmed at save time.**
+The PDV UI will show the PYG total using the current rate. If the admin changes the rate between when the operator opens the cart and when they press "Confirmar venta," the confirmed amount differs from what was shown.
+
+**Problem 2: Historical totals recalculate when rate changes.**
+If `VentaLoja` stores only `precio_en_moneda_original` (e.g. USD 12.99) and no rate snapshot, the "total PYG" column in `/admin/ventas-loja` will show different values depending on which day you query it. This makes financial reporting unreliable.
+
+**Problem 3: No cotizacion row on first boot.**
+If the `cotizacion_dia` table has no rows (after first deployment, before the admin configures rates), the PDV action will receive `null` from `findFirst()` and either crash or silently use 0 as the rate.
 
 **Prevention:**
-- Fix `getSinceDate` to compute Asuncion-local midnight in UTC at the same time the custom range feature is added. A partial fix (custom range correct, fixed periods wrong) would create visible inconsistency between the two picker modes.
-- The simplest correct approach: receive the date as a `YYYY-MM-DD` string and append the Paraguay offset: `new Date(`${dateStr}T00:00:00-04:00`)` for the conservative winter offset. For DST-aware handling, use `date-fns-tz` (`fromZonedTime(date, 'America/Asuncion')`), which handles the DST transition correctly.
-- The fix must be applied to all 7 `getSinceDate` call sites and to the day-fill loops that use `d.toISOString().slice(0, 10)` — these must produce Asuncion-local date strings, not UTC date strings.
-- Note: `formatDatePY` in `analytics/page.tsx` correctly uses `timeZone: 'America/Asuncion'` for display. The bug is only on the query boundary, not on display.
 
-**Phase to address:** Phase 1 (date range picker server action) — fix `getSinceDate` at the same time the custom range is added. Do not defer to a later cleanup.
+1. Store the rate snapshot on every sale row:
+   ```prisma
+   model VentaLoja {
+     // ...
+     moneda              String   // "PYG" | "USD" | "BRL"
+     precio_unitario     Decimal  @db.Decimal(12, 2)   // in original currency
+     cotizacion_usd_pyg  Decimal? @db.Decimal(12, 4)   // null if moneda = PYG
+     cotizacion_brl_pyg  Decimal? @db.Decimal(12, 4)   // null if moneda = PYG
+     total_pyg           Decimal  @db.Decimal(12, 0)   // denormalised for reports
+   }
+   ```
+
+2. Read the rate inside the Server Action — never accept it from the client:
+   ```ts
+   const cotizacion = await prisma.cotizacionDia.findFirst({
+     orderBy: { created_at: "desc" },
+   });
+   if (!cotizacion) throw new BusinessError(
+     "No hay cotizacion configurada. Ve a Configuracion > Cotizacion del dia."
+   );
+   ```
+
+3. Seed a default rate in the migration:
+   ```sql
+   INSERT INTO cotizacion_dia (usd_a_pyg, brl_a_pyg)
+   VALUES (7500.0000, 1250.0000)
+   ON CONFLICT DO NOTHING;
+   ```
+
+4. Show a staleness warning in the PDV UI: if the latest cotizacion row is older than 48 hours, display a yellow badge "Cotizacion desactualizada — hace X dias." Display hint only, not a blocker.
+
+### CotizacionDia Table Design
+
+```prisma
+model CotizacionDia {
+  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  usd_a_pyg  Decimal  @db.Decimal(12, 4)
+  brl_a_pyg  Decimal  @db.Decimal(12, 4)
+  updated_by String?  @db.Uuid
+  created_at DateTime @default(now()) @db.Timestamptz()
+
+  @@index([created_at])
+  @@map("cotizacion_dia")
+}
+```
+
+New rates are INSERTs (not UPDATEs) — full history preserved for audit. The PDV always reads `findFirst({ orderBy: { created_at: "desc" } })`. The config page shows the current rate and lets admin insert a new one. No delete functionality needed.
 
 ---
 
-### 2.2 Unbounded date ranges causing slow Prisma queries
+## RUC Validation
 
-**Problem:** A custom date range picker with no server-side validation allows an admin to query "all time" or a multi-year range. The existing analytics page uses `Promise.all` with 10+ concurrent Prisma calls plus raw SQL. Several queries (`getAnalyticsFluxoMaletas`, `getVitrinaVisitasSeries`) generate one entry per day in the result by filling gaps in a loop. A 5-year range = 1825 loop iterations, 10+ concurrent database queries each scanning large timestamp ranges.
+### Paraguay RUC Format
 
-**Why it happens:** The current period options are validated via `PERIOD_OPTIONS.some(...)` with a `redirect` on mismatch in the page component. This validation is in the page route, not in the server action. A custom range passed directly to a server action bypasses this gate.
+The RUC (Registro Unico del Contribuyente) is issued by Paraguay's SET (Subsecretaria de Estado de Tributacion).
+
+**Structure:**
+- Base number: 1 to 8 digits
+- Separator: hyphen (optional in input, required in canonical form)
+- Check digit: single digit 0-9 (Modulo 11 algorithm)
+- Full format: `{1-8 digits}-{1 digit}`
+- Examples: `123456-7`, `1234567-8`, `80001234-5`
+
+**Edge cases that break naive validation:**
+
+| Case | Example | Risk |
+|------|---------|------|
+| Hyphen omitted in input | `800012345` instead of `80001234-5` | Fails regex, is valid RUC |
+| Trailing or leading space | `80001234-5 ` | Fails exact match, passes visual inspection |
+| Cedula used as RUC | `3456789-1` | Valid format — natural persons use their cedula as RUC |
+| Check digit `0` | `12345678-0` | Valid — `0` is a legitimate check digit; must not be special-cased |
+| No RUC (foreign or anonymous customer) | empty / null | Field must accept null — not all clients have a Paraguay RUC |
+| Legacy systems without check digit | `1234567` | Some old records have no check digit — 7-digit base only |
+
+**Modulo 11 check digit algorithm:**
+1. Multiply digits of the base number by weights 2, 3, 4, 5, 6, 7, 2, 3, ... (right to left, cycling at 7)
+2. Sum the products
+3. Remainder = sum mod 11
+4. Check digit = (remainder == 0 or remainder == 1) ? remainder : (11 - remainder)
+
+Implement the check digit verification server-side but treat a failing check digit as a **warning, not a blocking error**. Some RUCs in legacy Paraguay databases have incorrect check digits due to early SET data entry errors. Blocking the form will frustrate operators.
+
+**Normalisation function:**
+```ts
+// src/lib/validators/ruc.ts
+export function normalizeRuc(raw: string): string | null {
+  if (!raw || raw.trim() === "") return null;
+  const stripped = raw.replace(/[\s\-]/g, "");
+  if (!/^\d{2,9}$/.test(stripped)) return null; // not a plausible RUC
+  return stripped.slice(0, -1) + "-" + stripped.slice(-1);
+}
+
+export function isValidRucFormat(ruc: string): boolean {
+  const normalized = normalizeRuc(ruc);
+  if (!normalized) return false;
+  return /^\d{1,8}-\d$/.test(normalized);
+}
+```
+
+**DB storage:**
+- Store always in the normalised `{base}-{digit}` form
+- Make RUC nullable on `Cliente` — not all clients have or provide a RUC
+- Partial unique index to prevent duplicates while allowing null:
+  ```sql
+  CREATE UNIQUE INDEX clientes_ruc_unique ON clientes (ruc) WHERE ruc IS NOT NULL;
+  ```
+  Prisma does not support partial unique indexes natively; add this as a raw SQL statement in the migration file alongside the Prisma-generated DDL.
+
+---
+
+## UX Pitfalls in POS Flows
+
+### 1. Cart Lost on Accidental Navigation
+
+If the operator adds 5 items to the PDV cart and accidentally presses the browser back button, the entire cart is gone. In a physical retail scenario this interrupts the sale and requires restarting.
+
+**Prevention:** Persist the current cart in `sessionStorage` (not `localStorage` — the cart should not survive a full browser session, only the current window). On mount, check for and restore in-progress cart. Nothing is written to the database until the operator presses "Confirmar venta."
+
+### 2. Currency Switching Ambiguity
+
+If the PDV allows switching the sale currency after items are already in the cart, operators are confused about whether prices re-convert or stay the same.
+
+**The correct behaviour:** Currency selection determines the payment method (which currency the customer is handing over), not the catalog price. System prices are in PYG. The conversion is display-only.
+
+**Prevention:** Label the selector "Moneda de cobro" (not "Moneda de precios"). Make it clear that switching from PYG to USD shows the equivalent price in USD for informational purposes only. The stored `precio_unitario` is always the catalog PYG value; only `moneda` and `cotizacion_*` vary.
+
+Alternatively, for v1.4 simplicity: set currency at the start of the sale (before adding items), disable currency switching mid-cart. This is less flexible but far less confusing.
+
+### 3. Stock Shows 0 But Item Exists in Store (Maleta Reservation Confusion)
+
+When a maleta is created, `stock_quantity` is decremented by the reserved quantity. If all 10 units of a variant are in active maletas, the PDV stock shows 0 even though the items are physically in the store. Operators will search for a product and see "sin stock" without understanding why.
+
+**Prevention for v1.4:** Show a secondary indicator in the PDV product search results:
+```
+[Product name] -- Stock: 0 (3 en consignacion activa)
+```
+This requires a sub-query counting active `reserva_maleta` movements. Document this as a known behaviour: items in active maletas are considered reserved and cannot be sold through the PDV without first closing the maleta.
+
+### 4. RUC Search Mismatch Creates Duplicate Clients
+
+Operator types `800012345` (no hyphen). Client was stored as `80001234-5`. Search returns no results. Operator creates a new client — now there are two records for the same person.
+
+**Prevention:** Normalise the search term before querying:
+```ts
+const normalizedSearch = searchTerm.replace(/[\s\-]/g, "");
+const clientes = await prisma.cliente.findMany({
+  where: {
+    OR: [
+      { nombre: { contains: searchTerm, mode: "insensitive" } },
+      // Use ILIKE against stripped RUC since stored value has canonical hyphen
+      { ruc: { contains: normalizedSearch, mode: "insensitive" } },
+    ],
+  },
+  take: 10,
+});
+```
+
+Since stored RUC always has the canonical hyphen (`80001234-5`), a search for `800012345` will not match unless PostgreSQL strips hyphens from both sides. More reliable: use `$queryRaw` with `REPLACE(ruc, '-', '') ILIKE $1` for the RUC search path.
+
+### 5. No Keyboard Navigation for POS Speed
+
+Desktop POS operators expect Tab and Enter navigation. A checkout flow that requires mouse clicks adds 5-10 seconds per sale.
+
+**Prevention:** Ensure correct `tabIndex` order:
+1. Client search input (auto-focused on page load)
+2. Product search input
+3. Quantity field (per item)
+4. Currency selector
+5. Confirm button (responds to Enter)
+
+### 6. Double Submit on Slow Network
+
+A slow network response causes the operator to press "Confirmar" twice. Two `VentaLoja` records are created, stock is decremented twice.
 
 **Prevention:**
-- Enforce a maximum date range server-side in the analytics server action: reject ranges over 366 days with a `BusinessError`. Return the error as `ActionResult<T>` so the UI can surface it as a toast.
-- Validate that `startDate <= endDate` and that both are valid ISO date strings using Zod `z.string().regex(/^\d{4}-\d{2}-\d{2}$/)` (already available in the codebase).
-- For the day-fill loop, cap the iteration count: `const days = Math.min(daysBetween(start, end), 366)`.
-- The vitrina analytics queries use raw SQL (`$queryRawUnsafe`) with `WHERE ad.data >= $1`. The `data` column on `analytics_diario` must have an index. Verify this in `prisma/migrations/` before enabling custom ranges.
-
-**Phase to address:** Phase 1 (custom range server action validation) — validation before query execution.
+- Disable the confirm button immediately after first click (`isSubmitting = true`)
+- Use `useTransition` from React 19 — pending state is automatically managed
+- Pre-generate a `venta_uuid` client-side and add a `UNIQUE` constraint on it — the second insert throws P2002 which `mapError` already handles gracefully as a user-friendly message
 
 ---
 
-### 2.3 Date string client/server timezone mismatch
+## Prisma 7 Specific
 
-**Problem:** Browser date pickers (`<input type="date">`) return a `YYYY-MM-DD` string representing the user's local date. If the frontend converts this to a `Date` object and calls `.toISOString()` before sending to the server, the browser applies its own UTC offset, producing a time component that is not midnight in Paraguay. An admin in Brazil (UTC-3) sending "May 14" as `new Date("2026-05-14").toISOString()` produces `"2026-05-14T03:00:00.000Z"` — which is May 14 in Asuncion, but an admin in Spain (UTC+2) would produce `"2026-05-13T22:00:00.000Z"` — May 13 in Paraguay.
+### Transaction Form Reference Table
 
-**Why it happens:** This is a standard date picker trap. The existing analytics page passes period as a plain integer in URL params (`?period=30`). A custom range adds the first case of passing dates, introducing timezone exposure that did not exist before.
+| Form | Status | When to use |
+|------|--------|-------------|
+| `$transaction(async tx => { ... })` | BROKEN — PrismaPg adapter does not support interactive transactions | NEVER |
+| `$transaction([op1, op2, op3])` | WORKS — confirmed in `conferirEFecharMaleta` | PDV sale + stock decrement + movement log |
+| Sequential ops with compensating rollback | WORKS — used in `criarMaleta` | Only when batch form cannot express the writes (e.g. nested creates where ID is not pre-known) |
+| `$executeRaw` / `$queryRaw` | WORKS | Conditional update idiom, partial index DDL, RUC search with REPLACE |
 
-**Prevention:**
-- Send date boundaries from the client as plain `YYYY-MM-DD` strings — the raw value of `<input type="date">`, not converted to a `Date` object. Pass them as URL search params (`?from=2026-05-01&to=2026-05-14`) consistent with how `?period=30` works today.
-- The server action receives the string and applies the Paraguay timezone offset (see 2.1). Never convert date picker values to ISO timestamp on the client.
-- Validate the string format server-side with Zod before parsing.
+### Static Array Form Limitation: Cross-Op ID References
 
-**Phase to address:** Phase 1 (date picker component and URL param handling).
+The `$transaction([...ops])` batch form requires all `PrismaPromise` objects to be built before the call. You cannot use the return value of `op1` as input to `op2`.
 
----
+**Solution:** Pre-generate UUIDs with `crypto.randomUUID()` in the Server Action:
+```ts
+import { randomUUID } from "crypto";
 
-## 3. Admin UI Refactoring
+const ventaId = randomUUID(); // available before any DB writes
+const ops = [
+  prisma.ventaLoja.create({ data: { id: ventaId, ...rest } }),
+  prisma.estoqueMovimento.create({ data: { venta_loja_id: ventaId, ... } }),
+];
+await prisma.$transaction(ops);
+```
 
-### 3.1 Regressions from broad refactor scope
+Passing `id: ventaId` explicitly overrides the schema default `@id @default(dbgenerated("uuid_generate_v4()"))`. This is valid and intended — both produce v4 UUIDs, the only difference is whether JS or PostgreSQL generates them.
 
-**Problem:** The admin UI has 36+ TSX files with hardcoded hex color values (`#35605a`, `#0a0a0a`, `#888888`, etc.) that bypass the `--admin-*` CSS variables. A refactor sweeping all files to replace these values risks introducing unintended visual changes in pages that were previously working correctly. The risk is compounded because many of these inline styles are in Server Components with no visual snapshot tests.
+### `venda_loja` Enum Gap — Schema Migration Required
 
-**Why it happens:** The `admin.css` CSS variables are defined correctly but were not consistently adopted during development. A "replace all hex" pass touches dozens of files simultaneously, increasing merge conflict surface and the chance of a visual regression going undetected. The analytics page alone (`analytics/page.tsx`) is ~640 lines of inline-styled Server Component JSX.
+The current `EstoqueMovimentoTipo` enum in `schema.prisma`:
+```prisma
+enum EstoqueMovimentoTipo {
+  reserva_maleta
+  devolucao_maleta
+  ajuste_manual
+  venda_direta   // NOT the same as venda_loja
+}
+```
 
-**Prevention:**
-- Scope the refactor to one admin section per story/commit, not a single sweep. Prioritize pages that have corresponding Paper artboards.
-- Before touching any file, take a browser screenshot as a baseline. After the change, compare visually.
-- Add CSS variable definitions to `admin.css` for any missing tokens before refactoring code. Do not introduce new token definitions inside component files.
-- The `analytics/page.tsx` file is the riskiest single target — it is a Server Component with dozens of inline hardcoded hex values and no visual tests. Treat it as a dedicated story, not part of a sweep.
+PROJECT.md milestone requirement specifies `tipo: venda_loja`. This enum value does not exist and must be added in the first schema migration of v1.4.
 
-**Phase to address:** Dedicated refactor phase — do not mix with feature additions.
+**PostgreSQL DDL warning:** `ALTER TYPE ... ADD VALUE` is a DDL operation that commits immediately and **cannot be wrapped in a transaction block**. Prisma generates this correctly in its migration files. If you write a raw migration, do NOT wrap `ALTER TYPE ... ADD VALUE` in `BEGIN/COMMIT`.
 
----
+### The `toNumber()` Helper Is Not Decimal-Safe for Financial Math
 
-### 3.2 Dark theme breaking if CSS variable scope changes
+```ts
+// action-utils.ts -- existing helper
+export function toNumber(val: unknown): number | null {
+  if (val === null || val === undefined) return null;
+  return Number(val);  // loses Decimal precision guarantee
+}
+```
 
-**Problem:** All `--admin-*` variables are defined on `:root` in `admin.css`. This means they are globally scoped and always apply (the admin is always dark). If the refactor changes the scope to `.admin-layout` or introduces a `data-theme` attribute approach, any component that references `var(--admin-bg)` outside `.admin-layout` will lose the variable and render with `transparent` or browser defaults. Radix UI `Dialog`, `DropdownMenu`, and `Popover` use React portals that render as direct children of `<body>`, outside the admin layout DOM tree.
-
-**Why it happens:** The current `:root` scope works precisely because it avoids the portal problem. Narrowing the scope is a natural refactoring instinct ("make styles more specific") but breaks portals.
-
-**Prevention:**
-- Do not change the CSS variable scope from `:root`. The always-dark admin is intentional and the `:root` scope is load-bearing for Radix UI portals.
-- If a light-theme admin mode is ever needed, use a `data-theme="dark"` attribute on `<html>` (not on `.admin-layout`) so portals still inherit the theme.
-- When adding new CSS variables in v1.3, add them to the existing `:root` block in `admin.css`, not in component-scoped `<style>` tags.
-
-**Phase to address:** Awareness before any refactor begins — this is a constraint, not a task.
-
----
-
-### 3.3 Paper artboard mismatch causing wasted implementation
-
-**Problem:** If a developer implements a refactored UI component based on memory or existing code alone, and the Paper artboard shows a different layout (different spacing, card structure, font size), the implementation must be rebuilt after the Paper review. This is a double-cost.
-
-**Why it happens:** The CLAUDE.md mandates Paper MCP consultation before any UI work, but under time pressure this step is skipped. The existing analytics page has a custom bar chart and donut chart built in inline SVG that may not match Paper artboards.
-
-**Prevention:**
-- Before writing any JSX for the refactor, read the corresponding Paper artboard node via MCP: `mcp__plugin_paper-desktop_paper__get_jsx` and `get_computed_styles`. Compare against the existing implementation.
-- If a Paper artboard does not exist for a specific admin section, pause and ask before implementing. Do not invent layout.
-- Explicitly scope the refactor story: "only pages that have Paper artboards." Pages without artboards are deferred.
-
-**Phase to address:** Before the refactor phase begins (scope definition).
+Using `toNumber()` inside a `reduce` for multi-currency totals introduces the floating-point accumulation described in the Currency Precision section. For the PDV action total calculation, use `Math.round(Number(price) * Number(rate))` per line (rounding at line level prevents accumulation) rather than chaining `toNumber()` calls through an accumulator.
 
 ---
 
-## 4. Next.js 16.1.6 to 16.2.3 Upgrade
+## Phase-Specific Warnings
 
-### 4.1 TypeScript type changes break build before code runs
-
-**Problem:** The analytics page already uses the correct async `searchParams` pattern (`searchParams: Promise<{ period?: string; reseller?: string }>`). However, Next.js minor versions between 16.1 and 16.2 have historically changed the TypeScript types for `params`, `searchParams`, `cookies()`, and `headers()`. A type change that the code does not accommodate produces TypeScript errors that block the build — discovered only when `npm run typecheck` is run.
-
-**Why it happens:** Next.js ships breaking TypeScript type changes in minor versions when they align with RSC or async API improvements. The jump from 16.1.6 to 16.2.3 spans multiple minor releases.
-
-**Prevention:**
-- After bumping `next` in `package.json`, run `npm run typecheck` as the very first step — before starting the dev server, before running any other test. Typecheck catches breaking type changes immediately and gives clear error messages.
-- Run the full CI suite (`lint + typecheck + test + build`) in a single commit dedicated solely to the version bump. Do not bundle the Next.js upgrade with feature work.
-- Read the Next.js 16.2 release notes and changelog before upgrading. Look specifically for `searchParams`, `params`, `cookies`, `headers`, and `generateMetadata` changes.
-
-**Phase to address:** Dedicated upgrade phase, isolated from all other v1.3 changes.
-
----
-
-### 4.2 Serwist PWA build breaks silently after Next.js upgrade
-
-**Problem:** `@serwist/next@9.5.6` patches Next.js's build pipeline to inject the service worker manifest (`__SW_MANIFEST`). A Next.js minor upgrade may change internal build hooks that Serwist depends on, breaking SW compilation. The symptom is a build that succeeds but a PWA that does not work at runtime: the SW is not registered, or the precache is empty. This is hard to detect without a PWA-specific test — the existing CI checks lint, typecheck, and unit tests, not PWA registration.
-
-**Why it happens:** The project already had one Serwist-related SSR crash (`isomorphic-dompurify` + Turbopack, fixed in `af54cc3`). `@serwist/next` is version-sensitive to Next.js internals. The `sw.ts` file uses `defaultCache` from `@serwist/next/worker` — this import path is a common breakage point between versions.
-
-**Prevention:**
-- Check the Serwist GitHub releases for Next.js 16.2 compatibility before upgrading. If no explicit mention, check open issues tagged `next.js`.
-- After the upgrade, manually verify the PWA in Chrome DevTools: Application tab > Service Workers — confirm the SW is registered and the precache list contains expected routes.
-- If Serwist breaks, pin Next.js at the last working version and open a Serwist issue. Do not attempt to patch Serwist internals. The v1.4 Capacitor migration is the planned exit from Serwist.
-
-**Phase to address:** Upgrade phase — verify PWA immediately after the build passes, before merging.
+| Phase Topic | Likely Pitfall | Mitigation |
+|-------------|---------------|------------|
+| Schema migration | Missing `venda_loja` in `EstoqueMovimentoTipo` enum | Add enum value first; let Prisma generate `ALTER TYPE ... ADD VALUE` |
+| Schema migration | `ALTER TYPE ... ADD VALUE` inside transaction block in raw migration | Do NOT wrap it in `BEGIN/COMMIT` |
+| Schema migration | `CotizacionDia` table with no seed row | Include `INSERT ... ON CONFLICT DO NOTHING` in migration |
+| Schema migration | `stock_quantity` has no non-negative constraint | Add `CHECK (stock_quantity >= 0)` in the same migration |
+| Schema migration | `VentaLoja` missing rate snapshot columns | Include `cotizacion_usd_pyg`, `cotizacion_brl_pyg`, `total_pyg` from the start — free to add now, painful to retrofit for v1.5 factura |
+| PDV action | Using `$transaction(async tx)` instead of batch form | Always `$transaction([...ops])` — copy `conferirEFecharMaleta` pattern |
+| PDV action | Accepting cotizacion from client payload | Re-read from DB inside Server Action |
+| PDV action | Double submit on slow network | Disable button on first click; pre-generate idempotency UUID with `UNIQUE` constraint |
+| Cliente CRUD | Duplicate clients from RUC normalisation mismatch | Normalise on write; partial unique index; normalise search term |
+| RUC validation | Blocking form on invalid check digit | Check digit failure = warning only, not blocking error |
+| PYG formatting | Displaying Gs. with decimal places | `Intl.NumberFormat("es-PY", { currency: "PYG", maximumFractionDigits: 0 })` |
+| Multi-currency totals | Float accumulation in PYG conversions | `Math.round(Number(price) * Number(rate))` per line, sum integers |
+| PDV UX | Cart lost on back button | Persist cart in `sessionStorage` |
+| PDV UX | Currency selector semantics confusion | Label "Moneda de cobro", not "Moneda de precios" |
+| PDV UX | Stock shows 0 because all units are in maletas | Show secondary "X en consignacion" indicator in product search |
 
 ---
 
-### 4.3 Sentry `withSentryConfig` wrapper incompatibility
+## Sources
 
-**Problem:** `next.config.ts` wraps the config in `withSentryConfig(nextConfig, ...)`. Sentry's Next.js SDK version-pegs to Next.js major and minor versions. An upgrade to 16.2.3 may require a Sentry SDK update. If the versions are mismatched, the build may fail on the `withSentryConfig` wrapper, or Sentry's source map upload step may error and leave the CI in an ambiguous state.
-
-**Prevention:**
-- Check `@sentry/nextjs` peer dependency requirements against the target Next.js version before upgrading.
-- If the Sentry SDK needs an upgrade, include it in the same version-bump PR.
-- If the build fails and the cause is unclear, temporarily remove `withSentryConfig` wrapping to isolate whether Next.js itself or Sentry is the problem.
-
-**Phase to address:** Upgrade phase.
-
----
-
-## 5. Snyk Dependency Management
-
-### 5.1 `npm audit fix --force` breaks Prisma transitive dependencies
-
-**Problem:** `npm audit` shows 23 vulnerabilities (8 moderate, 14 high, 1 critical). Several are in Prisma's internal dev toolchain: `@prisma/dev` depends on `@hono/node-server` (high) and `hono` (high); `@prisma/config` depends on `effect` (high) and `defu` (high). Running `npm audit fix --force` will attempt to forcibly upgrade these to the minimum safe version, which may break Prisma 7.4.2's peer dependency chain. Prisma 7 has strict requirements on `@prisma/adapter-pg` and `pg` — a forced transitive upgrade could make the database connection fail at runtime.
-
-**Why it happens:** `--force` overrides semver ranges and ignores peer dependency warnings. The Prisma CLI toolchain (`@prisma/dev`) is separate from the runtime `@prisma/client`, but `npm` does not always cleanly distinguish these in its resolution tree.
-
-**Prevention:**
-- Never run `npm audit fix --force` on this project. Address vulnerabilities one package at a time with explicit version pins.
-- For `brace-expansion` (moderate, fix available via safe semver): run `npm audit fix` without `--force`. This applies only semver-compatible upgrades. Verify Prisma still generates and connects after.
-- For `defu`, `effect`, `@hono/node-server` in Prisma internals: these are Prisma CLI development dependencies, not the production `@prisma/client` that the app uses at runtime. The CVEs affect Prisma's own build/migration tooling, not the generated client. The blast radius is limited to local `prisma migrate` and `prisma generate` runs in the development environment. Not a production runtime risk for the Monarca app.
-- Document the decision explicitly in CONCERNS.md: "Prisma internal dev dependency CVEs (effect, defu, @hono/node-server) are accepted as low-risk. The Prisma client runtime is not affected."
-
-**Phase to address:** Phase 1 (Snyk audit) — triage and document; only auto-fix safe packages with `npm audit fix` (no force).
-
----
-
-### 5.2 `xlsx` has no fix — CVE exposure with missing auth guard
-
-**Problem:** `xlsx@0.18.5` has two high-severity CVEs with no fix available (the package is abandoned):
-- `GHSA-4r6h-8v6p-xvw6`: Prototype Pollution
-- `GHSA-5pgg-2g8v-p4x9`: ReDoS
-
-More urgently: the export route `src/app/api/export/route.ts` has NO authentication check. It does not call `requireAuth()` or `getCurrentUser()`. The route returns full product catalog, reseller names, whatsapp numbers, and maleta data to anyone who calls it. The middleware validates the session cookie but does not block unauthenticated requests to `/api/*` routes — it only redirects the browser. A direct `fetch('/api/export?type=revendedoras')` from a browser without a session cookie would succeed because the route handler does not check auth.
-
-**Blast radius of xlsx CVEs for current usage:** The Prototype Pollution and ReDoS CVEs are in the `xlsx.read()` parsing path. This route uses only `xlsx.utils.json_to_sheet()` and `xlsx.write()` (output path). The CVEs are not triggered by the current code path. The missing auth guard is a higher severity issue than the CVEs.
-
-**Prevention:**
-- Add `requireAuth(["ADMIN", "COLABORADORA"])` to both the xlsx export route and the PDF export route immediately. This is the highest priority fix in this area.
-- For xlsx replacement: migrate to `exceljs` (maintained, no known CVEs, similar API). This is a separate story — do not block the auth guard fix on the replacement.
-- Do not delete `xlsx` without the replacement ready. The relatorios export is a real feature used in production.
-- Document: "xlsx CVEs are accepted risk for the current `json_to_sheet`-only usage pattern. Auth guard added. Replace with exceljs in v1.4."
-
-**Phase to address:** Phase 1 — add auth guard to both export routes immediately. xlsx replacement is Phase 2 or v1.4.
-
----
-
-### 5.3 `jspdf` critical CVE — fix available but peer dependency risk
-
-**Problem:** `jspdf@4.2.0` has two CVEs rated critical:
-- `GHSA-7x6v-j9x4-qf24`: PDF Object Injection via FreeText annotation color
-- `GHSA-wfv2-pwc8-crg5`: HTML Injection in "New Window" paths
-
-`npm audit` reports a fix is available. The PDF export route `src/app/api/export/pdf/route.ts` also has no `requireAuth()` call (same problem as xlsx route).
-
-**Prevention:**
-- Add `requireAuth(["ADMIN", "COLABORADORA"])` to the PDF export route immediately (same fix as xlsx route — both can be done in one PR).
-- Run `npm install jspdf@latest` to apply the CVE fix. Do not use `--force`. Verify the `jspdf-autotable` plugin still works after the upgrade — it has its own peer dependency on a jspdf major version. Check `jspdf-autotable`'s peer deps before upgrading. If they conflict, pin both at the patched minimum jspdf version.
-- After upgrading, run the existing relatorios PDF export manually and verify the output is still correct.
-
-**Phase to address:** Phase 1 — auth guard first, then version upgrade in the same PR.
-
----
-
-## Phase-Specific Warning Summary
-
-| Phase Topic | Pitfall | Mitigation |
-|-------------|---------|------------|
-| Email template CRUD — server action | XSS via stored HTML body in preview pane | Sandbox preview in `<iframe srcDoc>`, use `sanitize-html` on read-out, not regex |
-| Email template CRUD — test-send | Brevo quota exhaustion | Rate limit per user ID (5/hour), send only to admin's own email |
-| Email template migration | DB row missing = email silent fail | Keep hardcoded TypeScript functions as fallback; seed on migration |
-| Custom date range — server action | UTC boundary miscalculates Asuncion day | Fix `getSinceDate` at all 7 call sites to use America/Asuncion offset simultaneously |
-| Custom date range — picker component | Client converts date to ISO string with UTC offset | Send `YYYY-MM-DD` string in URL params; server applies timezone |
-| Custom date range — validation | Multi-year range = slow queries | Zod validate, enforce max 366 days server-side, cap loop iterations |
-| Admin UI refactor | Radix UI portals lose CSS vars if scope narrows | Keep `--admin-*` on `:root`, never narrow to `.admin-layout` |
-| Admin UI refactor | Hardcoded hex regression in 36+ files | One section per commit, screenshot baseline before/after |
-| Admin UI refactor | No Paper artboard = invented layout | Block refactor of pages without artboards until Paper is updated |
-| Next.js 16.2.3 upgrade | TypeScript type break on `searchParams`/`params` | Run `npm run typecheck` before `dev` server; dedicate one PR to the bump |
-| Next.js 16.2.3 upgrade | Serwist SW compilation break | Verify PWA registration in Chrome DevTools after build, before merge |
-| Next.js 16.2.3 upgrade | Sentry `withSentryConfig` incompatibility | Check `@sentry/nextjs` peer deps; upgrade in same PR if needed |
-| Snyk — `npm audit fix` | `--force` breaks Prisma peer dep chain | Never use `--force`; fix packages individually |
-| Snyk — xlsx + jspdf routes | Both export routes have no auth guard — data leak | Add `requireAuth(["ADMIN","COLABORADORA"])` to both routes in Phase 1 |
-| Snyk — xlsx | No fix available; ongoing CVE | Accept risk for `json_to_sheet`-only usage; plan exceljs migration in v1.4 |
-| Snyk — jspdf | Fix available | `npm install jspdf@latest`, verify `jspdf-autotable` peer dep compatibility |
-
----
-
-*Research date: 2026-05-07. Codebase state: v1.2 shipped, v1.3 planning.*
+- Codebase — `src/app/admin/actions-maletas.ts`: Confirmed `$transaction([...ops])` batch form works; confirmed sequential ops + compensating rollback pattern for `criarMaleta`; confirmed `Number(decimal)` coercion pattern in commission math; confirmed stock decrement approach. (HIGH confidence)
+- Codebase — `prisma/schema.prisma`: Confirmed `@db.Decimal(12,2)` for prices; confirmed `EstoqueMovimentoTipo` enum does NOT include `venda_loja`; confirmed no `Cliente`, `VentaLoja`, or `CotizacionDia` models exist yet. (HIGH confidence)
+- Codebase — `src/lib/action-utils.ts`: Confirmed `toNumber()` uses `Number(val)` conversion; confirmed `safeAction`, `mapError`, `BusinessError` patterns. (HIGH confidence)
+- Codebase — `.planning/codebase/CONCERNS.md`: Confirmed Prisma 7 / PrismaPg transaction constraint documented as architecture concern. (HIGH confidence)
+- Codebase — `.planning/PROJECT.md`: Confirmed Key Decision on transaction form; confirmed milestone requirements for `venda_loja` tipo and exchange rate config. (HIGH confidence)
+- PostgreSQL: `ALTER TYPE ... ADD VALUE` cannot be executed inside a transaction block — standard DDL behaviour. (HIGH confidence)
+- Prisma: `$transaction([])` batch form is the supported non-interactive transaction path for adapter mode. (HIGH confidence)
+- Paraguay SET: RUC format is base number (1-8 digits) + hyphen + check digit (1 digit), Modulo 11 algorithm. (HIGH confidence)
+- IEEE 754: Floating-point accumulation errors on decimal fractions are a known, documented property of JavaScript's `number` type. (HIGH confidence)
