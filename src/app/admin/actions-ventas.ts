@@ -292,6 +292,8 @@ export async function getKPIsVentas(params: {
   );
 }
 
+export { getRangeFromParams } from "./actions-analytics";
+
 // ============================================
 // 5. exportVentasCSV — CSV string with filtered data
 // ============================================
