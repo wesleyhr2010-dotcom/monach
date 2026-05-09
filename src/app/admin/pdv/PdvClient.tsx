@@ -6,6 +6,9 @@ import { AdminStepIndicator } from "@/components/admin/AdminStepIndicator";
 import type { CotizacionAtual } from "@/app/admin/actions-cotizacion";
 import PdvStepCliente from "./PdvStepCliente";
 import PdvStepProductos from "./PdvStepProductos";
+import PdvStepMoneda from "./PdvStepMoneda";
+import PdvStepResumen from "./PdvStepResumen";
+import PdvSplashSuccess from "./PdvSplashSuccess";
 
 export type ClienteSeleccionado =
   | { tipo: "cliente"; id: string; nombre: string; ruc: string | null; ciudad: string | null }
@@ -78,7 +81,12 @@ export default function PdvClient({ cotizacionAtual, categorias }: Props) {
 
       <div className="admin-content">
         {showSplash ? (
-          <PlaceholderSplash splash={showSplash} onReset={resetPdv} />
+          <PdvSplashSuccess
+            ventaId={showSplash.ventaId}
+            totalPyg={showSplash.totalPyg}
+            clienteLabel={showSplash.clienteLabel}
+            onNuevaVenta={resetPdv}
+          />
         ) : (
           <>
             <AdminStepIndicator steps={PDV_STEPS} currentStep={step} />
@@ -98,10 +106,21 @@ export default function PdvClient({ cotizacionAtual, categorias }: Props) {
                 />
               )}
               {step === 2 && (
-                <PlaceholderStep label="Step 3 — Moneda (a ser implementado em 17-04)" />
+                <PdvStepMoneda
+                  carrito={carrito}
+                  moneda={moneda}
+                  setMoneda={setMoneda}
+                  cotizacionAtual={cotizacionAtual}
+                />
               )}
-              {step === 3 && (
-                <PlaceholderStep label="Step 4 — Resumen (a ser implementado em 17-04)" />
+              {step === 3 && cliente && (
+                <PdvStepResumen
+                  cliente={cliente}
+                  carrito={carrito}
+                  moneda={moneda}
+                  cotizacionAtual={cotizacionAtual}
+                  onSuccess={(info) => setShowSplash(info)}
+                />
               )}
             </div>
 
@@ -130,24 +149,5 @@ export default function PdvClient({ cotizacionAtual, categorias }: Props) {
         )}
       </div>
     </>
-  );
-}
-
-function PlaceholderStep({ label }: { label: string }) {
-  return (
-    <div className="admin-card">
-      <p className="text-sm" style={{ color: "var(--admin-text-muted)" }}>{label}</p>
-    </div>
-  );
-}
-
-function PlaceholderSplash({ splash, onReset }: { splash: { ventaId: string; totalPyg: number; clienteLabel: string }; onReset: () => void }) {
-  return (
-    <div className="admin-card">
-      <p className="text-base" style={{ color: "var(--admin-text)" }}>¡Venta registrada! ({splash.ventaId.slice(0, 8)})</p>
-      <button type="button" className="admin-btn admin-btn-primary mt-4" onClick={onReset}>
-        Nueva venta
-      </button>
-    </div>
   );
 }
