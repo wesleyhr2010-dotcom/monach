@@ -48,7 +48,7 @@
 ### 🔄 v1.4 PDV e Ventas de Loja (Phases 16-18) — ACTIVE
 
 - [x] **Phase 16: Foundation — Schema + Gestão de Clientes** — Schema v1.4 migrado e CRUD completo de clientes com lista unificada (3/3 plans) — completed 2026-05-08
-- [ ] **Phase 17: PDV Core — Cotización + Fluxo de Venda** — Admin configura cotação e registra vendas físicas da loja — planned
+- [x] **Phase 17: PDV Core — Cotización + Fluxo de Venda** — Admin configura cotação e registra vendas físicas da loja — completed 2026-05-08
 - [ ] **Phase 18: Histórico de Ventas** — Admin consulta todas as vendas de loja com filtro por período — planned
 
 ## Progress
@@ -71,7 +71,7 @@
 | 14. Analytics Período Personalizado | v1.3 | 3/3 | Complete | 2026-05-07 |
 | 15. Admin UI Consistência Visual | v1.3 | 0/3 | Ready to execute | - |
 | 16. Foundation — Schema + Gestão de Clientes | v1.4 | 3/3 | Complete | 2026-05-08 |
-| 17. PDV Core — Cotización + Fluxo de Venda | v1.4 | 0/4 | Planned | - |
+| 17. PDV Core — Cotización + Fluxo de Venda | v1.4 | 4/4 | Complete | 2026-05-08 |
 | 18. Histórico de Ventas | v1.4 | 0/2 | Planned | - |
 
 ---

@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.4
 milestone_name: PDV e Ventas de Loja
 status: active
-last_updated: "2026-05-08T00:00:00.000Z"
-last_activity: 2026-05-08 -- Phase 16 executed (3 plans, 3 waves, 3 commits)
+last_updated: "2026-05-08T21:30:00.000Z"
+last_activity: 2026-05-08 -- Phase 17 executed (4 plans, 3 waves, 9 commits)
 progress:
   total_phases: 3
-  completed_phases: 1
+  completed_phases: 2
   total_plans: 9
-  completed_plans: 3
-  percent: 33
+  completed_plans: 7
+  percent: 78
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 16 — Foundation: Schema + Gestão de Clientes
-Plan: 3/3 plans complete
+Phase: 17 — PDV Core — Cotización + Fluxo de Venda
+Plan: 4/4 plans complete
 Status: Complete
-Last activity: 2026-05-08 — Phase 16 complete (3/3 plans)
+Last activity: 2026-05-08 — Phase 17 complete (4/4 plans)
 
-Progress: [███░░░░░░░░░] 33% (1/3 phases complete, 3/9 plans complete) | Milestone v1.4 active
+Progress: [███████████░] 78% (2/3 phases complete, 7/9 plans complete) | Milestone v1.4 active
 
 ## Performance Metrics
 
@@ -51,6 +51,13 @@ Progress: [███░░░░░░░░░] 33% (1/3 phases complete, 3/9 p
 
 - Plans completed: 3
 - Commits: 3
+- Duration: ~1 session
+
+**Velocity (v1.4 — Phase 17):**
+
+- Plans completed: 4
+- Commits: 9
+- Files created: 12 new
 - Duration: ~1 session
 
 ## Accumulated Context
@@ -92,5 +99,5 @@ None.
 ## Session Continuity
 
 Last session: 2026-05-08
-Stopped at: Phase 16 complete — All waves executed and verified
-Resume: Execute `/gsd-execute-phase 17` (PDV Core — Cotización + Fluxo de Venda)
+Stopped at: Phase 17 complete — All waves executed and verified
+Resume: Execute `/gsd-execute-phase 18` (Histórico de Ventas)
