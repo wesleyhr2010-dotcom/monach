@@ -223,7 +223,7 @@ export type VentaLojaGroupByArgs<ExtArgs extends runtime.Types.Extensions.Intern
 
 export type VentaLojaGroupByOutputType = {
   id: string
-  cliente_id: string
+  cliente_id: string | null
   total: runtime.Decimal
   moneda: $Enums.Moneda
   total_pyg: runtime.Decimal
@@ -261,7 +261,7 @@ export type VentaLojaWhereInput = {
   OR?: Prisma.VentaLojaWhereInput[]
   NOT?: Prisma.VentaLojaWhereInput | Prisma.VentaLojaWhereInput[]
   id?: Prisma.UuidFilter<"VentaLoja"> | string
-  cliente_id?: Prisma.UuidFilter<"VentaLoja"> | string
+  cliente_id?: Prisma.UuidNullableFilter<"VentaLoja"> | string | null
   total?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFilter<"VentaLoja"> | $Enums.Moneda
   total_pyg?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -272,14 +272,14 @@ export type VentaLojaWhereInput = {
   created_by?: Prisma.UuidFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
-  cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   itens?: Prisma.VentaLojaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
 }
 
 export type VentaLojaOrderByWithRelationInput = {
   id?: Prisma.SortOrder
-  cliente_id?: Prisma.SortOrder
+  cliente_id?: Prisma.SortOrderInput | Prisma.SortOrder
   total?: Prisma.SortOrder
   moneda?: Prisma.SortOrder
   total_pyg?: Prisma.SortOrder
@@ -300,7 +300,7 @@ export type VentaLojaWhereUniqueInput = Prisma.AtLeast<{
   AND?: Prisma.VentaLojaWhereInput | Prisma.VentaLojaWhereInput[]
   OR?: Prisma.VentaLojaWhereInput[]
   NOT?: Prisma.VentaLojaWhereInput | Prisma.VentaLojaWhereInput[]
-  cliente_id?: Prisma.UuidFilter<"VentaLoja"> | string
+  cliente_id?: Prisma.UuidNullableFilter<"VentaLoja"> | string | null
   total?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFilter<"VentaLoja"> | $Enums.Moneda
   total_pyg?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -311,14 +311,14 @@ export type VentaLojaWhereUniqueInput = Prisma.AtLeast<{
   created_by?: Prisma.UuidFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
-  cliente?: Prisma.XOR<Prisma.ClienteScalarRelationFilter, Prisma.ClienteWhereInput>
+  cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   itens?: Prisma.VentaLojaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
 }, "id">
 
 export type VentaLojaOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
-  cliente_id?: Prisma.SortOrder
+  cliente_id?: Prisma.SortOrderInput | Prisma.SortOrder
   total?: Prisma.SortOrder
   moneda?: Prisma.SortOrder
   total_pyg?: Prisma.SortOrder
@@ -341,7 +341,7 @@ export type VentaLojaScalarWhereWithAggregatesInput = {
   OR?: Prisma.VentaLojaScalarWhereWithAggregatesInput[]
   NOT?: Prisma.VentaLojaScalarWhereWithAggregatesInput | Prisma.VentaLojaScalarWhereWithAggregatesInput[]
   id?: Prisma.UuidWithAggregatesFilter<"VentaLoja"> | string
-  cliente_id?: Prisma.UuidWithAggregatesFilter<"VentaLoja"> | string
+  cliente_id?: Prisma.UuidNullableWithAggregatesFilter<"VentaLoja"> | string | null
   total?: Prisma.DecimalWithAggregatesFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaWithAggregatesFilter<"VentaLoja"> | $Enums.Moneda
   total_pyg?: Prisma.DecimalWithAggregatesFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -366,14 +366,14 @@ export type VentaLojaCreateInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
-  cliente: Prisma.ClienteCreateNestedOneWithoutVentasInput
+  cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   itens?: Prisma.VentaLojaItemCreateNestedManyWithoutVenta_lojaInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutVenta_lojaInput
 }
 
 export type VentaLojaUncheckedCreateInput = {
   id?: string
-  cliente_id: string
+  cliente_id?: string | null
   total: runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda: $Enums.Moneda
   total_pyg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -400,14 +400,14 @@ export type VentaLojaUpdateInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cliente?: Prisma.ClienteUpdateOneRequiredWithoutVentasNestedInput
+  cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   itens?: Prisma.VentaLojaItemUpdateManyWithoutVenta_lojaNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutVenta_lojaNestedInput
 }
 
 export type VentaLojaUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cliente_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFieldUpdateOperationsInput | $Enums.Moneda
   total_pyg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -424,7 +424,7 @@ export type VentaLojaUncheckedUpdateInput = {
 
 export type VentaLojaCreateManyInput = {
   id?: string
-  cliente_id: string
+  cliente_id?: string | null
   total: runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda: $Enums.Moneda
   total_pyg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -453,7 +453,7 @@ export type VentaLojaUpdateManyMutationInput = {
 
 export type VentaLojaUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cliente_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFieldUpdateOperationsInput | $Enums.Moneda
   total_pyg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -627,13 +627,13 @@ export type VentaLojaCreateWithoutEstoque_movimentosInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
-  cliente: Prisma.ClienteCreateNestedOneWithoutVentasInput
+  cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   itens?: Prisma.VentaLojaItemCreateNestedManyWithoutVenta_lojaInput
 }
 
 export type VentaLojaUncheckedCreateWithoutEstoque_movimentosInput = {
   id?: string
-  cliente_id: string
+  cliente_id?: string | null
   total: runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda: $Enums.Moneda
   total_pyg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -675,13 +675,13 @@ export type VentaLojaUpdateWithoutEstoque_movimentosInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cliente?: Prisma.ClienteUpdateOneRequiredWithoutVentasNestedInput
+  cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   itens?: Prisma.VentaLojaItemUpdateManyWithoutVenta_lojaNestedInput
 }
 
 export type VentaLojaUncheckedUpdateWithoutEstoque_movimentosInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cliente_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFieldUpdateOperationsInput | $Enums.Moneda
   total_pyg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -758,7 +758,7 @@ export type VentaLojaScalarWhereInput = {
   OR?: Prisma.VentaLojaScalarWhereInput[]
   NOT?: Prisma.VentaLojaScalarWhereInput | Prisma.VentaLojaScalarWhereInput[]
   id?: Prisma.UuidFilter<"VentaLoja"> | string
-  cliente_id?: Prisma.UuidFilter<"VentaLoja"> | string
+  cliente_id?: Prisma.UuidNullableFilter<"VentaLoja"> | string | null
   total?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFilter<"VentaLoja"> | $Enums.Moneda
   total_pyg?: Prisma.DecimalFilter<"VentaLoja"> | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -783,13 +783,13 @@ export type VentaLojaCreateWithoutItensInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
-  cliente: Prisma.ClienteCreateNestedOneWithoutVentasInput
+  cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutVenta_lojaInput
 }
 
 export type VentaLojaUncheckedCreateWithoutItensInput = {
   id?: string
-  cliente_id: string
+  cliente_id?: string | null
   total: runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda: $Enums.Moneda
   total_pyg: runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -831,13 +831,13 @@ export type VentaLojaUpdateWithoutItensInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  cliente?: Prisma.ClienteUpdateOneRequiredWithoutVentasNestedInput
+  cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutVenta_lojaNestedInput
 }
 
 export type VentaLojaUncheckedUpdateWithoutItensInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
-  cliente_id?: Prisma.StringFieldUpdateOperationsInput | string
+  cliente_id?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   total?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
   moneda?: Prisma.EnumMonedaFieldUpdateOperationsInput | $Enums.Moneda
   total_pyg?: Prisma.DecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string
@@ -964,7 +964,7 @@ export type VentaLojaSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
   itens?: boolean | Prisma.VentaLoja$itensArgs<ExtArgs>
   estoque_movimentos?: boolean | Prisma.VentaLoja$estoque_movimentosArgs<ExtArgs>
   _count?: boolean | Prisma.VentaLojaCountOutputTypeDefaultArgs<ExtArgs>
@@ -983,7 +983,7 @@ export type VentaLojaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }, ExtArgs["result"]["ventaLoja"]>
 
 export type VentaLojaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -999,7 +999,7 @@ export type VentaLojaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }, ExtArgs["result"]["ventaLoja"]>
 
 export type VentaLojaSelectScalar = {
@@ -1019,28 +1019,28 @@ export type VentaLojaSelectScalar = {
 
 export type VentaLojaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cliente_id" | "total" | "moneda" | "total_pyg" | "talonario" | "numero_factura" | "tipo_operacion" | "cotizacion_snapshot" | "created_by" | "created_at" | "updated_at", ExtArgs["result"]["ventaLoja"]>
 export type VentaLojaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
   itens?: boolean | Prisma.VentaLoja$itensArgs<ExtArgs>
   estoque_movimentos?: boolean | Prisma.VentaLoja$estoque_movimentosArgs<ExtArgs>
   _count?: boolean | Prisma.VentaLojaCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VentaLojaIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }
 export type VentaLojaIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
-  cliente?: boolean | Prisma.ClienteDefaultArgs<ExtArgs>
+  cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }
 
 export type $VentaLojaPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "VentaLoja"
   objects: {
-    cliente: Prisma.$ClientePayload<ExtArgs>
+    cliente: Prisma.$ClientePayload<ExtArgs> | null
     itens: Prisma.$VentaLojaItemPayload<ExtArgs>[]
     estoque_movimentos: Prisma.$EstoqueMovimentoPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
-    cliente_id: string
+    cliente_id: string | null
     total: runtime.Decimal
     moneda: $Enums.Moneda
     total_pyg: runtime.Decimal
@@ -1445,7 +1445,7 @@ readonly fields: VentaLojaFieldRefs;
  */
 export interface Prisma__VentaLojaClient<T, Null = never, ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
   readonly [Symbol.toStringTag]: "PrismaPromise"
-  cliente<T extends Prisma.ClienteDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ClienteDefaultArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+  cliente<T extends Prisma.VentaLoja$clienteArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VentaLoja$clienteArgs<ExtArgs>>): Prisma.Prisma__ClienteClient<runtime.Types.Result.GetResult<Prisma.$ClientePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
   itens<T extends Prisma.VentaLoja$itensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VentaLoja$itensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VentaLojaItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   estoque_movimentos<T extends Prisma.VentaLoja$estoque_movimentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VentaLoja$estoque_movimentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EstoqueMovimentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
@@ -1882,6 +1882,25 @@ export type VentaLojaDeleteManyArgs<ExtArgs extends runtime.Types.Extensions.Int
    * Limit how many VentaLojas to delete.
    */
   limit?: number
+}
+
+/**
+ * VentaLoja.cliente
+ */
+export type VentaLoja$clienteArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Cliente
+   */
+  select?: Prisma.ClienteSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Cliente
+   */
+  omit?: Prisma.ClienteOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.ClienteInclude<ExtArgs> | null
+  where?: Prisma.ClienteWhereInput
 }
 
 /**
