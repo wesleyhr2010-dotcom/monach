@@ -10,9 +10,9 @@ import { Receipt, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   listVentas,
   getKPIsVentas,
-  getRangeFromParams,
   type ListVentasParams,
 } from "@/app/admin/actions-ventas";
+import { getRangeFromParams } from "@/app/admin/actions-analytics";
 
 export const dynamic = "force-dynamic";
 

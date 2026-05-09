@@ -292,7 +292,8 @@ export async function getKPIsVentas(params: {
   );
 }
 
-export { getRangeFromParams } from "./actions-analytics";
+// Note: getRangeFromParams is imported directly from actions-analytics by consumers
+// It cannot be re-exported from a "use server" file (must be async)
 
 // ============================================
 // 5. exportVentasCSV — CSV string with filtered data

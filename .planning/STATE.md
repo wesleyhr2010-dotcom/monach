@@ -98,6 +98,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08
-Stopped at: Phase 17 complete — All waves executed and verified
-Resume: Execute `/gsd-execute-phase 18` (Histórico de Ventas)
+Last session: 2026-05-09
+Stopped at: Phase 18 context gathered — 13 decisions captured across 4 areas
+Resume: `/gsd-plan-phase 18` (Histórico de Ventas)
