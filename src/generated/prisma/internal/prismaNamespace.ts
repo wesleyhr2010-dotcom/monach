@@ -3307,7 +3307,8 @@ export const VentaLojaScalarFieldEnum = {
   cotizacion_snapshot: 'cotizacion_snapshot',
   created_by: 'created_by',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  cancelled_at: 'cancelled_at'
 } as const
 
 export type VentaLojaScalarFieldEnum = (typeof VentaLojaScalarFieldEnum)[keyof typeof VentaLojaScalarFieldEnum]

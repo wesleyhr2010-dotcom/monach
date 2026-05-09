@@ -716,6 +716,7 @@ model VentaLoja {
   created_by         String   @db.Uuid
   created_at         DateTime @default(now()) @db.Timestamptz()
   updated_at         DateTime @default(now()) @updatedAt @db.Timestamptz()
+  cancelled_at       DateTime? @db.Timestamptz()
 
   cliente      Cliente?        @relation(fields: [cliente_id], references: [id])
   itens        VentaLojaItem[]

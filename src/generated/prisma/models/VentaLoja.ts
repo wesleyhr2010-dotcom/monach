@@ -48,6 +48,7 @@ export type VentaLojaMinAggregateOutputType = {
   created_by: string | null
   created_at: Date | null
   updated_at: Date | null
+  cancelled_at: Date | null
 }
 
 export type VentaLojaMaxAggregateOutputType = {
@@ -62,6 +63,7 @@ export type VentaLojaMaxAggregateOutputType = {
   created_by: string | null
   created_at: Date | null
   updated_at: Date | null
+  cancelled_at: Date | null
 }
 
 export type VentaLojaCountAggregateOutputType = {
@@ -77,6 +79,7 @@ export type VentaLojaCountAggregateOutputType = {
   created_by: number
   created_at: number
   updated_at: number
+  cancelled_at: number
   _all: number
 }
 
@@ -103,6 +106,7 @@ export type VentaLojaMinAggregateInputType = {
   created_by?: true
   created_at?: true
   updated_at?: true
+  cancelled_at?: true
 }
 
 export type VentaLojaMaxAggregateInputType = {
@@ -117,6 +121,7 @@ export type VentaLojaMaxAggregateInputType = {
   created_by?: true
   created_at?: true
   updated_at?: true
+  cancelled_at?: true
 }
 
 export type VentaLojaCountAggregateInputType = {
@@ -132,6 +137,7 @@ export type VentaLojaCountAggregateInputType = {
   created_by?: true
   created_at?: true
   updated_at?: true
+  cancelled_at?: true
   _all?: true
 }
 
@@ -234,6 +240,7 @@ export type VentaLojaGroupByOutputType = {
   created_by: string
   created_at: Date
   updated_at: Date
+  cancelled_at: Date | null
   _count: VentaLojaCountAggregateOutputType | null
   _avg: VentaLojaAvgAggregateOutputType | null
   _sum: VentaLojaSumAggregateOutputType | null
@@ -272,6 +279,7 @@ export type VentaLojaWhereInput = {
   created_by?: Prisma.UuidFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
+  cancelled_at?: Prisma.DateTimeNullableFilter<"VentaLoja"> | Date | string | null
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   itens?: Prisma.VentaLojaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
@@ -290,6 +298,7 @@ export type VentaLojaOrderByWithRelationInput = {
   created_by?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   cliente?: Prisma.ClienteOrderByWithRelationInput
   itens?: Prisma.VentaLojaItemOrderByRelationAggregateInput
   estoque_movimentos?: Prisma.EstoqueMovimentoOrderByRelationAggregateInput
@@ -311,6 +320,7 @@ export type VentaLojaWhereUniqueInput = Prisma.AtLeast<{
   created_by?: Prisma.UuidFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
+  cancelled_at?: Prisma.DateTimeNullableFilter<"VentaLoja"> | Date | string | null
   cliente?: Prisma.XOR<Prisma.ClienteNullableScalarRelationFilter, Prisma.ClienteWhereInput> | null
   itens?: Prisma.VentaLojaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
@@ -329,6 +339,7 @@ export type VentaLojaOrderByWithAggregationInput = {
   created_by?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.VentaLojaCountOrderByAggregateInput
   _avg?: Prisma.VentaLojaAvgOrderByAggregateInput
   _max?: Prisma.VentaLojaMaxOrderByAggregateInput
@@ -352,6 +363,7 @@ export type VentaLojaScalarWhereWithAggregatesInput = {
   created_by?: Prisma.UuidWithAggregatesFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeWithAggregatesFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeWithAggregatesFilter<"VentaLoja"> | Date | string
+  cancelled_at?: Prisma.DateTimeNullableWithAggregatesFilter<"VentaLoja"> | Date | string | null
 }
 
 export type VentaLojaCreateInput = {
@@ -366,6 +378,7 @@ export type VentaLojaCreateInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   itens?: Prisma.VentaLojaItemCreateNestedManyWithoutVenta_lojaInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutVenta_lojaInput
@@ -384,6 +397,7 @@ export type VentaLojaUncheckedCreateInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutVenta_lojaInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutVenta_lojaInput
 }
@@ -400,6 +414,7 @@ export type VentaLojaUpdateInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   itens?: Prisma.VentaLojaItemUpdateManyWithoutVenta_lojaNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutVenta_lojaNestedInput
@@ -418,6 +433,7 @@ export type VentaLojaUncheckedUpdateInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutVenta_lojaNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutVenta_lojaNestedInput
 }
@@ -435,6 +451,7 @@ export type VentaLojaCreateManyInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
 }
 
 export type VentaLojaUpdateManyMutationInput = {
@@ -449,6 +466,7 @@ export type VentaLojaUpdateManyMutationInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type VentaLojaUncheckedUpdateManyInput = {
@@ -464,6 +482,7 @@ export type VentaLojaUncheckedUpdateManyInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 export type VentaLojaNullableScalarRelationFilter = {
@@ -494,6 +513,7 @@ export type VentaLojaCountOrderByAggregateInput = {
   created_by?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
 }
 
 export type VentaLojaAvgOrderByAggregateInput = {
@@ -513,6 +533,7 @@ export type VentaLojaMaxOrderByAggregateInput = {
   created_by?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
 }
 
 export type VentaLojaMinOrderByAggregateInput = {
@@ -527,6 +548,7 @@ export type VentaLojaMinOrderByAggregateInput = {
   created_by?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   updated_at?: Prisma.SortOrder
+  cancelled_at?: Prisma.SortOrder
 }
 
 export type VentaLojaSumOrderByAggregateInput = {
@@ -627,6 +649,7 @@ export type VentaLojaCreateWithoutEstoque_movimentosInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   itens?: Prisma.VentaLojaItemCreateNestedManyWithoutVenta_lojaInput
 }
@@ -644,6 +667,7 @@ export type VentaLojaUncheckedCreateWithoutEstoque_movimentosInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutVenta_lojaInput
 }
 
@@ -675,6 +699,7 @@ export type VentaLojaUpdateWithoutEstoque_movimentosInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   itens?: Prisma.VentaLojaItemUpdateManyWithoutVenta_lojaNestedInput
 }
@@ -692,6 +717,7 @@ export type VentaLojaUncheckedUpdateWithoutEstoque_movimentosInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutVenta_lojaNestedInput
 }
 
@@ -707,6 +733,7 @@ export type VentaLojaCreateWithoutClienteInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   itens?: Prisma.VentaLojaItemCreateNestedManyWithoutVenta_lojaInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutVenta_lojaInput
 }
@@ -723,6 +750,7 @@ export type VentaLojaUncheckedCreateWithoutClienteInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutVenta_lojaInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutVenta_lojaInput
 }
@@ -769,6 +797,7 @@ export type VentaLojaScalarWhereInput = {
   created_by?: Prisma.UuidFilter<"VentaLoja"> | string
   created_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
   updated_at?: Prisma.DateTimeFilter<"VentaLoja"> | Date | string
+  cancelled_at?: Prisma.DateTimeNullableFilter<"VentaLoja"> | Date | string | null
 }
 
 export type VentaLojaCreateWithoutItensInput = {
@@ -783,6 +812,7 @@ export type VentaLojaCreateWithoutItensInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   cliente?: Prisma.ClienteCreateNestedOneWithoutVentasInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutVenta_lojaInput
 }
@@ -800,6 +830,7 @@ export type VentaLojaUncheckedCreateWithoutItensInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutVenta_lojaInput
 }
 
@@ -831,6 +862,7 @@ export type VentaLojaUpdateWithoutItensInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   cliente?: Prisma.ClienteUpdateOneWithoutVentasNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutVenta_lojaNestedInput
 }
@@ -848,6 +880,7 @@ export type VentaLojaUncheckedUpdateWithoutItensInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutVenta_lojaNestedInput
 }
 
@@ -863,6 +896,7 @@ export type VentaLojaCreateManyClienteInput = {
   created_by: string
   created_at?: Date | string
   updated_at?: Date | string
+  cancelled_at?: Date | string | null
 }
 
 export type VentaLojaUpdateWithoutClienteInput = {
@@ -877,6 +911,7 @@ export type VentaLojaUpdateWithoutClienteInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itens?: Prisma.VentaLojaItemUpdateManyWithoutVenta_lojaNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutVenta_lojaNestedInput
 }
@@ -893,6 +928,7 @@ export type VentaLojaUncheckedUpdateWithoutClienteInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutVenta_lojaNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutVenta_lojaNestedInput
 }
@@ -909,6 +945,7 @@ export type VentaLojaUncheckedUpdateManyWithoutClienteInput = {
   created_by?: Prisma.StringFieldUpdateOperationsInput | string
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updated_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  cancelled_at?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
 }
 
 
@@ -964,6 +1001,7 @@ export type VentaLojaSelect<ExtArgs extends runtime.Types.Extensions.InternalArg
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
+  cancelled_at?: boolean
   cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
   itens?: boolean | Prisma.VentaLoja$itensArgs<ExtArgs>
   estoque_movimentos?: boolean | Prisma.VentaLoja$estoque_movimentosArgs<ExtArgs>
@@ -983,6 +1021,7 @@ export type VentaLojaSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Ext
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
+  cancelled_at?: boolean
   cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }, ExtArgs["result"]["ventaLoja"]>
 
@@ -999,6 +1038,7 @@ export type VentaLojaSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Ext
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
+  cancelled_at?: boolean
   cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
 }, ExtArgs["result"]["ventaLoja"]>
 
@@ -1015,9 +1055,10 @@ export type VentaLojaSelectScalar = {
   created_by?: boolean
   created_at?: boolean
   updated_at?: boolean
+  cancelled_at?: boolean
 }
 
-export type VentaLojaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cliente_id" | "total" | "moneda" | "total_pyg" | "talonario" | "numero_factura" | "tipo_operacion" | "cotizacion_snapshot" | "created_by" | "created_at" | "updated_at", ExtArgs["result"]["ventaLoja"]>
+export type VentaLojaOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "cliente_id" | "total" | "moneda" | "total_pyg" | "talonario" | "numero_factura" | "tipo_operacion" | "cotizacion_snapshot" | "created_by" | "created_at" | "updated_at" | "cancelled_at", ExtArgs["result"]["ventaLoja"]>
 export type VentaLojaInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   cliente?: boolean | Prisma.VentaLoja$clienteArgs<ExtArgs>
   itens?: boolean | Prisma.VentaLoja$itensArgs<ExtArgs>
@@ -1051,6 +1092,7 @@ export type $VentaLojaPayload<ExtArgs extends runtime.Types.Extensions.InternalA
     created_by: string
     created_at: Date
     updated_at: Date
+    cancelled_at: Date | null
   }, ExtArgs["result"]["ventaLoja"]>
   composites: {}
 }
@@ -1489,6 +1531,7 @@ export interface VentaLojaFieldRefs {
   readonly created_by: Prisma.FieldRef<"VentaLoja", 'String'>
   readonly created_at: Prisma.FieldRef<"VentaLoja", 'DateTime'>
   readonly updated_at: Prisma.FieldRef<"VentaLoja", 'DateTime'>
+  readonly cancelled_at: Prisma.FieldRef<"VentaLoja", 'DateTime'>
 }
     
 
