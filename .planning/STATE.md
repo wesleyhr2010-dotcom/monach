@@ -1,35 +1,35 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.3
-milestone_name: Polimento, Segurança e UX Admin
+milestone: v1.4
+milestone_name: PDV e Ventas de Loja
 status: active
-last_updated: "2026-05-07T00:00:00.000Z"
-last_activity: 2026-05-07 -- Phase 14 executed (3 plans, 3 waves, 3 commits)
+last_updated: "2026-05-08T00:00:00.000Z"
+last_activity: 2026-05-08 -- Phase 16 executed (3 plans, 3 waves, 3 commits)
 progress:
-  total_phases: 4
-  completed_phases: 3
-  total_plans: 14
-  completed_plans: 11
-  percent: 79
+  total_phases: 3
+  completed_phases: 1
+  total_plans: 9
+  completed_plans: 3
+  percent: 33
 ---
 
 # STATE.md — NEXT-MONARCA
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-05-07)
+See: .planning/PROJECT.md (updated 2026-05-08)
 
-**Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Milestone v1.3 — Polimento, Segurança e UX Admin
+**Core value:** Revendedoras conseguem receber, registrar ventas e devolver maletas com comprobante — e receber a comisión calculada automaticamente.
+**Current focus:** Milestone v1.4 — PDV e Ventas de Loja
 
 ## Current Position
 
-Phase: Phase 15 — Admin UI Consistência Visual
-Plan: 3 plans in 3 waves
-Status: Ready to execute
-Last activity: 2026-05-07 — Phase 14 complete (3/3 plans)
+Phase: 16 — Foundation: Schema + Gestão de Clientes
+Plan: 3/3 plans complete
+Status: Complete
+Last activity: 2026-05-08 — Phase 16 complete (3/3 plans)
 
-Progress: [██████████░░] 79% (3/4 phases complete, 11/14 plans complete) | Milestone v1.3 active
+Progress: [███░░░░░░░░░] 33% (1/3 phases complete, 3/9 plans complete) | Milestone v1.4 active
 
 ## Performance Metrics
 
@@ -47,10 +47,18 @@ Progress: [██████████░░] 79% (3/4 phases complete, 11/14
 - Commits: 34
 - Files changed: 73 (+8,929 / −444)
 
+**Velocity (v1.4 — Phase 16):**
+
+- Plans completed: 3
+- Commits: 3
+- Duration: ~1 session
+
 ## Accumulated Context
 
 ### Decisions
 
+- **D-16-01** (2026-05-08): Migration única para todos os 5 itens de schema v1.4 — `ClienteOrigem`, `Moneda`, `venda_loja` em enum, `CotizacionDia`, `Cliente`, `VentaLoja`, `VentaLojaItem`
+- **D-16-02** (2026-05-08): Lista unificada de clientes via two-query merge — `prisma.cliente.findMany()` + `prisma.vendaMaleta.findMany({ distinct: [...] })`; filtro por `origem` por branch na Server Action
 - **D-14-01** (2026-05-07): Refatorar `actions-analytics.ts` — Assinaturas mudam de `periodDays` para `(from: Date, to: Date)` integralmente
 - **D-14-02** (2026-05-07): UI Component `DatePickerWithRange` (Shadcn/ui) — Padronizado para seleção de range visual
 - **D-14-03** (2026-05-07): Timezone UTC-3 (PY) para limites de query — `to` representa o fim do dia no Paraguai (23:59:59)
@@ -61,7 +69,7 @@ Progress: [██████████░░] 79% (3/4 phases complete, 11/14
 - **D-13-04** (2026-05-07): Wrapper Centralizado no envio com cache por request e erro rigoroso se DB falhar
 - **D-07-01** (2026-05-06): Template engine híbrida aprovada — utilitários `email-base` geram HTML + text simultaneamente
 
-*(Carried forward from v1.0/v1.1/v1.2 — see MILESTONES.md for full history)*
+*(Carried forward from v1.0/v1.1/v1.2/v1.3 — see MILESTONES.md for full history)*
 
 ### Pending Todos
 
@@ -73,17 +81,16 @@ None.
 
 ## Deferred Items
 
-Items deferred from v1.2 / acknowledged for future milestones:
-
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.4 | 2026-05-07 |
-| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.4 | 2026-05-07 |
-| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.4 | 2026-05-07 |
-| Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.4 | 2026-05-07 |
+| Infra | Migração domínio oficial monarcasemijoyas.com.py | Deferred to v1.5 | 2026-05-08 |
+| Mobile | Migração PWA → Capacitor (iOS + Android) | Deferred to v1.5 | 2026-05-08 |
+| Offline | Modo offline PWA — outbox, sync, conflitos | Deferred to v1.5 | 2026-05-08 |
+| Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.5 | 2026-05-08 |
+| PDV | Emissão de factura paraguaia (talonario, PDF) | Deferred to v1.5 | 2026-05-08 |
 
 ## Session Continuity
 
-Last session: 2026-05-07
-Stopped at: Phase 14 complete — All waves executed and verified
-Resume: Execute `/gsd-execute-phase 15` (Admin UI Consistência Visual)
+Last session: 2026-05-08
+Stopped at: Phase 16 complete — All waves executed and verified
+Resume: Execute `/gsd-execute-phase 17` (PDV Core — Cotización + Fluxo de Venda)

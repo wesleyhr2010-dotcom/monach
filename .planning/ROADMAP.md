@@ -45,6 +45,12 @@
 - [x] **Phase 14: Analytics Período Personalizado** — Admin pode filtrar dashboard por qualquer período customizado (3/3 plans) — completed 2026-05-07
 - [ ] **Phase 15: Admin UI Consistência Visual** — Admin panel com visual consistente com design system e Paper — planned
 
+### 🔄 v1.4 PDV e Ventas de Loja (Phases 16-18) — ACTIVE
+
+- [x] **Phase 16: Foundation — Schema + Gestão de Clientes** — Schema v1.4 migrado e CRUD completo de clientes com lista unificada (3/3 plans) — completed 2026-05-08
+- [ ] **Phase 17: PDV Core — Cotización + Fluxo de Venda** — Admin configura cotação e registra vendas físicas da loja — planned
+- [ ] **Phase 18: Histórico de Ventas** — Admin consulta todas as vendas de loja com filtro por período — planned
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -64,6 +70,9 @@
 | 13. Email Templates Admin | v1.3 | 3/3 | Complete | 2026-05-07 |
 | 14. Analytics Período Personalizado | v1.3 | 3/3 | Complete | 2026-05-07 |
 | 15. Admin UI Consistência Visual | v1.3 | 0/3 | Ready to execute | - |
+| 16. Foundation — Schema + Gestão de Clientes | v1.4 | 3/3 | Complete | 2026-05-08 |
+| 17. PDV Core — Cotización + Fluxo de Venda | v1.4 | 0/4 | Planned | - |
+| 18. Histórico de Ventas | v1.4 | 0/2 | Planned | - |
 
 ---
 
@@ -76,6 +85,8 @@
 **v1.2 Requirements:** 23 complete (see `.planning/milestones/v1.2-REQUIREMENTS.md`)
 
 **v1.3 Requirements:** 23 total, 19/23 complete (Phases 12-14 done, 15 pending)
+
+**v1.4 Requirements:** 9 total, 3/9 complete (Phase 16 done, 17-18 pending)
 
 ## Phase Details
 
