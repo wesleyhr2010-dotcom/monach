@@ -4,13 +4,13 @@ milestone: v1.4
 milestone_name: PDV e Ventas de Loja
 status: active
 last_updated: "2026-05-08T21:30:00.000Z"
-last_activity: 2026-05-08 -- Phase 17 executed (4 plans, 3 waves, 9 commits)
+last_activity: 2026-05-09 -- Phase 18 executed (2 plans, 2 waves, 11 commits)
 progress:
   total_phases: 3
-  completed_phases: 2
-  total_plans: 9
-  completed_plans: 7
-  percent: 78
+  completed_phases: 3
+  total_plans: 11
+  completed_plans: 9
+  percent: 82
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 17 — PDV Core — Cotización + Fluxo de Venda
-Plan: 4/4 plans complete
+Phase: 18 — Histórico de Ventas
+Plan: 2/2 plans complete
 Status: Complete
-Last activity: 2026-05-08 — Phase 17 complete (4/4 plans)
+Last activity: 2026-05-09 — Phase 18 complete (2/2 plans)
 
-Progress: [███████████░] 78% (2/3 phases complete, 7/9 plans complete) | Milestone v1.4 active
+Progress: [████████████░] 82% (3/3 phases complete, 9/11 plans complete) | Milestone v1.4 active
 
 ## Performance Metrics
 
@@ -75,6 +75,15 @@ Progress: [███████████░] 78% (2/3 phases complete, 7/9 p
 - **D-13-03** (2026-05-07): Editor com escopo ampliado — inclui Assunto, Corpo e Preview Text com Saudação editável
 - **D-13-04** (2026-05-07): Wrapper Centralizado no envio com cache por request e erro rigoroso se DB falhar
 - **D-07-01** (2026-05-06): Template engine híbrida aprovada — utilitários `email-base` geram HTML + text simultaneamente
+
+**Velocity (v1.4 — Phase 18):**
+
+- Plans completed: 2
+- Commits: 11
+- Files created: 8 new
+- Duration: ~1 session
+- Post-merge build: ✓ passes
+- Post-merge tests: 26 pre-existing failures (email templates, unrelated)
 
 *(Carried forward from v1.0/v1.1/v1.2/v1.3 — see MILESTONES.md for full history)*
 
