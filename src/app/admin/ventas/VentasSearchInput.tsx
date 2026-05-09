@@ -11,6 +11,8 @@ export function VentasSearchInput() {
 
   useEffect(() => {
     const timeout = setTimeout(() => {
+      const current = searchParams?.get("search") ?? "";
+      if (value.trim() === current) return;
       const params = new URLSearchParams(searchParams?.toString() || "");
       if (value.trim()) {
         params.set("search", value.trim());
@@ -21,7 +23,7 @@ export function VentasSearchInput() {
       router.push(`/admin/ventas?${params.toString()}`);
     }, 400);
     return () => clearTimeout(timeout);
-  }, [value, router, searchParams]);
+  }, [value]);
 
   return (
     <div style={{ position: "relative", flex: 1, maxWidth: 320 }}>

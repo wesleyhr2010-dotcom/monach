@@ -74,6 +74,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
         roles: ["ADMIN", "COLABORADORA"],
     },
     {
+        href: "/admin/pdv",
+        label: "PDV",
+        icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN", "COLABORADORA"],
+    },
+    {
         href: "/admin/revendedoras",
         label: "Revendedoras",
         icon: <Users size={16} strokeWidth={1.5} />,
@@ -116,6 +122,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
         href: "/admin/config/comissoes",
         label: "Comissões",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN"],
+    },
+    {
+        href: "/admin/config/cotizacion",
+        label: "Cotización",
+        icon: <FileText size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
