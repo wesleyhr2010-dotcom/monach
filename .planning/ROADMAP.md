@@ -49,7 +49,7 @@
 
 - [x] **Phase 16: Foundation — Schema + Gestão de Clientes** — Schema v1.4 migrado e CRUD completo de clientes com lista unificada (3/3 plans) — completed 2026-05-08
 - [x] **Phase 17: PDV Core — Cotización + Fluxo de Venda** — Admin configura cotação e registra vendas físicas da loja — completed 2026-05-08
-- [ ] **Phase 18: Histórico de Ventas** — Admin consulta todas as vendas de loja com filtro por período — planned
+- [ ] **Phase 18: Histórico de Ventas** — Admin consulta todas as vendas de loja com filtro por período — planned (2 plans)
 
 ## Progress
 
@@ -72,7 +72,7 @@
 | 15. Admin UI Consistência Visual | v1.3 | 0/3 | Ready to execute | - |
 | 16. Foundation — Schema + Gestão de Clientes | v1.4 | 3/3 | Complete | 2026-05-08 |
 | 17. PDV Core — Cotización + Fluxo de Venda | v1.4 | 4/4 | Complete | 2026-05-08 |
-| 18. Histórico de Ventas | v1.4 | 0/2 | Planned | - |
+| 18. Histórico de Ventas | v1.4 | 0/2 | Ready to execute | - |
 
 ---
 
@@ -198,5 +198,36 @@ Plans:
 
 ---
 
+### Phase 18: Histórico de Ventas
+**Goal**: Admin consulta todas as vendas de loja com filtro por período, busca por cliente, KPIs de resumo, detalhe completo por venda e possibilidade de cancelar/estornar
+**Depends on**: Phase 17 (PDV Core)
+**Requirements**: D-18-01, D-18-02, D-18-03, D-18-04, D-18-05, D-18-06, D-18-07, D-18-08, D-18-09, D-18-10, D-18-11, D-18-12, D-18-13
+**Success Criteria** (what must be TRUE):
+  1. Admin abre `/admin/ventas` e vê tabela paginada das últimas 7 dias com 4 KPIs no topo (Total Vendido, Qtd Ventas, Ticket Medio, Total Itens)
+  2. Admin pode filtrar por período (DateRangePicker) e buscar por nome/RUC do cliente — KPIs recalculam com os filtros ativos
+  3. Clicar em uma linha navega para `/admin/ventas/[id]` com resumo completo: data, cliente, moeda, total PYG, cotação snapshot, quem registrou, tabela de itens
+  4. Admin pode cancelar uma venda não-cancelada — modal de confirmação, ao confirmar: marca como cancelada, devolve estoque, registra movimento reverso
+  5. Vendas canceladas aparecem na listagem com indicador visual (badge "Cancelada" ou linha riscada)
+  6. Botão "Exportar CSV" gera planilha com dados filtrados do período + busca
+**Plans**: 2 plans
+Plans:
+
+**Wave 1** *(backend — schema + Server Actions + navegação)*
+- [ ] 18-01-PLAN.md — Schema migration (cancelled_at), actions-ventas.ts (list, detail, cancel, KPIs, CSV), sidebar nav (D-18-01..D-18-13)
+
+**Wave 2** *(frontend — páginas e componentes)*
+- [ ] 18-02-PLAN.md — Listagem /admin/ventas (KPIs, filtros, tabela, paginação), Detalhe /admin/ventas/[id] (resumo, itens, cancel modal), Export CSV (D-18-01..D-18-13)
+
+**Cross-cutting constraints:**
+- `requireAuth(["ADMIN"])` em todas as Server Actions de ventas (cancelar requer ADMIN exclusivo)
+- Todas as Server Actions retornam `ActionResult<T>`
+- Timezone UTC-3 (PY) para limites de query
+- URL state: `?from/to` > `?period`, `?page`, `?sort`, `?dir`, `?search`
+- Tokens `--admin-*` obrigatórios — zero hex/px hardcoded no JSX
+- Texto da UI em espanhol paraguaio
+- `git push` para remote `client`
+
+---
+
 *Roadmap created: 2026-05-04*
-*Last updated: 2026-05-07 — Phases 12-13 completed, Phase 15 planned (3 plans, 3 waves, ADUI-01..ADUI-05)*
+*Last updated: 2026-05-09 — Phase 18 planned (2 plans, 2 waves, D-18-01..D-18-13)*
