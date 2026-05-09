@@ -25,21 +25,13 @@ import {
   type VitrinaDia,
   type VitrinaRankingItem,
 } from "../actions-analytics";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminSectionCard } from "@/components/admin/AdminSectionCard";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AnalyticsKpiCards } from "./AnalyticsKpiCards";
 import { AnalyticsVitrinaKpiCards } from "./AnalyticsVitrinaKpiCards";
 import { AnalyticsVisitasChart } from "./AnalyticsVisitasChart";
 import { AnalyticsVitrinaRanking } from "./AnalyticsVitrinaRanking";
 import { VitrinaCsvDownload } from "./VitrinaCsvDownload";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import {
   PackageCheck,
   BarChart3,
@@ -103,7 +95,7 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
   }, []);
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: "24px", flexWrap: "wrap" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap" }}>
       <svg width="140" height="140" viewBox="0 0 100 100">
         {segments.map((seg, i) => (
           <circle
@@ -123,9 +115,9 @@ function DonutChart({ data }: { data: { label: string; value: number; color: str
           {total}
         </text>
       </svg>
-      <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
         {data.map((d, i) => (
-          <div key={i} style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px" }}>
+          <div key={i} style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 13 }}>
             <span style={{ width: 10, height: 10, borderRadius: "50%", background: d.color, flexShrink: 0 }} />
             <span style={{ color: "var(--admin-text-muted)" }}>{d.label}</span>
             <span style={{ fontWeight: 600, color: "var(--admin-text)" }}>{d.value}</span>
@@ -238,15 +230,14 @@ export default async function AnalyticsPage({
   );
 
   return (
-    <>
-      <AdminPageHeader
+    <div style={{ display: "flex", flexDirection: "column" }}>
+      <AdminTopHeader
+        breadcrumb="Admin / Analytics"
         title="Analytics"
-        description="Métricas operacionales de maletas y revendedoras"
         action={
-          <div style={{ display: "flex", gap: "12px", alignItems: "center", flexWrap: "wrap" }}>
-            {/* Reseller Selector */}
-            <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-              <span style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>Revendedora:</span>
+          <>
+            <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+              <span style={{ fontSize: 12, color: "var(--admin-text-muted)" }}>Revendedora:</span>
               <ResellerSelect
                 resellers={resellersList}
                 periodDays={periodDays}
@@ -255,23 +246,17 @@ export default async function AnalyticsPage({
                 to={toStr}
               />
             </div>
-
-            {/* Date Range Picker */}
             <DateRangeSelect
               value={hasCustomRange ? { from, to } : undefined}
               resellerId={selectedResellerId}
             />
-
-            {/* Period Filter */}
-            <div style={{ display: "flex", gap: "6px" }}>
+            <div style={{ display: "flex", gap: 6 }}>
               {PERIOD_OPTIONS.map((opt) => (
                 <Link
                   key={opt.days}
                   href={`/admin/analytics?period=${opt.days}${selectedResellerId ? `&reseller=${selectedResellerId}` : ""}`}
                   className={`px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
-                    !hasCustomRange && periodDays === opt.days
-                      ? "text-white"
-                      : "hover:text-white"
+                    !hasCustomRange && periodDays === opt.days ? "text-white" : "hover:text-white"
                   }`}
                   style={!hasCustomRange && periodDays === opt.days
                     ? { backgroundColor: "var(--admin-accent)" }
@@ -282,448 +267,304 @@ export default async function AnalyticsPage({
                 </Link>
               ))}
             </div>
-          </div>
+          </>
         }
       />
 
-      <div className="admin-content">
+      {/* Body */}
+      <div className="admin-page-body">
+
         {/* Range Error Banner */}
         {rangeError && (
-          <div
-            style={{
-              marginBottom: "24px",
-              padding: "12px 16px",
-              borderRadius: "var(--admin-radius)",
-              background: "#E05C5C1A",
-              border: "1px solid var(--admin-danger)",
-              color: "var(--admin-danger)",
-              fontSize: "14px",
-              fontWeight: 500,
-            }}
-          >
+          <div style={{
+            padding: "12px 16px",
+            borderRadius: "var(--admin-radius)",
+            background: "#E05C5C1A",
+            border: "1px solid var(--admin-danger)",
+            color: "var(--admin-danger)",
+            fontSize: 14,
+            fontWeight: 500,
+          }}>
             {rangeError}
           </div>
         )}
 
-        {/* KPIs */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-            gap: "16px",
-            marginBottom: "32px",
-          }}
-        >
+        {/* KPIs Maletas */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
           <AnalyticsKpiCards kpis={kpis} />
         </div>
 
-        {/* Gráficos: Fluxo + Distribuição */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "24px",
-            marginBottom: "32px",
-          }}
-        >
-          {/* Fluxo de Maletas */}
-          <Card>
-            <CardHeader>
-              <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <TrendingUp className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
-                Fluxo de Maletas
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              {fluxo.length === 0 || fluxo.every((d) => d.enviadas + d.devolvidas + d.atrasadas === 0) ? (
-                <p style={{ textAlign: "center", color: "var(--admin-text-muted)", padding: "40px 0" }}>
-                  Sin datos en el período
-                </p>
-              ) : (
-                <div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "flex-end",
-                      gap: "3px",
-                      height: "180px",
-                      paddingBottom: "24px",
-                      position: "relative",
-                    }}
-                  >
-                    {fluxo.map((d, i) => {
-                      const isToday = i === fluxo.length - 1;
-                      return (
-                        <div
-                          key={d.dia}
-                          style={{
-                            flex: 1,
-                            display: "flex",
-                            flexDirection: "column",
-                            justifyContent: "flex-end",
-                            height: "100%",
-                            position: "relative",
-                            gap: "1px",
-                          }}
-                          title={`${d.dia}: E=${d.enviadas} D=${d.devolvidas} A=${d.atrasadas}`}
-                        >
-                          <div
-                            style={{
-                              height: `${(d.atrasadas / maxFluxo) * 100}%`,
-                               background: isToday ? "var(--admin-danger)" : "rgba(224, 92, 92, 0.6)",
-                              borderRadius: "1px 1px 0 0",
-                              minHeight: d.atrasadas > 0 ? "2px" : "0",
-                            }}
-                          />
-                          <div
-                            style={{
-                              height: `${(d.devolvidas / maxFluxo) * 100}%`,
-                              background: isToday ? "var(--admin-info-light)" : "var(--admin-info-light)99",
-                              minHeight: d.devolvidas > 0 ? "2px" : "0",
-                            }}
-                          />
-                          <div
-                            style={{
-                              height: `${(d.enviadas / maxFluxo) * 100}%`,
-                               background: isToday ? "var(--admin-success)" : "rgba(74, 222, 128, 0.6)",
-                              borderRadius: d.devolvidas + d.atrasadas === 0 ? "1px 1px 0 0" : "0",
-                              minHeight: d.enviadas > 0 ? "2px" : "0",
-                            }}
-                          />
-                        </div>
-                      );
-                    })}
-                    <div
-                      style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        display: "flex",
-                        justifyContent: "space-between",
-                        fontSize: "10px",
-                        color: "var(--admin-text-muted)",
-                      }}
-                    >
-                      <span>{fluxo[0]?.dia.slice(5)}</span>
-                      <span>{fluxo[Math.floor(fluxo.length / 2)]?.dia.slice(5)}</span>
-                      <span>{fluxo[fluxo.length - 1]?.dia.slice(5)}</span>
-                    </div>
-                  </div>
-                  <div style={{ display: "flex", gap: "20px", marginTop: "12px", justifyContent: "center" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-success)" }} />
-                      Enviadas
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-info-light)" }} />
-                      Devueltas
-                    </div>
-                    <div style={{ display: "flex", alignItems: "center", gap: "6px", fontSize: "12px" }}>
-                      <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-danger)" }} />
-                      Atrasadas
-                    </div>
+        {/* Fluxo + Distribuição */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+          <AdminSectionCard
+            title="Fluxo de Maletas"
+            icon={<TrendingUp size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+          >
+            {fluxo.length === 0 || fluxo.every((d) => d.enviadas + d.devolvidas + d.atrasadas === 0) ? (
+              <p style={{ textAlign: "center", color: "var(--admin-text-muted)", padding: "40px 0", margin: 0 }}>
+                Sin datos en el período
+              </p>
+            ) : (
+              <div>
+                <div style={{
+                  display: "flex",
+                  alignItems: "flex-end",
+                  gap: 3,
+                  height: 180,
+                  paddingBottom: 24,
+                  position: "relative",
+                }}>
+                  {fluxo.map((d, i) => {
+                    const isToday = i === fluxo.length - 1;
+                    return (
+                      <div
+                        key={d.dia}
+                        style={{ flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-end", height: "100%", position: "relative", gap: 1 }}
+                        title={`${d.dia}: E=${d.enviadas} D=${d.devolvidas} A=${d.atrasadas}`}
+                      >
+                        <div style={{ height: `${(d.atrasadas / maxFluxo) * 100}%`, background: isToday ? "var(--admin-danger)" : "rgba(224, 92, 92, 0.6)", borderRadius: "1px 1px 0 0", minHeight: d.atrasadas > 0 ? 2 : 0 }} />
+                        <div style={{ height: `${(d.devolvidas / maxFluxo) * 100}%`, background: isToday ? "var(--admin-info-light)" : "var(--admin-info-light)99", minHeight: d.devolvidas > 0 ? 2 : 0 }} />
+                        <div style={{ height: `${(d.enviadas / maxFluxo) * 100}%`, background: isToday ? "var(--admin-success)" : "rgba(74, 222, 128, 0.6)", borderRadius: d.devolvidas + d.atrasadas === 0 ? "1px 1px 0 0" : 0, minHeight: d.enviadas > 0 ? 2 : 0 }} />
+                      </div>
+                    );
+                  })}
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, display: "flex", justifyContent: "space-between", fontSize: 10, color: "var(--admin-text-muted)" }}>
+                    <span>{fluxo[0]?.dia.slice(5)}</span>
+                    <span>{fluxo[Math.floor(fluxo.length / 2)]?.dia.slice(5)}</span>
+                    <span>{fluxo[fluxo.length - 1]?.dia.slice(5)}</span>
                   </div>
                 </div>
-              )}
-            </CardContent>
-          </Card>
+                <div style={{ display: "flex", gap: 20, marginTop: 12, justifyContent: "center" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-success)" }} />
+                    Enviadas
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-info-light)" }} />
+                    Devueltas
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: 6, fontSize: 12 }}>
+                    <div style={{ width: 10, height: 10, borderRadius: 2, background: "var(--admin-danger)" }} />
+                    Atrasadas
+                  </div>
+                </div>
+              </div>
+            )}
+          </AdminSectionCard>
 
-          {/* Distribuição por Status */}
-          <Card>
-            <CardHeader>
-              <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <BarChart3 className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
-                Distribución por Estado
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <DonutChart data={donutData} />
-            </CardContent>
-          </Card>
+          <AdminSectionCard
+            title="Distribución por Estado"
+            icon={<BarChart3 size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+          >
+            <DonutChart data={donutData} />
+          </AdminSectionCard>
         </div>
 
         {/* Top Revendedoras + Alertas de Prazo */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-            gap: "24px",
-            marginBottom: "32px",
-          }}
-        >
-          {/* Top Revendedoras */}
-          <Card>
-            <CardHeader>
-              <CardTitle style={{ fontSize: "16px" }}>Top Revendedoras por Volumen</CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {topRevendedoras.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px", color: "var(--admin-text-muted)" }}>
-                  Sin revendedoras en el período
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead style={{ width: "40px" }}>#</TableHead>
-                      <TableHead>Revendedora</TableHead>
-                      <TableHead style={{ textAlign: "right" }}>Maletas</TableHead>
-                      <TableHead style={{ textAlign: "right" }}>Valor</TableHead>
-                      <TableHead>Estado</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {topRevendedoras.map((r, i) => (
-                      <TableRow key={r.id}>
-                        <TableCell style={{ fontWeight: 600, color: i < 3 ? "var(--admin-purple)" : "var(--admin-text-muted)" }}>
-                          {i + 1}
-                        </TableCell>
-                        <TableCell>
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div
-                              style={{
-                                width: 32,
-                                height: 32,
-                                borderRadius: "50%",
-                                background: "var(--admin-purple-light)",
-                                color: "white",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                fontSize: "13px",
-                                fontWeight: 600,
-                                overflow: "hidden",
-                                flexShrink: 0,
-                              }}
-                            >
-                              {r.avatar_url ? (
-                                <img src={r.avatar_url} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                              ) : (
-                                r.name.charAt(0).toUpperCase()
-                              )}
-                            </div>
-                            <span style={{ fontWeight: 500, fontSize: "14px" }}>{r.name}</span>
-                          </div>
-                        </TableCell>
-                        <TableCell style={{ textAlign: "right", fontWeight: 600 }}>{r.maletasAtivas}</TableCell>
-                        <TableCell style={{ textAlign: "right", fontSize: "14px" }}>
-                          {formatCurrency(r.valorEmMaleta)}
-                        </TableCell>
-                        <TableCell>
-                          <span
-                            style={{
-                              fontSize: "11px",
-                              fontWeight: 700,
-                              padding: "2px 8px",
-                              borderRadius: "4px",
-                              background:
-                                r.statusAtual === "Atrasada"
-                                  ? "var(--admin-danger-15)"
-                                  : r.statusAtual === "Ativa"
-                                  ? "var(--admin-success-10)"
-                                  : "var(--admin-border)",
-                              color:
-                                r.statusAtual === "Atrasada"
-                                  ? "var(--admin-danger)"
-                                  : r.statusAtual === "Ativa"
-                                  ? "var(--admin-success)"
-                                  : "var(--admin-text-muted)",
-                            }}
-                          >
-                            {r.statusAtual}
-                          </span>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+          <AdminSectionCard title="Top Revendedoras por Volumen" noPadContent>
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th style={{ width: 40 }}>#</th>
+                  <th>Revendedora</th>
+                  <th style={{ textAlign: "right" }}>Maletas</th>
+                  <th style={{ textAlign: "right" }}>Valor</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                {topRevendedoras.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                      Sin revendedoras en el período
+                    </td>
+                  </tr>
+                ) : topRevendedoras.map((r, i) => (
+                  <tr key={r.id}>
+                    <td style={{ fontWeight: 600, color: i < 3 ? "var(--admin-purple)" : "var(--admin-text-muted)" }}>
+                      {i + 1}
+                    </td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{
+                          width: 32,
+                          height: 32,
+                          borderRadius: "50%",
+                          background: "var(--admin-purple-light)",
+                          color: "white",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          fontSize: 13,
+                          fontWeight: 600,
+                          overflow: "hidden",
+                          flexShrink: 0,
+                        }}>
+                          {r.avatar_url ? (
+                            <img src={r.avatar_url} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                          ) : (
+                            r.name.charAt(0).toUpperCase()
+                          )}
+                        </div>
+                        <span style={{ fontWeight: 500, fontSize: 14 }}>{r.name}</span>
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "right", fontWeight: 600 }}>{r.maletasAtivas}</td>
+                    <td style={{ textAlign: "right", fontSize: 14 }}>{formatCurrency(r.valorEmMaleta)}</td>
+                    <td>
+                      <span style={{
+                        fontSize: 11,
+                        fontWeight: 700,
+                        padding: "2px 8px",
+                        borderRadius: 4,
+                        background: r.statusAtual === "Atrasada" ? "var(--admin-danger-15)" : r.statusAtual === "Ativa" ? "var(--admin-success-10)" : "var(--admin-border)",
+                        color: r.statusAtual === "Atrasada" ? "var(--admin-danger)" : r.statusAtual === "Ativa" ? "var(--admin-success)" : "var(--admin-text-muted)",
+                      }}>
+                        {r.statusAtual}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </AdminSectionCard>
 
-          {/* Alertas de Prazo */}
-          <Card>
-            <CardHeader>
-              <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <AlertCircle className="w-4 h-4" style={{ color: "var(--admin-danger)" }} />
-                Alertas de Prazo (≤7 días)
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="p-0">
-              {alertas.length === 0 ? (
-                <div style={{ textAlign: "center", padding: "40px", color: "var(--admin-text-muted)" }}>
-                  Ninguna maleta próxima al vencimiento
-                </div>
-              ) : (
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Maleta</TableHead>
-                      <TableHead>Revendedora</TableHead>
-                      <TableHead>Límite</TableHead>
-                      <TableHead>Días</TableHead>
-                      <TableHead />
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {alertas.map((a) => (
-                      <TableRow key={a.id}>
-                        <TableCell style={{ fontWeight: 700 }}>#{a.numero}</TableCell>
-                        <TableCell>{a.revendedoraNome}</TableCell>
-                        <TableCell>{formatDatePY(a.dataLimite)}</TableCell>
-                        <TableCell>
-                          <span
-                            style={{
-                              fontSize: "12px",
-                              fontWeight: 700,
-                              color: a.diasRestantes <= 2 ? "var(--admin-danger)" : "var(--admin-warning)",
-                            }}
-                          >
-                            {a.diasRestantes <= 0 ? "Vencida" : `${a.diasRestantes} rest.`}
-                          </span>
-                        </TableCell>
-                        <TableCell style={{ textAlign: "right" }}>
-                          <Link
-                            href={`/admin/maleta/${a.id}`}
-                            style={{ color: "var(--admin-accent)", fontSize: "12px", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
-                          >
-                            Ver <ChevronRight className="w-3 h-3" />
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              )}
-            </CardContent>
-          </Card>
+          <AdminSectionCard
+            title="Alertas de Prazo (≤7 días)"
+            icon={<AlertCircle size={15} color="var(--admin-danger)" strokeWidth={1.5} />}
+            noPadContent
+          >
+            <table className="admin-table">
+              <thead>
+                <tr>
+                  <th>Maleta</th>
+                  <th>Revendedora</th>
+                  <th>Límite</th>
+                  <th>Días</th>
+                  <th />
+                </tr>
+              </thead>
+              <tbody>
+                {alertas.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                      Ninguna maleta próxima al vencimiento
+                    </td>
+                  </tr>
+                ) : alertas.map((a) => (
+                  <tr key={a.id}>
+                    <td style={{ fontWeight: 700 }}>#{a.numero}</td>
+                    <td>{a.revendedoraNome}</td>
+                    <td>{formatDatePY(a.dataLimite)}</td>
+                    <td>
+                      <span style={{ fontSize: 12, fontWeight: 700, color: a.diasRestantes <= 2 ? "var(--admin-danger)" : "var(--admin-warning)" }}>
+                        {a.diasRestantes <= 0 ? "Vencida" : `${a.diasRestantes} rest.`}
+                      </span>
+                    </td>
+                    <td style={{ textAlign: "right" }}>
+                      <Link
+                        href={`/admin/maleta/${a.id}`}
+                        style={{ color: "var(--admin-accent)", fontSize: 12, fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
+                      >
+                        Ver <ChevronRight size={12} strokeWidth={2} />
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </AdminSectionCard>
         </div>
 
         {/* Produtos Mais Vendidos */}
-        <Card style={{ marginBottom: "32px" }}>
-          <CardHeader>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px" }}>
-              <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                <PackageCheck className="w-4 h-4" style={{ color: "var(--admin-accent)" }} />
-                Productos Más Vendidos
-              </CardTitle>
-              <Link
-                href="/admin/produtos"
-                style={{ fontSize: "12px", color: "var(--admin-accent)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: "4px" }}
-              >
-                Ver catálogo <ChevronRight className="w-3 h-3" />
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            {produtos.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "40px", color: "var(--admin-text-muted)" }}>
-                Sin ventas en el período
-              </div>
-            ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead style={{ width: "50px" }}>#</TableHead>
-                    <TableHead>Producto</TableHead>
-                    <TableHead style={{ width: "40%" }}>Unidades</TableHead>
-                    <TableHead style={{ textAlign: "right" }}>Valor Total</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {produtos.map((p, i) => {
-                    const maxUn = produtos[0].unidadesVendidas || 1;
-                    const pct = (p.unidadesVendidas / maxUn) * 100;
-                    return (
-                      <TableRow key={p.id}>
-                        <TableCell style={{ fontWeight: 600, color: "var(--admin-text-muted)" }}>{i + 1}</TableCell>
-                        <TableCell style={{ fontWeight: 500 }}>{p.nome}</TableCell>
-                        <TableCell>
-                          <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                            <div style={{ flex: 1, height: 6, background: "var(--admin-surface)", borderRadius: 3, overflow: "hidden" }}>
-                              <div
-                                style={{
-                                  width: `${pct}%`,
-                                  height: "100%",
-                                  background: "var(--admin-accent)",
-                                  borderRadius: 3,
-                                }}
-                              />
-                            </div>
-                            <span style={{ fontSize: "12px", fontWeight: 600, whiteSpace: "nowrap" }}>
-                              {p.unidadesVendidas} un.
-                            </span>
-                          </div>
-                        </TableCell>
-                        <TableCell style={{ textAlign: "right", fontWeight: 600 }}>
-                          {formatCurrency(p.valorTotal)}
-                        </TableCell>
-                      </TableRow>
-                    );
-                  })}
-                </TableBody>
-              </Table>
-            )}
-          </CardContent>
-        </Card>
+        <AdminSectionCard
+          title="Productos Más Vendidos"
+          icon={<PackageCheck size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+          action={
+            <Link
+              href="/admin/produtos"
+              style={{ fontSize: 12, color: "var(--admin-accent)", fontWeight: 600, display: "inline-flex", alignItems: "center", gap: 4 }}
+            >
+              Ver catálogo <ChevronRight size={12} strokeWidth={2} />
+            </Link>
+          }
+          noPadContent
+        >
+          <table className="admin-table">
+            <thead>
+              <tr>
+                <th style={{ width: 50 }}>#</th>
+                <th>Producto</th>
+                <th style={{ width: "40%" }}>Unidades</th>
+                <th style={{ textAlign: "right" }}>Valor Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {produtos.length === 0 ? (
+                <tr>
+                  <td colSpan={4} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                    Sin ventas en el período
+                  </td>
+                </tr>
+              ) : produtos.map((p, i) => {
+                const maxUn = produtos[0].unidadesVendidas || 1;
+                const pct = (p.unidadesVendidas / maxUn) * 100;
+                return (
+                  <tr key={p.id}>
+                    <td style={{ fontWeight: 600, color: "var(--admin-text-muted)" }}>{i + 1}</td>
+                    <td style={{ fontWeight: 500 }}>{p.nome}</td>
+                    <td>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                        <div style={{ flex: 1, height: 6, background: "var(--admin-surface-hover)", borderRadius: 3, overflow: "hidden" }}>
+                          <div style={{ width: `${pct}%`, height: "100%", background: "var(--admin-accent)", borderRadius: 3 }} />
+                        </div>
+                        <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
+                          {p.unidadesVendidas} un.
+                        </span>
+                      </div>
+                    </td>
+                    <td style={{ textAlign: "right", fontWeight: 600 }}>{formatCurrency(p.valorTotal)}</td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
+        </AdminSectionCard>
 
         {/* Seção Vitrina Pública */}
-        <div style={{ marginTop: "32px", marginBottom: "32px" }}>
-          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "12px", marginBottom: "24px" }}>
-            <h2 style={{ fontSize: "18px", fontWeight: 700, color: "var(--admin-text)" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 12 }}>
+            <span style={{ color: "var(--admin-text)", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600 }}>
               Vitrina Pública
-            </h2>
+            </span>
             <VitrinaCsvDownload
               csv={csvData}
               filename={`vitrina-${from.toISOString().slice(0, 10).replace(/-/g, "")}-${to.toISOString().slice(0, 10).replace(/-/g, "")}.csv`}
             />
           </div>
 
-          {/* KPI Cards */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-              gap: "16px",
-              marginBottom: "32px",
-            }}
-          >
+          {/* KPI Cards Vitrina */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 16 }}>
             <AnalyticsVitrinaKpiCards kpis={vitrinaKPIs} />
           </div>
 
-          {/* Chart + Ranking */}
-          <div
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-              gap: "24px",
-              marginBottom: "32px",
-            }}
-          >
-            <Card>
-              <CardHeader>
-                <CardTitle style={{ fontSize: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
-                  <TrendingUp className="w-4 h-4 text-[#35605A]" />
-                  Visitas a la Vitrina
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <AnalyticsVisitasChart data={vitrinaSeries} />
-              </CardContent>
-            </Card>
+          {/* Visitas + Ranking */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))", gap: 16 }}>
+            <AdminSectionCard
+              title="Visitas a la Vitrina"
+              icon={<TrendingUp size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+            >
+              <AnalyticsVisitasChart data={vitrinaSeries} />
+            </AdminSectionCard>
 
-            <Card>
-              <CardHeader>
-                <CardTitle style={{ fontSize: "16px" }}>Ranking por Engajamento</CardTitle>
-              </CardHeader>
-              <CardContent className="p-0">
-                <AnalyticsVitrinaRanking items={vitrinaRanking} />
-              </CardContent>
-            </Card>
+            <AdminSectionCard title="Ranking por Engajamento" noPadContent>
+              <AnalyticsVitrinaRanking items={vitrinaRanking} />
+            </AdminSectionCard>
           </div>
         </div>
+
       </div>
-    </>
+    </div>
   );
 }

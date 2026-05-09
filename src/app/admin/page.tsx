@@ -15,7 +15,6 @@ import { AlertasCard } from "@/components/admin/dashboard/AlertasCard";
 import { RankingTable } from "@/components/admin/dashboard/RankingTable";
 import { DocsCard } from "@/components/admin/dashboard/DocsCard";
 import {
-    Bell,
     Briefcase,
     CircleDollarSign,
     TriangleAlert,
@@ -74,15 +73,7 @@ export default async function AdminDashboardPage({
     return (
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
             {/* Header */}
-            <div style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                height: 60,
-                paddingInline: 32,
-                borderBottom: "1px solid var(--admin-border)",
-                flexShrink: 0,
-            }}>
+            <div className="admin-top-header">
                 <div style={{ display: "flex", flexDirection: "column", gap: 1 }}>
                     <span style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, sans-serif", fontSize: 10, letterSpacing: 1, textTransform: "uppercase" }}>
                         Admin / Dashboard
@@ -112,47 +103,14 @@ export default async function AdminDashboardPage({
                             </Link>
                         ))}
                     </div>
-                    <div style={{ position: "relative" }}>
-                        <div style={{
-                            width: 36,
-                            height: 36,
-                            borderRadius: 8,
-                            background: "var(--admin-accent-hover)",
-                            border: "1px solid var(--admin-border-focus)",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}>
-                            <Bell size={15} color="var(--admin-success)" strokeWidth={1.5} />
-                        </div>
-                        {metricas.totalAlertas > 0 && (
-                            <div style={{
-                                position: "absolute",
-                                top: -4,
-                                right: -4,
-                                width: 16,
-                                height: 16,
-                                borderRadius: "50%",
-                                background: "var(--admin-danger)",
-                                border: "1.5px solid var(--admin-bg)",
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}>
-                                <span style={{ color: "#fff", fontFamily: "Raleway, sans-serif", fontWeight: 700, fontSize: 9 }}>
-                                    {Math.min(metricas.totalAlertas, 9)}
-                                </span>
-                            </div>
-                        )}
-                    </div>
                 </div>
             </div>
 
             {/* Body */}
-            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
+            <div className="admin-page-body">
 
                 {/* KPI Row */}
-                <div style={{ display: "flex", gap: 16 }}>
+                <div className="admin-kpi-grid">
                     <MetricCard
                         label="Faturamento"
                         value={formatCurrency(metricas.faturamento)}
@@ -231,7 +189,7 @@ export default async function AdminDashboardPage({
                 </div>
 
                 {/* Middle Row: Alertas + Ranking */}
-                <div style={{ display: "flex", gap: 16 }}>
+                <div className="admin-row-split">
                     <AlertasCard items={alertas} />
                     <RankingTable
                         title={isSuperAdmin ? "Desempenho por Consultora" : "Ranking das Minhas Revendedoras"}

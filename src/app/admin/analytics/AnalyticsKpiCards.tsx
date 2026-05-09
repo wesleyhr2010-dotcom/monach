@@ -1,11 +1,9 @@
-"use client";
-
-import { AdminStatCard } from "@/components/admin/AdminStatCard";
+import { MetricCard } from "@/components/admin/dashboard/MetricCard";
 import {
   Briefcase,
   PackageCheck,
   AlertTriangle,
-  DollarSign,
+  CircleDollarSign,
   Users,
   Clock,
 } from "lucide-react";
@@ -30,12 +28,48 @@ function formatCurrency(value: number) {
 export function AnalyticsKpiCards({ kpis }: AnalyticsKpiCardsProps) {
   return (
     <>
-      <AdminStatCard label="Maletas Ativas" value={kpis.maletasAtivas} icon={Briefcase} color="info" />
-      <AdminStatCard label="Devolvidas (mes)" value={kpis.devolvidasMes} icon={PackageCheck} color="success" />
-      <AdminStatCard label="Taxa de Atraso" value={`${kpis.taxaAtraso}%`} icon={AlertTriangle} color="danger" />
-      <AdminStatCard label="Ticket Medio" value={formatCurrency(kpis.ticketMedio)} icon={DollarSign} color="default" />
-      <AdminStatCard label="Rev. con Maleta" value={kpis.revendedorasComMaleta} icon={Users} color="default" />
-      <AdminStatCard label="Tempo Medio Dev." value={`${kpis.tempoMedioDevolucaoDias} d`} icon={Clock} color="warning" />
+      <MetricCard
+        label="Maletas Ativas"
+        value={String(kpis.maletasAtivas)}
+        icon={<Briefcase size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+        iconBg="rgba(53, 96, 90, 0.1)"
+        iconColor="#35605A"
+      />
+      <MetricCard
+        label="Devolvidas (mes)"
+        value={String(kpis.devolvidasMes)}
+        icon={<PackageCheck size={15} color="var(--admin-success)" strokeWidth={1.5} />}
+        iconBg="rgba(74, 222, 128, 0.1)"
+        iconColor="#4ADE80"
+      />
+      <MetricCard
+        label="Taxa de Atraso"
+        value={`${kpis.taxaAtraso}%`}
+        icon={<AlertTriangle size={15} color="var(--admin-danger)" strokeWidth={1.5} />}
+        iconBg="rgba(224, 92, 92, 0.1)"
+        iconColor="#E05C5C"
+      />
+      <MetricCard
+        label="Ticket Medio"
+        value={formatCurrency(kpis.ticketMedio)}
+        icon={<CircleDollarSign size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+        iconBg="rgba(53, 96, 90, 0.1)"
+        iconColor="#35605A"
+      />
+      <MetricCard
+        label="Rev. con Maleta"
+        value={String(kpis.revendedorasComMaleta)}
+        icon={<Users size={15} color="var(--admin-beige)" strokeWidth={1.5} />}
+        iconBg="rgba(180, 171, 162, 0.1)"
+        iconColor="#B4ABA2"
+      />
+      <MetricCard
+        label="Tempo Medio Dev."
+        value={`${kpis.tempoMedioDevolucaoDias} d`}
+        icon={<Clock size={15} color="var(--admin-brown)" strokeWidth={1.5} />}
+        iconBg="rgba(145, 121, 97, 0.1)"
+        iconColor="#917961"
+      />
     </>
   );
 }

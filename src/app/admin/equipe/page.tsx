@@ -1,7 +1,9 @@
 "use client";
 
 import { useState, useEffect, useTransition } from "react";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
+import { AdminAvatar } from "@/components/admin/AdminAvatar";
 
 export const dynamic = "force-dynamic";
 import { useRouter } from "next/navigation";
@@ -15,15 +17,7 @@ import {
     vincularRevendedora,
 } from "../actions-equipe";
 import type { ColaboradoraItem, RevendedoraItem } from "../actions-equipe";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Users, UserPlus, Phone, Percent, Trash2, Link2, X } from "lucide-react";
+import { Users, UserPlus, Phone, Percent, Trash2, X } from "lucide-react";
 import { toast } from "sonner";
 
 export default function EquipePage() {
@@ -103,266 +97,273 @@ export default function EquipePage() {
 
     return (
         <>
-            <header className="admin-header">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <Users className="w-6 h-6" />
-                    <div>
-                        <h1>Equipe</h1>
-                        <p style={{ fontSize: "13px", color: "var(--admin-text-muted)", marginTop: "2px" }}>
-                            Gerenciar colaboradoras e revendedoras
-                        </p>
-                    </div>
-                </div>
-            </header>
+            <AdminTopHeader
+                breadcrumb="Admin / Equipe"
+                title="Equipe"
+                action={
+                    tab === "colaboradoras" ? (
+                        <button
+                            className="admin-btn admin-btn-primary"
+                            style={{ borderRadius: "var(--admin-radius-pill)", display: "inline-flex", alignItems: "center", gap: 6 }}
+                            onClick={() => setShowNewColab(true)}
+                        >
+                            <UserPlus size={14} />
+                            Nova Consultora
+                        </button>
+                    ) : (
+                        <button
+                            className="admin-btn admin-btn-primary"
+                            style={{ borderRadius: "var(--admin-radius-pill)", display: "inline-flex", alignItems: "center", gap: 6 }}
+                            onClick={() => setShowNewRevend(true)}
+                        >
+                            <UserPlus size={14} />
+                            Nova Revendedora
+                        </button>
+                    )
+                }
+            />
 
-            <div className="admin-content">
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
                 {/* Tabs */}
-                <div style={{ display: "flex", gap: "8px", marginBottom: "20px" }}>
-                    <Button
-                        variant={tab === "colaboradoras" ? "default" : "outline"}
-                        onClick={() => setTab("colaboradoras")}
-                    >
-                        Colaboradoras
-                        <Badge variant="secondary" className="ml-2">{colaboradoras.length}</Badge>
-                    </Button>
-                    <Button
-                        variant={tab === "revendedoras" ? "default" : "outline"}
-                        onClick={() => setTab("revendedoras")}
-                    >
-                        Revendedoras
-                        <Badge variant="secondary" className="ml-2">{revendedoras.length}</Badge>
-                    </Button>
+                <div style={{ display: "flex", gap: 8 }}>
+                    {(["colaboradoras", "revendedoras"] as const).map((t) => (
+                        <button
+                            key={t}
+                            onClick={() => setTab(t)}
+                            className={tab === t ? "admin-btn admin-btn-primary" : "admin-btn admin-btn-secondary"}
+                            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+                        >
+                            <Users size={13} />
+                            {t === "colaboradoras" ? "Consultoras" : "Revendedoras"}
+                            <span style={{
+                                fontSize: 11, fontWeight: 700, lineHeight: 1,
+                                padding: "2px 6px", borderRadius: 10,
+                                background: tab === t ? "rgba(255,255,255,0.2)" : "var(--admin-surface-hover)",
+                                color: tab === t ? "#fff" : "var(--admin-text-dim)",
+                            }}>
+                                {t === "colaboradoras" ? colaboradoras.length : revendedoras.length}
+                            </span>
+                        </button>
+                    ))}
                 </div>
 
                 {/* ===== COLABORADORAS TAB ===== */}
                 {tab === "colaboradoras" && (
-                    <>
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
-                            <Dialog open={showNewColab} onOpenChange={setShowNewColab}>
-                                <DialogTrigger asChild>
-                                    <Button><UserPlus className="w-4 h-4 mr-2" /> Nova Colaboradora</Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Nova Colaboradora</DialogTitle>
-                                    </DialogHeader>
-                                    <form onSubmit={handleNewColab} className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="colab-name">Nome *</Label>
-                                            <Input id="colab-name" name="name" required placeholder="Nome completo" />
+                    colaboradoras.length === 0 ? (
+                        <AdminEmptyState icon={Users} title="Nenhuma consultora cadastrada" description="Adicione a primeira consultora pelo botão acima." />
+                    ) : (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
+                            {colaboradoras.map((c) => (
+                                <div key={c.id} className="admin-card">
+                                    <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                                        <AdminAvatar src={c.avatar_url} name={c.name} size="md" />
+                                        <div style={{ flex: 1, minWidth: 0 }}>
+                                            <p style={{ fontWeight: 600, fontSize: 15, color: "var(--admin-text)", margin: 0, fontFamily: "Raleway, sans-serif" }}>{c.name}</p>
+                                            <div style={{ display: "flex", alignItems: "center", gap: 4, fontSize: 12, color: "var(--admin-text-muted)", marginTop: 2 }}>
+                                                <Phone size={11} /> {c.whatsapp}
+                                            </div>
                                         </div>
-                                        <div>
-                                            <Label htmlFor="colab-whatsapp">WhatsApp *</Label>
-                                            <Input id="colab-whatsapp" name="whatsapp" required placeholder="+595 ..." />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="colab-email">Email</Label>
-                                            <Input id="colab-email" name="email" type="email" placeholder="email@..." />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="colab-taxa">Comissão %</Label>
-                                            <Input id="colab-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="5" placeholder="0" />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="colab-avatar">Foto</Label>
-                                            <Input id="colab-avatar" name="avatar" type="file" accept="image/*" />
-                                        </div>
-                                        <Button type="submit" className="w-full" disabled={isPending}>
-                                            {isPending ? "Criando..." : "Criar Colaboradora"}
-                                        </Button>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
+                                        <button
+                                            className="admin-btn-icon"
+                                            onClick={() => handleDelete(c.id, c.name)}
+                                            title="Remover"
+                                            style={{ background: "transparent", border: "none", color: "var(--admin-danger)", cursor: "pointer" }}
+                                        >
+                                            <Trash2 size={15} />
+                                        </button>
+                                    </div>
+                                    <div style={{ display: "flex", gap: 8 }}>
+                                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, padding: "3px 8px", borderRadius: 6, border: "1px solid var(--admin-border)", color: "var(--admin-text-muted)" }}>
+                                            <Percent size={11} /> {c.taxa_comissao}%
+                                        </span>
+                                        <span style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 12, fontWeight: 600, padding: "3px 8px", borderRadius: 6, background: "var(--admin-surface-hover)", color: "var(--admin-text-dim)" }}>
+                                            <Users size={11} /> {c.revendedorasCount} revendedoras
+                                        </span>
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-
-                        {colaboradoras.length === 0 ? (
-                            <Card>
-                                <CardContent className="text-center py-12">
-                                    <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                                    <AdminEmptyState title="Nenhuma colaboradora cadastrada" />
-                                </CardContent>
-                            </Card>
-                        ) : (
-                            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "16px" }}>
-                                {colaboradoras.map((c) => (
-                                    <Card key={c.id}>
-                                        <CardContent className="pt-6">
-                                            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "12px" }}>
-                                                <div style={{
-                                                    width: 48, height: 48, borderRadius: "50%",
-                                                    background: "var(--admin-primary)", color: "white",
-                                                    display: "flex", alignItems: "center", justifyContent: "center",
-                                                    fontSize: "18px", fontWeight: 600,
-                                                    overflow: "hidden",
-                                                }}>
-                                                    {c.avatar_url ? (
-                                                        <img src={c.avatar_url} alt={c.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                                    ) : (
-                                                        c.name.charAt(0).toUpperCase()
-                                                    )}
-                                                </div>
-                                                <div style={{ flex: 1, minWidth: 0 }}>
-                                                    <p style={{ fontWeight: 600, fontSize: "15px" }}>{c.name}</p>
-                                                    <div style={{ display: "flex", alignItems: "center", gap: "4px", fontSize: "13px", color: "var(--admin-text-muted)" }}>
-                                                        <Phone className="w-3 h-3" /> {c.whatsapp}
-                                                    </div>
-                                                </div>
-                                                <Button variant="ghost" size="icon" onClick={() => handleDelete(c.id, c.name)} title="Remover">
-                                                    <Trash2 className="w-4 h-4 text-red-500" />
-                                                </Button>
-                                            </div>
-                                            <div style={{ display: "flex", gap: "8px" }}>
-                                                <Badge variant="outline">
-                                                    <Percent className="w-3 h-3 mr-1" /> {c.taxa_comissao}%
-                                                </Badge>
-                                                <Badge variant="secondary">
-                                                    <Users className="w-3 h-3 mr-1" /> {c.revendedorasCount} revendedoras
-                                                </Badge>
-                                            </div>
-                                        </CardContent>
-                                    </Card>
-                                ))}
-                            </div>
-                        )}
-                    </>
+                    )
                 )}
 
                 {/* ===== REVENDEDORAS TAB ===== */}
                 {tab === "revendedoras" && (
-                    <>
-                        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "16px" }}>
-                            <Dialog open={showNewRevend} onOpenChange={setShowNewRevend}>
-                                <DialogTrigger asChild>
-                                    <Button><UserPlus className="w-4 h-4 mr-2" /> Nova Revendedora</Button>
-                                </DialogTrigger>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Nova Revendedora</DialogTitle>
-                                    </DialogHeader>
-                                    <form onSubmit={handleNewRevend} className="space-y-4">
-                                        <div>
-                                            <Label htmlFor="rev-name">Nome *</Label>
-                                            <Input id="rev-name" name="name" required placeholder="Nome completo" />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="rev-whatsapp">WhatsApp *</Label>
-                                            <Input id="rev-whatsapp" name="whatsapp" required placeholder="+595 ..." />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="rev-email">Email</Label>
-                                            <Input id="rev-email" name="email" type="email" placeholder="email@..." />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="rev-taxa">Comissão %</Label>
-                                            <Input id="rev-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" placeholder="0" />
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="rev-colab">Colaboradora</Label>
-                                            <select
-                                                id="rev-colab"
-                                                name="colaboradora_id"
-                                                className="admin-select"
-                                                style={{ width: "100%", padding: "8px 12px", borderRadius: "6px", border: "1px solid var(--admin-border)", background: "var(--admin-bg)", color: "var(--admin-text)" }}
-                                            >
-                                                <option value="">Sem colaboradora</option>
-                                                {colaboradoras.map((c) => (
-                                                    <option key={c.id} value={c.id}>{c.name}</option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <Label htmlFor="rev-avatar">Foto</Label>
-                                            <Input id="rev-avatar" name="avatar" type="file" accept="image/*" />
-                                        </div>
-                                        <Button type="submit" className="w-full" disabled={isPending}>
-                                            {isPending ? "Criando..." : "Criar Revendedora"}
-                                        </Button>
-                                    </form>
-                                </DialogContent>
-                            </Dialog>
+                    revendedoras.length === 0 ? (
+                        <AdminEmptyState icon={Users} title="Nenhuma revendedora cadastrada" description="Adicione a primeira revendedora pelo botão acima." />
+                    ) : (
+                        <div className="admin-card" style={{ padding: 0 }}>
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>WhatsApp</th>
+                                        <th>Comissão</th>
+                                        <th>Consultora</th>
+                                        <th style={{ width: 50 }} />
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {revendedoras.map((r) => (
+                                        <tr key={r.id}>
+                                            <td>
+                                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                                    <AdminAvatar src={r.avatar_url} name={r.name} size="sm" />
+                                                    <div>
+                                                        <p style={{ fontWeight: 500, fontSize: 14, color: "var(--admin-text)", margin: 0 }}>{r.name}</p>
+                                                        {r.email && <p style={{ fontSize: 12, color: "var(--admin-text-muted)", margin: 0 }}>{r.email}</p>}
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td style={{ fontSize: 13, color: "var(--admin-text-muted)" }}>{r.whatsapp}</td>
+                                            <td>
+                                                <span style={{ fontSize: 12, fontWeight: 600, padding: "3px 8px", borderRadius: 6, border: "1px solid var(--admin-border)", color: "var(--admin-text-muted)" }}>
+                                                    {r.taxa_comissao}%
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <select
+                                                    value={r.colaboradora?.id || "none"}
+                                                    onChange={(e) => handleVincular(r.id, e.target.value)}
+                                                    disabled={isPending}
+                                                    style={{
+                                                        padding: "4px 8px", borderRadius: 6, fontSize: 13,
+                                                        border: "1px solid var(--admin-border)",
+                                                        background: "var(--admin-bg)", color: "var(--admin-text)",
+                                                        cursor: "pointer",
+                                                    }}
+                                                >
+                                                    <option value="none">Sem vínculo</option>
+                                                    {colaboradoras.map((c) => (
+                                                        <option key={c.id} value={c.id}>{c.name}</option>
+                                                    ))}
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <button
+                                                    className="admin-btn-icon"
+                                                    onClick={() => handleDelete(r.id, r.name)}
+                                                    style={{ color: "var(--admin-danger)" }}
+                                                >
+                                                    <Trash2 size={14} />
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         </div>
-
-                        {revendedoras.length === 0 ? (
-                            <Card>
-                                <CardContent className="text-center py-12">
-                                    <Users className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-                                    <AdminEmptyState title="Nenhuma revendedora cadastrada" />
-                                </CardContent>
-                            </Card>
-                        ) : (
-                            <Card>
-                                <CardContent className="p-0">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Nome</TableHead>
-                                                <TableHead>WhatsApp</TableHead>
-                                                <TableHead>Comissão</TableHead>
-                                                <TableHead>Colaboradora</TableHead>
-                                                <TableHead className="w-[50px]"></TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {revendedoras.map((r) => (
-                                                <TableRow key={r.id}>
-                                                    <TableCell>
-                                                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                                            <div style={{
-                                                                width: 32, height: 32, borderRadius: "50%",
-                                                                background: "var(--admin-purple-light)", color: "white",
-                                                                display: "flex", alignItems: "center", justifyContent: "center",
-                                                                fontSize: "13px", fontWeight: 600,
-                                                                overflow: "hidden", flexShrink: 0,
-                                                            }}>
-                                                                {r.avatar_url ? (
-                                                                    <img src={r.avatar_url} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                                                                ) : (
-                                                                    r.name.charAt(0).toUpperCase()
-                                                                )}
-                                                            </div>
-                                                            <div>
-                                                                <p style={{ fontWeight: 500, fontSize: "14px" }}>{r.name}</p>
-                                                                {r.email && <p style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>{r.email}</p>}
-                                                            </div>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell style={{ fontSize: "13px" }}>{r.whatsapp}</TableCell>
-                                                    <TableCell>
-                                                        <Badge variant="outline">{r.taxa_comissao}%</Badge>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <select
-                                                            value={r.colaboradora?.id || "none"}
-                                                            onChange={(e) => handleVincular(r.id, e.target.value)}
-                                                            disabled={isPending}
-                                                            style={{
-                                                                padding: "4px 8px", borderRadius: "6px", fontSize: "13px",
-                                                                border: "1px solid var(--admin-border)",
-                                                                background: "var(--admin-bg)", color: "var(--admin-text)",
-                                                                cursor: "pointer",
-                                                            }}
-                                                        >
-                                                            <option value="none">Sem vínculo</option>
-                                                            {colaboradoras.map((c) => (
-                                                                <option key={c.id} value={c.id}>{c.name}</option>
-                                                            ))}
-                                                        </select>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Button variant="ghost" size="icon" onClick={() => handleDelete(r.id, r.name)}>
-                                                            <Trash2 className="w-4 h-4 text-red-500" />
-                                                        </Button>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </CardContent>
-                            </Card>
-                        )}
-                    </>
+                    )
                 )}
             </div>
+
+            {/* Modal Nova Consultora */}
+            {showNewColab && (
+                <div style={{
+                    position: "fixed", inset: 0, zIndex: 50,
+                    background: "rgba(0,0,0,0.7)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                    <div style={{
+                        background: "var(--admin-surface)", borderRadius: 12,
+                        border: "1px solid var(--admin-border)",
+                        padding: 28, width: "100%", maxWidth: 440,
+                        maxHeight: "90vh", overflowY: "auto",
+                    }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: "var(--admin-text)", margin: 0 }}>
+                                Nova Consultora
+                            </h3>
+                            <button className="admin-btn-icon" onClick={() => setShowNewColab(false)}>
+                                <X size={16} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleNewColab} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nome *</label>
+                                <input name="name" required placeholder="Nome completo" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>WhatsApp *</label>
+                                <input name="whatsapp" required placeholder="+595 ..." className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Email</label>
+                                <input name="email" type="email" placeholder="email@..." className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Comissão %</label>
+                                <input name="taxa_comissao" type="number" step="0.01" defaultValue="5" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Foto</label>
+                                <input name="avatar" type="file" accept="image/*" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <button type="submit" disabled={isPending} className="admin-btn admin-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
+                                {isPending ? "Criando..." : "Criar Consultora"}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Nova Revendedora */}
+            {showNewRevend && (
+                <div style={{
+                    position: "fixed", inset: 0, zIndex: 50,
+                    background: "rgba(0,0,0,0.7)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                    <div style={{
+                        background: "var(--admin-surface)", borderRadius: 12,
+                        border: "1px solid var(--admin-border)",
+                        padding: 28, width: "100%", maxWidth: 440,
+                        maxHeight: "90vh", overflowY: "auto",
+                    }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: "var(--admin-text)", margin: 0 }}>
+                                Nova Revendedora
+                            </h3>
+                            <button className="admin-btn-icon" onClick={() => setShowNewRevend(false)}>
+                                <X size={16} />
+                            </button>
+                        </div>
+                        <form onSubmit={handleNewRevend} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nome *</label>
+                                <input name="name" required placeholder="Nome completo" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>WhatsApp *</label>
+                                <input name="whatsapp" required placeholder="+595 ..." className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Email</label>
+                                <input name="email" type="email" placeholder="email@..." className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Comissão %</label>
+                                <input name="taxa_comissao" type="number" step="0.01" defaultValue="10" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Consultora</label>
+                                <select name="colaboradora_id" style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid var(--admin-border)", background: "var(--admin-bg)", color: "var(--admin-text)", fontSize: 13 }}>
+                                    <option value="">Sem consultora</option>
+                                    {colaboradoras.map((c) => (
+                                        <option key={c.id} value={c.id}>{c.name}</option>
+                                    ))}
+                                </select>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Foto</label>
+                                <input name="avatar" type="file" accept="image/*" className="admin-input" style={{ width: "100%" }} />
+                            </div>
+                            <button type="submit" disabled={isPending} className="admin-btn admin-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
+                                {isPending ? "Criando..." : "Criar Revendedora"}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </>
     );
 }

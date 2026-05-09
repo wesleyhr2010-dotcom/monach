@@ -46,6 +46,7 @@
     --admin-radius-lg: 12px;
     --admin-radius-pill: 9px;
     --admin-sidebar-width: 240px;
+    --admin-header-height: 80px;
 }
 
 /* Layout */
@@ -55,6 +56,7 @@
     background: var(--admin-bg);
     color: var(--admin-text);
     font-family: var(--font-inter, 'Inter', sans-serif);
+    overflow-x: hidden;
 }
 
 /* Sidebar */
@@ -73,7 +75,8 @@
 }
 
 .admin-sidebar-logo {
-    padding: 24px 20px;
+    min-height: var(--admin-header-height);
+    padding: 0 20px;
     border-bottom: 1px solid var(--admin-border);
     font-family: var(--font-montserrat, 'Montserrat', sans-serif);
     font-weight: 600;
@@ -81,8 +84,11 @@
     letter-spacing: 0.02em;
     color: var(--admin-accent);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+    gap: 6px;
+    flex-shrink: 0;
 }
 
 .admin-sidebar-logo span {
@@ -136,6 +142,8 @@
     margin-left: var(--admin-sidebar-width);
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    overflow-x: hidden;
 }
 
 .admin-header {
@@ -784,6 +792,71 @@
     letter-spacing: -0.01em;
     color: var(--admin-text);
     font-family: 'Playfair Display', system-ui, serif;
+}
+
+/* ============================================
+   Responsive Layout Helpers
+   ============================================ */
+
+/* Header bar responsivo — substitui paddingInline: 32 inline */
+.admin-top-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    min-height: var(--admin-header-height);
+    padding: 12px 32px;
+    border-bottom: 1px solid var(--admin-border);
+    flex-shrink: 0;
+}
+
+/* Body da página — substitui padding: "28px 32px" inline */
+.admin-page-body {
+    padding: 28px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Grid de KPI cards — auto-wrap em telas menores */
+.admin-kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+/* Row de duas colunas que vira coluna única no mobile */
+.admin-row-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .admin-top-header {
+        padding: 10px 16px;
+        min-height: 52px;
+    }
+
+    .admin-page-body {
+        padding: 16px;
+        gap: 16px;
+    }
+
+    .admin-kpi-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+    }
+
+    .admin-row-split {
+        grid-template-columns: 1fr;
+    }
+
+    /* Formulários de duas colunas viram coluna única */
+    .admin-form-row {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* -- Additional root aliases for inline styles -- */

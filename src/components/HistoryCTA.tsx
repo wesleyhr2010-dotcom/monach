@@ -3,21 +3,21 @@ import Link from "next/link";
 
 export default function HistoryCTA() {
     return (
-        <section className="relative w-full h-[600px] md:h-[900px] flex flex-col items-center justify-end overflow-hidden">
+        <section className="relative w-full h-[600px] md:h-[900px] flex flex-col items-center justify-end pb-16 md:pb-24 overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/images/historia-bg.svg"
+                    src="/images/jooh-monarca-1025x1536.jpg"
                     alt="Conoce nuestra historia - Monarca Semijoyas"
                     fill
-                    className="object-cover"
+                    className="object-cover object-[center_20%]"
                     sizes="100vw"
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black via-transparent to-transparent" />
             </div>
 
             {/* Content */}
-            <div className="container-monarca relative z-10 text-center text-white pb-10 flex flex-col items-center gap-5">
+            <div className="container-monarca relative z-10 text-center text-white flex flex-col items-center gap-5">
                 <p
                     className="text-xl md:text-2xl tracking-[19px] uppercase text-gold leading-9"
                     style={{ textShadow: "0px 0px 10px #000" }}

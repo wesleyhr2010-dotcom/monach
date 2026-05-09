@@ -2,7 +2,7 @@ import { redirect } from "next/navigation";
 import Link from "next/link";
 import { getCurrentUser } from "@/lib/user";
 import { getEmailTemplates } from "./actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 
 export const dynamic = "force-dynamic";
 
@@ -16,15 +16,10 @@ export default async function EmailTemplatesPage() {
   const templates = await getEmailTemplates();
 
   return (
-    <div className="admin-container">
-      <AdminPageHeader
-        title="Plantillas de Correo"
-        description="Gestiona el contenido de los correos transaccionales"
-        breadcrumb="Configuración"
-        backHref="/admin"
-      />
-
-      <div className="admin-card">
+    <>
+      <AdminTopHeader breadcrumb="Admin / Config" title="Plantillas de Correo" />
+      <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
+      <div className="admin-card" style={{ padding: 0 }}>
         <div className="overflow-x-auto">
           <table className="admin-table">
             <thead>
@@ -94,6 +89,7 @@ export default async function EmailTemplatesPage() {
           </table>
         </div>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

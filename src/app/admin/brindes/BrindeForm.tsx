@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { atualizarBrinde } from "./actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 
 interface BrindeFormProps {
     brinde: {
@@ -48,14 +48,11 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
     }
 
     return (
-        <div className="admin-content">
-            <AdminPageHeader
-                title="Editar Brinde"
-                backHref="/admin/brindes"
-            />
-
+        <>
+            <AdminTopHeader breadcrumb="Brindes" backHref="/admin/brindes" title="Editar Brinde" />
+            <div style={{ padding: "28px 32px" }}>
             {error && (
-                <div className="admin-alert" style={{ background: "#3a1f1f", color: "#e74c3c", padding: 12, borderRadius: 8, marginBottom: 20 }}>
+                <div style={{ background: "#3a1f1f", color: "#e74c3c", padding: 12, borderRadius: 8, marginBottom: 20 }}>
                     {error}
                 </div>
             )}
@@ -114,7 +111,8 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
                     {loading ? "Guardando..." : "Guardar Cambios"}
                 </button>
             </form>
-        </div>
+            </div>
+        </>
     );
 }
 

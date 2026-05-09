@@ -4,10 +4,7 @@ import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { createCategory, updateCategory, deleteCategory } from "../actions-categories";
 import type { Category } from "../actions-categories";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { AdminSectionCard } from "@/components/admin/AdminSectionCard";
 import { Plus, Trash2, Edit2, Check, X, CornerDownRight } from "lucide-react";
 import { toast } from "sonner";
 
@@ -19,23 +16,16 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
 
-    // For Top Level creation
     const [newName, setNewName] = useState("");
-
-    // For Inline editing/creating
     const [editingId, setEditingId] = useState<string | null>(null);
     const [editName, setEditName] = useState("");
     const [addingToParent, setAddingToParent] = useState<string | null>(null);
     const [newChildName, setNewChildName] = useState("");
 
-    // Build the tree
+    // Montar árvore de categorias
     const tree: CategoryTree[] = [];
     const map = new Map<string, CategoryTree>();
-
-    // Initialize map
     categories.forEach(c => map.set(c.id, { ...c, children: [] }));
-
-    // Build tree
     categories.forEach(c => {
         if (c.parent_id && map.has(c.parent_id)) {
             map.get(c.parent_id)!.children.push(map.get(c.id)!);
@@ -103,15 +93,17 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     function Row({ item, depth }: { item: CategoryTree; depth: number }) {
         const isEditing = editingId === item.id;
         const isAdding = addingToParent === item.id;
-        const indentStr = "—".repeat(depth) + (depth > 0 ? " " : "");
 
         return (
             <>
-                <TableRow key={item.id}>
-                    <TableCell style={{ paddingLeft: `${depth * 24 + 16}px` }}>
+                <tr key={item.id}>
+                    {/* Nombre */}
+                    <td style={{ paddingLeft: depth * 24 + 20 }}>
                         {isEditing ? (
-                            <Input
+                            <input
                                 type="text"
+                                className="admin-input"
+                                style={{ height: 34, fontSize: 13, maxWidth: 280 }}
                                 value={editName}
                                 onChange={(e) => setEditName(e.target.value)}
                                 onKeyDown={(e) => {
@@ -119,34 +111,51 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                                     if (e.key === "Escape") setEditingId(null);
                                 }}
                                 autoFocus
-                                className="h-8 text-sm"
                             />
                         ) : (
-                            <div className="flex items-center gap-2">
-                                {depth > 0 && <CornerDownRight className="w-4 h-4 text-muted-foreground" />}
-                                {depth === 0 ? <strong className="font-medium">{item.name}</strong> : item.name}
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                {depth > 0 && (
+                                    <CornerDownRight size={14} style={{ color: "var(--admin-text-dim)", flexShrink: 0 }} />
+                                )}
+                                <span style={{
+                                    fontWeight: depth === 0 ? 600 : 400,
+                                    fontSize: 14,
+                                    color: depth === 0 ? "var(--admin-text)" : "var(--admin-text-muted)",
+                                }}>
+                                    {item.name}
+                                </span>
                             </div>
                         )}
-                    </TableCell>
-                    <TableCell className="text-muted-foreground text-sm">
+                    </td>
+
+                    {/* Slug */}
+                    <td style={{ fontFamily: "monospace", fontSize: 11, color: "var(--admin-text-dim)" }}>
                         {item.slug}
-                    </TableCell>
-                    <TableCell className="text-right">
+                    </td>
+
+                    {/* Acciones */}
+                    <td style={{ textAlign: "right" }}>
                         {isEditing ? (
-                            <div className="flex gap-2 justify-end">
-                                <Button size="sm" onClick={() => handleUpdate(item.id)} disabled={isPending}>
-                                    <Check className="w-4 h-4" />
-                                </Button>
-                                <Button size="sm" variant="ghost" onClick={() => setEditingId(null)}>
-                                    <X className="w-4 h-4" />
-                                </Button>
+                            <div style={{ display: "flex", gap: 6, justifyContent: "flex-end" }}>
+                                <button
+                                    className="admin-btn admin-btn-primary admin-btn-sm"
+                                    onClick={() => handleUpdate(item.id)}
+                                    disabled={isPending}
+                                >
+                                    <Check size={13} />
+                                </button>
+                                <button
+                                    className="admin-btn admin-btn-secondary admin-btn-sm"
+                                    onClick={() => setEditingId(null)}
+                                >
+                                    <X size={13} />
+                                </button>
                             </div>
                         ) : (
-                            <div className="flex gap-1 justify-end">
+                            <div style={{ display: "flex", gap: 2, justifyContent: "flex-end" }}>
                                 {depth === 0 && (
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
+                                    <button
+                                        className="admin-btn admin-btn-icon"
                                         title="Agregar Subcategoría"
                                         onClick={() => {
                                             setAddingToParent(item.id);
@@ -154,12 +163,11 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                                             setEditingId(null);
                                         }}
                                     >
-                                        <Plus className="w-4 h-4" />
-                                    </Button>
+                                        <Plus size={14} />
+                                    </button>
                                 )}
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
+                                <button
+                                    className="admin-btn admin-btn-icon"
                                     title="Editar"
                                     onClick={() => {
                                         setEditingId(item.id);
@@ -167,28 +175,31 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                                         setAddingToParent(null);
                                     }}
                                 >
-                                    <Edit2 className="w-4 h-4" />
-                                </Button>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                                    <Edit2 size={14} />
+                                </button>
+                                <button
+                                    className="admin-btn admin-btn-icon"
+                                    style={{ color: "var(--admin-danger)" }}
                                     title="Eliminar"
                                     onClick={() => handleDelete(item.id, item.name)}
                                 >
-                                    <Trash2 className="w-4 h-4" />
-                                </Button>
+                                    <Trash2 size={14} />
+                                </button>
                             </div>
                         )}
-                    </TableCell>
-                </TableRow>
+                    </td>
+                </tr>
+
+                {/* Fila para agregar subcategoría */}
                 {isAdding && (
-                    <TableRow className="bg-muted/50">
-                        <TableCell style={{ paddingLeft: `${(depth + 1) * 24 + 16}px` }}>
-                            <div className="flex items-center gap-2">
-                                <CornerDownRight className="w-4 h-4 text-muted-foreground" />
-                                <Input
+                    <tr style={{ background: "var(--admin-surface-hover)" }}>
+                        <td style={{ paddingLeft: (depth + 1) * 24 + 20 }}>
+                            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                                <CornerDownRight size={14} style={{ color: "var(--admin-text-dim)", flexShrink: 0 }} />
+                                <input
                                     type="text"
+                                    className="admin-input"
+                                    style={{ height: 34, fontSize: 13, maxWidth: 200 }}
                                     placeholder="Nombre subcategoría"
                                     value={newChildName}
                                     onChange={(e) => setNewChildName(e.target.value)}
@@ -197,23 +208,30 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
                                         if (e.key === "Escape") setAddingToParent(null);
                                     }}
                                     autoFocus
-                                    className="h-8 text-sm max-w-[200px]"
                                 />
                             </div>
-                        </TableCell>
-                        <TableCell></TableCell>
-                        <TableCell className="text-right">
-                            <div className="flex gap-2 justify-end">
-                                <Button size="sm" onClick={() => handleCreateChild(item.id)} disabled={isPending || !newChildName.trim()}>
+                        </td>
+                        <td />
+                        <td style={{ textAlign: "right" }}>
+                            <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                                <button
+                                    className="admin-btn admin-btn-primary admin-btn-sm"
+                                    onClick={() => handleCreateChild(item.id)}
+                                    disabled={isPending || !newChildName.trim()}
+                                >
                                     Guardar
-                                </Button>
-                                <Button size="sm" variant="outline" onClick={() => setAddingToParent(null)}>
+                                </button>
+                                <button
+                                    className="admin-btn admin-btn-secondary admin-btn-sm"
+                                    onClick={() => setAddingToParent(null)}
+                                >
                                     Cancelar
-                                </Button>
+                                </button>
                             </div>
-                        </TableCell>
-                    </TableRow>
+                        </td>
+                    </tr>
                 )}
+
                 {item.children.map(child => (
                     <Row key={child.id} item={child} depth={depth + 1} />
                 ))}
@@ -222,66 +240,57 @@ export function CategoryManager({ categories }: { categories: Category[] }) {
     }
 
     return (
-        <div className="flex flex-col gap-6">
-            {/* Add Top Level category */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-base font-semibold">
-                        Agregar Categoría Principal
-                    </CardTitle>
-                </CardHeader>
-                <CardContent>
-                    <div className="flex gap-3 max-w-xl">
-                        <Input
-                            type="text"
-                            placeholder="Ej: Anillos, Collares"
-                            value={newName}
-                            onChange={(e) => setNewName(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && handleCreateTopLevel()}
-                            className="flex-1"
-                        />
-                        <Button
-                            onClick={handleCreateTopLevel}
-                            disabled={isPending || !newName.trim()}
-                        >
-                            {isPending ? "..." : "Agregar"}
-                        </Button>
-                    </div>
-                </CardContent>
-            </Card>
+        <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+            {/* Agregar categoría principal */}
+            <AdminSectionCard title="Agregar Categoría Principal">
+                <div style={{ display: "flex", gap: 12, maxWidth: 480 }}>
+                    <input
+                        type="text"
+                        className="admin-input"
+                        style={{ flex: 1 }}
+                        placeholder="Ej: Anillos, Collares"
+                        value={newName}
+                        onChange={(e) => setNewName(e.target.value)}
+                        onKeyDown={(e) => e.key === "Enter" && handleCreateTopLevel()}
+                    />
+                    <button
+                        className="admin-btn admin-btn-primary"
+                        style={{ flexShrink: 0 }}
+                        onClick={handleCreateTopLevel}
+                        disabled={isPending || !newName.trim()}
+                    >
+                        {isPending ? "..." : <><Plus size={14} /> Agregar</>}
+                    </button>
+                </div>
+            </AdminSectionCard>
 
-            {/* Categories list */}
-            <Card>
-                <CardHeader>
-                    <CardTitle className="text-base font-semibold">
-                        Categorías ({categories.length})
-                    </CardTitle>
-                </CardHeader>
-                <CardContent className="p-0">
-                    <Table>
-                        <TableHeader>
-                            <TableRow>
-                                <TableHead>Nombre</TableHead>
-                                <TableHead>Slug</TableHead>
-                                <TableHead className="text-right w-[160px]">Acciones</TableHead>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                            {tree.map(cat => <Row key={cat.id} item={cat} depth={0} />)}
-                            {categories.length === 0 && (
-                                <TableRow>
-                                    <TableCell colSpan={3} className="h-24 text-center text-muted-foreground">
-                                        No hay categorías. ¡Agregue la primera!
-                                    </TableCell>
-                                </TableRow>
-                            )}
-                        </TableBody>
-                    </Table>
-                </CardContent>
-            </Card>
-
-
+            {/* Lista de categorías */}
+            <AdminSectionCard
+                title={`Categorías (${categories.length})`}
+                noPadContent
+            >
+                <table className="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Slug</th>
+                            <th style={{ textAlign: "right", width: 160 }}>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {tree.map(cat => (
+                            <Row key={cat.id} item={cat} depth={0} />
+                        ))}
+                        {categories.length === 0 && (
+                            <tr>
+                                <td colSpan={3} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                                    No hay categorías. ¡Agregue la primera!
+                                </td>
+                            </tr>
+                        )}
+                    </tbody>
+                </table>
+            </AdminSectionCard>
         </div>
     );
 }
-

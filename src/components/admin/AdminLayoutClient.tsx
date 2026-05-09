@@ -7,6 +7,7 @@ import { logout } from "@/lib/actions/auth";
 import { BottomNav } from "@/components/admin/BottomNav";
 import { BrindesBadge } from "@/components/admin/BrindesBadge";
 import { AdminAlertBell } from "@/components/admin/AdminAlertBell";
+import { LogoImg } from "@/components/LogoImg";
 import type { Role } from "@/lib/user";
 import {
     AlignJustify,
@@ -179,7 +180,8 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
         <div className="admin-layout">
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
-                    🦋 Monarca <span>Admin</span>
+                    <LogoImg variant="white" height={32} />
+                    <span>Admin</span>
                 </div>
 
                 <nav className="admin-sidebar-nav">

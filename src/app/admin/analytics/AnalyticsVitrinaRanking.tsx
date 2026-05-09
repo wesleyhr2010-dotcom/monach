@@ -1,14 +1,3 @@
-"use client";
-
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-
 type RankingItem = {
   id: string;
   name: string;
@@ -34,57 +23,55 @@ export function AnalyticsVitrinaRanking({ items }: Props) {
   }
 
   return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead style={{ width: "40px" }}>#</TableHead>
-          <TableHead>Revendedora</TableHead>
-          <TableHead style={{ textAlign: "right" }}>Visitas</TableHead>
-          <TableHead style={{ textAlign: "right" }}>Únicos</TableHead>
-          <TableHead style={{ textAlign: "right" }}>Cliques</TableHead>
-          <TableHead style={{ textAlign: "right" }}>CTR</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
+    <table className="admin-table">
+      <thead>
+        <tr>
+          <th style={{ width: 40 }}>#</th>
+          <th>Revendedora</th>
+          <th style={{ textAlign: "right" }}>Visitas</th>
+          <th style={{ textAlign: "right" }}>Únicos</th>
+          <th style={{ textAlign: "right" }}>Cliques</th>
+          <th style={{ textAlign: "right" }}>CTR</th>
+        </tr>
+      </thead>
+      <tbody>
         {items.map((r, i) => (
-          <TableRow key={r.id}>
-            <TableCell style={{ fontWeight: 600, color: i < 3 ? "#C9A84C" : "var(--admin-text-muted)" }}>
+          <tr key={r.id}>
+            <td style={{ fontWeight: 600, color: i < 3 ? "#C9A84C" : "var(--admin-text-muted)" }}>
               {i + 1}
-            </TableCell>
-            <TableCell>
-              <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <div
-                  style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    background: "#35605a",
-                    color: "white",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "13px",
-                    fontWeight: 600,
-                    overflow: "hidden",
-                    flexShrink: 0,
-                  }}
-                >
+            </td>
+            <td>
+              <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                <div style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: "50%",
+                  background: "#35605a",
+                  color: "white",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: 13,
+                  fontWeight: 600,
+                  overflow: "hidden",
+                  flexShrink: 0,
+                }}>
                   {r.avatar_url ? (
                     <img src={r.avatar_url} alt={r.name} style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
                     r.name.charAt(0).toUpperCase()
                   )}
                 </div>
-                <span style={{ fontWeight: 500, fontSize: "14px" }}>{r.name}</span>
+                <span style={{ fontWeight: 500, fontSize: 14 }}>{r.name}</span>
               </div>
-            </TableCell>
-            <TableCell style={{ textAlign: "right", fontWeight: 600 }}>{r.visitas}</TableCell>
-            <TableCell style={{ textAlign: "right" }}>{r.visitantesUnicos}</TableCell>
-            <TableCell style={{ textAlign: "right" }}>{r.cliquesWhatsApp}</TableCell>
-            <TableCell style={{ textAlign: "right", fontWeight: 600 }}>{r.ctrContato}%</TableCell>
-          </TableRow>
+            </td>
+            <td style={{ textAlign: "right", fontWeight: 600 }}>{r.visitas}</td>
+            <td style={{ textAlign: "right" }}>{r.visitantesUnicos}</td>
+            <td style={{ textAlign: "right" }}>{r.cliquesWhatsApp}</td>
+            <td style={{ textAlign: "right", fontWeight: 600 }}>{r.ctrContato}%</td>
+          </tr>
         ))}
-      </TableBody>
-    </Table>
+      </tbody>
+    </table>
   );
 }

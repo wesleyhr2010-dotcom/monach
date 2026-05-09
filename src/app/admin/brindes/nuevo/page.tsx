@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { criarBrinde } from "../actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 
 export default function NuevoBrindePage() {
     const router = useRouter();
@@ -36,14 +36,11 @@ export default function NuevoBrindePage() {
     }
 
     return (
-        <div className="admin-content">
-            <AdminPageHeader
-                title="Nuevo Brinde"
-                backHref="/admin/brindes"
-            />
-
+        <>
+            <AdminTopHeader breadcrumb="Brindes" backHref="/admin/brindes" title="Nuevo Brinde" />
+            <div style={{ padding: "28px 32px" }}>
             {error && (
-                <div className="admin-alert" style={{ background: "#3a1f1f", color: "#e74c3c", padding: 12, borderRadius: 8, marginBottom: 20 }}>
+                <div style={{ background: "#3a1f1f", color: "#e74c3c", padding: 12, borderRadius: 8, marginBottom: 20 }}>
                     {error}
                 </div>
             )}
@@ -103,7 +100,8 @@ export default function NuevoBrindePage() {
                     {loading ? "Guardando..." : "Crear Brinde"}
                 </button>
             </form>
-        </div>
+            </div>
+        </>
     );
 }
 

@@ -5,9 +5,8 @@ import { useState, useEffect } from "react";
 export const dynamic = "force-dynamic";
 import { getLeads, aprovarLead, recusarLead } from "../actions-leads";
 import type { LeadItem } from "../actions-leads";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { UserPlus, Check, X, Clock, Filter } from "lucide-react";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 
 export default function LeadsAdminPage() {
     const [leads, setLeads] = useState<LeadItem[]>([]);
@@ -26,7 +25,7 @@ export default function LeadsAdminPage() {
         setLoading(false);
     }
 
-    useEffect(() => { reload(); }, [filter]);
+    useEffect(() => { reload(); }, [filter]); // eslint-disable-line react-hooks/exhaustive-deps
 
     async function handleAprovar(lead: LeadItem) {
         const taxa = comissaoMap[lead.id] || 10;
@@ -53,34 +52,37 @@ export default function LeadsAdminPage() {
 
     return (
         <>
-            <header className="admin-header">
-                <h1>
-                    <UserPlus className="w-6 h-6 inline-block mr-2" />
-                    Leads Revendedoras
-                    {pendentes > 0 && (
+            <AdminTopHeader
+                breadcrumb="Admin / Candidaturas"
+                title="Candidaturas"
+                action={
+                    pendentes > 0 ? (
                         <span style={{
-                            marginLeft: "8px", fontSize: "12px", fontWeight: 700, padding: "2px 8px",
-                            borderRadius: "12px", background: "#f59e0b20", color: "#f59e0b",
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                            background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
                         }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-warning)" }} />
                             {pendentes} pendentes
                         </span>
-                    )}
-                </h1>
-            </header>
-            <div className="admin-content" style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                    ) : undefined
+                }
+            />
 
-                {/* Filter */}
-                <div style={{ display: "flex", gap: "8px", alignItems: "center" }}>
-                    <Filter className="w-4 h-4" style={{ color: "var(--admin-text-muted)" }} />
-                    {["", "pendente", "aprovada", "recusada"].map((s) => (
+            <div className="admin-content" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                {/* Filtros */}
+                <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                    <Filter size={14} style={{ color: "var(--admin-text-muted)", flexShrink: 0 }} />
+                    {(["", "pendente", "aprovada", "recusada"] as const).map((s) => (
                         <button
                             key={s}
                             onClick={() => setFilter(s)}
                             style={{
-                                fontSize: "12px", padding: "6px 14px", borderRadius: "6px", cursor: "pointer",
-                                border: filter === s ? "1px solid #35605a" : "1px solid var(--admin-border)",
-                                background: filter === s ? "#35605a" : "transparent",
-                                color: filter === s ? "white" : "var(--admin-text)",
+                                fontSize: 12, padding: "6px 14px", borderRadius: 6, cursor: "pointer",
+                                border: filter === s ? "1px solid var(--admin-accent)" : "1px solid var(--admin-border)",
+                                background: filter === s ? "var(--admin-accent)" : "transparent",
+                                color: filter === s ? "white" : "var(--admin-text-muted)",
+                                transition: "all 0.15s ease",
                             }}
                         >
                             {s === "" ? "Todas" : s.charAt(0).toUpperCase() + s.slice(1)}
@@ -88,97 +90,101 @@ export default function LeadsAdminPage() {
                     ))}
                 </div>
 
-                {/* Table */}
-                <Card>
-                    <CardContent className="pt-4">
-                        {loading ? (
-                            <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>Carregando...</p>
-                        ) : leads.length === 0 ? (
-                            <p style={{ textAlign: "center", padding: "40px 0", color: "var(--admin-text-muted)" }}>
-                                Nenhuma lead encontrada.
-                            </p>
-                        ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Nome</TableHead>
-                                        <TableHead>WhatsApp</TableHead>
-                                        <TableHead>Email</TableHead>
-                                        <TableHead>Cidade</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead>Data</TableHead>
-                                        <TableHead className="w-40">Ações</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
+                {/* Tabela */}
+                <div style={{ background: "var(--admin-surface)", border: "1px solid var(--admin-surface-hover)", borderRadius: 12, overflow: "hidden" }}>
+                    {loading ? (
+                        <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>
+                            Carregando...
+                        </div>
+                    ) : leads.length === 0 ? (
+                        <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>
+                            Nenhuma candidatura encontrada.
+                        </div>
+                    ) : (
+                        <div style={{ overflowX: "auto" }}>
+                            <table className="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nome</th>
+                                        <th>WhatsApp</th>
+                                        <th>Email</th>
+                                        <th>Cidade</th>
+                                        <th>Status</th>
+                                        <th>Data</th>
+                                        <th style={{ width: 180 }}>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
                                     {leads.map((lead) => (
-                                        <TableRow key={lead.id}>
-                                            <TableCell className="font-medium">{lead.nome}</TableCell>
-                                            <TableCell style={{ fontSize: "13px" }}>{lead.whatsapp}</TableCell>
-                                            <TableCell style={{ fontSize: "13px" }}>{lead.email}</TableCell>
-                                            <TableCell style={{ fontSize: "13px" }}>{lead.direccion || "—"}</TableCell>
-                                            <TableCell>
-                                                <StatusBadge status={lead.status} />
-                                            </TableCell>
-                                            <TableCell style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>
+                                        <tr key={lead.id}>
+                                            <td style={{ fontWeight: 600 }}>{lead.nome}</td>
+                                            <td style={{ fontSize: 13 }}>{lead.whatsapp}</td>
+                                            <td style={{ fontSize: 13 }}>{lead.email}</td>
+                                            <td style={{ fontSize: 13 }}>{lead.direccion || "—"}</td>
+                                            <td><StatusBadge status={lead.status} /></td>
+                                            <td style={{ fontSize: 12, color: "var(--admin-text-muted)" }}>
                                                 {new Date(lead.created_at).toLocaleDateString("pt-BR")}
-                                            </TableCell>
-                                            <TableCell>
+                                            </td>
+                                            <td>
                                                 {lead.status === "pendente" && (
-                                                    <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                                                    <div style={{ display: "flex", gap: 6, alignItems: "center" }}>
                                                         <input
                                                             type="number"
                                                             placeholder="% com."
                                                             defaultValue={10}
                                                             onChange={(e) => setComissaoMap((prev) => ({ ...prev, [lead.id]: Number(e.target.value) }))}
                                                             style={{
-                                                                width: "50px", padding: "4px 6px", fontSize: "12px",
-                                                                borderRadius: "4px", border: "1px solid var(--admin-border)",
-                                                                background: "var(--admin-bg-secondary)", color: "var(--admin-text)",
+                                                                width: 50, padding: "4px 6px", fontSize: 12,
+                                                                borderRadius: 4, border: "1px solid var(--admin-border)",
+                                                                background: "var(--admin-bg)", color: "var(--admin-text)",
                                                             }}
                                                         />
                                                         <button
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleAprovar(lead)}
                                                             style={{
-                                                                background: "#10b981", color: "white", border: "none",
-                                                                borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
-                                                                fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
+                                                                background: "var(--admin-success)", color: "#0a0a0a",
+                                                                border: "none", borderRadius: 4, padding: "4px 8px",
+                                                                cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                                                display: "inline-flex", alignItems: "center", gap: 2,
+                                                                opacity: processingId === lead.id ? 0.5 : 1,
                                                             }}
                                                         >
-                                                            <Check className="w-3 h-3" /> Aprovar
+                                                            <Check size={11} /> Aprovar
                                                         </button>
                                                         <button
                                                             disabled={processingId === lead.id}
                                                             onClick={() => handleRecusar(lead)}
                                                             style={{
-                                                                background: "#ef4444", color: "white", border: "none",
-                                                                borderRadius: "4px", padding: "4px 8px", cursor: "pointer",
-                                                                fontSize: "11px", display: "flex", alignItems: "center", gap: "2px",
+                                                                background: "var(--admin-danger)", color: "white",
+                                                                border: "none", borderRadius: 4, padding: "4px 8px",
+                                                                cursor: "pointer", fontSize: 11, fontWeight: 600,
+                                                                display: "inline-flex", alignItems: "center", gap: 2,
+                                                                opacity: processingId === lead.id ? 0.5 : 1,
                                                             }}
                                                         >
-                                                            <X className="w-3 h-3" /> Recusar
+                                                            <X size={11} /> Recusar
                                                         </button>
                                                     </div>
                                                 )}
                                                 {lead.status === "aprovada" && (
-                                                    <span style={{ fontSize: "11px", color: "#10b981" }}>
+                                                    <span style={{ fontSize: 11, color: "var(--admin-success)", fontWeight: 600 }}>
                                                         ✓ {lead.taxa_comissao}% comissão
                                                     </span>
                                                 )}
-{lead.status === "rejeitado" && lead.observacao_admin && (
-                    <span style={{ fontSize: "11px", color: "#ef4444" }} title={lead.observacao_admin}>
-                        {lead.observacao_admin.slice(0, 30)}{lead.observacao_admin.length > 30 ? "..." : ""}
-                    </span>
-                )}
-                                            </TableCell>
-                                        </TableRow>
+                                                {lead.status === "rejeitado" && lead.observacao_admin && (
+                                                    <span style={{ fontSize: 11, color: "var(--admin-danger)" }} title={lead.observacao_admin}>
+                                                        {lead.observacao_admin.slice(0, 30)}{lead.observacao_admin.length > 30 ? "..." : ""}
+                                                    </span>
+                                                )}
+                                            </td>
+                                        </tr>
                                     ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </CardContent>
-                </Card>
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
             </div>
         </>
     );
@@ -186,16 +192,16 @@ export default function LeadsAdminPage() {
 
 function StatusBadge({ status }: { status: string }) {
     const styles: Record<string, { bg: string; color: string; icon: React.ReactNode }> = {
-        pendente: { bg: "#f59e0b20", color: "#f59e0b", icon: <Clock className="w-3 h-3" /> },
-        aprovada: { bg: "#10b98120", color: "#10b981", icon: <Check className="w-3 h-3" /> },
-        recusada: { bg: "#ef444420", color: "#ef4444", icon: <X className="w-3 h-3" /> },
+        pendente: { bg: "var(--admin-warning-10)", color: "var(--admin-warning)", icon: <Clock size={11} /> },
+        aprovada: { bg: "var(--admin-success-10)", color: "var(--admin-success)", icon: <Check size={11} /> },
+        recusada: { bg: "var(--admin-danger-10)", color: "var(--admin-danger)", icon: <X size={11} /> },
     };
     const s = styles[status] || styles.pendente;
     return (
         <span style={{
-            display: "inline-flex", alignItems: "center", gap: "4px",
-            fontSize: "11px", fontWeight: 600, padding: "2px 8px",
-            borderRadius: "4px", background: s.bg, color: s.color,
+            display: "inline-flex", alignItems: "center", gap: 4,
+            fontSize: 11, fontWeight: 600, padding: "2px 8px",
+            borderRadius: 4, background: s.bg, color: s.color,
         }}>
             {s.icon} {status}
         </span>

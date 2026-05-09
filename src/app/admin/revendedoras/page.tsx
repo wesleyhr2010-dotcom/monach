@@ -31,6 +31,7 @@ import {
     AlertTriangle,
     RotateCcw,
 } from "lucide-react";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
@@ -271,94 +272,88 @@ export default function RevendedorasPage() {
 
     return (
         <>
-            {/* ── Header ─────────────────────────────────────────────────────── */}
-            <header className="admin-header">
-                <div>
-                    <div style={{ fontSize: "11px", color: "var(--admin-text-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>
-                        ADMIN / REVENDEDORAS
-                    </div>
-                    <h1 style={{ fontSize: "20px", fontWeight: 600, letterSpacing: "-0.01em", margin: 0 }}>
-                        Revendedoras
-                    </h1>
-                </div>
-                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                    {/* Badge ativas */}
-                    <span style={{
-                        display: "inline-flex", alignItems: "center", gap: "6px",
-                        padding: "5px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500,
-                        background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid #2A5A2A",
-                    }}>
-                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--admin-success)" }} />
-                        {ativas} ativas
-                    </span>
-                    {/* Badge pendentes */}
-                    <span style={{
-                        display: "inline-flex", alignItems: "center", gap: "6px",
-                        padding: "5px 12px", borderRadius: "100px", fontSize: "12px", fontWeight: 500,
-                        background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
-                    }}>
-                        <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: "var(--admin-warning)" }} />
-                        {pendentes} pendentes
-                    </span>
-                    {/* Nova revendedora */}
-                    <Dialog open={showNew} onOpenChange={setShowNew}>
-                        <DialogTrigger asChild>
-                            <Button size="sm" style={{ background: "var(--admin-accent)", color: "#fff" }}>
-                                <UserPlus className="w-4 h-4 mr-2" /> Nova revendedora
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Nova Revendedora</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleNew} className="space-y-4">
-                                <div>
-                                    <Label htmlFor="new-name">Nome *</Label>
-                                    <Input id="new-name" name="name" required placeholder="Nome completo" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-whatsapp">WhatsApp *</Label>
-                                    <Input id="new-whatsapp" name="whatsapp" required placeholder="+55 ..." />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-email">Email</Label>
-                                    <Input id="new-email" name="email" type="email" placeholder="email@exemplo.com" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-taxa">Comissão %</Label>
-                                    <Input id="new-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-colab">Colaboradora</Label>
-                                    <select
-                                        id="new-colab"
-                                        name="colaboradora_id"
-                                        style={{
-                                            width: "100%", padding: "8px 12px", borderRadius: "6px",
-                                            border: "1px solid var(--admin-border)",
-                                            background: "var(--admin-bg)", color: "var(--admin-text)",
-                                        }}
-                                    >
-                                        <option value="">Sem colaboradora</option>
-                                        {colaboradoras.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-avatar">Foto</Label>
-                                    <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
-                                </div>
-                                <Button type="submit" className="w-full" disabled={isPending}>
-                                    {isPending ? "Criando..." : "Criar Revendedora"}
+            <AdminTopHeader
+                breadcrumb="Admin / Revendedoras"
+                title="Revendedoras"
+                action={
+                    <>
+                        <span style={{
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                            background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid #2A5A2A",
+                        }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-success)" }} />
+                            {ativas} ativas
+                        </span>
+                        {pendentes > 0 && (
+                            <span style={{
+                                display: "inline-flex", alignItems: "center", gap: 6,
+                                padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                                background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
+                            }}>
+                                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-warning)" }} />
+                                {pendentes} pendentes
+                            </span>
+                        )}
+                        <Dialog open={showNew} onOpenChange={setShowNew}>
+                            <DialogTrigger asChild>
+                                <Button size="sm" style={{ background: "var(--admin-accent)", color: "#fff" }}>
+                                    <UserPlus className="w-4 h-4 mr-2" /> Nova revendedora
                                 </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-                </div>
-            </header>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Nova Revendedora</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleNew} className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="new-name">Nome *</Label>
+                                        <Input id="new-name" name="name" required placeholder="Nome completo" />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-whatsapp">WhatsApp *</Label>
+                                        <Input id="new-whatsapp" name="whatsapp" required placeholder="+55 ..." />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-email">Email</Label>
+                                        <Input id="new-email" name="email" type="email" placeholder="email@exemplo.com" />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-taxa">Comissão %</Label>
+                                        <Input id="new-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-colab">Colaboradora</Label>
+                                        <select
+                                            id="new-colab"
+                                            name="colaboradora_id"
+                                            style={{
+                                                width: "100%", padding: "8px 12px", borderRadius: "6px",
+                                                border: "1px solid var(--admin-border)",
+                                                background: "var(--admin-bg)", color: "var(--admin-text)",
+                                            }}
+                                        >
+                                            <option value="">Sem colaboradora</option>
+                                            {colaboradoras.map((c) => (
+                                                <option key={c.id} value={c.id}>{c.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-avatar">Foto</Label>
+                                        <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
+                                    </div>
+                                    <Button type="submit" className="w-full" disabled={isPending}>
+                                        {isPending ? "Criando..." : "Criar Revendedora"}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    </>
+                }
+            />
 
-            <div className="admin-content" style={{ padding: "24px 32px", gap: "0" }}>
+            <div className="admin-content" style={{ gap: "0" }}>
                 {/* ── Filtros ────────────────────────────────────────────────── */}
                 <div style={{
                     display: "flex", alignItems: "center", gap: "10px",

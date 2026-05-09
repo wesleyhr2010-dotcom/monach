@@ -7,7 +7,7 @@ import Link from "next/link";
 import { getMaletas } from "@/app/admin/actions-maletas";
 import { getColaboradoras } from "@/app/admin/actions-equipe";
 import type { MaletaListItem } from "@/app/admin/actions-maletas";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminStatusBadge, getStatusRowStyle } from "@/components/admin/AdminStatusBadge";
 import { AdminFilterBar } from "@/components/admin/AdminFilterBar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -54,32 +54,34 @@ export default function MaletasPage() {
 
   if (loading) {
     return (
-      <div className="admin-content">
-        <div className="flex flex-col gap-3 py-4">
-          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-          <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+      <>
+        <AdminTopHeader breadcrumb="Admin / Maletas" title="Maletas" />
+        <div className="admin-page-body">
+          <div className="flex flex-col gap-3">
+            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
   return (
-    <div className="admin-content">
-      <AdminPageHeader
-        title="Maletas"
+    <>
+      <AdminTopHeader
         breadcrumb="Admin / Maletas"
+        title="Maletas"
         action={
-          <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-            <Link href="/admin/maleta/nova">
-              <button className="admin-btn admin-btn-primary" style={{ borderRadius: "var(--admin-radius-pill)" }}>
-                <Plus className="w-3.5 h-3.5" style={{ marginRight: 6 }} />
-                Nova Maleta
-              </button>
-            </Link>
-          </div>
+          <Link href="/admin/maleta/nova">
+            <button className="admin-btn admin-btn-primary" style={{ borderRadius: "var(--admin-radius-pill)", display: "inline-flex", alignItems: "center", gap: 6 }}>
+              <Plus className="w-3.5 h-3.5" />
+              Nova Maleta
+            </button>
+          </Link>
         }
       />
+      <div className="admin-page-body">
 
       <AdminFilterBar
         searchValue={searchQuery}
@@ -227,6 +229,7 @@ export default function MaletasPage() {
           </span>
         </div>
       )}
-    </div>
+      </div>
+    </>
   );
 }

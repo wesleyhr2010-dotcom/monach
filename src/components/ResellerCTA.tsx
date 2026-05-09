@@ -3,21 +3,21 @@ import Link from "next/link";
 
 export default function ResellerCTA() {
     return (
-        <section className="relative w-full h-[500px] md:h-[700px] flex flex-col items-center justify-end overflow-hidden">
+        <section className="relative w-full h-[500px] md:h-[700px] flex flex-col items-center justify-end pb-16 md:pb-24 overflow-hidden">
             {/* Background */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/images/reseller-bg.svg"
+                    src="/images/imagem-revendedora-1024x589.jpg"
                     alt="Sé una revendedora autorizada de Monarca Semijoyas"
                     fill
-                    className="object-cover"
+                    className="object-cover object-[center_30%]"
                     sizes="100vw"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent" />
             </div>
 
             {/* Content */}
-            <div className="container-monarca relative z-10 text-center text-white pb-10 flex flex-col items-center gap-5">
+            <div className="container-monarca relative z-10 text-center text-white flex flex-col items-center gap-5">
                 <p className="text-lg md:text-4xl tracking-[19px] uppercase text-gold leading-tight">
                     Sé una Revendedora
                 </p>

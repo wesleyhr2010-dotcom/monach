@@ -108,7 +108,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
                 <div className="admin-content">
                     {/* Basic Info */}
                     <div className="admin-card" style={{ marginBottom: "20px", position: "relative", zIndex: 10 }}>
-                        <h2 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "20px" }}>
+                        <h2 style={{ fontFamily: "Raleway, sans-serif", fontSize: 11, fontWeight: 700, color: "var(--admin-text-dim)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 20 }}>
                             Información General
                         </h2>
 
@@ -193,7 +193,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
 
                     {/* Descriptions */}
                     <div className="admin-card" style={{ marginBottom: "20px" }}>
-                        <h2 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "20px" }}>
+                        <h2 style={{ fontFamily: "Raleway, sans-serif", fontSize: 11, fontWeight: 700, color: "var(--admin-text-dim)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 20 }}>
                             Descripciones
                         </h2>
 
@@ -224,7 +224,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
 
                     {/* Images */}
                     <div className="admin-card" style={{ marginBottom: "20px" }}>
-                        <h2 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "20px" }}>
+                        <h2 style={{ fontFamily: "Raleway, sans-serif", fontSize: 11, fontWeight: 700, color: "var(--admin-text-dim)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 20 }}>
                             Imágenes
                         </h2>
                         <ImageUploader
@@ -236,7 +236,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
                     {/* Variants (only for variable products) */}
                     {productType === "variable" && (
                         <div className="admin-card" style={{ marginBottom: "20px" }}>
-                            <h2 style={{ fontSize: "16px", fontWeight: 600, marginBottom: "8px" }}>
+                            <h2 style={{ fontFamily: "Raleway, sans-serif", fontSize: 11, fontWeight: 700, color: "var(--admin-text-dim)", letterSpacing: 1, textTransform: "uppercase", marginBottom: 8 }}>
                                 Variantes
                             </h2>
                             <p style={{ fontSize: "13px", color: "var(--admin-text-muted)", marginBottom: "16px" }}>

@@ -58,7 +58,7 @@ export default function TierForm({ tier, onClose, onSaved }: TierFormProps) {
         style={{
           background: "var(--admin-surface)",
           border: "1px solid var(--admin-border)",
-          borderRadius: "var(--admin-radius)",
+          borderRadius: 12,
           padding: "24px",
           width: "100%",
           maxWidth: "420px",
@@ -66,7 +66,7 @@ export default function TierForm({ tier, onClose, onSaved }: TierFormProps) {
         }}
         onClick={(e) => e.stopPropagation()}
       >
-        <h3 style={{ margin: "0 0 16px", fontSize: "16px", fontWeight: 600 }}>
+        <h3 style={{ margin: "0 0 16px", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600, color: "var(--admin-text)" }}>
           {tier ? "Editar Faixa" : "Nova Faixa de Comissão"}
         </h3>
 

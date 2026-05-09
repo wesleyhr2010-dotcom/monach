@@ -102,12 +102,12 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
 
 
   if (loading) {
-    return <div className="admin-content"><div className="admin-loading"><div className="admin-spinner" /></div></div>;
+    return <div style={{ padding: "28px 32px" }}><div className="admin-loading"><div className="admin-spinner" /></div></div>;
   }
 
   if (!maleta) {
     return (
-      <div className="admin-content">
+      <div style={{ padding: "28px 32px" }}>
         <AdminEmptyState
           icon={Package}
           title="Consignación no encontrada"
@@ -168,7 +168,7 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
   }
 
   return (
-    <div className="admin-content" style={{ gap: 18 }}>
+    <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 18 }}>
       {/* ── Header ── */}
       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", borderBottom: "1px solid var(--admin-border)", paddingBottom: 16, marginBottom: 0 }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>

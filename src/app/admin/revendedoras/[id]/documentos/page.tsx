@@ -8,10 +8,8 @@ import {
   rejeitarDocumento,
 } from "./actions";
 import type { DocumentoRevendedora } from "./actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
   FileText,
   CheckCircle2,
@@ -103,203 +101,170 @@ export default function DocumentosRevendedoraPage() {
 
   return (
     <>
-      <AdminPageHeader
-        title="Documentos"
-        breadcrumb={`ADMIN / REVENDEDORAS / ${id.slice(0, 8).toUpperCase()}`}
+      <AdminTopHeader
+        breadcrumb="Revendedoras"
         backHref={`/admin/revendedoras/${id}`}
+        title="Documentos"
       />
 
-      <div className="admin-content">
+      <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
         {loading ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <AdminEmptyState title="Cargando documentos..." />
-            </CardContent>
-          </Card>
+          <div style={{ padding: 40, textAlign: "center", color: "var(--admin-text-muted)", fontSize: 14 }}>Cargando documentos...</div>
         ) : documentos.length === 0 ? (
-          <Card>
-            <CardContent className="text-center py-12">
-              <FileText className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
-              <AdminEmptyState title="Nenhum documento enviado" />
-            </CardContent>
-          </Card>
+          <AdminEmptyState icon={FileText} title="Nenhum documento enviado" description="A revendedora ainda não enviou documentos." />
         ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+          <>
             {/* Documento Atual */}
-            <Card>
-              <CardContent style={{ padding: "24px" }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "16px" }}>
-                  <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)" }}>
-                    Documento Enviado
-                  </h3>
-                  {docAtual && (
-                    <span className="admin-badge" style={{
-                      background: statusConfig[docAtual.status]?.bg || "rgba(136, 136, 136, 0.12)",
-                      color: statusConfig[docAtual.status]?.color || "#888",
-                    }}>
-                      {statusConfig[docAtual.status]?.label || docAtual.status.toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
+            <div className="admin-card">
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
+                <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "var(--admin-text-dim)" }}>
+                  Documento Enviado
+                </span>
                 {docAtual && (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    {/* Preview */}
-                    <div style={{
-                      border: "1px solid var(--admin-border)",
-                      borderRadius: "var(--admin-radius)",
-                      overflow: "hidden",
-                      background: "var(--admin-bg)",
-                      maxHeight: "400px",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}>
-                      {docAtual.url.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
-                        <img
-                          src={docAtual.url}
-                          alt="Documento"
-                          style={{ maxWidth: "100%", maxHeight: "380px", objectFit: "contain" }}
-                        />
+                  <span style={{
+                    fontSize: 10, fontWeight: 700, letterSpacing: 1, padding: "3px 8px", borderRadius: 4,
+                    background: statusConfig[docAtual.status]?.bg || "rgba(136,136,136,0.12)",
+                    color: statusConfig[docAtual.status]?.color || "#888",
+                  }}>
+                    {statusConfig[docAtual.status]?.label || docAtual.status.toUpperCase()}
+                  </span>
+                )}
+              </div>
+
+              {docAtual && (
+                <div style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+                  {/* Preview */}
+                  <div style={{
+                    border: "1px solid var(--admin-border)", borderRadius: 8,
+                    overflow: "hidden", background: "var(--admin-bg)",
+                    maxHeight: 400, display: "flex", alignItems: "center", justifyContent: "center",
+                  }}>
+                    {docAtual.url.match(/\.(jpg|jpeg|png|webp|gif)$/i) ? (
+                      <img src={docAtual.url} alt="Documento" style={{ maxWidth: "100%", maxHeight: 380, objectFit: "contain" }} />
+                    ) : (
+                      <div style={{ padding: 40, textAlign: "center" }}>
+                        <FileText style={{ width: 48, height: 48, margin: "0 auto 16px", color: "var(--admin-text-muted)" }} />
+                        <p style={{ color: "var(--admin-text-muted)", margin: 0 }}>Ver documento</p>
+                        <a href={docAtual.url} target="_blank" rel="noopener noreferrer"
+                          style={{ color: "var(--admin-accent)", fontSize: 13, display: "inline-flex", alignItems: "center", gap: 4, marginTop: 8 }}>
+                          Abrir <ExternalLink style={{ width: 12, height: 12 }} />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+
+                  <div style={{ display: "flex", gap: 24, flexWrap: "wrap", fontSize: 13, color: "var(--admin-text-muted)" }}>
+                    <span>Enviado em: <strong style={{ color: "var(--admin-text)" }}>{formatDate(docAtual.created_at)}</strong></span>
+                    <span>Tipo: <strong style={{ color: "var(--admin-text)" }}>{docAtual.tipo === "ci" ? "Identidad CI / DNI" : docAtual.tipo}</strong></span>
+                  </div>
+
+                  {/* Ações */}
+                  {(docAtual.status === "pendente" || docAtual.status === "em_analise") && (
+                    <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                      {rejeitandoId === docAtual.id ? (
+                        <>
+                          <textarea
+                            placeholder="Motivo del rechazo..."
+                            value={observacao}
+                            onChange={(e) => setObservacao(e.target.value)}
+                            rows={3}
+                            style={{
+                              width: "100%", padding: "10px 12px", borderRadius: 8,
+                              background: "var(--admin-bg)", border: "1px solid var(--admin-border)",
+                              color: "var(--admin-text)", fontFamily: "inherit", fontSize: 14, resize: "vertical",
+                            }}
+                          />
+                          <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+                            <button className="admin-btn admin-btn-secondary" onClick={() => { setRejeitandoId(null); setObservacao(""); }}>
+                              Cancelar
+                            </button>
+                            <button
+                              className="admin-btn"
+                              disabled={isPending}
+                              onClick={() => handleRejeitar(docAtual.id)}
+                              style={{ background: "rgba(220,53,69,0.15)", color: "var(--admin-danger)", border: "1px solid rgba(220,53,69,0.3)" }}
+                            >
+                              {isPending ? "Rechazando..." : "Confirmar Rechazo"}
+                            </button>
+                          </div>
+                        </>
                       ) : (
-                        <div style={{ padding: "40px", textAlign: "center" }}>
-                          <FileText className="w-12 h-12 mx-auto mb-4" style={{ color: "var(--admin-text-muted)" }} />
-                          <p style={{ color: "var(--admin-text-muted)" }}>Ver documento</p>
-                          <a
-                            href={docAtual.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            style={{ color: "var(--admin-accent)", fontSize: "13px", display: "inline-flex", alignItems: "center", gap: "4px", marginTop: "8px" }}
+                        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+                          <button
+                            className="admin-btn"
+                            disabled={isPending}
+                            onClick={() => handleAprovar(docAtual.id)}
+                            style={{ background: "var(--admin-success)", color: "#000", display: "inline-flex", alignItems: "center", gap: 6 }}
                           >
-                            Abrir <ExternalLink className="w-3 h-3" />
-                          </a>
+                            <CheckCircle2 style={{ width: 15, height: 15 }} /> Aprobar
+                          </button>
+                          <button
+                            className="admin-btn"
+                            disabled={isPending}
+                            onClick={() => setRejeitandoId(docAtual.id)}
+                            style={{ background: "rgba(220,53,69,0.15)", color: "var(--admin-danger)", border: "1px solid rgba(220,53,69,0.3)", display: "inline-flex", alignItems: "center", gap: 6 }}
+                          >
+                            <XCircle style={{ width: 15, height: 15 }} /> Rechazar
+                          </button>
                         </div>
                       )}
                     </div>
+                  )}
 
-                    <div style={{ display: "flex", gap: "24px", flexWrap: "wrap", fontSize: "13px", color: "var(--admin-text-muted)" }}>
-                      <span>Enviado em: <strong style={{ color: "var(--admin-text)" }}>{formatDate(docAtual.created_at)}</strong></span>
-                      <span>Tipo: <strong style={{ color: "var(--admin-text)" }}>{docAtual.tipo === "ci" ? "Identidad CI / DNI" : docAtual.tipo}</strong></span>
+                  {docAtual.status === "rejeitado" && docAtual.observacao && (
+                    <div style={{
+                      padding: "12px 16px", background: "rgba(224, 92, 92, 0.08)",
+                      borderRadius: 8, border: "1px solid rgba(224, 92, 92, 0.2)",
+                      fontSize: 13, color: "var(--admin-danger)",
+                    }}>
+                      <strong>Motivo del rechazo:</strong> {docAtual.observacao}
                     </div>
-
-                    {/* Ações */}
-                    {(docAtual.status === "pendente" || docAtual.status === "em_analise") && (
-                      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                        {rejeitandoId === docAtual.id ? (
-                          <>
-                            <textarea
-                              placeholder="Motivo del rechazo..."
-                              value={observacao}
-                              onChange={(e) => setObservacao(e.target.value)}
-                              rows={3}
-                              style={{
-                                width: "100%",
-                                padding: "10px 12px",
-                                borderRadius: "var(--admin-radius)",
-                                background: "var(--admin-bg)",
-                                border: "1px solid var(--admin-border)",
-                                color: "var(--admin-text)",
-                                fontFamily: "inherit",
-                                fontSize: "14px",
-                                resize: "vertical",
-                              }}
-                            />
-                            <div style={{ display: "flex", gap: "8px", justifyContent: "flex-end" }}>
-                              <Button variant="outline" size="sm" onClick={() => { setRejeitandoId(null); setObservacao(""); }}>
-                                Cancelar
-                              </Button>
-                              <Button variant="destructive" size="sm" disabled={isPending} onClick={() => handleRejeitar(docAtual.id)}>
-                                {isPending ? "Rechazando..." : "Confirmar Rechazo"}
-                              </Button>
-                            </div>
-                          </>
-                        ) : (
-                          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
-                            <Button
-                              variant="default"
-                              size="sm"
-                              disabled={isPending}
-                              onClick={() => handleAprovar(docAtual.id)}
-                              style={{ background: "var(--admin-success)", color: "#000" }}
-                            >
-                              <CheckCircle2 className="w-4 h-4 mr-2" /> Aprobar
-                            </Button>
-                            <Button
-                              variant="destructive"
-                              size="sm"
-                              disabled={isPending}
-                              onClick={() => setRejeitandoId(docAtual.id)}
-                            >
-                              <XCircle className="w-4 h-4 mr-2" /> Rechazar
-                            </Button>
-                          </div>
-                        )}
-                      </div>
-                    )}
-
-                    {docAtual.status === "rejeitado" && docAtual.observacao && (
-                      <div style={{
-                        padding: "12px 16px",
-                        background: "rgba(224, 92, 92, 0.08)",
-                        borderRadius: "var(--admin-radius)",
-                        border: "1px solid rgba(224, 92, 92, 0.2)",
-                        fontSize: "13px",
-                        color: "var(--admin-danger)",
-                      }}>
-                        <strong>Motivo del rechazo:</strong> {docAtual.observacao}
-                      </div>
-                    )}
-                  </div>
-                )}
-              </CardContent>
-            </Card>
+                  )}
+                </div>
+              )}
+            </div>
 
             {/* Histórico */}
             {historico.length > 0 && (
-              <Card>
-                <CardContent style={{ padding: "24px" }}>
-                  <h3 style={{ fontSize: "10px", fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "var(--admin-text-dim)", marginBottom: "16px" }}>
-                    Histórico
-                  </h3>
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                    {historico.map((doc) => {
-                      const st = statusConfig[doc.status];
-                      return (
-                        <div key={doc.id} style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          padding: "12px 16px",
-                          background: "var(--admin-bg)",
-                          borderRadius: "var(--admin-radius)",
-                          border: "1px solid var(--admin-border)",
-                        }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                            <FileText className="w-4 h-4" style={{ color: "var(--admin-text-muted)" }} />
-                            <div>
-                              <div style={{ fontSize: "14px", fontWeight: 500 }}>
-                                {doc.tipo === "ci" ? "Identidad CI / DNI" : doc.tipo}
-                              </div>
-                              <div style={{ fontSize: "12px", color: "var(--admin-text-muted)" }}>
-                                {formatDate(doc.created_at)}
-                                {doc.observacao ? ` — "${doc.observacao}"` : ""}
-                              </div>
+              <div className="admin-card">
+                <div style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 1, color: "var(--admin-text-dim)", marginBottom: 16 }}>
+                  Histórico
+                </div>
+                <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                  {historico.map((doc) => {
+                    const st = statusConfig[doc.status];
+                    return (
+                      <div key={doc.id} style={{
+                        display: "flex", alignItems: "center", justifyContent: "space-between",
+                        padding: "12px 16px", background: "var(--admin-bg)",
+                        borderRadius: 8, border: "1px solid var(--admin-border)",
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                          <FileText style={{ width: 16, height: 16, color: "var(--admin-text-muted)" }} />
+                          <div>
+                            <div style={{ fontSize: 14, fontWeight: 500, color: "var(--admin-text)" }}>
+                              {doc.tipo === "ci" ? "Identidad CI / DNI" : doc.tipo}
+                            </div>
+                            <div style={{ fontSize: 12, color: "var(--admin-text-muted)" }}>
+                              {formatDate(doc.created_at)}
+                              {doc.observacao ? ` — "${doc.observacao}"` : ""}
                             </div>
                           </div>
-                          <span className="admin-badge" style={{
-                            background: st?.bg || "rgba(136, 136, 136, 0.12)",
-                            color: st?.color || "#888",
-                          }}>
-                            {st?.label || doc.status.toUpperCase()}
-                          </span>
                         </div>
-                      );
-                    })}
-                  </div>
-                </CardContent>
-              </Card>
+                        <span style={{
+                          fontSize: 10, fontWeight: 700, letterSpacing: 1, padding: "3px 8px", borderRadius: 4,
+                          background: st?.bg || "rgba(136,136,136,0.12)",
+                          color: st?.color || "#888",
+                        }}>
+                          {st?.label || doc.status.toUpperCase()}
+                        </span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
             )}
-          </div>
+          </>
         )}
       </div>
     </>

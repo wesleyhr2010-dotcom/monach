@@ -9,12 +9,11 @@ import {
     deletarMembro,
 } from "../actions-equipe";
 import type { ColaboradoraItem } from "../actions-equipe";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { formatGsCompact } from "@/lib/format";
 import { UserPlus, Search, Trash2, ArrowRight, Users, Phone, Percent } from "lucide-react";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -89,63 +88,69 @@ export default function ConsultorasPage() {
 
     return (
         <>
-            <header className="admin-header">
-                <div>
-                    <div style={{ fontSize: "11px", color: "var(--admin-text-dim)", textTransform: "uppercase", letterSpacing: "1px", marginBottom: "4px" }}>
-                        ADMIN / CONSULTORAS
-                    </div>
-                    <h1>Consultoras</h1>
-                </div>
-                <div style={{ display: "flex", gap: "12px", alignItems: "center" }}>
-                    <div style={{ display: "flex", gap: "8px" }}>
-                        <Badge variant="secondary" style={{ fontSize: "12px", padding: "4px 10px" }}>
-                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "var(--admin-success)", marginRight: 6 }} />
+            <AdminTopHeader
+                breadcrumb="Admin / Consultoras"
+                title="Consultoras"
+                action={
+                    <>
+                        <span style={{
+                            display: "inline-flex", alignItems: "center", gap: 6,
+                            padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                            background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid #2A5A2A",
+                        }}>
+                            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-success)" }} />
                             {ativas} ativas
-                        </Badge>
-                        <Badge variant="secondary" style={{ fontSize: "12px", padding: "4px 10px" }}>
-                            <span style={{ display: "inline-block", width: 8, height: 8, borderRadius: "50%", background: "var(--admin-text-muted)", marginRight: 6 }} />
-                            {inativas} inativa{inativas !== 1 ? "s" : ""}
-                        </Badge>
-                    </div>
-                    <Dialog open={showNew} onOpenChange={setShowNew}>
-                        <DialogTrigger asChild>
-                            <Button>
-                                <UserPlus className="w-4 h-4 mr-2" /> Nova Consultora
-                            </Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Nova Consultora</DialogTitle>
-                            </DialogHeader>
-                            <form onSubmit={handleNew} className="space-y-4">
-                                <div>
-                                    <Label htmlFor="new-name">Nome *</Label>
-                                    <Input id="new-name" name="name" required placeholder="Nome completo" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-whatsapp">WhatsApp *</Label>
-                                    <Input id="new-whatsapp" name="whatsapp" required placeholder="+595 ..." />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-email">Email</Label>
-                                    <Input id="new-email" name="email" type="email" placeholder="email@..." />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-taxa">Comissão %</Label>
-                                    <Input id="new-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" />
-                                </div>
-                                <div>
-                                    <Label htmlFor="new-avatar">Foto</Label>
-                                    <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
-                                </div>
-                                <Button type="submit" className="w-full" disabled={isPending}>
-                                    {isPending ? "Criando..." : "Criar e Enviar Convite"}
+                        </span>
+                        {inativas > 0 && (
+                            <span style={{
+                                display: "inline-flex", alignItems: "center", gap: 6,
+                                padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                                background: "var(--admin-surface-hover)", color: "var(--admin-text-muted)", border: "1px solid var(--admin-border)",
+                            }}>
+                                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-text-muted)" }} />
+                                {inativas} inativa{inativas !== 1 ? "s" : ""}
+                            </span>
+                        )}
+                        <Dialog open={showNew} onOpenChange={setShowNew}>
+                            <DialogTrigger asChild>
+                                <Button style={{ background: "var(--admin-accent)", color: "#fff" }}>
+                                    <UserPlus className="w-4 h-4 mr-2" /> Nova Consultora
                                 </Button>
-                            </form>
-                        </DialogContent>
-                    </Dialog>
-                </div>
-            </header>
+                            </DialogTrigger>
+                            <DialogContent>
+                                <DialogHeader>
+                                    <DialogTitle>Nova Consultora</DialogTitle>
+                                </DialogHeader>
+                                <form onSubmit={handleNew} className="space-y-4">
+                                    <div>
+                                        <Label htmlFor="new-name">Nome *</Label>
+                                        <Input id="new-name" name="name" required placeholder="Nome completo" />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-whatsapp">WhatsApp *</Label>
+                                        <Input id="new-whatsapp" name="whatsapp" required placeholder="+595 ..." />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-email">Email</Label>
+                                        <Input id="new-email" name="email" type="email" placeholder="email@..." />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-taxa">Comissão %</Label>
+                                        <Input id="new-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" />
+                                    </div>
+                                    <div>
+                                        <Label htmlFor="new-avatar">Foto</Label>
+                                        <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
+                                    </div>
+                                    <Button type="submit" className="w-full" disabled={isPending}>
+                                        {isPending ? "Criando..." : "Criar e Enviar Convite"}
+                                    </Button>
+                                </form>
+                            </DialogContent>
+                        </Dialog>
+                    </>
+                }
+            />
 
             <div className="admin-content">
                 {/* Filters */}
@@ -177,25 +182,18 @@ export default function ConsultorasPage() {
 
                 {/* Table */}
                 {loading ? (
-                    <Card>
-                        <CardContent className="text-center py-12">
-                            <AdminEmptyState title="Carregando..." />
-                        </CardContent>
-                    </Card>
+                    <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>
+                        Carregando...
+                    </div>
                 ) : filtered.length === 0 ? (
-                    <Card>
-                        <CardContent className="text-center py-12">
-                            <AdminEmptyState
-                                icon={Users}
-                                title={search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
-                            />
-                        </CardContent>
-                    </Card>
+                    <AdminEmptyState
+                        icon={Users}
+                        title={search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
+                    />
                 ) : (
-                    <Card>
-                        <CardContent className="p-0">
-                            <div className="admin-table-wrap">
-                                <table className="admin-table">
+                    <div style={{ background: "var(--admin-surface)", border: "1px solid var(--admin-surface-hover)", borderRadius: 12, overflow: "hidden" }}>
+                        <div className="admin-table-wrap">
+                            <table className="admin-table">
                                     <thead>
                                         <tr>
                                             <th style={{ paddingLeft: 24 }}>CONSULTORA</th>
@@ -280,8 +278,7 @@ export default function ConsultorasPage() {
                                     </tbody>
                                 </table>
                             </div>
-                        </CardContent>
-                    </Card>
+                        </div>
                 )}
 
                 <div style={{ fontSize: "12px", color: "var(--admin-text-muted)", marginTop: "8px" }}>

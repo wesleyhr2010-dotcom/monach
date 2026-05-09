@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getBrindes, getSolicitacoesPendentesCount } from "./actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { Gift, AlertTriangle, Plus } from "lucide-react";
 
@@ -15,33 +15,25 @@ export default async function BrindesPage() {
     ]);
 
     return (
-        <div className="admin-content">
-            <AdminPageHeader
+        <>
+            <AdminTopHeader
+                breadcrumb="Admin / Brindes"
                 title="Brindes y Regalos"
                 action={
                     <Link
                         href="/admin/brindes/nuevo"
-                        style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 6,
-                            padding: "8px 14px",
-                            background: "var(--admin-accent)",
-                            color: "#fff",
-                            borderRadius: 8,
-                            fontSize: 13,
-                            fontWeight: 500,
-                            textDecoration: "none",
-                        }}
+                        className="admin-btn admin-btn-primary"
+                        style={{ borderRadius: "var(--admin-radius-pill)", display: "inline-flex", alignItems: "center", gap: 6 }}
                     >
-                        <Plus size={16} />
+                        <Plus size={14} />
                         Nuevo Brinde
                     </Link>
                 }
             />
 
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
             {pendentesCount > 0 && (
-                <div className="admin-alert-banner" style={{
+                <div style={{
                     display: "flex",
                     alignItems: "center",
                     gap: 12,
@@ -49,7 +41,6 @@ export default async function BrindesPage() {
                     background: "#2a1f0f",
                     border: "1px solid #5c4033",
                     borderRadius: 12,
-                    marginBottom: 24,
                 }}>
                     <AlertTriangle size={20} color="#e6a23c" />
                     <span style={{ color: "#e6a23c", fontSize: 14, fontWeight: 500 }}>
@@ -103,7 +94,8 @@ export default async function BrindesPage() {
                     ))}
                 </div>
             )}
-        </div>
+            </div>
+        </>
     );
 }
 

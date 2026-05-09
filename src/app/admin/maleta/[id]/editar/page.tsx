@@ -10,7 +10,7 @@ import {
   adicionarItensMaleta,
 } from "@/app/admin/actions-maletas";
 import type { MaletaDetail } from "@/app/admin/actions-maletas";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { fmtCurrency } from "@/lib/maleta-helpers";
 import { Plus, Minus, Package, Search } from "lucide-react";
@@ -138,7 +138,7 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
 
   if (loading) {
     return (
-      <div className="admin-content">
+      <div style={{ padding: "28px 32px" }}>
         <div className="admin-loading">
           <div className="admin-spinner" />
         </div>
@@ -148,7 +148,7 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
 
   if (!maleta) {
     return (
-      <div className="admin-content">
+      <div style={{ padding: "28px 32px" }}>
         <AdminEmptyState
           icon={Package}
           title="Consignación no encontrada"
@@ -165,12 +165,13 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
   const isEditable = maleta.status === "ativa" || maleta.status === "atrasada";
 
   return (
-    <div className="admin-content">
-      <AdminPageHeader
-        title={`Editar Consignación #${maleta.numero}`}
-        description={`Revendedora: ${maleta.reseller.name}`}
+    <>
+      <AdminTopHeader
+        breadcrumb={`Maleta #${maleta.numero}`}
         backHref={`/admin/maleta/${maletaId}`}
+        title={`Editar Consignación #${maleta.numero}`}
       />
+      <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
 
       {!isEditable && (
         <div className="admin-alert admin-alert-error">
@@ -524,6 +525,7 @@ export default function EditarMaletaPage({ params }: { params: Promise<{ id: str
           </div>
         </>
       )}
-    </div>
+      </div>
+    </>
   );
 }
