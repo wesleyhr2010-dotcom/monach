@@ -60,7 +60,7 @@ export default async function VentasPage({
   if (!listResult.success || !kpisResult.success) {
     return (
       <div className="admin-page-body">
-        <AdminEmptyState icon={Receipt} title="Error al cargar ventas" description={listResult.error || "Intentá de nuevo."} />
+        <AdminEmptyState icon={Receipt} title="Error al cargar ventas" description={!listResult.success ? listResult.error : "Intentá de nuevo."} />
       </div>
     );
   }

@@ -37,6 +37,11 @@ function StatusBadge({ status, variant }: { status: string; variant: "success" |
   );
 }
 
+function SortIcon({ column, sort, dir }: { column: "created_at" | "total" | "cliente"; sort: string; dir: string }) {
+  if (sort !== column) return <span style={{ color: "var(--admin-text-muted)", fontSize: 10 }}>↕</span>;
+  return <span style={{ color: "var(--admin-accent)", fontSize: 10 }}>{dir === "desc" ? "↓" : "↑"}</span>;
+}
+
 export function VentasTable({ items, sort, dir }: Props) {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -49,24 +54,19 @@ export function VentasTable({ items, sort, dir }: Props) {
     router.push(`/admin/ventas?${params.toString()}`);
   }
 
-  function SortIcon({ column }: { column: "created_at" | "total" | "cliente" }) {
-    if (sort !== column) return <span style={{ color: "var(--admin-text-muted)", fontSize: 10 }}>↕</span>;
-    return <span style={{ color: "var(--admin-accent)", fontSize: 10 }}>{dir === "desc" ? "↓" : "↑"}</span>;
-  }
-
   return (
     <table className="admin-table">
       <thead>
         <tr>
           <th style={{ cursor: "pointer" }} onClick={() => toggleSort("created_at")}>
-            Fecha <SortIcon column="created_at" />
+            Fecha <SortIcon column="created_at" sort={sort} dir={dir} />
           </th>
           <th style={{ cursor: "pointer" }} onClick={() => toggleSort("cliente")}>
-            Cliente <SortIcon column="cliente" />
+            Cliente <SortIcon column="cliente" sort={sort} dir={dir} />
           </th>
           <th style={{ textAlign: "right" }}>Items</th>
           <th style={{ textAlign: "right", cursor: "pointer" }} onClick={() => toggleSort("total")}>
-            Total <SortIcon column="total" />
+            Total <SortIcon column="total" sort={sort} dir={dir} />
           </th>
           <th>Moneda</th>
           <th>Estado</th>
