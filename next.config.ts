@@ -6,12 +6,19 @@ import type { NextConfig } from "next";
 // Atualizar esta lista ao adicionar novos serviços externos.
 // Última revisão: 2026-05-11
 // ---------------------------------------------------------------------------
+const isDev = process.env.NODE_ENV === "development";
 const supabaseHost = "amlwwakxpungeqpiyxwr.supabase.co";
 const cdnHosts = [
   "cdn.monarcasemijoyas.com.py",
   "images.monarcasemijoyas.com.py",
   "pub-933b2a69d9e34d719dd55ee2dcfa0a35.r2.dev",
 ].join(" ");
+
+// Em dev: 'unsafe-eval' necessário para React hot-reload e reconstrução de callstacks.
+// Em produção: removido — React nunca usa eval() fora do modo dev.
+const scriptSrc = isDev
+  ? `script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.onesignal.com https://onesignal.com`
+  : `script-src 'self' 'unsafe-inline' https://cdn.onesignal.com https://onesignal.com`;
 
 const securityHeaders = [
   // Impede clickjacking — página não pode ser embedded em iframe de outros domínios
@@ -41,13 +48,12 @@ const securityHeaders = [
   },
   // Content-Security-Policy principal
   // 'unsafe-inline' em style-src é necessário para Tailwind/Next.js inline styles
-  // 'unsafe-eval' está bloqueado — Sentry SDK funciona sem ele em produção
+  // 'unsafe-eval' em script-src: apenas em dev (React hot-reload). Em prod: bloqueado.
   {
     key: "Content-Security-Policy",
     value: [
       `default-src 'self'`,
-      // Scripts: self + Sentry CDN + OneSignal
-      `script-src 'self' 'unsafe-inline' https://cdn.onesignal.com https://onesignal.com`,
+      scriptSrc,
       // Estilos: self + inline (Next.js/Tailwind) + Google Fonts
       `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
       // Fontes: self + Google Fonts
