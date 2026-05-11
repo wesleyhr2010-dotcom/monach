@@ -90,38 +90,37 @@ export async function OPTIONS() {
 
 ## 3. RLS — Row Level Security
 
-**Status: ⚪ Não aplicado — por design**
+**Status: ✅ Implementado** (desde 2026-05-11, migration `20260511000000_enable_rls_all_tables`)
 
-### Por que não temos RLS
+RLS está **ativado em todas as 34 tabelas** da aplicação. Nenhuma policy permissiva foi criada.
 
-O projeto usa **Prisma com service role** para acessar o banco. O cliente nunca faz queries diretamente ao Supabase DB — toda consulta passa por:
+### Como funciona
 
-1. Server Actions (`src/app/admin/actions-*.ts`, `src/app/app/actions-*.ts`)
-2. API Routes (`src/app/api/**`)
+- **Prisma (service_role)**: Bypassa RLS por padrão no PostgreSQL — **nenhum impacto na aplicação**.
+- **PostgREST via anon_key**: Bloqueado em todas as tabelas (sem policies = deny all).
+- **Isolamento de dados na aplicação**: Mantido por `requireAuth()` + `getResellerScope()` nos Server Actions.
 
-Todas protegidas por:
-- `requireAuth(["ADMIN" | "COLABORADORA" | "REVENDEDORA"])` — verifica role
-- `getResellerScope(user)` — aplica filtro de escopo (REVENDEDORA só vê seus próprios dados)
+### Tabelas com RLS ativado
 
-### Quando RLS seria necessário
+| Grupo | Tabelas |
+|---|---|
+| Usuários / Revendedoras | `resellers`, `reseller_documentos`, `contratos`, `datos_bancarios` |
+| Catálogo | `products`, `product_variants`, `categories`, `product_categories`, `reseller_products` |
+| Maletas / Vendas | `maletas`, `maleta_itens`, `vendas_maleta`, `estoque_movimentos` |
+| PDV Loja | `clientes`, `ventas_loja`, `venta_loja_itens`, `cotizacion_dia` |
+| Gamificação | `gamificacao_regras`, `pontos_extrato`, `nivel_regras`, `commission_tiers`, `resgates`, `brindes`, `solicitacoes_brinde` |
+| Notificações | `notificacao_preferencias`, `notificacoes`, `notificacao_templates`, `notificacao_logs` |
+| Analytics / Leads | `analytics_acessos`, `analytics_diario`, `revendedora_leads` |
+| Comunicação | `email_templates` |
 
-Se o frontend passar a fazer queries diretas via `supabase.from(...)` no cliente (sem passar por Server Actions), seria necessário ativar RLS em todas as tabelas e criar políticas por role.
+### Se no futuro precisar de acesso direto via cliente Supabase
 
-**Hoje, o `NEXT_PUBLIC_SUPABASE_ANON_KEY` é usado apenas para autenticação (Supabase Auth), não para queries de dados.**
-
-### Checklist para ativar RLS (caso necessário no futuro)
+Criar policies explícitas por role antes de qualquer query client-side:
 
 ```sql
--- Para cada tabela sensível:
-ALTER TABLE "NomeDaTabela" ENABLE ROW LEVEL SECURITY;
-
--- Política de leitura para ADMIN:
-CREATE POLICY "admin_select" ON "NomeDaTabela"
-  FOR SELECT USING (auth.jwt() ->> 'role' = 'ADMIN');
-
--- Política de leitura para REVENDEDORA (escopo próprio):
-CREATE POLICY "revendedora_select" ON "NomeDaTabela"
-  FOR SELECT USING (reseller_id = auth.uid());
+-- Exemplo: permitir que REVENDEDORA leia apenas seus próprios dados
+CREATE POLICY "revendedora_select_own" ON public.resellers
+  FOR SELECT USING (auth_user_id = auth.uid());
 ```
 
 ---
@@ -149,5 +148,6 @@ CREATE POLICY "revendedora_select" ON "NomeDaTabela"
 
 | Data | O que mudou | Responsável |
 |---|---|---|
+| 2026-05-11 | RLS ativado em 34 tabelas via migration `20260511000000_enable_rls_all_tables` | Agente |
 | 2026-05-11 | Adição dos security headers HTTP (X-Frame-Options, HSTS, CSP, etc.) | Agente |
 | 2026-05-09 | Polling do AdminAlertBell reduzido de 30s→180s com visibilityState guard | Agente |
