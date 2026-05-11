@@ -144,10 +144,27 @@ CREATE POLICY "revendedora_select_own" ON public.resellers
 
 ---
 
+## 6. Supabase Security Advisor — Status Final
+
+Auditoria executada em 2026-05-11:
+
+| Item | Status | Ação |
+|---|---|---|
+| RLS Disabled (34 tabelas) | ✅ Resolvido | Migration `20260511000000` |
+| RLS Policy Always True (`analytics_acessos`, `categories`) | ✅ Resolvido | Migration `20260511000002` |
+| Function Search Path Mutable (`aggregate_yesterday_analytics`, `update_updated_at_column`) | ✅ Resolvido | Migration `20260511000002` |
+| Extension in Public (`pg_net`) | ⚪ Aceito | Extensão gerenciada pelo Supabase — não pode ser movida sem quebrar infraestrutura interna |
+| Leaked Password Protection Disabled | ⚠️ Ação manual | Ativar em **Auth → Settings → "Enable leaked password protection"** no dashboard do Supabase |
+
+**Resultado: 0 erros críticos. 2 warnings aceitáveis/pendentes de ação manual.**
+
+---
+
 ## Histórico de Revisões
 
 | Data | O que mudou | Responsável |
 |---|---|---|
+| 2026-05-11 | Supabase Security Advisor zerado: funções, RLS policies e tabelas corrigidas | Agente |
 | 2026-05-11 | RLS ativado em 34 tabelas via migration `20260511000000_enable_rls_all_tables` | Agente |
 | 2026-05-11 | Adição dos security headers HTTP (X-Frame-Options, HSTS, CSP, etc.) | Agente |
 | 2026-05-09 | Polling do AdminAlertBell reduzido de 30s→180s com visibilityState guard | Agente |
