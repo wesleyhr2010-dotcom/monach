@@ -51,9 +51,13 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
     }
   }, []);
 
-  // Polling leve a cada 30s
+  // Polling leve a cada 3 minutos apenas se a aba estiver visível
   useEffect(() => {
-    const interval = setInterval(fetchCount, 30000);
+    const interval = setInterval(() => {
+      if (document.visibilityState === "visible") {
+        fetchCount();
+      }
+    }, 180000);
     return () => clearInterval(interval);
   }, [fetchCount]);
 
