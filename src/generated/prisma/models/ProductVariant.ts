@@ -271,6 +271,7 @@ export type ProductVariantWhereInput = {
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   maleta_itens?: Prisma.MaletaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
+  venta_loja_itens?: Prisma.VentaLojaItemListRelationFilter
 }
 
 export type ProductVariantOrderByWithRelationInput = {
@@ -288,6 +289,7 @@ export type ProductVariantOrderByWithRelationInput = {
   product?: Prisma.ProductOrderByWithRelationInput
   maleta_itens?: Prisma.MaletaItemOrderByRelationAggregateInput
   estoque_movimentos?: Prisma.EstoqueMovimentoOrderByRelationAggregateInput
+  venta_loja_itens?: Prisma.VentaLojaItemOrderByRelationAggregateInput
 }
 
 export type ProductVariantWhereUniqueInput = Prisma.AtLeast<{
@@ -309,6 +311,7 @@ export type ProductVariantWhereUniqueInput = Prisma.AtLeast<{
   product?: Prisma.XOR<Prisma.ProductScalarRelationFilter, Prisma.ProductWhereInput>
   maleta_itens?: Prisma.MaletaItemListRelationFilter
   estoque_movimentos?: Prisma.EstoqueMovimentoListRelationFilter
+  venta_loja_itens?: Prisma.VentaLojaItemListRelationFilter
 }, "id" | "product_id_attribute_name_attribute_value">
 
 export type ProductVariantOrderByWithAggregationInput = {
@@ -361,6 +364,7 @@ export type ProductVariantCreateInput = {
   product: Prisma.ProductCreateNestedOneWithoutVariantsInput
   maleta_itens?: Prisma.MaletaItemCreateNestedManyWithoutProduct_variantInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantUncheckedCreateInput = {
@@ -377,6 +381,7 @@ export type ProductVariantUncheckedCreateInput = {
   created_at?: Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutProduct_variantInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantUpdateInput = {
@@ -393,6 +398,7 @@ export type ProductVariantUpdateInput = {
   product?: Prisma.ProductUpdateOneRequiredWithoutVariantsNestedInput
   maleta_itens?: Prisma.MaletaItemUpdateManyWithoutProduct_variantNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantUncheckedUpdateInput = {
@@ -409,6 +415,7 @@ export type ProductVariantUncheckedUpdateInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantCreateManyInput = {
@@ -603,6 +610,20 @@ export type ProductVariantUpdateOneRequiredWithoutEstoque_movimentosNestedInput 
   update?: Prisma.XOR<Prisma.XOR<Prisma.ProductVariantUpdateToOneWithWhereWithoutEstoque_movimentosInput, Prisma.ProductVariantUpdateWithoutEstoque_movimentosInput>, Prisma.ProductVariantUncheckedUpdateWithoutEstoque_movimentosInput>
 }
 
+export type ProductVariantCreateNestedOneWithoutVenta_loja_itensInput = {
+  create?: Prisma.XOR<Prisma.ProductVariantCreateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedCreateWithoutVenta_loja_itensInput>
+  connectOrCreate?: Prisma.ProductVariantCreateOrConnectWithoutVenta_loja_itensInput
+  connect?: Prisma.ProductVariantWhereUniqueInput
+}
+
+export type ProductVariantUpdateOneRequiredWithoutVenta_loja_itensNestedInput = {
+  create?: Prisma.XOR<Prisma.ProductVariantCreateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedCreateWithoutVenta_loja_itensInput>
+  connectOrCreate?: Prisma.ProductVariantCreateOrConnectWithoutVenta_loja_itensInput
+  upsert?: Prisma.ProductVariantUpsertWithoutVenta_loja_itensInput
+  connect?: Prisma.ProductVariantWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.ProductVariantUpdateToOneWithWhereWithoutVenta_loja_itensInput, Prisma.ProductVariantUpdateWithoutVenta_loja_itensInput>, Prisma.ProductVariantUncheckedUpdateWithoutVenta_loja_itensInput>
+}
+
 export type ProductVariantCreateWithoutProductInput = {
   id?: string
   attribute_name: string
@@ -616,6 +637,7 @@ export type ProductVariantCreateWithoutProductInput = {
   created_at?: Date | string
   maleta_itens?: Prisma.MaletaItemCreateNestedManyWithoutProduct_variantInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantUncheckedCreateWithoutProductInput = {
@@ -631,6 +653,7 @@ export type ProductVariantUncheckedCreateWithoutProductInput = {
   created_at?: Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutProduct_variantInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantCreateOrConnectWithoutProductInput = {
@@ -689,6 +712,7 @@ export type ProductVariantCreateWithoutMaleta_itensInput = {
   created_at?: Date | string
   product: Prisma.ProductCreateNestedOneWithoutVariantsInput
   estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantUncheckedCreateWithoutMaleta_itensInput = {
@@ -704,6 +728,7 @@ export type ProductVariantUncheckedCreateWithoutMaleta_itensInput = {
   ativo?: boolean
   created_at?: Date | string
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantCreateOrConnectWithoutMaleta_itensInput = {
@@ -735,6 +760,7 @@ export type ProductVariantUpdateWithoutMaleta_itensInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   product?: Prisma.ProductUpdateOneRequiredWithoutVariantsNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantUncheckedUpdateWithoutMaleta_itensInput = {
@@ -750,6 +776,7 @@ export type ProductVariantUncheckedUpdateWithoutMaleta_itensInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantCreateWithoutEstoque_movimentosInput = {
@@ -765,6 +792,7 @@ export type ProductVariantCreateWithoutEstoque_movimentosInput = {
   created_at?: Date | string
   product: Prisma.ProductCreateNestedOneWithoutVariantsInput
   maleta_itens?: Prisma.MaletaItemCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantUncheckedCreateWithoutEstoque_movimentosInput = {
@@ -780,6 +808,7 @@ export type ProductVariantUncheckedCreateWithoutEstoque_movimentosInput = {
   ativo?: boolean
   created_at?: Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutProduct_variantInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedCreateNestedManyWithoutProduct_variantInput
 }
 
 export type ProductVariantCreateOrConnectWithoutEstoque_movimentosInput = {
@@ -811,6 +840,7 @@ export type ProductVariantUpdateWithoutEstoque_movimentosInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   product?: Prisma.ProductUpdateOneRequiredWithoutVariantsNestedInput
   maleta_itens?: Prisma.MaletaItemUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantUncheckedUpdateWithoutEstoque_movimentosInput = {
@@ -826,6 +856,87 @@ export type ProductVariantUncheckedUpdateWithoutEstoque_movimentosInput = {
   ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
+}
+
+export type ProductVariantCreateWithoutVenta_loja_itensInput = {
+  id?: string
+  attribute_name: string
+  attribute_value: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sku?: string | null
+  in_stock?: boolean
+  stock_quantity?: number
+  image_url?: string
+  ativo?: boolean
+  created_at?: Date | string
+  product: Prisma.ProductCreateNestedOneWithoutVariantsInput
+  maleta_itens?: Prisma.MaletaItemCreateNestedManyWithoutProduct_variantInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoCreateNestedManyWithoutProduct_variantInput
+}
+
+export type ProductVariantUncheckedCreateWithoutVenta_loja_itensInput = {
+  id?: string
+  product_id: string
+  attribute_name: string
+  attribute_value: string
+  price?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sku?: string | null
+  in_stock?: boolean
+  stock_quantity?: number
+  image_url?: string
+  ativo?: boolean
+  created_at?: Date | string
+  maleta_itens?: Prisma.MaletaItemUncheckedCreateNestedManyWithoutProduct_variantInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedCreateNestedManyWithoutProduct_variantInput
+}
+
+export type ProductVariantCreateOrConnectWithoutVenta_loja_itensInput = {
+  where: Prisma.ProductVariantWhereUniqueInput
+  create: Prisma.XOR<Prisma.ProductVariantCreateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedCreateWithoutVenta_loja_itensInput>
+}
+
+export type ProductVariantUpsertWithoutVenta_loja_itensInput = {
+  update: Prisma.XOR<Prisma.ProductVariantUpdateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedUpdateWithoutVenta_loja_itensInput>
+  create: Prisma.XOR<Prisma.ProductVariantCreateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedCreateWithoutVenta_loja_itensInput>
+  where?: Prisma.ProductVariantWhereInput
+}
+
+export type ProductVariantUpdateToOneWithWhereWithoutVenta_loja_itensInput = {
+  where?: Prisma.ProductVariantWhereInput
+  data: Prisma.XOR<Prisma.ProductVariantUpdateWithoutVenta_loja_itensInput, Prisma.ProductVariantUncheckedUpdateWithoutVenta_loja_itensInput>
+}
+
+export type ProductVariantUpdateWithoutVenta_loja_itensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  attribute_name?: Prisma.StringFieldUpdateOperationsInput | string
+  attribute_value?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  in_stock?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stock_quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  image_url?: Prisma.StringFieldUpdateOperationsInput | string
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  product?: Prisma.ProductUpdateOneRequiredWithoutVariantsNestedInput
+  maleta_itens?: Prisma.MaletaItemUpdateManyWithoutProduct_variantNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutProduct_variantNestedInput
+}
+
+export type ProductVariantUncheckedUpdateWithoutVenta_loja_itensInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  product_id?: Prisma.StringFieldUpdateOperationsInput | string
+  attribute_name?: Prisma.StringFieldUpdateOperationsInput | string
+  attribute_value?: Prisma.StringFieldUpdateOperationsInput | string
+  price?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  sku?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  in_stock?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  stock_quantity?: Prisma.IntFieldUpdateOperationsInput | number
+  image_url?: Prisma.StringFieldUpdateOperationsInput | string
+  ativo?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  maleta_itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
+  estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantCreateManyProductInput = {
@@ -854,6 +965,7 @@ export type ProductVariantUpdateWithoutProductInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maleta_itens?: Prisma.MaletaItemUpdateManyWithoutProduct_variantNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantUncheckedUpdateWithoutProductInput = {
@@ -869,6 +981,7 @@ export type ProductVariantUncheckedUpdateWithoutProductInput = {
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   maleta_itens?: Prisma.MaletaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
   estoque_movimentos?: Prisma.EstoqueMovimentoUncheckedUpdateManyWithoutProduct_variantNestedInput
+  venta_loja_itens?: Prisma.VentaLojaItemUncheckedUpdateManyWithoutProduct_variantNestedInput
 }
 
 export type ProductVariantUncheckedUpdateManyWithoutProductInput = {
@@ -892,11 +1005,13 @@ export type ProductVariantUncheckedUpdateManyWithoutProductInput = {
 export type ProductVariantCountOutputType = {
   maleta_itens: number
   estoque_movimentos: number
+  venta_loja_itens: number
 }
 
 export type ProductVariantCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   maleta_itens?: boolean | ProductVariantCountOutputTypeCountMaleta_itensArgs
   estoque_movimentos?: boolean | ProductVariantCountOutputTypeCountEstoque_movimentosArgs
+  venta_loja_itens?: boolean | ProductVariantCountOutputTypeCountVenta_loja_itensArgs
 }
 
 /**
@@ -923,6 +1038,13 @@ export type ProductVariantCountOutputTypeCountEstoque_movimentosArgs<ExtArgs ext
   where?: Prisma.EstoqueMovimentoWhereInput
 }
 
+/**
+ * ProductVariantCountOutputType without action
+ */
+export type ProductVariantCountOutputTypeCountVenta_loja_itensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VentaLojaItemWhereInput
+}
+
 
 export type ProductVariantSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -939,6 +1061,7 @@ export type ProductVariantSelect<ExtArgs extends runtime.Types.Extensions.Intern
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   maleta_itens?: boolean | Prisma.ProductVariant$maleta_itensArgs<ExtArgs>
   estoque_movimentos?: boolean | Prisma.ProductVariant$estoque_movimentosArgs<ExtArgs>
+  venta_loja_itens?: boolean | Prisma.ProductVariant$venta_loja_itensArgs<ExtArgs>
   _count?: boolean | Prisma.ProductVariantCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["productVariant"]>
 
@@ -991,6 +1114,7 @@ export type ProductVariantInclude<ExtArgs extends runtime.Types.Extensions.Inter
   product?: boolean | Prisma.ProductDefaultArgs<ExtArgs>
   maleta_itens?: boolean | Prisma.ProductVariant$maleta_itensArgs<ExtArgs>
   estoque_movimentos?: boolean | Prisma.ProductVariant$estoque_movimentosArgs<ExtArgs>
+  venta_loja_itens?: boolean | Prisma.ProductVariant$venta_loja_itensArgs<ExtArgs>
   _count?: boolean | Prisma.ProductVariantCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type ProductVariantIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -1006,6 +1130,7 @@ export type $ProductVariantPayload<ExtArgs extends runtime.Types.Extensions.Inte
     product: Prisma.$ProductPayload<ExtArgs>
     maleta_itens: Prisma.$MaletaItemPayload<ExtArgs>[]
     estoque_movimentos: Prisma.$EstoqueMovimentoPayload<ExtArgs>[]
+    venta_loja_itens: Prisma.$VentaLojaItemPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1416,6 +1541,7 @@ export interface Prisma__ProductVariantClient<T, Null = never, ExtArgs extends r
   product<T extends Prisma.ProductDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductDefaultArgs<ExtArgs>>): Prisma.Prisma__ProductClient<runtime.Types.Result.GetResult<Prisma.$ProductPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   maleta_itens<T extends Prisma.ProductVariant$maleta_itensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductVariant$maleta_itensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$MaletaItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   estoque_movimentos<T extends Prisma.ProductVariant$estoque_movimentosArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductVariant$estoque_movimentosArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$EstoqueMovimentoPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  venta_loja_itens<T extends Prisma.ProductVariant$venta_loja_itensArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.ProductVariant$venta_loja_itensArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VentaLojaItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1897,6 +2023,30 @@ export type ProductVariant$estoque_movimentosArgs<ExtArgs extends runtime.Types.
   take?: number
   skip?: number
   distinct?: Prisma.EstoqueMovimentoScalarFieldEnum | Prisma.EstoqueMovimentoScalarFieldEnum[]
+}
+
+/**
+ * ProductVariant.venta_loja_itens
+ */
+export type ProductVariant$venta_loja_itensArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VentaLojaItem
+   */
+  select?: Prisma.VentaLojaItemSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VentaLojaItem
+   */
+  omit?: Prisma.VentaLojaItemOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VentaLojaItemInclude<ExtArgs> | null
+  where?: Prisma.VentaLojaItemWhereInput
+  orderBy?: Prisma.VentaLojaItemOrderByWithRelationInput | Prisma.VentaLojaItemOrderByWithRelationInput[]
+  cursor?: Prisma.VentaLojaItemWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VentaLojaItemScalarFieldEnum | Prisma.VentaLojaItemScalarFieldEnum[]
 }
 
 /**

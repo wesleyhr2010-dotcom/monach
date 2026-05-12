@@ -7,6 +7,7 @@ import { logout } from "@/lib/actions/auth";
 import { BottomNav } from "@/components/admin/BottomNav";
 import { BrindesBadge } from "@/components/admin/BrindesBadge";
 import { AdminAlertBell } from "@/components/admin/AdminAlertBell";
+import { LogoImg } from "@/components/LogoImg";
 import type { Role } from "@/lib/user";
 import {
     AlignJustify,
@@ -22,6 +23,8 @@ import {
     LineChart,
     LogOut,
     Mail,
+    Package,
+    Receipt,
     Star,
     User,
     Users,
@@ -66,6 +69,18 @@ const allNavEntries: (NavItem | NavSection)[] = [
         roles: ["ADMIN", "COLABORADORA"],
     },
     {
+        href: "/admin/ventas",
+        label: "Ventas",
+        icon: <Receipt size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN", "COLABORADORA"],
+    },
+    {
+        href: "/admin/pdv",
+        label: "PDV",
+        icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN", "COLABORADORA"],
+    },
+    {
         href: "/admin/revendedoras",
         label: "Revendedoras",
         icon: <Users size={16} strokeWidth={1.5} />,
@@ -97,6 +112,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
         icon: <AlignJustify size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
+    {
+        href: "/admin/estoque/sincronizar",
+        label: "Stock",
+        icon: <Package size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN"],
+    },
     { type: "section", label: "Configurações", roles: ["ADMIN"] },
     {
         href: "/admin/gamificacao",
@@ -108,6 +129,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
         href: "/admin/config/comissoes",
         label: "Comissões",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
+        roles: ["ADMIN"],
+    },
+    {
+        href: "/admin/config/cotizacion",
+        label: "Cotización",
+        icon: <FileText size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
@@ -179,7 +206,8 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
         <div className="admin-layout">
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
-                    🦋 Monarca <span>Admin</span>
+                    <LogoImg variant="white" height={32} />
+                    <span>Admin</span>
                 </div>
 
                 <nav className="admin-sidebar-nav">

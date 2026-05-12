@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+import { LogoImg } from "@/components/LogoImg";
 
 export default function Footer() {
     return (
@@ -30,37 +32,41 @@ export default function Footer() {
                         </h4>
                         <div className="flex gap-5">
                             <a
-                                href="https://instagram.com"
+                                href="https://www.instagram.com/monarcasemijoyas/"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-gold transition-colors"
+                                className="hover:opacity-80 transition-opacity"
                                 aria-label="Instagram"
                             >
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
-                                    <circle cx="12" cy="12" r="5" />
-                                    <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
-                                </svg>
+                                <Image 
+                                    src="/images/logo-insta.svg" 
+                                    alt="Instagram" 
+                                    width={32} 
+                                    height={32} 
+                                    className="brightness-0 invert"
+                                />
                             </a>
                             <a
-                                href="https://facebook.com"
+                                href="https://wa.me/595986336858"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="hover:text-gold transition-colors"
-                                aria-label="Facebook"
+                                className="hover:opacity-80 transition-opacity"
+                                aria-label="WhatsApp"
                             >
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                                    <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z" />
-                                </svg>
+                                <Image 
+                                    src="/images/logo-whats.svg" 
+                                    alt="WhatsApp" 
+                                    width={32} 
+                                    height={32} 
+                                    className="brightness-0 invert"
+                                />
                             </a>
                         </div>
                     </div>
 
                     {/* Logo & Copyright */}
                     <div>
-                        <span className="font-inter text-2xl tracking-[8px] uppercase font-light block mb-2">
-                            MONARCA
-                        </span>
+                        <LogoImg variant="white" height={46} className="mb-4" />
                         <p className="text-base leading-7 text-white/80 max-w-xs">
                             © 2024 Monarca Semijoyas Santa Rita, Alto Paraná, Paraguay.
                         </p>

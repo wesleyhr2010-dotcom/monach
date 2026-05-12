@@ -3,46 +3,46 @@
 import { useState, useEffect } from "react";
 
 export const dynamic = "force-dynamic";
+
 import {
-    getNiveis,
     getRegras,
     getResgates,
-    upsertNivelRegra,
-    deleteNivelRegra,
     atualizarRegra,
     atualizarStatusResgate,
 } from "../actions-gamificacao";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Star, Award, Gift, Plus, Trash2, ToggleLeft, ToggleRight, Check, X } from "lucide-react";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
+import { AdminSectionCard } from "@/components/admin/AdminSectionCard";
+import { Award, Gift, ToggleLeft, ToggleRight, Check, X } from "lucide-react";
 
-type Nivel = Awaited<ReturnType<typeof getNiveis>>[number];
 type Regra = Awaited<ReturnType<typeof getRegras>>[number];
 type Resgate = Awaited<ReturnType<typeof getResgates>>[number];
 
 export default function GamificacaoAdminPage() {
-    const [niveis, setNiveis] = useState<Nivel[]>([]);
     const [regras, setRegras] = useState<Regra[]>([]);
     const [resgates, setResgates] = useState<Resgate[]>([]);
     const [loading, setLoading] = useState(true);
-    const [showNovoNivel, setShowNovoNivel] = useState(false);
 
     async function reload() {
-        const [n, r, res] = await Promise.all([getNiveis(), getRegras(), getResgates()]);
-        setNiveis(n);
+        const [r, res] = await Promise.all([getRegras(), getResgates()]);
         setRegras(r);
         setResgates(res);
         setLoading(false);
     }
 
-    useEffect(() => { reload(); }, []);
+    useEffect(() => { reload(); }, []); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const pendentes = resgates.filter(r => r.status === "pendente").length;
 
     if (loading) {
         return (
             <>
-                <header className="admin-header"><h1>Gamificación</h1></header>
-                <div className="admin-content">
-                    <p style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)" }}>Cargando...</p>
+                <AdminTopHeader breadcrumb="Admin / Gamificación" title="Gamificación" />
+                <div style={{
+                    textAlign: "center", padding: "60px 32px",
+                    color: "var(--admin-text-muted)",
+                    fontFamily: "Raleway, sans-serif", fontSize: 13,
+                }}>
+                    Cargando...
                 </div>
             </>
         );
@@ -50,234 +50,194 @@ export default function GamificacaoAdminPage() {
 
     return (
         <>
-            <header className="admin-header"><h1>🎮 Gamificación</h1></header>
-            <div className="admin-content" style={{ display: "flex", flexDirection: "column", gap: "24px" }}>
+            <AdminTopHeader
+                breadcrumb="Admin / Gamificación"
+                title="Gamificación"
+                action={pendentes > 0 ? (
+                    <span style={{
+                        display: "inline-flex", alignItems: "center", gap: 6,
+                        padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
+                        background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
+                    }}>
+                        <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-warning)" }} />
+                        {pendentes} canje{pendentes !== 1 ? "s" : ""} pendiente{pendentes !== 1 ? "s" : ""}
+                    </span>
+                ) : undefined}
+            />
 
-                {/* Niveles */}
-                <Card>
-                    <CardHeader style={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center" }}>
-                        <CardTitle style={{ fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
-                            <Star className="w-4 h-4" style={{ color: "#d4af37" }} />
-                            Niveles
-                        </CardTitle>
-                        <button
-                            onClick={() => setShowNovoNivel(!showNovoNivel)}
-                            style={{ fontSize: "12px", background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "6px", padding: "6px 12px", cursor: "pointer", display: "flex", alignItems: "center", gap: "4px" }}
-                        >
-                            <Plus className="w-3 h-3" /> Nuevo Nivel
-                        </button>
-                    </CardHeader>
-                    <CardContent>
-                        {showNovoNivel && <NovoNivelForm onCreated={() => { setShowNovoNivel(false); reload(); }} />}
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Nombre</TableHead>
-                                    <TableHead className="text-right">Puntos Mínimos</TableHead>
-                                    <TableHead>Color</TableHead>
-                                    <TableHead className="text-right">Orden</TableHead>
-                                    <TableHead className="w-10"></TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {niveis.map((n) => (
-                                    <TableRow key={n.id}>
-                                        <TableCell className="font-medium">{n.nome}</TableCell>
-                                        <TableCell className="text-right tabular-nums">{n.pontos_minimos}</TableCell>
-                                        <TableCell>
-                                            <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
-                                                <span style={{ width: "12px", height: "12px", borderRadius: "3px", background: n.cor, border: "1px solid var(--admin-border)" }} />
-                                                <code style={{ fontSize: "11px" }}>{n.cor}</code>
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
+
+                {/* Reglas de Puntos */}
+                <AdminSectionCard
+                    title="Reglas de Puntos"
+                    icon={<Award size={15} color="var(--admin-accent)" strokeWidth={1.5} />}
+                    noPadContent
+                >
+                    <table className="admin-table">
+                        <thead>
+                            <tr>
+                                <th>Regla</th>
+                                <th>Acción</th>
+                                <th>Tipo</th>
+                                <th style={{ textAlign: "right" }}>Puntos</th>
+                                <th style={{ textAlign: "center", width: 80 }}>Activo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {regras.length === 0 ? (
+                                <tr>
+                                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                                        Sin reglas configuradas.
+                                    </td>
+                                </tr>
+                            ) : regras.map((r) => (
+                                <tr key={r.id}>
+                                    <td>
+                                        <div style={{ fontWeight: 600, fontSize: 14, color: "var(--admin-text)" }}>
+                                            {r.nome}
+                                        </div>
+                                        {r.descricao && (
+                                            <div style={{ fontSize: 11, color: "var(--admin-text-muted)", marginTop: 2 }}>
+                                                {r.descricao}
+                                            </div>
+                                        )}
+                                    </td>
+                                    <td>
+                                        <code style={{ fontSize: 11 }}>{r.acao}</code>
+                                    </td>
+                                    <td>
+                                        <code style={{ fontSize: 11 }}>{r.tipo}</code>
+                                    </td>
+                                    <td style={{ textAlign: "right", fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>
+                                        {r.pontos}
+                                    </td>
+                                    <td style={{ textAlign: "center" }}>
+                                        <button
+                                            onClick={async () => {
+                                                try {
+                                                    await atualizarRegra(r.id, {
+                                                        nome: r.nome,
+                                                        descricao: r.descricao,
+                                                        pontos: r.pontos,
+                                                        ativo: !r.ativo,
+                                                        icone: r.icone,
+                                                        ordem: r.ordem,
+                                                        limite_diario: r.limite_diario,
+                                                        meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+                                                    });
+                                                    reload();
+                                                } catch (err) {
+                                                    alert(err instanceof Error ? err.message : "Error al actualizar");
+                                                }
+                                            }}
+                                            style={{
+                                                background: "none", border: "none",
+                                                cursor: "pointer", display: "inline-flex",
+                                                color: r.ativo ? "var(--admin-success)" : "var(--admin-text-dim)",
+                                            }}
+                                            title={r.ativo ? "Desactivar" : "Activar"}
+                                        >
+                                            {r.ativo
+                                                ? <ToggleRight size={22} />
+                                                : <ToggleLeft size={22} />
+                                            }
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </AdminSectionCard>
+
+                {/* Canjes Pendientes */}
+                <AdminSectionCard
+                    title="Canjes Pendientes"
+                    icon={<Gift size={15} color="var(--admin-warning)" strokeWidth={1.5} />}
+                    noPadContent
+                >
+                    {resgates.length === 0 ? (
+                        <div style={{
+                            textAlign: "center", padding: "40px 20px",
+                            color: "var(--admin-text-muted)",
+                            fontFamily: "Raleway, sans-serif", fontSize: 13,
+                        }}>
+                            Ningún canje solicitado.
+                        </div>
+                    ) : (
+                        <table className="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Revendedora</th>
+                                    <th>Premio</th>
+                                    <th style={{ textAlign: "right" }}>Puntos</th>
+                                    <th>Estado</th>
+                                    <th style={{ width: 100 }}>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {resgates.map((r) => (
+                                    <tr key={r.id}>
+                                        <td style={{ fontWeight: 600 }}>{r.reseller_name}</td>
+                                        <td>{r.premio}</td>
+                                        <td style={{ textAlign: "right", fontFamily: "'Playfair Display', serif", fontWeight: 600 }}>
+                                            {r.pontos}
+                                        </td>
+                                        <td>
+                                            <span style={{
+                                                fontSize: 11, fontWeight: 700,
+                                                padding: "2px 8px", borderRadius: 4,
+                                                background: r.status === "pendente"
+                                                    ? "var(--admin-warning-10)"
+                                                    : r.status === "aprovado"
+                                                    ? "var(--admin-success-10)"
+                                                    : "var(--admin-muted-10)",
+                                                color: r.status === "pendente"
+                                                    ? "var(--admin-warning)"
+                                                    : r.status === "aprovado"
+                                                    ? "var(--admin-success)"
+                                                    : "var(--admin-text-muted)",
+                                            }}>
+                                                {r.status}
                                             </span>
-                                        </TableCell>
-                                        <TableCell className="text-right tabular-nums">{n.ordem}</TableCell>
-                                        <TableCell>
-                                            {n.pontos_minimos > 0 && (
+                                        </td>
+                                        <td>
+                                            {r.status === "pendente" && (
+                                                <div style={{ display: "flex", gap: 4 }}>
+                                                    <button
+                                                        className="admin-btn admin-btn-icon"
+                                                        style={{ background: "var(--admin-success-10)", color: "var(--admin-success)" }}
+                                                        title="Aprobar"
+                                                        onClick={async () => { await atualizarStatusResgate(r.id, "aprovado"); reload(); }}
+                                                    >
+                                                        <Check size={13} />
+                                                    </button>
+                                                    <button
+                                                        className="admin-btn admin-btn-icon"
+                                                        style={{ background: "var(--admin-danger-10)", color: "var(--admin-danger)" }}
+                                                        title="Rechazar"
+                                                        onClick={async () => { await atualizarStatusResgate(r.id, "recusado"); reload(); }}
+                                                    >
+                                                        <X size={13} />
+                                                    </button>
+                                                </div>
+                                            )}
+                                            {r.status === "aprovado" && (
                                                 <button
-                                                    onClick={async () => {
-                                                        if (confirm(`¿Eliminar nivel "${n.nome}"?`)) {
-                                                            try {
-                                                                await deleteNivelRegra(n.id);
-                                                                reload();
-                                                            } catch (err) {
-                                                                alert(err instanceof Error ? err.message : "Error al eliminar");
-                                                            }
-                                                        }
-                                                    }}
-                                                    style={{ background: "none", border: "none", cursor: "pointer", color: "var(--admin-danger)" }}
+                                                    className="admin-btn admin-btn-primary admin-btn-sm"
+                                                    onClick={async () => { await atualizarStatusResgate(r.id, "entregue"); reload(); }}
                                                 >
-                                                    <Trash2 className="w-4 h-4" />
+                                                    Entregar
                                                 </button>
                                             )}
-                                        </TableCell>
-                                    </TableRow>
+                                        </td>
+                                    </tr>
                                 ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                            </tbody>
+                        </table>
+                    )}
+                </AdminSectionCard>
 
-                {/* Regras */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle style={{ fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
-                            <Award className="w-4 h-4" />
-                            Reglas de Puntos
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead>Regla</TableHead>
-                                    <TableHead>Acción</TableHead>
-                                    <TableHead>Tipo</TableHead>
-                                    <TableHead className="text-right">Puntos</TableHead>
-                                    <TableHead className="text-center">Activo</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {regras.map((r) => (
-                                    <TableRow key={r.id}>
-                                        <TableCell>
-                                            <p className="font-medium">{r.nome}</p>
-                                            <p style={{ fontSize: "11px", color: "var(--admin-text-muted)" }}>{r.descricao}</p>
-                                        </TableCell>
-                                        <TableCell><code style={{ fontSize: "11px" }}>{r.acao}</code></TableCell>
-                                        <TableCell><code style={{ fontSize: "11px" }}>{r.tipo}</code></TableCell>
-                                        <TableCell className="text-right tabular-nums font-bold">{r.pontos}</TableCell>
-                                        <TableCell className="text-center">
-                                            <button
-                                                onClick={async () => {
-                                                    try {
-                                                        await atualizarRegra(r.id, {
-                                                            nome: r.nome,
-                                                            descricao: r.descricao,
-                                                            pontos: r.pontos,
-                                                            ativo: !r.ativo,
-                                                            icone: r.icone,
-                                                            ordem: r.ordem,
-                                                            limite_diario: r.limite_diario,
-                                                            meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
-                                                        });
-                                                        reload();
-                                                    } catch (err) {
-                                                        alert(err instanceof Error ? err.message : "Error al actualizar");
-                                                    }
-                                                }}
-                                                style={{ background: "none", border: "none", cursor: "pointer", color: r.ativo ? "var(--admin-emerald)" : "#6b7280" }}
-                                            >
-                                                {r.ativo ? <ToggleRight className="w-5 h-5" /> : <ToggleLeft className="w-5 h-5" />}
-                                            </button>
-                                        </TableCell>
-                                    </TableRow>
-                                ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
-
-                {/* Resgates */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle style={{ fontSize: "14px", display: "flex", alignItems: "center", gap: "8px" }}>
-                            <Gift className="w-4 h-4" />
-                            Canjes Pendientes
-                        </CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        {resgates.length === 0 ? (
-                            <p style={{ fontSize: "13px", color: "var(--admin-text-muted)", textAlign: "center", padding: "16px 0" }}>
-                                Ningún canje solicitado.
-                            </p>
-                        ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Revendedora</TableHead>
-                                        <TableHead>Premio</TableHead>
-                                        <TableHead className="text-right">Puntos</TableHead>
-                                        <TableHead>Estado</TableHead>
-                                        <TableHead className="w-20">Acciones</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {resgates.map((r) => (
-                                        <TableRow key={r.id}>
-                                            <TableCell className="font-medium">{r.reseller_name}</TableCell>
-                                            <TableCell>{r.premio}</TableCell>
-                                            <TableCell className="text-right tabular-nums">{r.pontos}</TableCell>
-                                            <TableCell>
-                                                <span style={{
-                                                    fontSize: "11px", fontWeight: 600, padding: "2px 8px", borderRadius: "4px",
-                                                    background: r.status === "pendente" ? "var(--admin-orange)20" : r.status === "aprovado" ? "var(--admin-emerald)20" : "#6b728020",
-                                                    color: r.status === "pendente" ? "var(--admin-orange)" : r.status === "aprovado" ? "var(--admin-emerald)" : "#6b7280",
-                                                }}>
-                                                    {r.status}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell>
-                                                {r.status === "pendente" && (
-                                                    <div style={{ display: "flex", gap: "4px" }}>
-                                                        <button
-                                                            onClick={async () => { await atualizarStatusResgate(r.id, "aprovado"); reload(); }}
-                                                            style={{ background: "var(--admin-emerald)", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
-                                                        ><Check className="w-3 h-3" /></button>
-                                                        <button
-                                                            onClick={async () => { await atualizarStatusResgate(r.id, "recusado"); reload(); }}
-                                                            style={{ background: "var(--admin-danger)", color: "white", border: "none", borderRadius: "4px", padding: "4px", cursor: "pointer" }}
-                                                        ><X className="w-3 h-3" /></button>
-                                                    </div>
-                                                )}
-                                                {r.status === "aprovado" && (
-                                                    <button
-                                                        onClick={async () => { await atualizarStatusResgate(r.id, "entregue"); reload(); }}
-                                                        style={{ fontSize: "11px", background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "4px", padding: "4px 8px", cursor: "pointer" }}
-                                                    >Entregar</button>
-                                                )}
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                            </Table>
-                        )}
-                    </CardContent>
-                </Card>
             </div>
         </>
-    );
-}
-
-function NovoNivelForm({ onCreated }: { onCreated: () => void }) {
-    const [nome, setNome] = useState("");
-    const [pontosMinimos, setPontosMinimos] = useState(0);
-    const [cor, setCor] = useState("var(--admin-accent)");
-    const [ordem, setOrdem] = useState(0);
-    const [saving, setSaving] = useState(false);
-
-    return (
-        <div style={{ display: "flex", gap: "8px", marginBottom: "16px", flexWrap: "wrap", padding: "12px", background: "var(--admin-bg-secondary)", borderRadius: "8px" }}>
-            <input placeholder="Nombre" value={nome} onChange={(e) => setNome(e.target.value)} className="admin-input" style={{ flex: 1, minWidth: "120px" }} />
-            <input placeholder="Puntos mínimos" type="number" value={pontosMinimos} onChange={(e) => setPontosMinimos(Number(e.target.value))} className="admin-input" style={{ width: "120px" }} />
-            <input placeholder="#hex" value={cor} onChange={(e) => setCor(e.target.value)} className="admin-input" style={{ width: "100px" }} />
-            <input placeholder="Orden" type="number" value={ordem} onChange={(e) => setOrdem(Number(e.target.value))} className="admin-input" style={{ width: "80px" }} />
-            <button
-                disabled={saving || !nome}
-                onClick={async () => {
-                    setSaving(true);
-                    try {
-                        await upsertNivelRegra({ nome, pontos_minimos: pontosMinimos, cor, ordem });
-                        onCreated();
-                    } catch (err) {
-                        alert(err instanceof Error ? err.message : "Error al crear");
-                    } finally {
-                        setSaving(false);
-                    }
-                }}
-                style={{ background: "var(--admin-accent)", color: "white", border: "none", borderRadius: "6px", padding: "8px 16px", cursor: "pointer", fontSize: "12px" }}
-            >
-                {saving ? "..." : "Crear"}
-            </button>
-        </div>
     );
 }

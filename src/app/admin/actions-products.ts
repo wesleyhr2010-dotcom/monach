@@ -25,7 +25,10 @@ export async function getProducts(
 
     const where: Prisma.ProductWhereInput = {};
     if (search) {
-        where.name = { contains: search, mode: "insensitive" };
+        where.OR = [
+            { name: { contains: search, mode: "insensitive" } },
+            { sku: { contains: search, mode: "insensitive" } },
+        ];
     }
     if (category) {
         where.categories = {

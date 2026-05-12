@@ -19,7 +19,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { Bell, Pencil, Power, Send, AlertCircle, CheckCircle2 } from "lucide-react";
 import type { NotificacaoTemplate } from "@/generated/prisma/client";
 import type { NotificacaoLogItem } from "./actions";
@@ -154,14 +154,10 @@ export default function NotifPushClient({ templates: initialTemplates, logs, isC
 
   return (
     <>
-      <AdminPageHeader
-        title="Notificaciones Push"
-        description="Configuración de OneSignal y templates de notificaciones automáticas"
-      />
-
-      <div className="admin-content">
+      <AdminTopHeader breadcrumb="Admin / Config" title="Notificaciones Push" />
+      <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
         {/* Seção A: Status da Integração */}
-        <div className="admin-card" style={{ marginBottom: "24px" }}>
+        <div className="admin-card">
           <div
             style={{
               display: "flex",

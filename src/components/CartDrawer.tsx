@@ -22,14 +22,19 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
-    const [cartVersion, setCartVersion] = useState(0);
-    // Trigger recalculation when the external cart store changes.
-    void cartVersion;
-    const items: CartItem[] = getCart();
-    const total = getCartTotal();
+    const [mounted, setMounted] = useState(false);
+    const [items, setItems] = useState<CartItem[]>([]);
+    const [total, setTotal] = useState(0);
 
     useEffect(() => {
-        const handleCartUpdated = () => setCartVersion((prev) => prev + 1);
+        setMounted(true);
+        setItems(getCart());
+        setTotal(getCartTotal());
+
+        const handleCartUpdated = () => {
+            setItems(getCart());
+            setTotal(getCartTotal());
+        };
 
         window.addEventListener(CART_UPDATED_EVENT, handleCartUpdated);
         return () => window.removeEventListener(CART_UPDATED_EVENT, handleCartUpdated);
@@ -60,8 +65,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             >
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
-                    <h2 className="text-[16px] font-inter uppercase tracking-wide text-darkslategray-200">
-                        Mi Joyero ({items.length})
+                    <h2 className="text-[16px] font-inter uppercase tracking-wide text-darkslategray-200" suppressHydrationWarning>
+                        Mi Joyero ({mounted ? items.length : 0})
                     </h2>
                     <button
                         onClick={onClose}

@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUser } from "@/lib/user";
 import { getMinhaConta } from "./actions";
 import { formatGs, formatPct } from "@/lib/format";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminStatCard } from "@/components/admin/AdminStatCard";
 import { AdminAvatar } from "@/components/admin/AdminAvatar";
 import {
@@ -30,14 +30,12 @@ export default async function MinhaContaPage() {
     const { perfil, resumo } = result.data;
 
     return (
-        <div className="admin-page">
-            <AdminPageHeader
-                title="Minha Conta"
-                description="Resumo do seu grupo e comissões"
-            />
+        <>
+            <AdminTopHeader breadcrumb="Admin" title="Minha Conta" />
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* Perfil */}
-            <div className="admin-card" style={{ marginTop: 24 }}>
+            <div className="admin-card">
                 <div className="flex items-center gap-4">
                     <AdminAvatar src={perfil.avatar_url} name={perfil.name} size="lg" />
                     <div className="flex-1">
@@ -69,7 +67,7 @@ export default async function MinhaContaPage() {
             </div>
 
             {/* Resumo do mês */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ marginTop: 24 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AdminStatCard
                     label="Minha Comissão (mês)"
                     value={formatGs(resumo.comissaoMes)}
@@ -90,7 +88,7 @@ export default async function MinhaContaPage() {
                 />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4" style={{ marginTop: 12 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AdminStatCard
                     label="Revendedoras Ativas"
                     value={`${resumo.revendedorasAtivas} / ${resumo.revendedorasTotal}`}
@@ -111,7 +109,7 @@ export default async function MinhaContaPage() {
             </div>
 
             {/* Links rápidos */}
-            <div className="admin-card" style={{ marginTop: 24 }}>
+            <div className="admin-card">
                 <h3
                     className="text-sm font-semibold mb-3"
                     style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, system-ui, sans-serif" }}
@@ -145,6 +143,7 @@ export default async function MinhaContaPage() {
                     </Link>
                 </div>
             </div>
-        </div>
+            </div>
+        </>
     );
 }

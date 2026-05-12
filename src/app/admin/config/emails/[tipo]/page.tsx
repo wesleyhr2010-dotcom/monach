@@ -2,7 +2,7 @@ import { redirect, notFound } from "next/navigation";
 import { getCurrentUser } from "@/lib/user";
 import { getEmailTemplateByTipo } from "../actions";
 import { TIPO_EMAIL_OPTIONS } from "@/lib/emails-shared";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import TemplateEditor from "../TemplateEditor";
 
 export const dynamic = "force-dynamic";
@@ -29,17 +29,17 @@ export default async function EmailTemplateEditPage({
   const template = await getEmailTemplateByTipo(tipo);
 
   return (
-    <div className="admin-container">
-      <AdminPageHeader
-        title="Editar Plantilla de Correo"
-        description={validTipo.label}
+    <>
+      <AdminTopHeader
         breadcrumb="Plantillas de Correo"
         backHref="/admin/config/emails"
+        title={validTipo.label}
       />
-
-      <div className="admin-card">
-        <TemplateEditor template={template} tipo={tipo} />
+      <div style={{ padding: "28px 32px" }}>
+        <div className="admin-card">
+          <TemplateEditor template={template} tipo={tipo} />
+        </div>
       </div>
-    </div>
+    </>
   );
 }

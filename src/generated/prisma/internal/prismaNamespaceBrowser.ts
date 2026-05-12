@@ -77,7 +77,12 @@ export const ModelName = {
   AnalyticsDiario: 'AnalyticsDiario',
   RevendedoraLead: 'RevendedoraLead',
   NotificacaoTemplate: 'NotificacaoTemplate',
-  NotificacaoLog: 'NotificacaoLog'
+  NotificacaoLog: 'NotificacaoLog',
+  EmailTemplate: 'EmailTemplate',
+  CotizacionDia: 'CotizacionDia',
+  Cliente: 'Cliente',
+  VentaLoja: 'VentaLoja',
+  VentaLojaItem: 'VentaLojaItem'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -304,7 +309,8 @@ export const EstoqueMovimentoScalarFieldEnum = {
   tipo: 'tipo',
   motivo: 'motivo',
   maleta_id: 'maleta_id',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  venta_loja_id: 'venta_loja_id'
 } as const
 
 export type EstoqueMovimentoScalarFieldEnum = (typeof EstoqueMovimentoScalarFieldEnum)[keyof typeof EstoqueMovimentoScalarFieldEnum]
@@ -506,6 +512,78 @@ export const NotificacaoLogScalarFieldEnum = {
 } as const
 
 export type NotificacaoLogScalarFieldEnum = (typeof NotificacaoLogScalarFieldEnum)[keyof typeof NotificacaoLogScalarFieldEnum]
+
+
+export const EmailTemplateScalarFieldEnum = {
+  id: 'id',
+  tipo: 'tipo',
+  subject: 'subject',
+  body_html: 'body_html',
+  body_text: 'body_text',
+  preview: 'preview',
+  greeting: 'greeting',
+  ativo: 'ativo',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type EmailTemplateScalarFieldEnum = (typeof EmailTemplateScalarFieldEnum)[keyof typeof EmailTemplateScalarFieldEnum]
+
+
+export const CotizacionDiaScalarFieldEnum = {
+  id: 'id',
+  brl_to_py: 'brl_to_py',
+  usd_to_py: 'usd_to_py',
+  created_at: 'created_at'
+} as const
+
+export type CotizacionDiaScalarFieldEnum = (typeof CotizacionDiaScalarFieldEnum)[keyof typeof CotizacionDiaScalarFieldEnum]
+
+
+export const ClienteScalarFieldEnum = {
+  id: 'id',
+  nombre: 'nombre',
+  ruc: 'ruc',
+  ciudad: 'ciudad',
+  telefono: 'telefono',
+  origen: 'origen',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+} as const
+
+export type ClienteScalarFieldEnum = (typeof ClienteScalarFieldEnum)[keyof typeof ClienteScalarFieldEnum]
+
+
+export const VentaLojaScalarFieldEnum = {
+  id: 'id',
+  cliente_id: 'cliente_id',
+  total: 'total',
+  moneda: 'moneda',
+  total_pyg: 'total_pyg',
+  talonario: 'talonario',
+  numero_factura: 'numero_factura',
+  tipo_operacion: 'tipo_operacion',
+  cotizacion_snapshot: 'cotizacion_snapshot',
+  created_by: 'created_by',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  cancelled_at: 'cancelled_at'
+} as const
+
+export type VentaLojaScalarFieldEnum = (typeof VentaLojaScalarFieldEnum)[keyof typeof VentaLojaScalarFieldEnum]
+
+
+export const VentaLojaItemScalarFieldEnum = {
+  id: 'id',
+  venta_loja_id: 'venta_loja_id',
+  product_variant_id: 'product_variant_id',
+  cantidad: 'cantidad',
+  precio_unitario: 'precio_unitario',
+  subtotal: 'subtotal',
+  created_at: 'created_at'
+} as const
+
+export type VentaLojaItemScalarFieldEnum = (typeof VentaLojaItemScalarFieldEnum)[keyof typeof VentaLojaItemScalarFieldEnum]
 
 
 export const SortOrder = {

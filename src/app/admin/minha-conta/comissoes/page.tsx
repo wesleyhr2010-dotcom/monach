@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { getExtratoComissoes } from "../actions";
 import { formatGs } from "@/lib/format";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { ChevronDown, ChevronUp } from "lucide-react";
 
@@ -42,15 +42,12 @@ export default function ExtratoComissoesPage() {
     }, [ano]);
 
     return (
-        <div className="admin-page">
-            <AdminPageHeader
-                title="Extrato de Comissões"
-                breadcrumb="Minha Conta"
-                backHref="/admin/minha-conta"
-            />
+        <>
+            <AdminTopHeader breadcrumb="Minha Conta" backHref="/admin/minha-conta" title="Extrato de Comissões" />
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* Filtro de ano */}
-            <div className="flex items-center gap-3 mt-4">
+            <div className="flex items-center gap-3">
                 <label className="text-sm" style={{ color: "var(--admin-text-muted)" }}>
                     Año:
                 </label>
@@ -70,7 +67,7 @@ export default function ExtratoComissoesPage() {
             {/* Resumo do ano */}
             {data && (
                 <div
-                    className="admin-card mt-4 flex items-center justify-between"
+                    className="admin-card flex items-center justify-between"
                 >
                     <div>
                         <p className="text-xs uppercase tracking-wide" style={{ color: "var(--admin-text-dim)" }}>
@@ -92,7 +89,7 @@ export default function ExtratoComissoesPage() {
             )}
 
             {/* Tabela por mês */}
-            <div className="mt-6">
+            <div>
                 {loading ? (
                     <div className="flex items-center justify-center py-12">
                         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[var(--admin-accent)]" />
@@ -192,6 +189,7 @@ export default function ExtratoComissoesPage() {
                     </div>
                 )}
             </div>
-        </div>
+            </div>
+        </>
     );
 }

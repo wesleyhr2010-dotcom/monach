@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import {
     FileSpreadsheet,
     FileText,
@@ -115,120 +114,102 @@ export default function RelatoriosPage() {
 
     return (
         <>
-            <header className="admin-header">
-                <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                    <FileDown className="w-6 h-6" />
-                    <div>
-                        <h1>Relatórios e Exportação</h1>
-                        <p style={{ fontSize: "13px", color: "var(--admin-text-muted)", marginTop: "2px" }}>
-                            CSV, Excel e PDF
-                        </p>
+            <AdminTopHeader breadcrumb="Admin" title="Relatórios e Exportação" />
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
+                {/* PDF Summary Report */}
+                <div className="admin-card" style={{ border: "1px solid color-mix(in srgb, var(--admin-accent) 30%, transparent)" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 16 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <div style={{
+                                width: 44, height: 44, borderRadius: 10,
+                                background: "var(--admin-accent)", color: "white",
+                                display: "flex", alignItems: "center", justifyContent: "center",
+                                flexShrink: 0,
+                            }}>
+                                <FileText className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <p style={{ fontWeight: 600, fontSize: 15, color: "var(--admin-text)", margin: 0 }}>Relatório Geral (PDF)</p>
+                                <p style={{ fontSize: 13, color: "var(--admin-text-muted)", margin: 0 }}>
+                                    Resumo completo com todas as métricas da Monarca, formatado para impressão.
+                                </p>
+                            </div>
+                        </div>
+                        <button
+                            onClick={() => handleExport("resumo", "pdf")}
+                            disabled={downloading === "resumo-pdf"}
+                            className="admin-btn admin-btn-primary"
+                            style={{ display: "inline-flex", alignItems: "center", gap: 6 }}
+                        >
+                            {downloading === "resumo-pdf" ? (
+                                <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                                <Download className="w-4 h-4" />
+                            )}
+                            Descarregar PDF
+                        </button>
                     </div>
                 </div>
-            </header>
-
-            <div className="admin-content">
-                {/* PDF Summary Report */}
-                <Card style={{ marginBottom: "24px", border: "1px solid var(--admin-accent)22" }}>
-                    <CardContent className="pt-6">
-                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px" }}>
-                            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-                                <div style={{
-                                    width: 44, height: 44, borderRadius: 10,
-                                    background: "var(--admin-accent)", color: "white",
-                                    display: "flex", alignItems: "center", justifyContent: "center",
-                                }}>
-                                    <FileText className="w-5 h-5" />
-                                </div>
-                                <div>
-                                    <p style={{ fontWeight: 600, fontSize: "15px" }}>Relatório Geral (PDF)</p>
-                                    <p style={{ fontSize: "13px", color: "var(--admin-text-muted)" }}>
-                                        Resumo completo com todas as métricas da Monarca, formatado para impressão.
-                                    </p>
-                                </div>
-                            </div>
-                            <Button
-                                onClick={() => handleExport("resumo", "pdf")}
-                                disabled={downloading === "resumo-pdf"}
-                                style={{ background: "var(--admin-accent)" }}
-                            >
-                                {downloading === "resumo-pdf" ? (
-                                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                                ) : (
-                                    <Download className="w-4 h-4 mr-2" />
-                                )}
-                                Descarregar PDF
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
 
                 {/* Export Cards */}
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: "16px" }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(340px, 1fr))", gap: 16 }}>
                     {EXPORTS.map((exp) => (
-                        <Card key={exp.id}>
-                            <CardHeader className="pb-3">
-                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                                    {exp.icon}
-                                    <CardTitle style={{ fontSize: "15px" }}>{exp.title}</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <p style={{ fontSize: "13px", color: "var(--admin-text-muted)", marginBottom: "16px", lineHeight: 1.5 }}>
-                                    {exp.description}
-                                </p>
-                                <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
-                                    {exp.csv && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleExport(exp.id, "csv")}
-                                            disabled={downloading === `${exp.id}-csv`}
-                                            style={{ fontSize: "12px" }}
-                                        >
-                                            {downloading === `${exp.id}-csv` ? (
-                                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                                            ) : (
-                                                <FileText className="w-3 h-3 mr-1" />
-                                            )}
-                                            CSV
-                                        </Button>
-                                    )}
-                                    {exp.xlsx && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleExport(exp.id, "xlsx")}
-                                            disabled={downloading === `${exp.id}-xlsx`}
-                                            style={{ fontSize: "12px" }}
-                                        >
-                                            {downloading === `${exp.id}-xlsx` ? (
-                                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                                            ) : (
-                                                <FileSpreadsheet className="w-3 h-3 mr-1" />
-                                            )}
-                                            Excel
-                                        </Button>
-                                    )}
-                                    {exp.pdf && (
-                                        <Button
-                                            variant="outline"
-                                            size="sm"
-                                            onClick={() => handleExport(exp.id, "pdf")}
-                                            disabled={downloading === `${exp.id}-pdf`}
-                                            style={{ fontSize: "12px" }}
-                                        >
-                                            {downloading === `${exp.id}-pdf` ? (
-                                                <Loader2 className="w-3 h-3 mr-1 animate-spin" />
-                                            ) : (
-                                                <FileDown className="w-3 h-3 mr-1" />
-                                            )}
-                                            PDF
-                                        </Button>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
+                        <div key={exp.id} className="admin-card">
+                            <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
+                                {exp.icon}
+                                <span style={{ fontWeight: 600, fontSize: 15, color: "var(--admin-text)" }}>{exp.title}</span>
+                            </div>
+                            <p style={{ fontSize: 13, color: "var(--admin-text-muted)", marginBottom: 16, lineHeight: 1.5 }}>
+                                {exp.description}
+                            </p>
+                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                                {exp.csv && (
+                                    <button
+                                        className="admin-btn admin-btn-secondary admin-btn-sm"
+                                        onClick={() => handleExport(exp.id, "csv")}
+                                        disabled={downloading === `${exp.id}-csv`}
+                                        style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                                    >
+                                        {downloading === `${exp.id}-csv` ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                            <FileText className="w-3 h-3" />
+                                        )}
+                                        CSV
+                                    </button>
+                                )}
+                                {exp.xlsx && (
+                                    <button
+                                        className="admin-btn admin-btn-secondary admin-btn-sm"
+                                        onClick={() => handleExport(exp.id, "xlsx")}
+                                        disabled={downloading === `${exp.id}-xlsx`}
+                                        style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                                    >
+                                        {downloading === `${exp.id}-xlsx` ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                            <FileSpreadsheet className="w-3 h-3" />
+                                        )}
+                                        Excel
+                                    </button>
+                                )}
+                                {exp.pdf && (
+                                    <button
+                                        className="admin-btn admin-btn-secondary admin-btn-sm"
+                                        onClick={() => handleExport(exp.id, "pdf")}
+                                        disabled={downloading === `${exp.id}-pdf`}
+                                        style={{ display: "inline-flex", alignItems: "center", gap: 4 }}
+                                    >
+                                        {downloading === `${exp.id}-pdf` ? (
+                                            <Loader2 className="w-3 h-3 animate-spin" />
+                                        ) : (
+                                            <FileDown className="w-3 h-3" />
+                                        )}
+                                        PDF
+                                    </button>
+                                )}
+                            </div>
+                        </div>
                     ))}
                 </div>
             </div>

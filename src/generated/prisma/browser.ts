@@ -152,3 +152,28 @@ export type NotificacaoTemplate = Prisma.NotificacaoTemplateModel
  * 
  */
 export type NotificacaoLog = Prisma.NotificacaoLogModel
+/**
+ * Model EmailTemplate
+ * 
+ */
+export type EmailTemplate = Prisma.EmailTemplateModel
+/**
+ * Model CotizacionDia
+ * 
+ */
+export type CotizacionDia = Prisma.CotizacionDiaModel
+/**
+ * Model Cliente
+ * 
+ */
+export type Cliente = Prisma.ClienteModel
+/**
+ * Model VentaLoja
+ * 
+ */
+export type VentaLoja = Prisma.VentaLojaModel
+/**
+ * Model VentaLojaItem
+ * 
+ */
+export type VentaLojaItem = Prisma.VentaLojaItemModel

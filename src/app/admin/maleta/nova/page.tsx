@@ -10,7 +10,7 @@ import {
   getAvailableVariants,
   criarMaleta,
 } from "@/app/admin/actions-maletas";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminStepIndicator } from "@/components/admin/AdminStepIndicator";
 import { AdminAvatar } from "@/components/admin/AdminAvatar";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
@@ -133,13 +133,9 @@ export default function NovaMaletaPage() {
   }
 
   return (
-    <div className="admin-content">
-      <AdminPageHeader
-        title="Nueva Consignación"
-        description="Crear consignación para revendedora"
-        backHref="/admin/maleta"
-      />
-
+    <>
+      <AdminTopHeader breadcrumb="Maletas" backHref="/admin/maleta" title="Nueva Consignación" />
+      <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
       <AdminStepIndicator steps={STEPS} currentStep={step} />
 
       {error && <div className="admin-alert admin-alert-error">{error}</div>}
@@ -394,6 +390,7 @@ export default function NovaMaletaPage() {
           </button>
         )}
       </div>
-    </div>
+      </div>
+    </>
   );
 }

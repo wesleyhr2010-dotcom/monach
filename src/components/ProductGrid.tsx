@@ -25,7 +25,7 @@ export default async function ProductGrid() {
     const products = await getRelatedProducts(10);
 
     return (
-        <section className="py-5">
+        <section className="py-5 bg-white">
             <div className="container-monarca flex flex-col gap-5">
                 {/* Row 1: 4 products */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-5">

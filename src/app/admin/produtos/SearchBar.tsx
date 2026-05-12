@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 
 export function SearchBar({ defaultValue }: { defaultValue: string }) {
@@ -13,7 +12,6 @@ export function SearchBar({ defaultValue }: { defaultValue: string }) {
 
     function handleSearch(newValue: string) {
         setValue(newValue);
-
         startTransition(() => {
             const params = new URLSearchParams(searchParams?.toString() ?? "");
             if (newValue) {
@@ -27,14 +25,19 @@ export function SearchBar({ defaultValue }: { defaultValue: string }) {
     }
 
     return (
-        <div className="relative max-w-sm w-full">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
+        <div style={{ position: "relative", width: "100%", maxWidth: 300 }}>
+            <Search size={15} style={{
+                position: "absolute", left: 12, top: "50%",
+                transform: "translateY(-50%)", color: "var(--admin-text-muted)",
+                pointerEvents: "none",
+            }} />
+            <input
                 type="text"
+                className="admin-input"
+                style={{ paddingLeft: 36 }}
                 placeholder="Buscar productos..."
                 value={value}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearch(e.target.value)}
-                className="pl-9"
+                onChange={(e) => handleSearch(e.target.value)}
             />
         </div>
     );

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { getSolicitacoes } from "../actions";
-import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { SolicitudActions } from "../SolicitudActions";
 import { Gift, Clock, Package, CheckCircle } from "lucide-react";
@@ -21,12 +21,9 @@ export default async function SolicitudesPage({ searchParams }: { searchParams: 
     const solicitaciones = await getSolicitacoes(status);
 
     return (
-        <div className="admin-content">
-            <AdminPageHeader
-                title="Solicitudes de Brindes"
-                backHref="/admin/brindes"
-            />
-
+        <>
+            <AdminTopHeader breadcrumb="Brindes" backHref="/admin/brindes" title="Solicitudes de Brindes" />
+            <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
             {/* Filtros */}
             <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
                 {["todas", "pendente", "separado", "entregado"].map((s) => (
@@ -62,7 +59,8 @@ export default async function SolicitudesPage({ searchParams }: { searchParams: 
                     ))}
                 </div>
             )}
-        </div>
+            </div>
+        </>
     );
 }
 

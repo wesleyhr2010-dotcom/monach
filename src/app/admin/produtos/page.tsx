@@ -6,8 +6,7 @@ import { getCategories } from "../actions-categories";
 import { ProductTable } from "./ProductTable";
 import { SearchBar } from "./SearchBar";
 import { CategoryFilter } from "./CategoryFilter";
-import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { Plus, ChevronLeft, ChevronRight, PackageOpen } from "lucide-react";
 
 export const metadata = {
@@ -30,72 +29,111 @@ export default async function ProdutosPage(props: {
     const totalPages = Math.ceil(total / pageSize);
     const categoryNames = categories.map((c) => c.name);
 
-    // Build pagination params
     const paginationParams = new URLSearchParams();
     if (search) paginationParams.set("search", search);
     if (category) paginationParams.set("category", category);
     const baseParams = paginationParams.toString() ? `&${paginationParams.toString()}` : "";
 
     return (
-        <div className="flex flex-col gap-6 p-6">
-            <header className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <h1 className="text-2xl font-bold tracking-tight">Productos</h1>
-                <Link href="/admin/produtos/novo">
-                    <Button>
-                        <Plus className="mr-2 w-4 h-4" />
-                        Nuevo Producto
-                    </Button>
-                </Link>
-            </header>
+        <div style={{ display: "flex", flexDirection: "column" }}>
+            <AdminTopHeader
+                breadcrumb="Admin / Productos"
+                title="Productos"
+                action={
+                    <Link
+                        href="/admin/produtos/novo"
+                        className="admin-btn admin-btn-primary"
+                        style={{ textDecoration: "none" }}
+                    >
+                        <Plus size={15} /> Nuevo Producto
+                    </Link>
+                }
+            />
 
-            <div className="flex flex-col gap-4">
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                    <div className="flex flex-wrap items-center gap-3">
+            <div className="admin-page-body">
+
+                {/* Barra de filtros */}
+                <div style={{
+                    display: "flex", alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap", gap: 12,
+                }}>
+                    <div style={{ display: "flex", alignItems: "center", gap: 12, flexWrap: "wrap" }}>
                         <SearchBar defaultValue={search} />
                         <CategoryFilter categories={categoryNames} current={category} />
                     </div>
-                    <span className="text-sm text-muted-foreground whitespace-nowrap">
+                    <span style={{
+                        fontSize: 13, color: "var(--admin-text-muted)",
+                        fontFamily: "Raleway, sans-serif", whiteSpace: "nowrap",
+                    }}>
                         {total} producto{total !== 1 ? "s" : ""}
                     </span>
                 </div>
 
-            {products.length === 0 ? (
-                <EmptyState
-                    icon={<PackageOpen className="w-12 h-12" />}
-                    title="No hay productos"
-                    description="Agregá tu primer producto desde el botón Nuevo."
-                />
-            ) : (
-                <ProductTable products={products} />
-            )}
+                {/* Tabla o estado vacío */}
+                {products.length === 0 ? (
+                    <div style={{
+                        background: "var(--admin-surface)",
+                        border: "1px solid var(--admin-surface-hover)",
+                        borderRadius: 12,
+                        display: "flex", flexDirection: "column",
+                        alignItems: "center", justifyContent: "center",
+                        padding: "60px 24px",
+                        gap: 12,
+                    }}>
+                        <PackageOpen size={36} style={{ color: "var(--admin-text-dim)" }} />
+                        <span style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: "var(--admin-text)", fontWeight: 600 }}>
+                            No hay productos
+                        </span>
+                        <span style={{ fontFamily: "Raleway, sans-serif", fontSize: 13, color: "var(--admin-text-muted)" }}>
+                            Agregá tu primer producto desde el botón Nuevo.
+                        </span>
+                        <Link
+                            href="/admin/produtos/novo"
+                            className="admin-btn admin-btn-primary"
+                            style={{ textDecoration: "none", marginTop: 8 }}
+                        >
+                            <Plus size={15} /> Nuevo Producto
+                        </Link>
+                    </div>
+                ) : (
+                    <ProductTable products={products} />
+                )}
 
-            {totalPages > 1 && (
-                    <div className="flex items-center justify-between py-4">
-                        <div className="text-sm text-muted-foreground">
+                {/* Paginação */}
+                {totalPages > 1 && (
+                    <div style={{
+                        display: "flex", alignItems: "center",
+                        justifyContent: "space-between",
+                        paddingTop: 12,
+                        borderTop: "1px solid var(--admin-border)",
+                    }}>
+                        <span style={{ fontSize: 13, color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif" }}>
                             Página {page} de {totalPages}
-                        </div>
-                        <div className="flex gap-2">
+                        </span>
+                        <div style={{ display: "flex", gap: 8 }}>
                             {page > 1 && (
                                 <Link
                                     href={`/admin/produtos?page=${page - 1}${baseParams}`}
+                                    className="admin-btn admin-btn-secondary admin-btn-sm"
+                                    style={{ textDecoration: "none" }}
                                 >
-                                    <Button variant="outline" size="sm">
-                                        <ChevronLeft className="w-4 h-4 mr-1" /> Anterior
-                                    </Button>
+                                    <ChevronLeft size={13} /> Anterior
                                 </Link>
                             )}
                             {page < totalPages && (
                                 <Link
                                     href={`/admin/produtos?page=${page + 1}${baseParams}`}
+                                    className="admin-btn admin-btn-secondary admin-btn-sm"
+                                    style={{ textDecoration: "none" }}
                                 >
-                                    <Button variant="outline" size="sm">
-                                        Siguiente <ChevronRight className="w-4 h-4 ml-1" />
-                                    </Button>
+                                    Siguiente <ChevronRight size={13} />
                                 </Link>
                             )}
                         </div>
                     </div>
                 )}
+
             </div>
         </div>
     );
