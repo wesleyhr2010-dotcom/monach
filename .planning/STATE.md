@@ -87,6 +87,12 @@ None.
 | Security | Segurança da Gamificação (awardPoints ownership, rate limiting) | Deferred to v1.5 | 2026-05-08 |
 | PDV | Emissão de factura paraguaia (talonario, PDF) | Deferred to v1.5 | 2026-05-08 |
 
+## Quick Tasks Completed
+
+| Slug | Date | Description | Commit |
+|------|------|-------------|--------|
+| upgrade-jspdf-security | 2026-05-12 | Upgrade jspdf 4.2.0→4.2.1 — patch CVE-2026-31938 (XSS) + CVE-2026-31898 | pending |
+
 ## Session Continuity
 
 Last session: 2026-05-08
