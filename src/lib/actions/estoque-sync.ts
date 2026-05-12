@@ -265,33 +265,39 @@ export async function executeSync(
     updates.push(update);
   }
 
-  // Executar em transação
+  // Criar variações padrão para produtos simples FORA da transação
+  // (evita timeout da transação — criação é independente)
+  const createdVariantsMap = new Map<string, typeof variantsBySku[0]>();
+  for (const [productId, product] of productsNeedingVariant) {
+    const newVariant = await prisma.productVariant.create({
+      data: {
+        product_id: productId,
+        attribute_name: "Padrão",
+        attribute_value: "Único",
+        sku: product.sku,
+        price: product.price,
+        stock_quantity: 0,
+        in_stock: true,
+        image_url: "",
+        ativo: true,
+      },
+    });
+    createdVariantsMap.set(product.sku, newVariant);
+  }
+
+  // Atualizar updates que precisavam de variação criada
+  for (const update of updates) {
+    const created = createdVariantsMap.get(update.sku);
+    if (created) {
+      update.variantId = created.id;
+      update.oldStock = 0;
+    }
+  }
+
+  // Executar updates e movimentações em transação (agora é rápido)
   if (updates.length > 0) {
     await prisma.$transaction(async (tx) => {
-      // Primeiro: criar variações padrão para produtos simples
-      const createdVariants = new Map<string, typeof variantsBySku[0]>();
-      for (const [productId, product] of productsNeedingVariant) {
-        const newVariant = await tx.productVariant.create({
-          data: {
-            product_id: productId,
-            attribute_name: "Padrão",
-            attribute_value: "Único",
-            sku: product.sku,
-            price: product.price,
-            stock_quantity: 0,
-            in_stock: true,
-            image_url: "",
-            ativo: true,
-          },
-        });
-        createdVariants.set(product.sku, newVariant);
-      }
-
-      // Atualizar updates que precisavam de variação criada
       for (const update of updates) {
-        const created = createdVariants.get(update.sku);
-        const variantId = created ? created.id : update.variantId;
-
         const updateData: Record<string, unknown> = {};
         if (update.newStock !== undefined) {
           updateData.stock_quantity = update.newStock;
@@ -301,7 +307,7 @@ export async function executeSync(
         }
 
         await tx.productVariant.update({
-          where: { id: variantId },
+          where: { id: update.variantId },
           data: updateData,
         });
 
@@ -309,7 +315,7 @@ export async function executeSync(
         if (update.newStock !== undefined) {
           await tx.estoqueMovimento.create({
             data: {
-              product_variant_id: variantId,
+              product_variant_id: update.variantId,
               quantidade: update.newStock - update.oldStock,
               tipo: EstoqueMovimentoTipo.ajuste_manual,
               motivo: "Sincronização de Estoque via Planilha do CRM",
