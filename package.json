@@ -82,6 +82,7 @@
     "vitest": "^4.0.18"
   },
   "overrides": {
-    "fast-xml-builder": "^1.1.7"
+    "fast-xml-builder": "^1.1.7",
+    "postcss": "^8.5.10"
   }
 }
