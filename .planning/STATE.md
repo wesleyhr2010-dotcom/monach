@@ -93,6 +93,7 @@ None.
 |------|------|-------------|--------|
 | upgrade-jspdf-security | 2026-05-12 | Upgrade jspdf 4.2.0→4.2.1 — patch CVE-2026-31938 (XSS) + CVE-2026-31898 | b5041fb |
 | patch-fast-xml-builder | 2026-05-12 | npm override fast-xml-builder@^1.1.7 — patch CVE-2026-44665 (XXE) + CVE-2026-44664 (XML Injection) | a4322bf |
+| migrate-xlsx-to-exceljs | 2026-05-12 | Replace xlsx@0.18.5 → exceljs@4.4.0 — remediate CVE-2024-22363 (ReDoS) + CVE-2023-30533 (Prototype Pollution) | ddb44fe |
 
 ## Session Continuity
 
