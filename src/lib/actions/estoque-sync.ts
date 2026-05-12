@@ -84,6 +84,7 @@ export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
 
 /**
  * Preview da sincronização — não modifica o banco
+ * Busca em batch para evitar N+1 queries
  */
 export async function previewSync(
   fileData: { name: string; data: string }, // base64 encoded file
@@ -95,25 +96,33 @@ export async function previewSync(
   const file = new File([uint8], fileData.name);
   const parsed = await parseSpreadsheet(file);
 
+  // Buscar TODOS os SKUs de uma vez (batch)
+  const skus = parsed.map((r) => r.sku);
+
+  const products = await prisma.product.findMany({
+    where: { sku: { in: skus } },
+    include: { variants: true },
+  });
+  const productMap = new Map<string, typeof products[0]["variants"][0]>(
+    products
+      .filter((p) => p.variants.length > 0)
+      .map((p) => [p.sku, p.variants[0]!])
+  );
+
+  const variantsBySku = await prisma.productVariant.findMany({
+    where: { sku: { in: skus } },
+  });
+  const variantMap = new Map(variantsBySku.map((v) => [v.sku!, v]));
+
   const matched: MatchedProduct[] = [];
   const rejected: RejectedProduct[] = [];
 
   for (const row of parsed) {
-    // Busca primeiro por Product.sku (SKU principal), depois por ProductVariant.sku
-    const product = await prisma.product.findFirst({
-      where: { sku: row.sku },
-      include: { variants: { take: 1 } },
-    });
-
-    // Busca primeiro pelo Product.sku, depois pelo ProductVariant.sku
-    const variantFromProduct = product?.variants[0];
-    const variantFromVariant = !variantFromProduct
-      ? await prisma.productVariant.findFirst({
-          where: { sku: row.sku },
-        })
-      : null;
-
-    const variant = variantFromProduct ?? variantFromVariant;
+    // Tenta Product.sku primeiro, depois ProductVariant.sku
+    let variant = productMap.get(row.sku);
+    if (!variant) {
+      variant = variantMap.get(row.sku);
+    }
 
     if (!variant) {
       rejected.push({
