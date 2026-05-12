@@ -77,6 +77,15 @@ None.
 
 None.
 
+### Accepted Security Risks
+
+| ID | CVE / Advisory | Package | CVSS | Decisão | Justificativa | Data |
+|----|---------------|---------|------|---------|--------------|------|
+| SR-01 | CVE-2024-22363 | xlsx@0.18.5 | 7.5 H | Aceito | xlsx mantido exclusivamente para leitura de `.xls` (CRM do cliente). Sem fix gratuito disponível (SheetJS Pro only). Rota autenticada (ADMIN/COLABORADORA), arquivo de fonte confiável. | 2026-05-12 |
+| SR-02 | CVE-2023-30533 | xlsx@0.18.5 | 5.3 M | Aceito | Idem SR-01. Prototype Pollution requer leitura de arquivo crafted — CRM é fonte interna confiável. | 2026-05-12 |
+| SR-03 | CVE-2026-41907 | uuid@8.3.2 (via exceljs) | 8.2 H | Aceito | Exploração requer `uuid.v4(opt, buf, offset)` com buffer externo. ExcelJS chama `uuid.v4()` sem argumentos — superfície de ataque não existe neste uso. | 2026-05-12 |
+| SR-04 | SNYK-JS-INFLIGHT-6095116 | inflight@1.0.6 (via exceljs) | 6.2 M | Aceito | Memory leak requer acesso local ao processo Node. Ambiente é Vercel Fluid Compute (processo recriado por invocação) — sem acúmulo entre requests. Sem CVE atribuído. Lib abandonada, sem fix disponível. | 2026-05-12 |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
