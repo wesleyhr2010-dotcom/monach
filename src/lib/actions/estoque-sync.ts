@@ -1,6 +1,6 @@
 "use server";
 
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { prisma } from "@/lib/prisma";
 import { EstoqueMovimentoTipo } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
@@ -57,21 +57,33 @@ function parseArticulo(articulo: string | number): { sku: string; nome: string }
 }
 
 /**
- * Lê o arquivo XLS/XLSX e retorna as linhas parseadas
- * Suporta tanto .xls (binário antigo) quanto .xlsx
+ * Lê o arquivo XLSX e retorna as linhas parseadas.
+ * Apenas .xlsx é suportado (ExcelJS não lê o formato binário .xls legado).
  */
 export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
   const arrayBuffer = await file.arrayBuffer();
-  const uint8Array = new Uint8Array(arrayBuffer);
 
-  const workbook = XLSX.read(uint8Array, {
-    type: "array",
-    cellDates: true,
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.load(arrayBuffer);
+
+  const ws = wb.worksheets[0];
+  const headers: string[] = [];
+
+  ws.getRow(1).eachCell((cell, colNumber) => {
+    headers[colNumber] = String(cell.value ?? "");
   });
 
-  const sheetName = workbook.SheetNames[0];
-  const worksheet = workbook.Sheets[sheetName];
-  const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
+  const rows: Record<string, unknown>[] = [];
+
+  ws.eachRow((row, rowNumber) => {
+    if (rowNumber === 1) return;
+    const rowData: Record<string, unknown> = {};
+    row.eachCell((cell, colNumber) => {
+      const header = headers[colNumber];
+      if (header) rowData[header] = cell.value;
+    });
+    rows.push(rowData);
+  });
 
   return rows
     .filter((row) => row["Artículo"] != null && row["Artículo"] !== "")

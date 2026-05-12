@@ -1,7 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { requireAuth } from "@/lib/user";
+
+function toCSV(rows: Record<string, unknown>[], sep = ";"): string {
+  const keys = Object.keys(rows[0]);
+  const escape = (v: unknown) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  return [
+    keys.map(escape).join(sep),
+    ...rows.map((r) => keys.map((k) => escape(r[k])).join(sep)),
+  ].join("\n");
+}
 
 export async function GET(request: NextRequest) {
     try {
@@ -132,21 +141,21 @@ export async function GET(request: NextRequest) {
         const today = new Date().toISOString().slice(0, 10);
 
         if (format === "xlsx") {
-            const wb = XLSX.utils.book_new();
-            const ws = XLSX.utils.json_to_sheet(data);
+            const wb = new ExcelJS.Workbook();
+            const ws = wb.addWorksheet(filename);
 
-            const colWidths = Object.keys(data[0]).map((key) => ({
-                wch: Math.max(
-                    key.length,
-                    ...data.map((row) => String(row[key] ?? "").length)
-                ) + 2,
+            ws.columns = Object.keys(data[0]).map((key) => ({
+                header: key,
+                key,
+                width: Math.max(key.length, ...data.map((row) => String(row[key] ?? "").length)) + 2,
             }));
-            ws["!cols"] = colWidths;
 
-            XLSX.utils.book_append_sheet(wb, ws, filename);
-            const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" });
+            ws.addRows(data);
+            ws.getRow(1).font = { bold: true };
 
-            return new NextResponse(buf, {
+            const buf = await wb.xlsx.writeBuffer();
+
+            return new NextResponse(buf as unknown as ArrayBuffer, {
                 headers: {
                     "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
                     "Content-Disposition": `attachment; filename="monarca_${filename}_${today}.xlsx"`,
@@ -155,8 +164,7 @@ export async function GET(request: NextRequest) {
         }
 
         // CSV
-        const ws = XLSX.utils.json_to_sheet(data);
-        const csv = XLSX.utils.sheet_to_csv(ws, { FS: ";", RS: "\n" });
+        const csv = toCSV(data);
 
         return new NextResponse(csv, {
             headers: {

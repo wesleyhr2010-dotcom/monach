@@ -28,8 +28,8 @@ export function StockSyncUpload() {
 
   const handleFile = useCallback(async (selectedFile: File) => {
     const ext = selectedFile.name.split(".").pop()?.toLowerCase();
-    if (ext !== "xlsx" && ext !== "xls") {
-      toast.error("Solo se aceptan archivos Excel (.xlsx ou .xls)");
+    if (ext !== "xlsx") {
+      toast.error("Solo se aceptan archivos Excel (.xlsx)");
       return;
     }
 
@@ -143,7 +143,7 @@ export function StockSyncUpload() {
             <input
               id="file-input"
               type="file"
-              accept=".xlsx,.xls"
+              accept=".xlsx"
               onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])}
               style={{ display: "none" }}
             />
@@ -163,7 +163,7 @@ export function StockSyncUpload() {
                   Arrastrá la planilla aquí o click para seleccionar
                 </p>
                 <p style={{ fontSize: 13, color: "var(--admin-muted)", margin: "4px 0 0", fontFamily: "Raleway, sans-serif" }}>
-                  Formato Excel (.xlsx ou .xls)
+                  Formato Excel (.xlsx)
                 </p>
               </div>
             )}
