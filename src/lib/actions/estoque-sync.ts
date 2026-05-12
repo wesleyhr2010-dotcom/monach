@@ -124,7 +124,7 @@ export async function previewSync(
           variant = {
             id: product.id,
             product_id: product.id,
-            attribute_name: "Padrão",
+            attribute_name: "Tipo",
             attribute_value: "Único",
             price: product.price,
             sku: product.sku,
@@ -202,7 +202,7 @@ export async function executeSync(
     await prisma.productVariant.create({
       data: {
         product_id: product.id,
-        attribute_name: "Padrão",
+        attribute_name: "Tipo",
         attribute_value: "Único",
         sku: product.sku,
         price: product.price,
