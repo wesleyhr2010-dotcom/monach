@@ -4,7 +4,7 @@ milestone: v1.4
 milestone_name: PDV e Ventas de Loja
 status: active
 last_updated: "2026-05-08T21:30:00.000Z"
-last_activity: 2026-05-12 -- Quick task 001 completed (stock sync via spreadsheet upload)
+last_activity: 2026-05-12 -- Completed quick task 002: Upgrade next to 16.2.6 to fix CVE-2026-45109
 progress:
   total_phases: 3
   completed_phases: 3
@@ -100,6 +100,7 @@ None.
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
 | 001 | Sincronização de Estoque via Upload de Planilha (CRM) | 2026-05-12 | 06669fb | [001-sincronizacao-estoque-planilha](./quick/001-sincronizacao-estoque-planilha/) |
+| 002 | Upgrade next to 16.2.6 to fix CVE-2026-45109 | 2026-05-12 | TBD | [002-next-security-upgrade](./quick/20260512-002-next-security-upgrade/) |
 
 ## Deferred Items
 
