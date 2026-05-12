@@ -1,6 +1,10 @@
 "use server";
 
 import ExcelJS from "exceljs";
+// xlsx is used only for .xls (legacy binary format). ExcelJS handles .xlsx.
+// CVE-2024-22363 / CVE-2023-30533 risk is accepted: server-side only,
+// requires ADMIN/COLABORADORA auth, files come from trusted CRM export.
+import * as XLS from "xlsx";
 import { prisma } from "@/lib/prisma";
 import { EstoqueMovimentoTipo } from "@/generated/prisma/client";
 import { revalidatePath } from "next/cache";
@@ -57,33 +61,41 @@ function parseArticulo(articulo: string | number): { sku: string; nome: string }
 }
 
 /**
- * Lê o arquivo XLSX e retorna as linhas parseadas.
- * Apenas .xlsx é suportado (ExcelJS não lê o formato binário .xls legado).
+ * Lê o arquivo XLS ou XLSX e retorna as linhas parseadas.
+ * .xlsx → ExcelJS; .xls (binário legado) → xlsx (SheetJS).
  */
 export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
   const arrayBuffer = await file.arrayBuffer();
+  const isXls = file.name.toLowerCase().endsWith(".xls");
 
-  const wb = new ExcelJS.Workbook();
-  await wb.xlsx.load(arrayBuffer);
+  let rows: Record<string, unknown>[];
 
-  const ws = wb.worksheets[0];
-  const headers: string[] = [];
+  if (isXls) {
+    const uint8 = new Uint8Array(arrayBuffer);
+    const wb = XLS.read(uint8, { type: "array", cellDates: true });
+    const ws = wb.Sheets[wb.SheetNames[0]];
+    rows = XLS.utils.sheet_to_json<Record<string, unknown>>(ws);
+  } else {
+    const wb = new ExcelJS.Workbook();
+    await wb.xlsx.load(arrayBuffer);
+    const ws = wb.worksheets[0];
+    const headers: string[] = [];
 
-  ws.getRow(1).eachCell((cell, colNumber) => {
-    headers[colNumber] = String(cell.value ?? "");
-  });
-
-  const rows: Record<string, unknown>[] = [];
-
-  ws.eachRow((row, rowNumber) => {
-    if (rowNumber === 1) return;
-    const rowData: Record<string, unknown> = {};
-    row.eachCell((cell, colNumber) => {
-      const header = headers[colNumber];
-      if (header) rowData[header] = cell.value;
+    ws.getRow(1).eachCell((cell, colNumber) => {
+      headers[colNumber] = String(cell.value ?? "");
     });
-    rows.push(rowData);
-  });
+
+    rows = [];
+    ws.eachRow((row, rowNumber) => {
+      if (rowNumber === 1) return;
+      const rowData: Record<string, unknown> = {};
+      row.eachCell((cell, colNumber) => {
+        const header = headers[colNumber];
+        if (header) rowData[header] = cell.value;
+      });
+      rows.push(rowData);
+    });
+  }
 
   return rows
     .filter((row) => row["Artículo"] != null && row["Artículo"] !== "")
