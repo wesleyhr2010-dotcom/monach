@@ -95,6 +95,12 @@ None.
 
 None.
 
+### Quick Tasks Completed
+
+| # | Description | Date | Commit | Directory |
+|---|-------------|------|--------|-----------|
+| 001 | Sincronização de Estoque via Upload de Planilha (CRM) | 2026-05-12 | pending | [001-sincronizacao-estoque-planilha](./quick/001-sincronizacao-estoque-planilha/) |
+
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
