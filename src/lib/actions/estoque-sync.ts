@@ -56,17 +56,26 @@ function parseArticulo(articulo: string | number): { sku: string; nome: string }
 }
 
 /**
- * Lê o arquivo XLSX e retorna as linhas parseadas
+ * Lê o arquivo XLS/XLSX e retorna as linhas parseadas
+ * Suporta tanto .xls (binário antigo) quanto .xlsx
  */
 export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
   const buffer = Buffer.from(await file.arrayBuffer());
-  const workbook = XLSX.read(buffer, { type: "buffer" });
+  const isXls = file.name.toLowerCase().endsWith(".xls");
+
+  const workbook = XLSX.read(buffer, {
+    type: "buffer",
+    cellDates: true,
+    // .xls files need type detection
+    ...(isXls ? { type: "binary" } : {}),
+  });
+
   const sheetName = workbook.SheetNames[0];
   const worksheet = workbook.Sheets[sheetName];
   const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(worksheet);
 
   return rows
-    .filter((row) => row["Artículo"] != null)
+    .filter((row) => row["Artículo"] != null && row["Artículo"] !== "")
     .map((row) => {
       const { sku, nome } = parseArticulo(row["Artículo"] as string | number);
       const saldo = typeof row["Saldo"] === "number" ? row["Saldo"] : parseInt(String(row["Saldo"]), 10) || 0;
@@ -82,7 +91,11 @@ export async function previewSync(
   fileData: { name: string; data: string }, // base64 encoded file
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncPreview> {
-  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const isXls = fileData.name.toLowerCase().endsWith(".xls");
+  const mimeType = isXls
+    ? "application/vnd.ms-excel"
+    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: mimeType });
   const parsed = await parseSpreadsheet(file);
 
   const matched: MatchedProduct[] = [];
@@ -132,7 +145,11 @@ export async function executeSync(
   fileData: { name: string; data: string },
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncResult> {
-  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+  const isXls = fileData.name.toLowerCase().endsWith(".xls");
+  const mimeType = isXls
+    ? "application/vnd.ms-excel"
+    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: mimeType });
   const parsed = await parseSpreadsheet(file);
 
   const rejected: RejectedProduct[] = [];
