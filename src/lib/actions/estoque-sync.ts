@@ -85,20 +85,16 @@ export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
 
 /**
  * Preview da sincronização — não modifica o banco
- * Busca em batch para evitar N+1 queries
- * Produtos simples sem variação são aceitos (variação será criada no executeSync)
  */
 export async function previewSync(
-  fileData: { name: string; data: string }, // base64 encoded file
+  fileData: { name: string; data: string },
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncPreview> {
-  // Decode base64 to Uint8Array (server-side)
   const buffer = Buffer.from(fileData.data, "base64");
   const uint8 = new Uint8Array(buffer);
   const file = new File([uint8], fileData.name);
   const parsed = await parseSpreadsheet(file);
 
-  // Buscar TODOS os SKUs de uma vez (batch)
   const skus = parsed.map((r) => r.sku);
 
   const products = await prisma.product.findMany({
@@ -115,21 +111,18 @@ export async function previewSync(
   const rejected: RejectedProduct[] = [];
 
   for (const row of parsed) {
-    // 1. Tenta ProductVariant.sku direto
-    let variant: typeof variantsBySku[0] | undefined = variantMap.get(row.sku);
+    let variant = variantMap.get(row.sku);
     let willCreateVariant = false;
 
-    // 2. Se não achou, tenta Product.sku
     if (!variant) {
       const product = products.find((p) => p.sku === row.sku);
       if (product) {
         if (product.variants.length > 0) {
           variant = product.variants[0];
         } else {
-          // Produto simples sem variação — será criada automaticamente
           willCreateVariant = true;
           variant = {
-            id: product.id, // placeholder, será substituído no executeSync
+            id: product.id,
             product_id: product.id,
             attribute_name: "Padrão",
             attribute_value: "Único",
@@ -140,7 +133,7 @@ export async function previewSync(
             image_url: "",
             ativo: true,
             created_at: new Date(),
-          } as unknown as typeof variant;
+          } as unknown as typeof variantsBySku[0];
         }
       }
     }
@@ -186,7 +179,6 @@ export async function executeSync(
   fileData: { name: string; data: string },
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncResult> {
-  // Decode base64 to Uint8Array (server-side)
   const buffer = Buffer.from(fileData.data, "base64");
   const uint8 = new Uint8Array(buffer);
   const file = new File([uint8], fileData.name);
@@ -196,82 +188,20 @@ export async function executeSync(
   let updatedCount = 0;
   let movementsCount = 0;
 
-  // Buscar todos os SKUs de uma vez
   const skus = parsed.map((r) => r.sku);
 
+  // === FASE 1: Buscar produtos e criar variações pendentes ===
   const products = await prisma.product.findMany({
     where: { sku: { in: skus } },
     include: { variants: true },
   });
 
-  const variantsBySku = await prisma.productVariant.findMany({
-    where: { sku: { in: skus } },
-  });
-  const variantMap = new Map(variantsBySku.map((v) => [v.sku!, v]));
-
-  // Preparar as atualizações
-  const updates: {
-    variantId: string;
-    sku: string;
-    nome: string;
-    oldStock: number;
-    newStock?: number;
-    oldPrice: number | null;
-    newPrice?: number | null;
-  }[] = [];
-
-  // Produtos que precisam de variação criada
-  const productsNeedingVariant: Map<string, typeof products[0]> = new Map();
-
-  for (const row of parsed) {
-    let variant = variantMap.get(row.sku);
-
-    if (!variant) {
-      const product = products.find((p) => p.sku === row.sku);
-      if (product) {
-        if (product.variants.length > 0) {
-          variant = product.variants[0];
-        } else {
-          // Marca para criar variação na transação
-          productsNeedingVariant.set(product.id, product);
-        }
-      }
-    }
-
-    if (!variant) {
-      rejected.push({
-        sku: row.sku,
-        nome: row.nome,
-        reason: "SKU não encontrado no banco de dados",
-      });
-      continue;
-    }
-
-    const update: typeof updates[number] = {
-      variantId: variant.id,
-      sku: row.sku,
-      nome: row.nome,
-      oldStock: variant.stock_quantity,
-      oldPrice: variant.price ? parseFloat(variant.price.toString()) : null,
-    };
-
-    if (options.updateStock) {
-      update.newStock = row.saldo;
-    }
-    if (options.updatePrice && row.precio !== null) {
-      update.newPrice = row.precio;
-    }
-
-    updates.push(update);
-  }
-
-  // Criar variações padrão para produtos simples FORA da transação
-  // (evita timeout da transação — criação é independente)
-  const createdVariantsMap = new Map<string, typeof variantsBySku[0]>();
-  for (const [productId, product] of productsNeedingVariant) {
-    const newVariant = await prisma.productVariant.create({
+  // Criar variações padrão para produtos simples (sem variação)
+  const productsNeedingVariant = products.filter((p) => p.variants.length === 0);
+  for (const product of productsNeedingVariant) {
+    await prisma.productVariant.create({
       data: {
-        product_id: productId,
+        product_id: product.id,
         attribute_name: "Padrão",
         attribute_value: "Único",
         sku: product.sku,
@@ -282,54 +212,109 @@ export async function executeSync(
         ativo: true,
       },
     });
-    createdVariantsMap.set(product.sku, newVariant);
   }
 
-  // Atualizar updates que precisavam de variação criada
-  for (const update of updates) {
-    const created = createdVariantsMap.get(update.sku);
-    if (created) {
-      update.variantId = created.id;
-      update.oldStock = 0;
+  // === FASE 2: Buscar TODAS as variações (incluindo as recém-criadas) ===
+  const allVariants = await prisma.productVariant.findMany({
+    where: {
+      OR: [
+        { sku: { in: skus } },
+        { product: { sku: { in: skus } } },
+      ],
+    },
+  });
+
+  // Indexar por SKU (prioriza ProductVariant.sku, depois Product.sku)
+  const variantBySku = new Map<string, typeof allVariants[0]>();
+  for (const v of allVariants) {
+    if (v.sku && !variantBySku.has(v.sku)) {
+      variantBySku.set(v.sku, v);
+    }
+  }
+  // Também indexar por Product.sku para variantes sem sku próprio
+  for (const v of allVariants) {
+    const product = products.find((p) => p.id === v.product_id);
+    if (product && !variantBySku.has(product.sku)) {
+      variantBySku.set(product.sku, v);
     }
   }
 
-  // Executar updates e movimentações em transação (agora é rápido)
-  if (updates.length > 0) {
-    await prisma.$transaction(async (tx) => {
-      for (const update of updates) {
-        const updateData: Record<string, unknown> = {};
-        if (update.newStock !== undefined) {
-          updateData.stock_quantity = update.newStock;
-        }
-        if (update.newPrice !== undefined) {
-          updateData.price = update.newPrice;
-        }
+  // === FASE 3: Preparar updates ===
+  const updates: {
+    variantId: string;
+    sku: string;
+    nome: string;
+    oldStock: number;
+    newStock?: number;
+    oldPrice: number | null;
+    newPrice?: number | null;
+  }[] = [];
 
-        await tx.productVariant.update({
-          where: { id: update.variantId },
-          data: updateData,
-        });
+  for (const row of parsed) {
+    const variant = variantBySku.get(row.sku);
 
-        // Registrar movimentação de estoque
-        if (update.newStock !== undefined) {
-          await tx.estoqueMovimento.create({
-            data: {
-              product_variant_id: update.variantId,
-              quantidade: update.newStock - update.oldStock,
-              tipo: EstoqueMovimentoTipo.ajuste_manual,
-              motivo: "Sincronização de Estoque via Planilha do CRM",
-            },
-          });
-          movementsCount++;
-        }
+    if (!variant) {
+      rejected.push({
+        sku: row.sku,
+        nome: row.nome,
+        reason: "SKU não encontrado no banco de dados",
+      });
+      continue;
+    }
 
-        updatedCount++;
-      }
+    updates.push({
+      variantId: variant.id,
+      sku: row.sku,
+      nome: row.nome,
+      oldStock: variant.stock_quantity,
+      newStock: options.updateStock ? row.saldo : undefined,
+      oldPrice: variant.price ? parseFloat(variant.price.toString()) : null,
+      newPrice: options.updatePrice && row.precio !== null ? row.precio : undefined,
     });
   }
 
-  // Revalidar páginas de produtos e estoque
+  // === FASE 4: Executar updates em transação com timeout aumentado ===
+  if (updates.length > 0) {
+    await prisma.$transaction(
+      async (tx) => {
+        for (const update of updates) {
+          const updateData: Record<string, unknown> = {};
+          if (update.newStock !== undefined) {
+            updateData.stock_quantity = update.newStock;
+          }
+          if (update.newPrice !== undefined) {
+            updateData.price = update.newPrice;
+          }
+
+          await tx.productVariant.update({
+            where: { id: update.variantId },
+            data: updateData,
+          });
+
+          // Registrar movimentação de estoque
+          if (update.newStock !== undefined) {
+            await tx.estoqueMovimento.create({
+              data: {
+                product_variant_id: update.variantId,
+                quantidade: update.newStock - update.oldStock,
+                tipo: EstoqueMovimentoTipo.ajuste_manual,
+                motivo: "Sincronização de Estoque via Planilha do CRM",
+              },
+            });
+            movementsCount++;
+          }
+
+          updatedCount++;
+        }
+      },
+      {
+        maxWait: 10000,
+        timeout: 20000,
+      }
+    );
+  }
+
+  // Revalidar páginas
   revalidatePath("/admin/produtos");
   revalidatePath("/admin/estoque");
 
