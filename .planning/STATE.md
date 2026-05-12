@@ -91,7 +91,7 @@ None.
 
 | Slug | Date | Description | Commit |
 |------|------|-------------|--------|
-| upgrade-jspdf-security | 2026-05-12 | Upgrade jspdf 4.2.0→4.2.1 — patch CVE-2026-31938 (XSS) + CVE-2026-31898 | pending |
+| upgrade-jspdf-security | 2026-05-12 | Upgrade jspdf 4.2.0→4.2.1 — patch CVE-2026-31938 (XSS) + CVE-2026-31898 | b5041fb |
 
 ## Session Continuity
 
