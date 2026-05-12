@@ -98,16 +98,11 @@ export async function previewSync(
 
   // Buscar TODOS os SKUs de uma vez (batch)
   const skus = parsed.map((r) => r.sku);
-  console.log(`[previewSync] Total SKUs na planilha: ${skus.length}`);
-  console.log(`[previewSync] Primeiros 10 SKUs:`, skus.slice(0, 10));
 
   const products = await prisma.product.findMany({
     where: { sku: { in: skus } },
     include: { variants: true },
   });
-  console.log(`[previewSync] Products encontrados: ${products.length}`);
-  console.log(`[previewSync] Products SKUs:`, products.map((p) => p.sku).slice(0, 10));
-
   const productMap = new Map<string, typeof products[0]["variants"][0]>(
     products
       .filter((p) => p.variants.length > 0)
@@ -117,8 +112,6 @@ export async function previewSync(
   const variantsBySku = await prisma.productVariant.findMany({
     where: { sku: { in: skus } },
   });
-  console.log(`[previewSync] Variants encontrados: ${variantsBySku.length}`);
-  console.log(`[previewSync] Variants SKUs:`, variantsBySku.map((v) => v.sku).slice(0, 10));
 
   const variantMap = new Map(variantsBySku.map((v) => [v.sku!, v]));
 
