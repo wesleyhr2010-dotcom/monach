@@ -126,11 +126,21 @@ export async function previewSync(
     }
 
     if (!variant) {
-      rejected.push({
-        sku: row.sku,
-        nome: row.nome,
-        reason: "SKU não encontrado no banco de dados",
-      });
+      // Verifica se o Product existe mas não tem variantes
+      const productWithoutVariant = products.find((p) => p.sku === row.sku);
+      if (productWithoutVariant) {
+        rejected.push({
+          sku: row.sku,
+          nome: row.nome,
+          reason: "Produto existe mas não tem variação cadastrada — cadastre uma variação primeiro",
+        });
+      } else {
+        rejected.push({
+          sku: row.sku,
+          nome: row.nome,
+          reason: "SKU não encontrado no banco de dados",
+        });
+      }
       continue;
     }
 
