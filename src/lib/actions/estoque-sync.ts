@@ -154,7 +154,9 @@ export async function previewSync(
     matched.push(match);
   }
 
-  return { matched, rejected };
+  const result = { matched, rejected };
+  console.log(`[previewSync] RETURN: ${matched.length} matched, ${rejected.length} rejected`);
+  return result;
 }
 
 /**
