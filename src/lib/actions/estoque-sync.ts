@@ -60,14 +60,12 @@ function parseArticulo(articulo: string | number): { sku: string; nome: string }
  * Suporta tanto .xls (binário antigo) quanto .xlsx
  */
 export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
-  const buffer = Buffer.from(await file.arrayBuffer());
-  const isXls = file.name.toLowerCase().endsWith(".xls");
+  const arrayBuffer = await file.arrayBuffer();
+  const uint8Array = new Uint8Array(arrayBuffer);
 
-  const workbook = XLSX.read(buffer, {
-    type: "buffer",
+  const workbook = XLSX.read(uint8Array, {
+    type: "array",
     cellDates: true,
-    // .xls files need type detection
-    ...(isXls ? { type: "binary" } : {}),
   });
 
   const sheetName = workbook.SheetNames[0];
@@ -91,11 +89,10 @@ export async function previewSync(
   fileData: { name: string; data: string }, // base64 encoded file
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncPreview> {
-  const isXls = fileData.name.toLowerCase().endsWith(".xls");
-  const mimeType = isXls
-    ? "application/vnd.ms-excel"
-    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: mimeType });
+  // Decode base64 to Uint8Array (server-side)
+  const buffer = Buffer.from(fileData.data, "base64");
+  const uint8 = new Uint8Array(buffer);
+  const file = new File([uint8], fileData.name);
   const parsed = await parseSpreadsheet(file);
 
   const matched: MatchedProduct[] = [];
@@ -145,11 +142,10 @@ export async function executeSync(
   fileData: { name: string; data: string },
   options: { updateStock: boolean; updatePrice: boolean }
 ): Promise<SyncResult> {
-  const isXls = fileData.name.toLowerCase().endsWith(".xls");
-  const mimeType = isXls
-    ? "application/vnd.ms-excel"
-    : "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-  const file = new File([Buffer.from(fileData.data, "base64")], fileData.name, { type: mimeType });
+  // Decode base64 to Uint8Array (server-side)
+  const buffer = Buffer.from(fileData.data, "base64");
+  const uint8 = new Uint8Array(buffer);
+  const file = new File([uint8], fileData.name);
   const parsed = await parseSpreadsheet(file);
 
   const rejected: RejectedProduct[] = [];
