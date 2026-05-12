@@ -6,6 +6,16 @@ import { toast } from "sonner";
 import { previewSync, executeSync, type SyncPreview } from "@/lib/actions/estoque-sync";
 import { StockSyncPreview } from "./StockSyncPreview";
 
+/** Converte ArrayBuffer para base64 usando API do browser */
+function arrayBufferToBase64(buffer: ArrayBuffer): string {
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.byteLength; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
+}
+
 export function StockSyncUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [updateStock, setUpdateStock] = useState(true);
@@ -48,8 +58,7 @@ export function StockSyncUpload() {
 
     setLoading(true);
     try {
-      const buffer = await file.arrayBuffer();
-      const base64 = Buffer.from(buffer).toString("base64");
+      const base64 = arrayBufferToBase64(await file.arrayBuffer());
       const result = await previewSync(
         { name: file.name, data: base64 },
         { updateStock, updatePrice }
@@ -68,8 +77,7 @@ export function StockSyncUpload() {
 
     setSyncing(true);
     try {
-      const buffer = await file.arrayBuffer();
-      const base64 = Buffer.from(buffer).toString("base64");
+      const base64 = arrayBufferToBase64(await file.arrayBuffer());
       const result = await executeSync(
         { name: file.name, data: base64 },
         { updateStock, updatePrice }
