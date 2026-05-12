@@ -99,9 +99,21 @@ export async function previewSync(
   const rejected: RejectedProduct[] = [];
 
   for (const row of parsed) {
-    const variant = await prisma.productVariant.findFirst({
+    // Busca primeiro por Product.sku (SKU principal), depois por ProductVariant.sku
+    const product = await prisma.product.findFirst({
       where: { sku: row.sku },
+      include: { variants: { take: 1 } },
     });
+
+    // Busca primeiro pelo Product.sku, depois pelo ProductVariant.sku
+    const variantFromProduct = product?.variants[0];
+    const variantFromVariant = !variantFromProduct
+      ? await prisma.productVariant.findFirst({
+          where: { sku: row.sku },
+        })
+      : null;
+
+    const variant = variantFromProduct ?? variantFromVariant;
 
     if (!variant) {
       rejected.push({
@@ -152,12 +164,23 @@ export async function executeSync(
   let updatedCount = 0;
   let movementsCount = 0;
 
-  // Buscar todos os SKUs de uma vez para eficiência
+  // Buscar todos os SKUs de uma vez — primeiro por Product.sku, depois por ProductVariant.sku
   const skus = parsed.map((r) => r.sku);
-  const variants = await prisma.productVariant.findMany({
+
+  const products = await prisma.product.findMany({
+    where: { sku: { in: skus } },
+    include: { variants: true },
+  });
+  const productMap = new Map<string, typeof variantsBySku[0]>(
+    products
+      .filter((p) => p.variants.length > 0)
+      .map((p) => [p.sku, p.variants[0]!])
+  );
+
+  const variantsBySku = await prisma.productVariant.findMany({
     where: { sku: { in: skus } },
   });
-  const variantMap = new Map(variants.map((v) => [v.sku!, v]));
+  const variantMap = new Map(variantsBySku.map((v) => [v.sku!, v]));
 
   // Preparar as atualizações
   const updates: {
@@ -171,7 +194,12 @@ export async function executeSync(
   }[] = [];
 
   for (const row of parsed) {
-    const variant = variantMap.get(row.sku);
+    // Tenta Product.sku primeiro, depois ProductVariant.sku
+    let variant = productMap.get(row.sku);
+    if (!variant) {
+      variant = variantMap.get(row.sku);
+    }
+
     if (!variant) {
       rejected.push({
         sku: row.sku,
