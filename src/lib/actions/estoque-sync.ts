@@ -22,6 +22,7 @@ export interface MatchedProduct {
   currentPrice: number | null;
   newStock?: number;
   newPrice?: number | null;
+  willCreateVariant?: boolean;
 }
 
 export interface RejectedProduct {
@@ -85,6 +86,7 @@ export async function parseSpreadsheet(file: File): Promise<ParsedRow[]> {
 /**
  * Preview da sincronização — não modifica o banco
  * Busca em batch para evitar N+1 queries
+ * Produtos simples sem variação são aceitos (variação será criada no executeSync)
  */
 export async function previewSync(
   fileData: { name: string; data: string }, // base64 encoded file
@@ -103,44 +105,52 @@ export async function previewSync(
     where: { sku: { in: skus } },
     include: { variants: true },
   });
-  const productMap = new Map<string, typeof products[0]["variants"][0]>(
-    products
-      .filter((p) => p.variants.length > 0)
-      .map((p) => [p.sku, p.variants[0]!])
-  );
 
   const variantsBySku = await prisma.productVariant.findMany({
     where: { sku: { in: skus } },
   });
-
   const variantMap = new Map(variantsBySku.map((v) => [v.sku!, v]));
 
   const matched: MatchedProduct[] = [];
   const rejected: RejectedProduct[] = [];
 
   for (const row of parsed) {
-    // Tenta Product.sku primeiro, depois ProductVariant.sku
-    let variant = productMap.get(row.sku);
+    // 1. Tenta ProductVariant.sku direto
+    let variant: typeof variantsBySku[0] | undefined = variantMap.get(row.sku);
+    let willCreateVariant = false;
+
+    // 2. Se não achou, tenta Product.sku
     if (!variant) {
-      variant = variantMap.get(row.sku);
+      const product = products.find((p) => p.sku === row.sku);
+      if (product) {
+        if (product.variants.length > 0) {
+          variant = product.variants[0];
+        } else {
+          // Produto simples sem variação — será criada automaticamente
+          willCreateVariant = true;
+          variant = {
+            id: product.id, // placeholder, será substituído no executeSync
+            product_id: product.id,
+            attribute_name: "Padrão",
+            attribute_value: "Único",
+            price: product.price,
+            sku: product.sku,
+            in_stock: true,
+            stock_quantity: 0,
+            image_url: "",
+            ativo: true,
+            created_at: new Date(),
+          } as unknown as typeof variant;
+        }
+      }
     }
 
     if (!variant) {
-      // Verifica se o Product existe mas não tem variantes
-      const productWithoutVariant = products.find((p) => p.sku === row.sku);
-      if (productWithoutVariant) {
-        rejected.push({
-          sku: row.sku,
-          nome: row.nome,
-          reason: "Produto existe mas não tem variação cadastrada — cadastre uma variação primeiro",
-        });
-      } else {
-        rejected.push({
-          sku: row.sku,
-          nome: row.nome,
-          reason: "SKU não encontrado no banco de dados",
-        });
-      }
+      rejected.push({
+        sku: row.sku,
+        nome: row.nome,
+        reason: "SKU não encontrado no banco de dados",
+      });
       continue;
     }
 
@@ -152,6 +162,7 @@ export async function previewSync(
       variantId: variant.id,
       currentStock: variant.stock_quantity,
       currentPrice: variant.price ? parseFloat(variant.price.toString()) : null,
+      willCreateVariant,
     };
 
     if (options.updateStock) {
@@ -164,13 +175,12 @@ export async function previewSync(
     matched.push(match);
   }
 
-  const result = { matched, rejected };
-  console.log(`[previewSync] RETURN: ${matched.length} matched, ${rejected.length} rejected`);
-  return result;
+  return { matched, rejected };
 }
 
 /**
  * Executa a sincronização — atualiza ProductVariant e cria EstoqueMovimento
+ * Produtos simples sem variação recebem uma variação padrão automaticamente
  */
 export async function executeSync(
   fileData: { name: string; data: string },
@@ -186,18 +196,13 @@ export async function executeSync(
   let updatedCount = 0;
   let movementsCount = 0;
 
-  // Buscar todos os SKUs de uma vez — primeiro por Product.sku, depois por ProductVariant.sku
+  // Buscar todos os SKUs de uma vez
   const skus = parsed.map((r) => r.sku);
 
   const products = await prisma.product.findMany({
     where: { sku: { in: skus } },
     include: { variants: true },
   });
-  const productMap = new Map<string, typeof variantsBySku[0]>(
-    products
-      .filter((p) => p.variants.length > 0)
-      .map((p) => [p.sku, p.variants[0]!])
-  );
 
   const variantsBySku = await prisma.productVariant.findMany({
     where: { sku: { in: skus } },
@@ -215,11 +220,22 @@ export async function executeSync(
     newPrice?: number | null;
   }[] = [];
 
+  // Produtos que precisam de variação criada
+  const productsNeedingVariant: Map<string, typeof products[0]> = new Map();
+
   for (const row of parsed) {
-    // Tenta Product.sku primeiro, depois ProductVariant.sku
-    let variant = productMap.get(row.sku);
+    let variant = variantMap.get(row.sku);
+
     if (!variant) {
-      variant = variantMap.get(row.sku);
+      const product = products.find((p) => p.sku === row.sku);
+      if (product) {
+        if (product.variants.length > 0) {
+          variant = product.variants[0];
+        } else {
+          // Marca para criar variação na transação
+          productsNeedingVariant.set(product.id, product);
+        }
+      }
     }
 
     if (!variant) {
@@ -252,7 +268,30 @@ export async function executeSync(
   // Executar em transação
   if (updates.length > 0) {
     await prisma.$transaction(async (tx) => {
+      // Primeiro: criar variações padrão para produtos simples
+      const createdVariants = new Map<string, typeof variantsBySku[0]>();
+      for (const [productId, product] of productsNeedingVariant) {
+        const newVariant = await tx.productVariant.create({
+          data: {
+            product_id: productId,
+            attribute_name: "Padrão",
+            attribute_value: "Único",
+            sku: product.sku,
+            price: product.price,
+            stock_quantity: 0,
+            in_stock: true,
+            image_url: "",
+            ativo: true,
+          },
+        });
+        createdVariants.set(product.sku, newVariant);
+      }
+
+      // Atualizar updates que precisavam de variação criada
       for (const update of updates) {
+        const created = createdVariants.get(update.sku);
+        const variantId = created ? created.id : update.variantId;
+
         const updateData: Record<string, unknown> = {};
         if (update.newStock !== undefined) {
           updateData.stock_quantity = update.newStock;
@@ -262,7 +301,7 @@ export async function executeSync(
         }
 
         await tx.productVariant.update({
-          where: { id: update.variantId },
+          where: { id: variantId },
           data: updateData,
         });
 
@@ -270,7 +309,7 @@ export async function executeSync(
         if (update.newStock !== undefined) {
           await tx.estoqueMovimento.create({
             data: {
-              product_variant_id: update.variantId,
+              product_variant_id: variantId,
               quantidade: update.newStock - update.oldStock,
               tipo: EstoqueMovimentoTipo.ajuste_manual,
               motivo: "Sincronização de Estoque via Planilha do CRM",

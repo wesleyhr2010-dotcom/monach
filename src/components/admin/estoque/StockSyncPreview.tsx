@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle } from "lucide-react";
+import { AlertCircle, CheckCircle, Plus } from "lucide-react";
 import type { SyncPreview } from "@/lib/actions/estoque-sync";
 
 interface StockSyncPreviewProps {
@@ -63,7 +63,24 @@ export function StockSyncPreview({ preview, onConfirm, onReset, syncing }: Stock
               {matched.map((m, i) => (
                 <tr key={i} style={{ borderBottom: "1px solid var(--admin-border)" }}>
                   <td style={{ padding: "10px 12px", fontFamily: "monospace" }}>{m.sku}</td>
-                  <td style={{ padding: "10px 12px" }}>{m.nome}</td>
+                  <td style={{ padding: "10px 12px" }}>
+                    {m.nome}
+                    {m.willCreateVariant && (
+                      <span style={{
+                        marginLeft: 8,
+                        padding: "2px 6px",
+                        background: "var(--admin-accent)",
+                        color: "#fff",
+                        borderRadius: 4,
+                        fontSize: 10,
+                        fontWeight: 600,
+                        whiteSpace: "nowrap",
+                      }}>
+                        <Plus size={10} style={{ display: "inline", marginRight: 2 }} />
+                        Variação será criada
+                      </span>
+                    )}
+                  </td>
                   <td style={{ padding: "10px 12px", textAlign: "right" }}>{m.currentStock}</td>
                   <td style={{
                     padding: "10px 12px",
