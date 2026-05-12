@@ -4,7 +4,7 @@ milestone: v1.4
 milestone_name: PDV e Ventas de Loja
 status: active
 last_updated: "2026-05-08T21:30:00.000Z"
-last_activity: 2026-05-09 -- Phase 18 executed (2 plans, 2 waves, 11 commits)
+last_activity: 2026-05-12 -- Quick task 001 completed (stock sync via spreadsheet upload)
 progress:
   total_phases: 3
   completed_phases: 3
@@ -99,7 +99,7 @@ None.
 
 | # | Description | Date | Commit | Directory |
 |---|-------------|------|--------|-----------|
-| 001 | Sincronização de Estoque via Upload de Planilha (CRM) | 2026-05-12 | pending | [001-sincronizacao-estoque-planilha](./quick/001-sincronizacao-estoque-planilha/) |
+| 001 | Sincronização de Estoque via Upload de Planilha (CRM) | 2026-05-12 | 06669fb | [001-sincronizacao-estoque-planilha](./quick/001-sincronizacao-estoque-planilha/) |
 
 ## Deferred Items
 
