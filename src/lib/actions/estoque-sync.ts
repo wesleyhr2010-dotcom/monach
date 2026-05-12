@@ -273,45 +273,49 @@ export async function executeSync(
     });
   }
 
-  // === FASE 4: Executar updates em transação com timeout aumentado ===
+  // === FASE 4: Executar updates em transação batch (array de promises) ===
+  // Transação interativa estourava timeout — batch é muito mais rápido
   if (updates.length > 0) {
-    await prisma.$transaction(
-      async (tx) => {
-        for (const update of updates) {
-          const updateData: Record<string, unknown> = {};
-          if (update.newStock !== undefined) {
-            updateData.stock_quantity = update.newStock;
-          }
-          if (update.newPrice !== undefined) {
-            updateData.price = update.newPrice;
-          }
+    const transactionQueries: Array<
+      ReturnType<typeof prisma.productVariant.update> |
+      ReturnType<typeof prisma.estoqueMovimento.create>
+    > = [];
 
-          await tx.productVariant.update({
-            where: { id: update.variantId },
-            data: updateData,
-          });
-
-          // Registrar movimentação de estoque
-          if (update.newStock !== undefined) {
-            await tx.estoqueMovimento.create({
-              data: {
-                product_variant_id: update.variantId,
-                quantidade: update.newStock - update.oldStock,
-                tipo: EstoqueMovimentoTipo.ajuste_manual,
-                motivo: "Sincronização de Estoque via Planilha do CRM",
-              },
-            });
-            movementsCount++;
-          }
-
-          updatedCount++;
-        }
-      },
-      {
-        maxWait: 10000,
-        timeout: 20000,
+    for (const update of updates) {
+      const updateData: Record<string, unknown> = {};
+      if (update.newStock !== undefined) {
+        updateData.stock_quantity = update.newStock;
       }
-    );
+      if (update.newPrice !== undefined) {
+        updateData.price = update.newPrice;
+      }
+
+      // Update do estoque/preço
+      transactionQueries.push(
+        prisma.productVariant.update({
+          where: { id: update.variantId },
+          data: updateData,
+        })
+      );
+      updatedCount++;
+
+      // Movimentação de estoque
+      if (update.newStock !== undefined) {
+        transactionQueries.push(
+          prisma.estoqueMovimento.create({
+            data: {
+              product_variant_id: update.variantId,
+              quantidade: update.newStock - update.oldStock,
+              tipo: EstoqueMovimentoTipo.ajuste_manual,
+              motivo: "Sincronização de Estoque via Planilha do CRM",
+            },
+          })
+        );
+        movementsCount++;
+      }
+    }
+
+    await prisma.$transaction(transactionQueries);
   }
 
   // Revalidar páginas
