@@ -30,9 +30,16 @@ export function DatePickerWithRange({ value, onChange }: Props) {
     setOpen((v) => !v);
   };
 
+  // react-day-picker v9 seta to=from no primeiro clique (min=0 padrão).
+  // Só fechar e propagar quando from e to são dias distintos.
+  const isSameDay = (a: Date, b: Date) =>
+    a.getFullYear() === b.getFullYear() &&
+    a.getMonth() === b.getMonth() &&
+    a.getDate() === b.getDate();
+
   const handleSelect = (range: DateRange | undefined) => {
     setInternalRange(range);
-    if (range?.from && range?.to) {
+    if (range?.from && range?.to && !isSameDay(range.from, range.to)) {
       onChange({ from: range.from, to: range.to });
       setOpen(false);
     }
