@@ -2,8 +2,15 @@ import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/middleware-auth";
 
 export async function middleware(request: NextRequest) {
-    // Pass the request to Supabase to handle the refresh token and session cookies
-    return await updateSession(request);
+    const response = await updateSession(request);
+
+    // Injeta o pathname atual para que o layout possa checar rotas restritas
+    // sem precisar do client-side usePathname (que não está disponível em RSC).
+    const res = response instanceof NextResponse
+        ? response
+        : NextResponse.next({ request });
+    res.headers.set("x-current-path", request.nextUrl.pathname);
+    return res;
 }
 
 export const config = {

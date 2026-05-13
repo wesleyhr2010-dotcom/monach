@@ -34,9 +34,13 @@ export default function EquipePage() {
     }, []);
 
     async function loadData() {
-        const [c, r] = await Promise.all([getColaboradoras(), getRevendedoras()]);
-        setColaboradoras(c);
-        setRevendedoras(r);
+        try {
+            const [c, r] = await Promise.all([getColaboradoras(), getRevendedoras()]);
+            setColaboradoras(c);
+            setRevendedoras(r);
+        } catch {
+            router.replace("/admin");
+        }
     }
 
     function handleNewColab(e: React.FormEvent<HTMLFormElement>) {
