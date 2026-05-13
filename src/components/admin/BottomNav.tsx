@@ -5,90 +5,87 @@ import { usePathname } from "next/navigation";
 import type { Role } from "@/lib/user";
 import { logout } from "@/lib/actions/auth";
 import {
-    LayoutDashboard,
-    Package,
-    Briefcase,
-    Users,
-    UserCheck,
-    BarChart3,
-    FileDown,
-    User,
-    CircleDollarSign,
-    MoreHorizontal,
-    LogOut,
+    AlignJustify,
     ArrowLeft,
+    Award,
+    BarChart3,
+    Bell,
+    Briefcase,
+    CircleDollarSign,
+    FileText,
+    Gift,
+    Grid2x2,
+    LayoutDashboard,
+    LogOut,
+    Mail,
+    MoreHorizontal,
+    Package,
+    Receipt,
+    Star,
+    User,
+    UserCheck,
     X,
 } from "lucide-react";
 import React from "react";
 
-const allNavItems = [
-    {
-        href: "/admin",
-        label: "Inicio",
-        icon: LayoutDashboard,
-        exact: true,
-        roles: ["ADMIN", "COLABORADORA"] as Role[],
-    },
-    {
-        href: "/admin/maleta",
-        label: "Maleta",
-        icon: Briefcase,
-        exact: false,
-        roles: ["ADMIN", "COLABORADORA"] as Role[],
-    },
-    {
-        href: "/admin/revendedoras",
-        label: "Revend.",
-        icon: UserCheck,
-        exact: false,
-        roles: ["ADMIN", "COLABORADORA"] as Role[],
-    },
-    {
-        href: "/admin/analytics",
-        label: "Analytics",
-        icon: BarChart3,
-        exact: false,
-        roles: ["ADMIN", "COLABORADORA"] as Role[],
-    },
-    {
-        href: "/admin/produtos",
-        label: "Productos",
-        icon: Package,
-        exact: false,
-        roles: ["ADMIN"] as Role[],
-    },
-    {
-        href: "/admin/equipe",
-        label: "Equipe",
-        icon: Users,
-        exact: false,
-        roles: ["ADMIN"] as Role[],
-    },
-    {
-        href: "/admin/relatorios",
-        label: "Relatórios",
-        icon: FileDown,
-        exact: false,
-        roles: ["ADMIN"] as Role[],
-    },
-    {
-        href: "/admin/minha-conta",
-        label: "Perfil",
-        icon: User,
-        exact: false,
-        roles: ["COLABORADORA"] as Role[],
-    },
-    {
-        href: "/admin/minha-conta/comissoes",
-        label: "Comissões",
-        icon: CircleDollarSign,
-        exact: false,
-        roles: ["COLABORADORA"] as Role[],
-    },
+// ── Tipos ──────────────────────────────────────────────────────
+type NavItem = {
+    type?: never;
+    href: string;
+    label: string;
+    icon: React.ComponentType<{ size?: number; strokeWidth?: number }>;
+    exact?: boolean;
+    roles: Role[];
+};
+
+type NavSection = {
+    type: "section";
+    label: string;
+    roles: Role[];
+};
+
+// ── 4 itens fixos na barra ─────────────────────────────────────
+const primaryItems: NavItem[] = [
+    { href: "/admin",              label: "Inicio",    icon: LayoutDashboard, exact: true, roles: ["ADMIN", "COLABORADORA"] },
+    { href: "/admin/maleta",       label: "Maleta",    icon: Briefcase,                   roles: ["ADMIN", "COLABORADORA"] },
+    { href: "/admin/revendedoras", label: "Revend.",   icon: UserCheck,                   roles: ["ADMIN", "COLABORADORA"] },
+    { href: "/admin/analytics",    label: "Analytics", icon: BarChart3,                   roles: ["ADMIN", "COLABORADORA"] },
 ];
 
-const PRIMARY_COUNT = 4;
+// ── Sheet: espelha a sidebar completa (sem os 4 primários) ─────
+const sheetEntries: (NavItem | NavSection)[] = [
+    // Operações diárias
+    { href: "/admin/ventas",    label: "Ventas", icon: Receipt,          roles: ["ADMIN", "COLABORADORA"] },
+    { href: "/admin/pdv",       label: "PDV",    icon: CircleDollarSign, roles: ["ADMIN", "COLABORADORA"] },
 
+    // Gestão (ADMIN)
+    { href: "/admin/leads",       label: "Candidaturas", icon: Bell, roles: ["ADMIN"] },
+    { href: "/admin/consultoras", label: "Consultoras",  icon: User, roles: ["ADMIN"] },
+
+    // Catálogo
+    { type: "section", label: "Catálogo", roles: ["ADMIN"] },
+    { href: "/admin/produtos",            label: "Produtos",   icon: Grid2x2,       roles: ["ADMIN"] },
+    { href: "/admin/categorias",          label: "Categorias", icon: AlignJustify,  roles: ["ADMIN"] },
+    { href: "/admin/estoque/sincronizar", label: "Stock",      icon: Package,       roles: ["ADMIN"] },
+
+    // Configurações
+    { type: "section", label: "Configuraciones", roles: ["ADMIN"] },
+    { href: "/admin/gamificacao",        label: "Gamificação",  icon: Star,            roles: ["ADMIN"] },
+    { href: "/admin/config/comissoes",   label: "Comissões",    icon: CircleDollarSign,roles: ["ADMIN"] },
+    { href: "/admin/config/cotizacion",  label: "Cotización",   icon: FileText,        roles: ["ADMIN"] },
+    { href: "/admin/config/niveis",      label: "Níveis",       icon: Award,           roles: ["ADMIN"] },
+    { href: "/admin/config/contratos",   label: "Contratos",    icon: FileText,        roles: ["ADMIN"] },
+    { href: "/admin/config/notif-push",  label: "Notif. Push",  icon: Bell,            roles: ["ADMIN"] },
+    { href: "/admin/config/emails",      label: "Correos",      icon: Mail,            roles: ["ADMIN"] },
+    { href: "/admin/brindes",            label: "Brindes",      icon: Gift,            roles: ["ADMIN"] },
+
+    // Minha Conta (COLABORADORA)
+    { type: "section", label: "Mi Cuenta", roles: ["COLABORADORA"] },
+    { href: "/admin/minha-conta",           label: "Perfil",    icon: User,            roles: ["COLABORADORA"] },
+    { href: "/admin/minha-conta/comissoes", label: "Comissões", icon: CircleDollarSign,roles: ["COLABORADORA"] },
+];
+
+// ── Componente ─────────────────────────────────────────────────
 interface BottomNavProps {
     userRole: Role;
 }
@@ -97,106 +94,101 @@ export function BottomNav({ userRole }: BottomNavProps) {
     const pathname = usePathname() ?? "";
     const [moreOpen, setMoreOpen] = React.useState(false);
 
-    const navItems = allNavItems.filter((item) => item.roles.includes(userRole));
-    const primaryItems = navItems.slice(0, PRIMARY_COUNT);
-    const secondaryItems = navItems.slice(PRIMARY_COUNT);
+    // Filtra itens visíveis para o role atual
+    const visiblePrimary = primaryItems.filter((i) => i.roles.includes(userRole));
 
-    const isMoreActive = secondaryItems.some((item) =>
-        item.exact ? pathname === item.href : pathname.startsWith(item.href)
+    const visibleSheet = sheetEntries.filter((entry) => {
+        if (!entry.roles) return true;
+        return entry.roles.includes(userRole);
+    });
+
+    // Remove seções que ficaram sem itens abaixo delas
+    const cleanedSheet = visibleSheet.filter((entry, idx) => {
+        if (entry.type !== "section") return true;
+        const next = visibleSheet[idx + 1];
+        return next && next.type !== "section";
+    });
+
+    // Botão Más fica ativo quando rota atual é de um item do sheet
+    const isMoreActive = visibleSheet.some(
+        (e) => e.type !== "section" && (e.exact ? pathname === e.href : pathname.startsWith(e.href))
     );
 
-    // Fecha o sheet ao navegar
-    React.useEffect(() => {
-        setMoreOpen(false);
-    }, [pathname]);
+    // Fecha sheet ao navegar
+    React.useEffect(() => { setMoreOpen(false); }, [pathname]);
 
     return (
         <>
-            {/* Sheet overlay */}
+            {/* Overlay */}
             {moreOpen && (
-                <div
-                    className="admin-bottom-more-overlay"
-                    onClick={() => setMoreOpen(false)}
-                />
+                <div className="admin-bottom-more-overlay" onClick={() => setMoreOpen(false)} />
             )}
 
             {/* Bottom sheet */}
             <div className={`admin-bottom-more-sheet ${moreOpen ? "open" : ""}`}>
                 <div className="admin-bottom-more-sheet-header">
                     <span>Más opciones</span>
-                    <button
-                        type="button"
-                        className="admin-bottom-more-close"
-                        onClick={() => setMoreOpen(false)}
-                    >
+                    <button type="button" className="admin-bottom-more-close" onClick={() => setMoreOpen(false)}>
                         <X size={18} strokeWidth={2} />
                     </button>
                 </div>
 
-                {secondaryItems.length > 0 && (
-                    <div className="admin-bottom-more-section">
-                        {secondaryItems.map((item) => {
-                            const isActive = item.exact
-                                ? pathname === item.href
-                                : pathname.startsWith(item.href);
-                            const Icon = item.icon;
+                <div className="admin-bottom-more-scroll">
+                    {cleanedSheet.map((entry, idx) => {
+                        if (entry.type === "section") {
                             return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    className={`admin-bottom-more-item ${isActive ? "active" : ""}`}
-                                    onClick={() => setMoreOpen(false)}
-                                >
-                                    <Icon size={20} strokeWidth={1.75} />
-                                    <span>{item.label}</span>
-                                </Link>
+                                <div key={`section-${idx}`} className="admin-bottom-more-section-label">
+                                    {entry.label}
+                                </div>
                             );
-                        })}
-                    </div>
-                )}
+                        }
+                        const isActive = entry.exact
+                            ? pathname === entry.href
+                            : pathname.startsWith(entry.href);
+                        const Icon = entry.icon;
+                        return (
+                            <Link
+                                key={entry.href}
+                                href={entry.href}
+                                className={`admin-bottom-more-item ${isActive ? "active" : ""}`}
+                                onClick={() => setMoreOpen(false)}
+                            >
+                                <Icon size={20} strokeWidth={1.75} />
+                                <span>{entry.label}</span>
+                            </Link>
+                        );
+                    })}
 
-                <div className="admin-bottom-more-section admin-bottom-more-section--footer">
-                    <Link
-                        href="/"
-                        className="admin-bottom-more-item"
-                        onClick={() => setMoreOpen(false)}
-                    >
-                        <ArrowLeft size={20} strokeWidth={1.75} />
-                        <span>Volver al sitio</span>
-                    </Link>
-                    <form action={logout}>
-                        <button
-                            type="submit"
-                            className="admin-bottom-more-item admin-bottom-more-item--danger"
-                        >
-                            <LogOut size={20} strokeWidth={1.75} />
-                            <span>Salir del sistema</span>
-                        </button>
-                    </form>
+                    {/* Footer fixo */}
+                    <div className="admin-bottom-more-footer">
+                        <Link href="/" className="admin-bottom-more-item" onClick={() => setMoreOpen(false)}>
+                            <ArrowLeft size={20} strokeWidth={1.75} />
+                            <span>Volver al sitio</span>
+                        </Link>
+                        <form action={logout}>
+                            <button type="submit" className="admin-bottom-more-item admin-bottom-more-item--danger">
+                                <LogOut size={20} strokeWidth={1.75} />
+                                <span>Salir del sistema</span>
+                            </button>
+                        </form>
+                    </div>
                 </div>
             </div>
 
-            {/* Bottom nav bar */}
+            {/* Barra */}
             <nav className="admin-bottom-nav">
                 <div className="admin-bottom-nav-inner">
-                    {primaryItems.map((item) => {
-                        const isActive = item.exact
-                            ? pathname === item.href
-                            : pathname.startsWith(item.href);
+                    {visiblePrimary.map((item) => {
+                        const isActive = item.exact ? pathname === item.href : pathname.startsWith(item.href);
                         const Icon = item.icon;
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                className={`admin-bottom-nav-item ${isActive ? "active" : ""}`}
-                            >
+                            <Link key={item.href} href={item.href} className={`admin-bottom-nav-item ${isActive ? "active" : ""}`}>
                                 <Icon size={22} strokeWidth={isActive ? 2.5 : 1.75} />
                                 <span>{item.label}</span>
                             </Link>
                         );
                     })}
 
-                    {/* Botão "Más" */}
                     <button
                         type="button"
                         className={`admin-bottom-nav-item ${isMoreActive || moreOpen ? "active" : ""}`}

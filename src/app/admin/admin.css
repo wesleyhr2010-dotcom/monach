@@ -807,14 +807,26 @@ button.admin-bottom-nav-item {
     cursor: pointer;
 }
 
-.admin-bottom-more-section {
+.admin-bottom-more-scroll {
+    overflow-y: auto;
+    max-height: calc(72vh - 52px); /* 52px = header */
     padding: 8px 12px;
+    padding-bottom: 4px;
 }
 
-.admin-bottom-more-section--footer {
+.admin-bottom-more-section-label {
+    padding: 12px 8px 4px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--admin-text-dim);
+}
+
+.admin-bottom-more-footer {
     border-top: 1px solid var(--admin-border);
+    padding-top: 8px;
     margin-top: 4px;
-    padding-top: 12px;
 }
 
 .admin-bottom-more-item {
