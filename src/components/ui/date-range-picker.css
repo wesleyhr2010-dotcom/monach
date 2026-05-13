@@ -1,124 +1,231 @@
-/* Custom dark-theme overrides for react-day-picker v9 */
+/* ================================================================
+   DatePickerWithRange — dark theme completo para react-day-picker v9
+   CSS padrão NÃO importado — estilos auto-contidos, sem conflitos
+   ================================================================ */
 
 .rdp-root {
-  --rdp-accent-color: var(--admin-accent);
-  --rdp-background-color: var(--admin-surface);
+  position: relative;
+  box-sizing: border-box;
   color: var(--admin-text);
   font-family: inherit;
+  font-size: 13px;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
+.rdp-root * {
+  box-sizing: border-box;
+}
+
+/* Meses lado a lado */
 .rdp-months {
   display: flex;
-  gap: 16px;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  gap: 24px;
 }
 
 .rdp-month {
-  min-width: 260px;
+  min-width: 224px;
 }
 
+/* Caption do mês — label com espaço para a nav absoluta */
 .rdp-month_caption {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  height: 40px;
+  padding-right: 68px; /* reserva espaço para os botões < > */
   margin-bottom: 8px;
+}
+
+.rdp-caption_label {
   font-weight: 600;
   font-size: 14px;
   color: var(--admin-text);
+  white-space: nowrap;
 }
 
+/* Navegação — absoluta no canto superior direito do root */
 .rdp-nav {
+  position: absolute;
+  top: 0;
+  right: 0;
   display: flex;
-  gap: 4px;
+  align-items: center;
+  gap: 6px;
+  height: 40px;
 }
 
 .rdp-button_previous,
 .rdp-button_next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
   background: transparent;
   border: 1px solid var(--admin-border);
   border-radius: var(--admin-radius-sm);
   color: var(--admin-text);
   cursor: pointer;
-  padding: 4px 8px;
-  font-size: 12px;
+  -webkit-appearance: none;
+  appearance: none;
 }
 
-.rdp-button_previous:hover,
-.rdp-button_next:hover {
+.rdp-button_previous:hover:not(:disabled),
+.rdp-button_next:hover:not(:disabled) {
   background: var(--admin-surface-hover);
 }
 
+.rdp-button_previous:disabled,
+.rdp-button_next:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.rdp-chevron {
+  display: inline-block;
+  fill: var(--admin-text-muted);
+  width: 14px;
+  height: 14px;
+}
+
+/* Tabela do mês */
 .rdp-month_grid {
   width: 100%;
   border-collapse: collapse;
+  table-layout: fixed;
 }
 
+/* Cabeçalho dos dias da semana */
 .rdp-weekday {
-  font-size: 11px;
+  font-size: 10px;
+  font-weight: 700;
   color: var(--admin-text-muted);
-  padding: 6px 0;
   text-align: center;
+  padding: 0 0 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  opacity: 1;
 }
 
-.rdp-week {
-  display: flex;
-}
-
+/* Célula de dia (td) */
 .rdp-day {
+  width: 32px;
+  height: 36px;
   text-align: center;
-  padding: 2px;
-  flex: 1;
+  padding: 2px 0;
 }
 
+/* Botão do dia */
 .rdp-day_button {
   width: 32px;
   height: 32px;
-  border-radius: var(--admin-radius-sm);
-  border: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid transparent;
   background: transparent;
   color: var(--admin-text);
   cursor: pointer;
   font-size: 13px;
+  font-family: inherit;
+  border-radius: var(--admin-radius-sm);
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  transition: background 0.1s;
 }
 
 .rdp-day_button:hover:not(:disabled) {
   background: var(--admin-surface-hover);
 }
 
-.rdp-selected .rdp-day_button {
+.rdp-day_button:disabled {
+  cursor: not-allowed;
+}
+
+.rdp-day_button:focus-visible {
+  outline: 2px solid var(--admin-accent);
+  outline-offset: 1px;
+}
+
+/* Hoje */
+.rdp-today:not(.rdp-outside) .rdp-day_button {
+  border-color: var(--admin-accent);
+  color: var(--admin-accent);
+}
+
+/* Dias fora do mês atual */
+.rdp-outside {
+  opacity: 0.3;
+}
+
+/* Dias desabilitados */
+.rdp-disabled:not(.rdp-selected) {
+  opacity: 0.35;
+}
+
+/* Célula invisível */
+.rdp-hidden {
+  visibility: hidden;
+}
+
+/* =============================================
+   Estados de seleção e range
+   ============================================= */
+
+/* Seleção única (sem range) */
+.rdp-selected:not(.rdp-range_start):not(.rdp-range_end):not(.rdp-range_middle) .rdp-day_button {
   background: var(--admin-accent);
   color: #fff;
+  font-weight: 600;
+}
+
+/* Início do range */
+.rdp-range_start {
+  background: linear-gradient(90deg, transparent 50%, rgba(53, 96, 90, 0.2) 50%);
 }
 
 .rdp-range_start .rdp-day_button {
   background: var(--admin-accent);
   color: #fff;
-  border-radius: var(--admin-radius-sm) 0 0 var(--admin-radius-sm);
+  font-weight: 600;
+  border-color: transparent;
+}
+
+/* Fim do range */
+.rdp-range_end {
+  background: linear-gradient(90deg, rgba(53, 96, 90, 0.2) 50%, transparent 50%);
 }
 
 .rdp-range_end .rdp-day_button {
   background: var(--admin-accent);
   color: #fff;
-  border-radius: 0 var(--admin-radius-sm) var(--admin-radius-sm) 0;
+  font-weight: 600;
+  border-color: transparent;
+}
+
+/* Meio do range */
+.rdp-range_middle {
+  background: rgba(53, 96, 90, 0.2);
 }
 
 .rdp-range_middle .rdp-day_button {
-  background: var(--admin-accent-hover);
-  color: #fff;
+  background: transparent;
+  color: var(--admin-text);
   border-radius: 0;
+  border: none;
 }
 
-.rdp-today .rdp-day_button {
-  border: 1px solid var(--admin-accent);
+/* Range de um único dia (início = fim) */
+.rdp-range_start.rdp-range_end {
+  background: transparent;
 }
 
-.rdp-outside .rdp-day_button {
-  color: var(--admin-text-dim);
-}
-
-.rdp-disabled .rdp-day_button {
-  color: var(--admin-text-dim);
-  cursor: not-allowed;
+/* Hoje dentro do range — não sobrescreve a cor do range */
+.rdp-range_start.rdp-today .rdp-day_button,
+.rdp-range_end.rdp-today .rdp-day_button,
+.rdp-range_middle.rdp-today .rdp-day_button {
+  border-color: transparent;
 }
