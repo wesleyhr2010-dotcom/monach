@@ -102,13 +102,13 @@ const allNavEntries: (NavItem | NavSection)[] = [
     { type: "section", label: "Catálogo", roles: ["ADMIN"] },
     {
         href: "/admin/produtos",
-        label: "Produtos",
+        label: "Productos",
         icon: <Grid2x2 size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
         href: "/admin/categorias",
-        label: "Categorias",
+        label: "Categorías",
         icon: <AlignJustify size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
@@ -118,16 +118,16 @@ const allNavEntries: (NavItem | NavSection)[] = [
         icon: <Package size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
-    { type: "section", label: "Configurações", roles: ["ADMIN"] },
+    { type: "section", label: "Configuraciones", roles: ["ADMIN"] },
     {
         href: "/admin/gamificacao",
-        label: "Gamificação",
+        label: "Gamificación",
         icon: <Star size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
     {
         href: "/admin/config/comissoes",
-        label: "Comissões",
+        label: "Comisiones",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
@@ -139,7 +139,7 @@ const allNavEntries: (NavItem | NavSection)[] = [
     },
     {
         href: "/admin/config/niveis",
-        label: "Níveis",
+        label: "Niveles",
         icon: <Award size={16} strokeWidth={1.5} />,
         roles: ["ADMIN"],
     },
@@ -164,12 +164,12 @@ const allNavEntries: (NavItem | NavSection)[] = [
     },
     {
         href: "/admin/brindes",
-        label: "Brindes",
+        label: "Regalos",
         icon: <Gift size={16} strokeWidth={1.5} />,
         customBadge: <BrindesBadge />,
         roles: ["ADMIN"],
     },
-    { type: "section", label: "Minha Conta", roles: ["COLABORADORA"] },
+    { type: "section", label: "Mi Cuenta", roles: ["COLABORADORA"] },
     {
         href: "/admin/minha-conta",
         label: "Perfil",
@@ -178,7 +178,7 @@ const allNavEntries: (NavItem | NavSection)[] = [
     },
     {
         href: "/admin/minha-conta/comissoes",
-        label: "Comissões",
+        label: "Comisiones",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
         roles: ["COLABORADORA"],
     },
@@ -291,7 +291,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                 <div style={{ padding: "16px 20px", borderTop: "1px solid var(--admin-border)", display: "flex", flexDirection: "column", gap: 12 }}>
                     <Link href="/" className="admin-nav-link" style={{ fontSize: 13 }}>
                         <ArrowLeft size={16} strokeWidth={1.5} />
-                        Voltar ao site
+                        Volver al sitio
                     </Link>
                     <form action={logout}>
                         <button
@@ -300,7 +300,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                             style={{ fontSize: 13, background: "transparent", border: "none", cursor: "pointer", width: "100%", padding: 0, color: "var(--admin-danger)" }}
                         >
                             <LogOut size={16} strokeWidth={1.5} />
-                            Sair do sistema
+                            Salir del sistema
                         </button>
                     </form>
                 </div>
