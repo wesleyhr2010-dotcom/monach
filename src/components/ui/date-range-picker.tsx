@@ -18,17 +18,32 @@ export function DatePickerWithRange({ value, onChange }: Props) {
   const [open, setOpen] = React.useState(false);
   const containerRef = React.useRef<HTMLDivElement>(null);
 
+  // Estado interno para rastrear a seleção parcial (só from, sem to).
+  // Necessário porque passar { from: X, to: X } ao DayPicker faz ele
+  // tratar o range como completo e resetar ao próximo clique.
+  const [internalRange, setInternalRange] = React.useState<DateRange | undefined>(
+    value ? { from: value.from, to: value.to } : undefined
+  );
+
+  // Sincroniza quando value muda externamente (ex: limpar, trocar URL).
+  const fromTime = value?.from?.getTime();
+  const toTime = value?.to?.getTime();
+  React.useEffect(() => {
+    setInternalRange(value ? { from: value.from, to: value.to } : undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fromTime, toTime]);
+
   const handleSelect = (range: DateRange | undefined) => {
+    setInternalRange(range);
     if (range?.from && range?.to) {
       onChange({ from: range.from, to: range.to });
       setOpen(false);
-    } else if (range?.from) {
-      onChange({ from: range.from, to: range.from });
     }
   };
 
   const handleClear = (e: React.MouseEvent) => {
     e.stopPropagation();
+    setInternalRange(undefined);
     onChange(undefined);
   };
 
@@ -100,11 +115,7 @@ export function DatePickerWithRange({ value, onChange }: Props) {
         >
           <DayPicker
             mode="range"
-            selected={
-              value
-                ? { from: value.from, to: value.to }
-                : undefined
-            }
+            selected={internalRange}
             onSelect={handleSelect}
             locale={es}
             numberOfMonths={2}
