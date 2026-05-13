@@ -119,31 +119,6 @@ export function DatePickerWithRange({ value, onChange }: Props) {
             onSelect={handleSelect}
             locale={es}
             numberOfMonths={2}
-            classNames={{
-              root: "rdp-root",
-              months: "rdp-months",
-              month: "rdp-month",
-              caption: "rdp-caption",
-              caption_label: "rdp-caption-label",
-              nav: "rdp-nav",
-              button_previous: "rdp-button-previous",
-              button_next: "rdp-button-next",
-              month_grid: "rdp-month-grid",
-              weekdays: "rdp-weekdays",
-              weekday: "rdp-weekday",
-              week: "rdp-week",
-              day: "rdp-day",
-              day_button: "rdp-day-button",
-              range_start: "rdp-range-start",
-              range_end: "rdp-range-end",
-              range_middle: "rdp-range-middle",
-              selected: "rdp-selected",
-              outside: "rdp-outside",
-              disabled: "rdp-disabled",
-              hidden: "rdp-hidden",
-              today: "rdp-today",
-              focused: "rdp-focused",
-            }}
           />
         </div>
       )}
