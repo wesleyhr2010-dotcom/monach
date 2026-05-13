@@ -105,6 +105,7 @@ None.
 | migrate-xlsx-to-exceljs | 2026-05-12 | Replace xlsx@0.18.5 → exceljs@4.4.0 — remediate CVE-2024-22363 (ReDoS) + CVE-2023-30533 (Prototype Pollution) | ddb44fe |
 | patch-postcss-xss | 2026-05-12 | npm override postcss@^8.5.10 — patch CVE-2026-41305 (XSS in CSS Stringify via next@16.2.6 nested dep) | 74999df |
 | admin-sidebar-overflow | 2026-05-12 | Fix admin sidebar nav overflow — itens de menu desaparecendo (overflow-y: auto + scrollbar customizada) | 8cf5b4b |
+| analytics-date-range-fix | 2026-05-12 | Fix DatePickerWithRange — calendário fechava ao selecionar primeira data (internalRange state) | 85767fa |
 
 ## Session Continuity
 
