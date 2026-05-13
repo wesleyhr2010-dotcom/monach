@@ -64,25 +64,25 @@ const sheetEntries: (NavItem | NavSection)[] = [
 
     // Catálogo
     { type: "section", label: "Catálogo", roles: ["ADMIN"] },
-    { href: "/admin/produtos",            label: "Produtos",   icon: Grid2x2,       roles: ["ADMIN"] },
-    { href: "/admin/categorias",          label: "Categorias", icon: AlignJustify,  roles: ["ADMIN"] },
+    { href: "/admin/produtos",            label: "Productos",  icon: Grid2x2,       roles: ["ADMIN"] },
+    { href: "/admin/categorias",          label: "Categorías", icon: AlignJustify,  roles: ["ADMIN"] },
     { href: "/admin/estoque/sincronizar", label: "Stock",      icon: Package,       roles: ["ADMIN"] },
 
-    // Configurações
+    // Configuraciones
     { type: "section", label: "Configuraciones", roles: ["ADMIN"] },
-    { href: "/admin/gamificacao",        label: "Gamificação",  icon: Star,            roles: ["ADMIN"] },
-    { href: "/admin/config/comissoes",   label: "Comissões",    icon: CircleDollarSign,roles: ["ADMIN"] },
+    { href: "/admin/gamificacao",        label: "Gamificación", icon: Star,            roles: ["ADMIN"] },
+    { href: "/admin/config/comissoes",   label: "Comisiones",   icon: CircleDollarSign,roles: ["ADMIN"] },
     { href: "/admin/config/cotizacion",  label: "Cotización",   icon: FileText,        roles: ["ADMIN"] },
-    { href: "/admin/config/niveis",      label: "Níveis",       icon: Award,           roles: ["ADMIN"] },
+    { href: "/admin/config/niveis",      label: "Niveles",      icon: Award,           roles: ["ADMIN"] },
     { href: "/admin/config/contratos",   label: "Contratos",    icon: FileText,        roles: ["ADMIN"] },
     { href: "/admin/config/notif-push",  label: "Notif. Push",  icon: Bell,            roles: ["ADMIN"] },
     { href: "/admin/config/emails",      label: "Correos",      icon: Mail,            roles: ["ADMIN"] },
-    { href: "/admin/brindes",            label: "Brindes",      icon: Gift,            roles: ["ADMIN"] },
+    { href: "/admin/brindes",            label: "Regalos",      icon: Gift,            roles: ["ADMIN"] },
 
-    // Minha Conta (COLABORADORA)
+    // Mi Cuenta (COLABORADORA)
     { type: "section", label: "Mi Cuenta", roles: ["COLABORADORA"] },
     { href: "/admin/minha-conta",           label: "Perfil",    icon: User,            roles: ["COLABORADORA"] },
-    { href: "/admin/minha-conta/comissoes", label: "Comissões", icon: CircleDollarSign,roles: ["COLABORADORA"] },
+    { href: "/admin/minha-conta/comissoes", label: "Comisiones",icon: CircleDollarSign,roles: ["COLABORADORA"] },
 ];
 
 // ── Componente ─────────────────────────────────────────────────
