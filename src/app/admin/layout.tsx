@@ -38,14 +38,16 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     // COLABORADORA não acessa rotas exclusivas de ADMIN
     if (user.role === "COLABORADORA") {
         const restrictedPaths = [
-            "/admin/productos",
-            "/admin/categorias",
-            "/admin/gamificacion",
-            "/admin/brindes",
-            "/admin/leads",
+            "/admin/equipe",
             "/admin/consultoras",
+            "/admin/leads",
+            "/admin/produtos",
+            "/admin/categorias",
+            "/admin/estoque",
+            "/admin/gamificacao",
+            "/admin/brindes",
             "/admin/config",
-            "/admin/equipo/consultoras",
+            "/admin/relatorios",
         ];
         const isRestricted = restrictedPaths.some((path) =>
             pathname === path || pathname.startsWith(path + "/")
