@@ -106,6 +106,7 @@ None.
 | patch-postcss-xss | 2026-05-12 | npm override postcss@^8.5.10 — patch CVE-2026-41305 (XSS in CSS Stringify via next@16.2.6 nested dep) | 74999df |
 | admin-sidebar-overflow | 2026-05-12 | Fix admin sidebar nav overflow — itens de menu desaparecendo (overflow-y: auto + scrollbar customizada) | 8cf5b4b |
 | analytics-date-range-fix | 2026-05-12 | Fix DatePickerWithRange — 3 bugs (addToRange min=0, classNames mismatch, CSS conflito v9) | e071250 |
+| bottom-nav-mas-sheet | 2026-05-12 | Bottom nav mobile — botão Más com sheet de itens extras e logout | 2ad87c6 |
 
 ## Session Continuity
 
