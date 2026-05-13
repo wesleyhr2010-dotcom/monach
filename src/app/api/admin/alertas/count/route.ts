@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getCurrentUser } from "@/lib/user";
-import { getResellerScope } from "@/lib/auth/get-reseller-scope";
+import { getMaletaScope } from "@/lib/auth/get-reseller-scope";
 import { prisma } from "@/lib/prisma";
 
 /**
@@ -24,7 +24,7 @@ export async function GET() {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const scope = getResellerScope(user);
+    const scope = getMaletaScope(user);
 
     const count = await prisma.maleta.count({
       where: {
