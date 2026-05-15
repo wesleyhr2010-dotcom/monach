@@ -55,7 +55,11 @@
 
 ### 🔄 v1.5 Dark Mode & Temas (Phases 19-22) — ACTIVE
 
-- [ ] **Phase 19: CSS Token Foundation** — Tokens dark/light declarados no CSS; sem mudança visual; build e lint passam — planned
+- [ ] **Phase 19: CSS Token Foundation** — Tokens dark/light declarados no CSS; sem mudança visual; build e lint passam — 2 plans
+**Plans**: 2 plans
+Plans:
+- [ ] 19-01-PLAN.md — @custom-variant dark + app dark tokens + shadcn overrides in globals.css
+- [ ] 19-02-PLAN.md — Light :root defaults + dark variants in admin.css
 - [ ] **Phase 20: /app Hardcoded Color Migration** — PWA sem valores hex hardcoded; dark mode testável via DevTools — planned
 - [ ] **Phase 21: ThemeProvider Infrastructure** — Providers escopados, anti-flash e Sonner funcionando em ambas as surfaces — planned
 - [ ] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — planned
