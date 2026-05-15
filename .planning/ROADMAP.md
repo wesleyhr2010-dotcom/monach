@@ -55,11 +55,11 @@
 
 ### 🔄 v1.5 Dark Mode & Temas (Phases 19-22) — ACTIVE
 
-- [ ] **Phase 19: CSS Token Foundation** — Tokens dark/light declarados no CSS; sem mudança visual; build e lint passam — 2 plans
+- [x] **Phase 19: CSS Token Foundation** — Tokens dark/light declarados no CSS; sem mudança visual; build e lint passam — 2 plans
 **Plans**: 2 plans
 Plans:
-- [ ] 19-01-PLAN.md — @custom-variant dark + app dark tokens + shadcn overrides in globals.css
-- [ ] 19-02-PLAN.md — Light :root defaults + dark variants in admin.css
+- [x] 19-01-PLAN.md — @custom-variant dark + app dark tokens + shadcn overrides in globals.css
+- [x] 19-02-PLAN.md — Light :root defaults + dark variants in admin.css
 - [ ] **Phase 20: /app Hardcoded Color Migration** — PWA sem valores hex hardcoded; dark mode testável via DevTools — planned
 - [ ] **Phase 21: ThemeProvider Infrastructure** — Providers escopados, anti-flash e Sonner funcionando em ambas as surfaces — planned
 - [ ] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — planned
@@ -171,7 +171,7 @@ Plans:
 | 16. Schema + Gestão de Clientes | 3/3 | Done | 2026-05-08 |
 | 17. PDV Core — Cotización + Fluxo de Venda | 0/4 | Not started | - |
 | 18. Histórico de Ventas | 0/2 | Not started | - |
-| 19. CSS Token Foundation | 0/? | Not started | - |
+| 19. CSS Token Foundation | 2/2 | Done | 2026-05-15 |
 | 20. /app Hardcoded Color Migration | 0/? | Not started | - |
 | 21. ThemeProvider Infrastructure | 0/? | Not started | - |
 | 22. Toggle UI | 0/? | Not started | - |

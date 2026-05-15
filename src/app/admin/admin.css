@@ -3,6 +3,59 @@
    ============================================ */
 
 :root {
+    --admin-bg: #ffffff;
+    --admin-surface: #f5f5f5;
+    --admin-surface-hover: #e5e5e5;
+    --admin-surface-row-atrasada: #fef2f2;
+    --admin-surface-row-aguardando: #fefce8;
+    --admin-border: #e5e7eb;
+    --admin-border-focus: #35605a;
+    --admin-text: #1a1a1a;
+    --admin-text-muted: #6b7280;
+    --admin-text-dim: #9ca3af;
+    --admin-accent: #35605a;
+    --admin-accent-hover: #2a4d48;
+    --admin-danger: #dc2626;
+    --admin-danger-hover: #b91c1c;
+    --admin-success: #16a34a;
+    --admin-success-10: rgba(22, 163, 74, 0.1);
+    --admin-success-15: rgba(22, 163, 74, 0.15);
+    --admin-warning: #ca8a04;
+    --admin-warning-10: rgba(202, 138, 4, 0.1);
+    --admin-warning-15: rgba(202, 138, 4, 0.15);
+    --admin-danger: #dc2626;
+    --admin-danger-10: rgba(220, 38, 38, 0.1);
+    --admin-danger-15: rgba(220, 38, 38, 0.15);
+    --admin-muted-10: rgba(107, 114, 128, 0.1);
+    --admin-muted-15: rgba(107, 114, 128, 0.15);
+    --admin-info: #4f6dd4;
+    --admin-info-light: #3b82f6;
+    --admin-brown: #917961;
+    --admin-beige: #b4aba2;
+    --admin-purple: #8b5cf6;
+    --admin-purple-light: #a855f7;
+    --admin-orange: #f59e0b;
+    --admin-green-alt: #22c55e;
+    --admin-blue-alt: #3b82f6;
+    --admin-emerald: #10b981;
+    --admin-bg-success: #dcfce7;
+    --admin-border-success: #bbf7d0;
+    --admin-bg-info: #eff6ff;
+    --admin-radius: 8px;
+    --admin-radius-sm: 4px;
+    --admin-radius-lg: 12px;
+    --admin-radius-pill: 9px;
+    --admin-sidebar-width: 240px;
+    --admin-header-height: 80px;
+    --admin-primary: var(--admin-accent);
+    --admin-text-primary: var(--admin-text);
+    --admin-text-secondary: var(--admin-text-muted);
+    --admin-bg-secondary: var(--admin-surface-hover);
+    --admin-row-atrasada: var(--admin-surface-row-atrasada);
+    --admin-row-aguardando: var(--admin-surface-row-aguardando);
+}
+
+.admin-layout[data-theme="dark"] {
     --admin-bg: #0a0a0a;
     --admin-surface: #171717;
     --admin-surface-hover: #222222;
@@ -1012,17 +1065,6 @@ button.admin-bottom-nav-item {
     .admin-form-row {
         grid-template-columns: 1fr;
     }
-}
-
-/* -- Additional root aliases for inline styles -- */
-:root {
-    --admin-primary: var(--admin-accent);
-    --admin-text-primary: var(--admin-text);
-    --admin-text-secondary: var(--admin-text-muted);
-    --admin-text-dim: var(--admin-text-dim);
-    --admin-bg-secondary: var(--admin-surface-hover);
-    --admin-row-atrasada: var(--admin-surface-row-atrasada);
-    --admin-row-aguardando: var(--admin-surface-row-aguardando);
 }
 
 /* Alerts */

@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
 @import "tailwindcss";
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @source not "../../.planning/**";
 @source not "../../docs/**";
 @source not "../../CLAUDE.md";
@@ -61,6 +62,44 @@
   --radius-xl: 0.75rem;
 }
 
+.app-shell[data-theme="dark"] {
+  /* ---- App PWA Dark Tokens ---- */
+  --color-app-bg: #1a1816;
+  --color-app-card-bg: #242220;
+  --color-app-card-border: #363230;
+  --color-app-divider: #2a2624;
+  --color-app-icon-bg: #2a2624;
+  --color-app-primary: #35605A;
+  --color-app-text: #f0ece8;
+  --color-app-muted: #8a8078;
+  --color-app-accent-green-bg: rgba(31, 122, 74, 0.2);
+  --color-app-accent-green: #4ade80;
+  --color-app-danger-bg: rgba(211, 47, 47, 0.2);
+  --color-app-danger-border: #991b1b;
+  --color-app-danger: #f87171;
+
+  /* ---- Shadcn/UI Dark Overrides ---- */
+  --color-background: #1a1816;
+  --color-foreground: #f0ece8;
+  --color-card: #242220;
+  --color-card-foreground: #f0ece8;
+  --color-popover: #242220;
+  --color-popover-foreground: #f0ece8;
+  --color-primary: #35605a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #2a2624;
+  --color-secondary-foreground: #f0ece8;
+  --color-muted: #2a2624;
+  --color-muted-foreground: #8a8078;
+  --color-accent: #2a2624;
+  --color-accent-foreground: #f0ece8;
+  --color-destructive: #f87171;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #363230;
+  --color-input: #363230;
+  --color-ring: #35605a;
+}
+
 @layer base {
   * {
     margin: 0;
@@ -116,7 +155,7 @@ img {
    Maps shadcn/ui CSS variables to admin dark
    palette when inside .admin-layout
    ============================================ */
-.admin-layout {
+.admin-layout[data-theme="dark"] {
   --color-background: #0a0a0a;
   --color-foreground: #ededed;
   --color-card: #171717;
@@ -140,7 +179,7 @@ img {
   color: #ededed;
 }
 
-.admin-layout * {
+.admin-layout[data-theme="dark"] * {
   border-color: var(--color-border);
 }
 

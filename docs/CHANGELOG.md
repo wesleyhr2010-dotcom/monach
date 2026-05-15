@@ -1,5 +1,47 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-15 — Phase 19: CSS Token Foundation (Dark Mode v1.5)
+
+### Contexto
+Primeira fase do milestone v1.5 "Dark Mode & Temas". Estabelecer a base de tokens CSS com variantes light/dark para o PWA (`/app`) e o painel admin (`/admin`), sem mudança visual — o app continua claro e o admin continua escuro.
+
+### Feito
+
+**Tailwind v4 `@custom-variant dark`**
+- `src/app/globals.css` — adicionada diretiva `@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *))` logo após `@import "tailwindcss"`
+- Habilita utilities `dark:` do Tailwind a responderem ao atributo `data-theme` em vez de `prefers-color-scheme`
+
+**App PWA dark tokens (`--color-app-*`)**
+- `src/app/globals.css` — bloco `.app-shell[data-theme="dark"]` com 13 tokens dark da app:
+  - Warm near-black `#1a1816` para fundo, surface `#242220`, borders `#363230`
+  - Texto warm light `#f0ece8`, muted `#8a8078`
+  - Cores semânticas ajustadas para contraste em dark (danger `#f87171`, success `#4ade80`)
+
+**Shadcn/ui dark overrides centralizados**
+- `src/app/globals.css` — 18 tokens shadcn/ui sob `.app-shell[data-theme="dark"]` (background, foreground, card, popover, primary, secondary, muted, accent, destructive, border, input, ring)
+- `src/app/globals.css` — 18 tokens shadcn/ui sob `.admin-layout[data-theme="dark"]` (mesmo padrão, palette admin escura)
+- Antigo bloco incondicional `.admin-layout` removido — dark agora é explícito via `data-theme="dark"`
+
+**Admin.css arquitetura dual-theme**
+- `src/app/admin/admin.css` — novo bloco `:root` no topo com light defaults para todos os 34+ `--admin-*` tokens (`#ffffff`, `#f5f5f5`, `#e5e7eb`, etc.)
+- `src/app/admin/admin.css` — bloco `.admin-layout[data-theme="dark"]` contém todos os valores dark originais (movidos do `:root` antigo)
+- Alias tokens (`--admin-primary`, `--admin-text-primary`, etc.) mesclados no `:root` único; bloco duplicado removido
+
+**Prevenção de regressão visual**
+- `src/components/admin/AdminLayoutClient.tsx` — `data-theme="dark"` hardcoded no `<div className="admin-layout">` (temporário até Phase 21 ThemeProvider)
+
+### Arquivos tocados
+- `src/app/globals.css`
+- `src/app/admin/admin.css`
+- `src/components/admin/AdminLayoutClient.tsx`
+- `.planning/phases/19-css-token-foundation/19-01-SUMMARY.md`
+- `.planning/phases/19-css-token-foundation/19-02-SUMMARY.md`
+
+### Notas
+- Build passa sem erros. Lint sem erros novos nos arquivos modificados.
+- Nenhuma mudança visual em produção — app claro, admin escuro.
+- Phase 20 migrará hardcoded colors no `/app`; Phase 21 implementará ThemeProvider dinâmico.
+
 ## 2026-05-07 — Phase 15: Admin UI Consistência Visual
 
 ### Contexto

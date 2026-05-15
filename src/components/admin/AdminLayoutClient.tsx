@@ -203,7 +203,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
     });
 
     return (
-        <div className="admin-layout">
+        <div className="admin-layout" data-theme="dark">
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
                     <LogoImg variant="white" height={32} />

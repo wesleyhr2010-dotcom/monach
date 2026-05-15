@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
-status: ready
-last_updated: "2026-05-15T00:00:00.000Z"
-last_activity: 2026-05-15 -- Roadmap created (Phases 19-22)
+status: executing
+stopped_at: Phase 19 completed
+last_updated: "2026-05-15T22:45:00.000Z"
+last_activity: 2026-05-15 — Phase 19 CSS Token Foundation completed (2/2 plans)
 progress:
-  total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 7
+  completed_phases: 4
+  total_plans: 11
+  completed_plans: 11
+  percent: 57
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -24,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 19 — CSS Token Foundation
+Phase: 20 — /app Hardcoded Color Migration
 Plan: Not started
-Status: Roadmap created — ready to execute Phase 19
-Last activity: 2026-05-15 — Roadmap created (Phases 19-22 defined)
+Status: Phase 19 completed — ready to execute Phase 20
+Last activity: 2026-05-15 — Phase 19 CSS Token Foundation completed (2/2 plans)
 
-Progress: [░░░░░░░░░░░░] 0% (0/4 phases complete) | Milestone v1.5
+Progress: [████████░░░░] 57% (4/7 phases complete) | Milestone v1.5
 
 ## Performance Metrics
 
@@ -110,6 +111,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-08
-Stopped at: Roadmap created — Phases 16-18 defined for v1.4
+Last session: 2026-05-15T21:59:48.087Z
+Stopped at: Phase 19 context gathered
 Resume: `/gsd-plan-phase 16` (Schema migration + Gestão de Clientes)
