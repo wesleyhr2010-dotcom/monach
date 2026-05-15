@@ -11,7 +11,7 @@ export default async function NotificacionesPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-full bg-[#F5F2EF]">
+        <div className="flex flex-col min-h-full bg-app-bg">
             <PreferenciasNotificacionesForm initialPrefs={prefs} />
         </div>
     );

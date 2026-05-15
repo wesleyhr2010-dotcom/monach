@@ -82,11 +82,10 @@ function ToggleSwitch({
             role="switch"
             aria-checked={checked}
             onClick={() => onChange(!checked)}
-            className="relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#2E5A4C]"
-            style={{ backgroundColor: checked ? "#2E5A4C" : "#E8E2D6" }}
+            className={`relative inline-flex h-7 w-12 shrink-0 cursor-pointer items-center rounded-full transition-colors duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-app-primary ${checked ? "bg-app-primary" : "bg-app-border"}`}
         >
             <span
-                className="inline-block h-5 w-5 transform rounded-full bg-white shadow transition duration-200"
+                className="inline-block h-5 w-5 transform rounded-full bg-app-card-bg shadow transition duration-200"
                 style={{
                     transform: checked ? "translateX(22px)" : "translateX(4px)",
                 }}
@@ -312,23 +311,23 @@ export default function PreferenciasNotificacionesForm({
     };
 
     return (
-        <div className="flex flex-col min-h-full bg-[#F5F2EF]">
+        <div className="flex flex-col min-h-full bg-app-bg">
             {/* Header */}
-            <div className="flex items-center gap-3 px-5 pt-6 pb-4 bg-[#F5F2EF]">
+            <div className="flex items-center gap-3 px-5 pt-6 pb-4 bg-app-bg">
                 <button
                     onClick={() => router.back()}
-                    className="p-2 -ml-2 rounded-full hover:bg-[#E8E2D6] transition-colors"
+                    className="p-2 -ml-2 rounded-full hover:bg-app-border transition-colors"
                     aria-label="Volver"
                 >
-                    <ChevronLeft className="w-5 h-5 text-[#1A1A1A]" />
+                    <ChevronLeft className="w-5 h-5 text-app-text" />
                 </button>
-                <h1 className="text-base font-semibold text-[#1A1A1A]" style={{ fontFamily: "var(--font-raleway), Raleway, sans-serif" }}>
+                <h1 className="text-base font-semibold text-app-text" style={{ fontFamily: "var(--font-raleway), Raleway, sans-serif" }}>
                     Notificaciones Push
                 </h1>
             </div>
 
             {/* Descrição */}
-            <p className="px-5 pb-4 text-sm text-[#6b7280]">
+            <p className="px-5 pb-4 text-sm text-app-text-secondary">
                 Controla qué notificaciones recibirás en tu teléfono.
             </p>
 
@@ -339,12 +338,12 @@ export default function PreferenciasNotificacionesForm({
                     return (
                         <div
                             key={config.key}
-                            className="flex items-center gap-3 px-4 py-3.5 bg-white rounded-xl"
+                            className="flex items-center gap-3 px-4 py-3.5 bg-app-card-bg rounded-xl"
                         >
-                            <span className="text-[#917961] shrink-0">{config.icon}</span>
+                            <span className="text-app-accent-brown shrink-0">{config.icon}</span>
                             <div className="flex-1 min-w-0">
-                                <p className="text-sm font-medium text-[#1A1A1A]">{config.label}</p>
-                                <p className="text-xs text-[#6b7280] mt-0.5">{config.description}</p>
+                                <p className="text-sm font-medium text-app-text">{config.label}</p>
+                                <p className="text-xs text-app-text-secondary mt-0.5">{config.description}</p>
                             </div>
                             <ToggleSwitch
                                 checked={isOn}
@@ -357,12 +356,12 @@ export default function PreferenciasNotificacionesForm({
 
             {/* Status do push */}
             <div className="px-4 pb-4">
-                <div className="flex flex-col gap-3 px-4 py-3.5 bg-white rounded-xl">
+                <div className="flex flex-col gap-3 px-4 py-3.5 bg-app-card-bg rounded-xl">
                     <div className="flex items-center gap-3">
-                        <Bell className="w-5 h-5 text-[#917961] shrink-0" />
+                        <Bell className="w-5 h-5 text-app-accent-brown shrink-0" />
                         <div className="flex-1">
-                            <p className="text-sm font-medium text-[#1A1A1A]">Estado del push</p>
-                            <p className="text-xs text-[#6b7280] mt-0.5">
+                            <p className="text-sm font-medium text-app-text">Estado del push</p>
+                            <p className="text-xs text-app-text-secondary mt-0.5">
                                 {pushUiState === "granted-on" && "Notificaciones activas en este dispositivo."}
                                 {pushUiState === "granted-off" && "Permiso concedido, pero los avisos están pausados."}
                                 {pushUiState === "default" && "Aún no decidiste sobre los avisos en este dispositivo."}
@@ -371,8 +370,7 @@ export default function PreferenciasNotificacionesForm({
                             </p>
                         </div>
                         <span
-                            className="inline-flex items-center gap-1 text-xs font-medium shrink-0"
-                            style={{ color: pushUiState === "granted-on" ? "#2E5A4C" : "#6b7280" }}
+                            className={`inline-flex items-center gap-1 text-xs font-medium shrink-0 ${pushUiState === "granted-on" ? "text-app-primary" : "text-app-text-secondary"}`}
                         >
                             {pushUiState === "granted-on" && (
                                 <>
@@ -390,7 +388,7 @@ export default function PreferenciasNotificacionesForm({
                             type="button"
                             onClick={handleEnablePush}
                             disabled={isToggling}
-                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#2E5A4C] px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-60"
+                            className="inline-flex items-center justify-center gap-2 rounded-lg bg-app-primary px-4 py-2.5 text-sm font-medium text-white transition-colors disabled:opacity-60"
                         >
                             {isToggling ? (
                                 <>
@@ -408,7 +406,7 @@ export default function PreferenciasNotificacionesForm({
                             type="button"
                             onClick={handleDisablePush}
                             disabled={isToggling}
-                            className="inline-flex items-center justify-center gap-2 rounded-lg border border-[#E8E2D6] bg-white px-4 py-2.5 text-sm font-medium text-[#1A1A1A] transition-colors disabled:opacity-60"
+                            className="inline-flex items-center justify-center gap-2 rounded-lg border border-app-border bg-app-card-bg px-4 py-2.5 text-sm font-medium text-app-text transition-colors disabled:opacity-60"
                         >
                             {isToggling ? (
                                 <>
@@ -422,13 +420,13 @@ export default function PreferenciasNotificacionesForm({
                     )}
 
                     {pushUiState === "denied" && (
-                        <div className="rounded-lg bg-[#F5F2EF] px-3 py-2.5 text-xs text-[#1A1A1A] leading-relaxed">
+                        <div className="rounded-lg bg-app-bg px-3 py-2.5 text-xs text-app-text leading-relaxed">
                             Para reactivarlos, abrí <strong>Ajustes</strong> del teléfono → <strong>Notificaciones</strong> → <strong>Monarca</strong> y permití los avisos. Si no aparece la app en la lista, eliminá la PWA de la pantalla de inicio y volvé a instalarla desde Compartir.
                         </div>
                     )}
 
                     {pushError && (
-                        <div className="rounded-lg bg-[#FDECEC] px-3 py-2 text-xs text-[#9A2A2A]">
+                        <div className="rounded-lg bg-app-danger-bg px-3 py-2 text-xs text-app-danger">
                             {pushError}
                         </div>
                     )}
@@ -441,19 +439,19 @@ export default function PreferenciasNotificacionesForm({
             {/* Status de salvamento */}
             <div className="px-5 pb-6 text-center">
                 {saveStatus === "saving" && (
-                    <span className="inline-flex items-center gap-1.5 text-xs text-[#6b7280]">
+                    <span className="inline-flex items-center gap-1.5 text-xs text-app-text-secondary">
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         Guardando...
                     </span>
                 )}
                 {saveStatus === "saved" && (
-                    <span className="inline-flex items-center gap-1.5 text-xs text-[#2E5A4C]">
+                    <span className="inline-flex items-center gap-1.5 text-xs text-app-primary">
                         <Check className="w-3.5 h-3.5" />
                         Guardado
                     </span>
                 )}
                 {saveStatus === "idle" && isPending && (
-                    <span className="inline-flex items-center gap-1.5 text-xs text-[#6b7280]">
+                    <span className="inline-flex items-center gap-1.5 text-xs text-app-text-secondary">
                         <Loader2 className="w-3.5 h-3.5 animate-spin" />
                         Guardando...
                     </span>

@@ -157,6 +157,7 @@ Itens que aumentam valor do produto depois do ciclo base estar estável.
 
 - [x] **Vitrina pública** `/vitrina/[slug]` com ISR, SEO, tracking anônimo, página de detalhe, carrinho localStorage e checkout WhatsApp. Ref.: [`revendedoras/SPEC_VITRINE_PUBLICA.md`](./revendedoras/SPEC_VITRINE_PUBLICA.md). Phase 6 concluída em 2026-05-05.
 - [x] **Analytics agregados** admin — dashboard `/admin/analytics` estendido com métricas de vitrina pública (visitas, cliques WhatsApp, CTR checkout/contato), gráfico de visitas diárias, ranking de revendedoras por engajamento, seletor de revendedora com escopo RBAC, e export CSV sem PII. Ref.: [`admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md`](./admin/SPEC_ADMIN_ANALYTICS_NOTIFICATIONS.md). Phase 8 concluída em 2026-05-06.
+- [x] **Phase 20: /app Hardcoded Color Migration** — Todas as cores hex hardcoded do PWA migradas para tokens CSS. Dark mode testável via DevTools. Build e lint passam. Ref.: [`ROADMAP.md`](../.planning/ROADMAP.md) Phase 20.
 - [ ] **Estratégia de cache e revalidação** — `revalidateTag` por entidade. Ref.: [`sistema/SPEC_CACHING_STRATEGY.md`](./sistema/SPEC_CACHING_STRATEGY.md).
 - [ ] **Error handling centralizado** (ActionResult + mensagens). Ref.: [`sistema/SPEC_ERROR_HANDLING.md`](./sistema/SPEC_ERROR_HANDLING.md).
 - [ ] **Skeleton / empty / error states** consistentes. Ref.: [`sistema/SPEC_SKELETON_EMPTY_STATES.md`](./sistema/SPEC_SKELETON_EMPTY_STATES.md).

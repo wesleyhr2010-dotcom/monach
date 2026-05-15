@@ -25,7 +25,7 @@ export const viewport: Viewport = {
   maximumScale: 1,
   userScalable: false,
   viewportFit: "cover",
-  themeColor: "#F5F2EF",
+  themeColor: "var(--color-app-bg)",
 };
 
 export default function RootLayout({
@@ -35,7 +35,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning>
-      <body className="antialiased" style={{ backgroundColor: "#F5F2EF" }}>
+      <body className="antialiased bg-app-bg">
         {children}
       </body>
     </html>

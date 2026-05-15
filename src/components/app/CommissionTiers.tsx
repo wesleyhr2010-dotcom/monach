@@ -23,7 +23,7 @@ export function CommissionTiers({ tiers, commissionInfo }: CommissionTiersProps)
   return (
     <div className="flex flex-col items-center mt-6">
       <span
-        className="text-[13px] leading-4 text-[#1A1A1A] mb-2"
+        className="text-[13px] leading-4 text-app-text mb-2"
         style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
       >
         Nivel de Comisión Mensual
@@ -59,14 +59,14 @@ export function CommissionTiers({ tiers, commissionInfo }: CommissionTiersProps)
 
       {commissionInfo.proximoTier ? (
         <span
-          className="text-[12px] leading-4 text-[#777777]"
+          className="text-[12px] leading-4 text-app-text-secondary"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           Faltan G$ {commissionInfo.faltaParaProximo.toLocaleString("es-PY")} para el {commissionInfo.proximoTier.pct}%
         </span>
       ) : (
         <span
-          className="text-[12px] leading-4 text-[#35605A]"
+          className="text-[12px] leading-4 text-app-primary"
           style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
         >
           ¡Estás en el nivel máximo! 🎉

@@ -42,16 +42,16 @@ function getDaysLeft(dataLimite: Date | null): { text: string; urgente: boolean 
 export function MaletaCard({ maleta, tiers, commissionInfo }: MaletaCardProps) {
   if (!maleta) {
     return (
-      <div className="bg-[#EBEBEB] rounded-2xl px-5 py-5">
+      <div className="bg-app-surface rounded-2xl px-5 py-5">
         <p
-          className="text-[13px] text-[#777777] text-center py-4"
+          className="text-[13px] text-app-text-secondary text-center py-4"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           Ninguna consignación activa por el momento.
         </p>
         <button
-          className="w-full mt-2 rounded-xl py-3 text-white text-[14px] font-medium"
-          style={{ backgroundColor: "#35605A", fontFamily: "var(--font-raleway)" }}
+          className="w-full mt-2 rounded-xl py-3 text-white text-[14px] font-medium bg-app-primary"
+          style={{ fontFamily: "var(--font-raleway)" }}
         >
           Solicitar consignación
         </button>
@@ -64,11 +64,11 @@ export function MaletaCard({ maleta, tiers, commissionInfo }: MaletaCardProps) {
   const { text: daysLeft, urgente } = getDaysLeft(maleta.data_limite);
 
   return (
-    <div className="bg-[#EBEBEB] rounded-2xl px-5 py-5">
+    <div className="bg-app-surface rounded-2xl px-5 py-5">
       {/* Title row */}
       <div className="flex items-center justify-between mb-1">
         <span
-          className="text-[18px] leading-[22px] text-[#1A1A1A]"
+          className="text-[18px] leading-[22px] text-app-text"
           style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
         >
           Consignación Actual

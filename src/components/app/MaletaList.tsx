@@ -44,7 +44,7 @@ export function MaletaListItemCard({ maleta }: MaletaListItemCardProps) {
   return (
     <TransitionLink href={`/app/maleta/${maleta.id}`} pattern="hero" className="block">
       <div
-        className="flex flex-col rounded-2xl gap-3 bg-[#EBEBEB] p-4 border-2 border-solid"
+        className="flex flex-col rounded-2xl gap-3 bg-app-surface p-4 border-2 border-solid"
         style={{
           borderColor,
           viewTransitionName: `maleta-${maleta.id}`,
@@ -52,7 +52,7 @@ export function MaletaListItemCard({ maleta }: MaletaListItemCardProps) {
       >
         <div className="flex justify-between items-center">
           <span
-            className="text-[#1A1A1A] text-lg leading-[22px]"
+            className="text-app-text text-lg leading-[22px]"
             style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
           >
             Consignación #{maleta.numero}
@@ -61,8 +61,8 @@ export function MaletaListItemCard({ maleta }: MaletaListItemCardProps) {
         </div>
         <div className="flex justify-between items-center">
           <span
-            className="text-[13px] leading-4"
-            style={{ fontFamily: "var(--font-raleway)", color: "#777777" }}
+            className="text-[13px] leading-4 text-app-text-secondary"
+            style={{ fontFamily: "var(--font-raleway)" }}
           >
             {getDateLabel(maleta.status, maleta.data_limite)}
           </span>
@@ -87,16 +87,16 @@ export function MaletaList({ maletas }: MaletaListProps) {
     return (
       <div className="flex flex-col items-center justify-center py-12 px-6">
         <div
-          className="w-16 h-16 rounded-full bg-[#EBEBEB] flex items-center justify-center mb-4"
+          className="w-16 h-16 rounded-full bg-app-surface flex items-center justify-center mb-4"
         >
-          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B4ABA2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z" />
             <path d="M3 6h18" />
             <path d="M16 10a4 4 0 0 1-8 0" />
           </svg>
         </div>
         <p
-          className="text-[14px] text-[#777777] text-center"
+          className="text-[14px] text-app-text-secondary text-center"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           No tenés consignaciones todavía.

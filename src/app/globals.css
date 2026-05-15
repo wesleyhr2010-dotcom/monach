@@ -36,6 +36,15 @@
   --color-app-danger-bg: #FFF5F5;
   --color-app-danger-border: #FFCDD2;
   --color-app-danger: #D32F2F;
+  --color-app-text-secondary: #777777;
+  --color-app-text-dim: #4b5563;
+  --color-app-accent-brown: #917961;
+  --color-app-surface-warm: #F5F0E8;
+  --color-app-surface: #EBEBEB;
+  --color-app-border: #E8E2D6;
+  --color-app-border-strong: #D9D6D2;
+  --color-app-warning-bg: #FFF4E5;
+  --color-app-primary-light: #6A9A8A;
 
   /* ---- Shadcn/UI Design Tokens ---- */
   --color-border: #e5e7eb;
@@ -77,6 +86,15 @@
   --color-app-danger-bg: rgba(211, 47, 47, 0.2);
   --color-app-danger-border: #991b1b;
   --color-app-danger: #f87171;
+  --color-app-text-secondary: #a0a0a0;
+  --color-app-text-dim: #888888;
+  --color-app-accent-brown: #b4a080;
+  --color-app-surface-warm: #2a2624;
+  --color-app-surface: #363230;
+  --color-app-border: #4a4540;
+  --color-app-border-strong: #5a5550;
+  --color-app-warning-bg: rgba(250, 204, 21, 0.2);
+  --color-app-primary-light: #6A9A8A;
 
   /* ---- Shadcn/UI Dark Overrides ---- */
   --color-background: #1a1816;

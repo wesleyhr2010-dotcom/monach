@@ -30,6 +30,17 @@ App PWA (monarca)
 - appDangerBorder: #FFCDD2
 - appDanger: #D32F2F
 
+**Extended Tokens (Phase 20):**
+- appTextSecondary: #777777 — Secondary text (labels, descriptions)
+- appTextDim: #4b5563 — Dimmed text, form labels
+- appAccentBrown: #917961 — Brand brown/gold accent
+- appSurfaceWarm: #F5F0E8 — Warm hover/surface background
+- appSurface: #EBEBEB — Neutral light surface
+- appBorder: #E8E2D6 — Standard borders and dividers
+- appBorderStrong: #D9D6D2 — Stronger borders
+- appWarningBg: #FFF4E5 — Warning/notice background
+- appPrimaryLight: #6A9A8A — Lighter primary variant
+
 Typography
 - Font family: Raleway, System Sans-Serif
 - Font sizes: h1 32px, h2 28px, h3 22px, body 16px, caption 12px

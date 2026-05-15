@@ -111,7 +111,7 @@ function GrupoSection({
   return (
     <div className="flex flex-col gap-3">
       <span
-        className="text-[#1A1A1A] text-xs font-bold uppercase tracking-[0.5px] leading-4"
+        className="text-app-text text-xs font-bold uppercase tracking-[0.5px] leading-4"
         style={{ fontFamily: "var(--font-raleway)" }}
       >
         {label}
@@ -124,18 +124,18 @@ function GrupoSection({
 function NotificacionEmptyState() {
   return (
     <div className="flex flex-col items-center justify-center py-16 gap-4">
-      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-[#EBEBEB]">
-        <Bell size={28} strokeWidth={1.5} className="text-[#B4ABA2]" />
+      <div className="flex items-center justify-center w-16 h-16 rounded-full bg-app-surface">
+        <Bell size={28} strokeWidth={1.5} className="text-app-muted" />
       </div>
       <div className="flex flex-col items-center gap-1">
         <span
-          className="text-[#1A1A1A] font-semibold text-sm leading-[18px]"
+          className="text-app-text font-semibold text-sm leading-[18px]"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           Sin notificaciones
         </span>
         <span
-          className="text-[#777777] text-[13px] leading-[150%] text-center px-8"
+          className="text-app-text-secondary text-[13px] leading-[150%] text-center px-8"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           Cuando tengas novedades sobre tus consignaciones, puntos o regalos, aparecerán aquí.

@@ -36,15 +36,15 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
 
     return (
         <AppTransitionProvider>
-        <div className="flex bg-[#F5F2EF] text-[#1A1A1A] font-sans"
+        <div className="flex bg-app-bg text-app-text font-sans"
             style={{ position: "fixed", inset: 0, overflow: "hidden", paddingTop: "env(safe-area-inset-top)", overscrollBehavior: "none" }}>
             <OneSignalWrapper />
             {/* Sidebar (Desktop) */}
-            <aside className="hidden md:flex w-[260px] bg-white border-r border-[#E8E2D6] flex-col fixed top-0 left-0 bottom-0 z-50">
-                <div className="px-6 py-4 border-b border-[#E8E2D6] flex flex-col items-center gap-1">
+            <aside className="hidden md:flex w-[260px] bg-app-card-bg border-r border-app-border flex-col fixed top-0 left-0 bottom-0 z-50">
+                <div className="px-6 py-4 border-b border-app-border flex flex-col items-center gap-1">
                     <LogoMonarca wordmarkOnly />
                     <span
-                        className="text-[10px] font-medium text-[#917961] uppercase tracking-widest"
+                        className="text-[10px] font-medium text-app-accent-brown uppercase tracking-widest"
                         style={{ fontFamily: "var(--font-raleway)" }}
                     >
                         Revendedora
@@ -66,8 +66,8 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
                                 href={item.href}
                                 pattern="crossfade"
                                 className={`flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium transition-colors ${isActive
-                                    ? "bg-[#2E5A4C]/10 text-[#2E5A4C]"
-                                    : "text-[#6b7280] hover:bg-[#F5F0E8] hover:text-[#1f2937]"
+                                    ? "bg-app-primary/10 text-app-primary"
+                                    : "text-app-text-secondary hover:bg-app-surface-warm hover:text-app-text"
                                     }`}
                             >
                                 {item.icon}
@@ -76,7 +76,7 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
                         );
                     })}
                 </nav>
-                <div className="p-4 border-t border-[#E8E2D6]">
+                <div className="p-4 border-t border-app-border">
                     <button type="button" onClick={handleLogout} className="flex items-center gap-3 px-3 py-3 rounded-lg text-[15px] font-medium w-full text-red-500 hover:text-red-700 hover:bg-red-50 transition-colors bg-transparent border-none cursor-pointer">
                         <LogOut className="w-5 h-5 flex-shrink-0" />
                         <span>Sair</span>

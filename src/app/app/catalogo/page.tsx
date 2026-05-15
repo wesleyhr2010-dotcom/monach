@@ -90,12 +90,12 @@ export default function CatalogoPage() {
     }
 
     return (
-        <div className="flex flex-col h-full bg-[#F5F2EF]">
+        <div className="flex flex-col h-full bg-app-bg">
             {/* Header */}
-            <div className="sticky top-0 z-30 bg-[#F5F2EF] px-4 pt-4 pb-2">
+            <div className="sticky top-0 z-30 bg-app-bg px-4 pt-4 pb-2">
                 <div className="flex items-center gap-3 mb-4">
                     <button onClick={() => router.back()} className="p-1 -ml-1">
-                        <ArrowLeft className="w-5 h-5 text-[#1A1A1A]" />
+                        <ArrowLeft className="w-5 h-5 text-app-text" />
                     </button>
                     <h1
                         className="text-lg font-semibold tracking-wide uppercase"
@@ -107,13 +107,13 @@ export default function CatalogoPage() {
 
                 {/* Search */}
                 <div className="relative mb-3">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#B4ABA2]" />
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-app-muted" />
                     <input
                         type="text"
                         placeholder="Buscar en consignación..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-white border-none text-sm"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl bg-app-card-bg border-none text-sm"
                         style={{ fontFamily: "var(--font-raleway)" }}
                     />
                 </div>
@@ -164,10 +164,10 @@ export default function CatalogoPage() {
                         {filtered.map((item) => (
                             <div
                                 key={item.id}
-                                className="bg-white rounded-2xl overflow-hidden shadow-sm"
+                                className="bg-app-card-bg rounded-2xl overflow-hidden shadow-sm"
                             >
                                 {/* Image */}
-                                <div className="aspect-square bg-[#E8E2D6] relative">
+                                <div className="aspect-square bg-app-border relative">
                                     {item.producto.images[0] ? (
                                         <img
                                             src={item.producto.images[0]}
@@ -177,7 +177,7 @@ export default function CatalogoPage() {
                                         />
                                     ) : (
                                         <div className="flex items-center justify-center w-full h-full">
-                                            <ImageOff className="w-8 h-8 text-[#B4ABA2]" />
+                                            <ImageOff className="w-8 h-8 text-app-muted" />
                                         </div>
                                     )}
                                 </div>
@@ -185,13 +185,13 @@ export default function CatalogoPage() {
                                 {/* Info */}
                                 <div className="p-3">
                                     <p
-                                        className="text-lg font-bold text-[#1A1A1A]"
+                                        className="text-lg font-bold text-app-text"
                                         style={{ fontFamily: "var(--font-playfair)" }}
                                     >
                                         {formatGs(item.preco_fixado)}
                                     </p>
                                     <p
-                                        className="text-xs text-[#6B6B6B] mt-0.5 line-clamp-1"
+                                        className="text-xs text-app-text-secondary mt-0.5 line-clamp-1"
                                         style={{ fontFamily: "var(--font-raleway)" }}
                                     >
                                         {item.producto.name}

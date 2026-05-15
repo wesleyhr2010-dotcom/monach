@@ -36,7 +36,7 @@ export function MenuHeader({ title, backHref, rightIcon: RightIcon, onRightClick
         <button
           type="button"
           onClick={onRightClick}
-          className="shrink-0 w-9 h-9 rounded-full bg-[#EBEBEB] flex items-center justify-center"
+          className="shrink-0 w-9 h-9 rounded-full bg-app-surface flex items-center justify-center"
           aria-label="Ajustes"
         >
           <RightIcon size={18} strokeWidth={1.5} className="text-app-text" />

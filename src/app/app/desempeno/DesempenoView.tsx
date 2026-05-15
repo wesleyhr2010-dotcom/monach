@@ -88,13 +88,13 @@ export function DesempenoView({
 
   if (hasError) {
     return (
-      <div className="flex flex-col min-h-full bg-[#F5F2EF]">
+      <div className="flex flex-col min-h-full bg-app-bg">
         <div className="px-5 py-4 flex items-center gap-2">
           <Link href="/app" className="p-1 -ml-1">
-            <ChevronLeft size={20} className="text-[#1A1A1A]" />
+            <ChevronLeft size={20} className="text-app-text" />
           </Link>
           <h1
-            className="text-lg font-semibold text-[#1A1A1A]"
+            className="text-lg font-semibold text-app-text"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             Mi Desempeño
@@ -110,15 +110,15 @@ export function DesempenoView({
   }
 
   return (
-    <div className="flex flex-col min-h-full bg-[#F5F2EF]">
+    <div className="flex flex-col min-h-full bg-app-bg">
       {/* Header */}
       <div className="px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
           <Link href="/app" className="p-1 -ml-1">
-            <ChevronLeft size={20} className="text-[#1A1A1A]" />
+            <ChevronLeft size={20} className="text-app-text" />
           </Link>
           <h1
-            className="text-lg font-semibold text-[#1A1A1A]"
+            className="text-lg font-semibold text-app-text"
             style={{ fontFamily: "var(--font-playfair)" }}
           >
             Mi Desempeño
@@ -192,9 +192,9 @@ export function DesempenoView({
           </div>
 
           {/* Chart */}
-          <div className="bg-white rounded-xl border border-[#E5E0DB] p-4">
+          <div className="bg-app-card-bg rounded-xl border border-app-border p-4">
             <h2
-              className="text-sm font-semibold text-[#1A1A1A] mb-3"
+              className="text-sm font-semibold text-app-text mb-3"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               Visitas Diarias
@@ -205,7 +205,7 @@ export function DesempenoView({
           {/* Products */}
           <div>
             <h2
-              className="text-sm font-semibold text-[#1A1A1A] mb-3"
+              className="text-sm font-semibold text-app-text mb-3"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               Productos Más Populares

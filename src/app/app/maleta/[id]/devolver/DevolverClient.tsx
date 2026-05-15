@@ -121,7 +121,7 @@ export default function DevolverClient({
   // ── Paso 4 (read-only o sucesso) ──
   if (step === 4 || isReadOnly) {
     return (
-      <div className="flex flex-col min-h-full bg-[#F5F2EF] relative px-5 pt-6 pb-10">
+      <div className="flex flex-col min-h-full bg-app-bg relative px-5 pt-6 pb-10">
         <AppPageHeader
           title={isReadOnly ? "Estado de Devolución" : "¡Devolución Enviada!"}
           backHref={`/app/maleta/${maleta.id}`}
@@ -130,16 +130,15 @@ export default function DevolverClient({
 
         <div className="flex flex-col items-center justify-center flex-1 gap-6 text-center mt-8">
           <div
-            className="flex items-center justify-center rounded-full w-20 h-20"
-            style={{ backgroundColor: isReadOnly ? "#FFF4E5" : "#E2F2E9" }}
+            className={`flex items-center justify-center rounded-full w-20 h-20 ${isReadOnly ? "bg-app-warning-bg" : "bg-app-accent-green-bg"}`}
           >
             {isReadOnly ? (
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#B26A00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <polyline points="12 6 12 12 16 14" />
               </svg>
             ) : (
-              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1F7A4A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5" />
               </svg>
             )}
@@ -147,13 +146,13 @@ export default function DevolverClient({
 
           <div className="flex flex-col gap-2">
             <span
-              className="text-[#1A1A1A] text-xl leading-6"
+              className="text-app-text text-xl leading-6"
               style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
             >
               {isReadOnly ? "Esperando Recepción ⏳" : "¡Devolución Enviada!"}
             </span>
             <span
-              className="text-[#777777] font-medium text-sm leading-[18px] max-w-[280px]"
+              className="text-app-text-secondary font-medium text-sm leading-[18px] max-w-[280px]"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               {isReadOnly
@@ -161,7 +160,7 @@ export default function DevolverClient({
                 : "Tu consultora fue notificada. Entrega los artículos en persona o coordina la logística."}
             </span>
             <span
-              className="text-[#777777] font-medium text-sm leading-[18px] max-w-[280px]"
+              className="text-app-text-secondary font-medium text-sm leading-[18px] max-w-[280px]"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               Cuando ella confirme la recepción recibirás una notificación y la consignación será cerrada.
@@ -172,7 +171,7 @@ export default function DevolverClient({
         <div className="mt-auto pt-6">
           <Link
             href="/app"
-            className="flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-[#35605A] shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase"
+            className="flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-primary shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             Seguir en Inicio →
@@ -185,7 +184,7 @@ export default function DevolverClient({
   // ── Paso 1: Resumen ──
   if (step === 1) {
     return (
-      <div className="flex flex-col min-h-full bg-[#F5F2EF] relative">
+      <div className="flex flex-col min-h-full bg-app-bg relative">
         <AppPageHeader
           title={`Devolver Consig. #${maleta.numero}`}
           subtitle={maleta.data_limite ? `Vencimiento: ${formatDate(new Date(maleta.data_limite))}` : undefined}
@@ -198,7 +197,7 @@ export default function DevolverClient({
             <AlertBanner
               variant="warning"
               icon={
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#B26A00" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
                   <line x1="12" y1="9" x2="12" y2="13" />
                   <line x1="12" y1="17" x2="12.01" y2="17" />
@@ -214,7 +213,7 @@ export default function DevolverClient({
 
           <SummaryCard
             icon={
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1A1A1A" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" />
                 <path d="m3.3 7 8.7 5 8.7-5" />
                 <path d="M12 22V12" />
@@ -224,28 +223,28 @@ export default function DevolverClient({
             value={`${totais.totalEnviados} artículos`}
           />
 
-          <div className="flex flex-col gap-3 rounded-2xl bg-white p-4">
+          <div className="flex flex-col gap-3 rounded-2xl bg-app-card-bg p-4">
             <div className="flex justify-between items-center">
-              <span className="text-[#777777] font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text-secondary font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 Enviados
               </span>
-              <span className="text-[#1A1A1A] font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 {totais.totalEnviados}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[#777777] font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text-secondary font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 Vendidos
               </span>
-              <span className="text-[#1A1A1A] font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 {totais.totalVendidos}
               </span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-[#777777] font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text-secondary font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 A devolver
               </span>
-              <span className="text-[#1A1A1A] font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+              <span className="text-app-text font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
                 {totais.totalADevolver}
               </span>
             </div>
@@ -254,7 +253,7 @@ export default function DevolverClient({
           <AlertBanner
             variant="info"
             icon={
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E40AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="16" x2="12" y2="12" />
                 <line x1="12" y1="8" x2="12.01" y2="8" />
@@ -268,7 +267,7 @@ export default function DevolverClient({
         <BottomAction>
           <button
             onClick={() => setStep(2)}
-            className="flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-[#35605A] shadow-[0_4px_12px_rgba(53,96,90,0.2)] w-full text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer"
+            className="flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-primary shadow-[0_4px_12px_rgba(53,96,90,0.2)] w-full text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             Continuar →
@@ -281,7 +280,7 @@ export default function DevolverClient({
   // ── Paso 2: Foto del Comprobante ──
   if (step === 2) {
     return (
-      <div className="flex flex-col min-h-full bg-[#F5F2EF] relative">
+      <div className="flex flex-col min-h-full bg-app-bg relative">
         <AppPageHeader
           title="Foto del Comprobante"
           backHref={`/app/maleta/${maleta.id}`}
@@ -290,7 +289,7 @@ export default function DevolverClient({
 
         <div className="flex flex-col px-5 gap-5 pb-[120px]">
           <p
-            className="text-[#777777] font-medium text-sm leading-[18px]"
+            className="text-app-text-secondary font-medium text-sm leading-[18px]"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             Fotografía los artículos que devolverás, ordenados y visibles.
@@ -311,16 +310,16 @@ export default function DevolverClient({
           {!photoPreview ? (
             <button
               onClick={() => inputRef.current?.click()}
-              className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-[#D9D6D2] bg-white p-8 cursor-pointer"
+              className="flex flex-col items-center justify-center gap-3 rounded-2xl border-2 border-dashed border-app-border-strong bg-app-card-bg p-8 cursor-pointer"
             >
-              <div className="flex items-center justify-center rounded-full bg-[#EBEBEB] w-16 h-16">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#777777" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              <div className="flex items-center justify-center rounded-full bg-app-surface w-16 h-16">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                   <circle cx="12" cy="13" r="4" />
                 </svg>
               </div>
               <span
-                className="text-[#1A1A1A] font-bold text-sm tracking-[0.5px] uppercase"
+                className="text-app-text font-bold text-sm tracking-[0.5px] uppercase"
                 style={{ fontFamily: "var(--font-raleway)" }}
               >
                 Tomar Foto
@@ -328,7 +327,7 @@ export default function DevolverClient({
             </button>
           ) : (
             <div className="flex flex-col gap-4">
-              <div className="rounded-2xl overflow-hidden bg-white border border-[#D9D6D2]">
+              <div className="rounded-2xl overflow-hidden bg-app-card-bg border border-app-border-strong">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={photoPreview}
@@ -343,10 +342,10 @@ export default function DevolverClient({
                   setPhotoPreview(null);
                   if (inputRef.current) inputRef.current.value = "";
                 }}
-                className="flex items-center justify-center gap-2 text-[#777777] font-semibold text-sm py-3 bg-transparent border-none cursor-pointer"
+                className="flex items-center justify-center gap-2 text-app-text-secondary font-semibold text-sm py-3 bg-transparent border-none cursor-pointer"
                 style={{ fontFamily: "var(--font-raleway)" }}
               >
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#777777" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                   <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.3" />
                 </svg>
                 Tomar Otra Foto
@@ -365,7 +364,7 @@ export default function DevolverClient({
           <div className="flex gap-3 w-full">
             <button
               onClick={() => setStep(1)}
-              className="flex-1 flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-white border border-[#D9D6D2] text-[#1A1A1A] font-bold text-sm tracking-[0.5px] uppercase cursor-pointer"
+              className="flex-1 flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-card-bg border border-app-border-strong text-app-text font-bold text-sm tracking-[0.5px] uppercase cursor-pointer"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               ← Atrás
@@ -379,7 +378,7 @@ export default function DevolverClient({
                 setError(null);
                 setStep(3);
               }}
-              className="flex-[2] flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-[#35605A] shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer"
+              className="flex-[2] flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-primary shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               Siguiente: Revisar →
@@ -392,7 +391,7 @@ export default function DevolverClient({
 
   // ── Paso 3: Revisión Final ──
   return (
-    <div className="flex flex-col min-h-full bg-[#F5F2EF] relative">
+    <div className="flex flex-col min-h-full bg-app-bg relative">
       <AppPageHeader
         title="Revisión Final"
         backHref={`/app/maleta/${maleta.id}`}
@@ -401,26 +400,26 @@ export default function DevolverClient({
 
       <div className="flex flex-col px-5 gap-5 pb-[140px]">
         <span
-          className="text-[#1A1A1A] text-lg leading-[22px]"
+          className="text-app-text text-lg leading-[22px]"
           style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
         >
           Consignación #{maleta.numero}
         </span>
 
-        <div className="flex flex-col gap-3 rounded-2xl bg-white p-4">
+        <div className="flex flex-col gap-3 rounded-2xl bg-app-card-bg p-4">
           <div className="flex justify-between items-center">
-            <span className="text-[#777777] font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-text-secondary font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               Vendidos ({totais.totalVendidos} artículos)
             </span>
-            <span className="text-[#1A1A1A] font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-text font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               {formatCurrency(totais.totalVendidoValor)}
             </span>
           </div>
           <div className="flex justify-between items-center">
-            <span className="text-[#777777] font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-text-secondary font-medium text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               Devolución ({totais.totalADevolver} artículos)
             </span>
-            <span className="text-[#1A1A1A] font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-text font-semibold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               {formatCurrency(
                 itens.reduce(
                   (s, i) => s + i.precoFixado * (i.quantidadeEnviada - i.quantidadeVendida),
@@ -429,12 +428,12 @@ export default function DevolverClient({
               )}
             </span>
           </div>
-          <div className="h-px bg-[#EBEBEB]" />
+          <div className="h-px bg-app-surface" />
           <div className="flex justify-between items-center">
-            <span className="text-[#1A1A1A] font-bold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-text font-bold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               Comisión estimada ({totais.comissaoPct}%)
             </span>
-            <span className="text-[#35605A] font-bold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
+            <span className="text-app-primary font-bold text-sm" style={{ fontFamily: "var(--font-raleway)" }}>
               {formatCurrency(totais.comissaoValor)}
             </span>
           </div>
@@ -443,12 +442,12 @@ export default function DevolverClient({
         {photoPreview && (
           <div className="flex flex-col gap-2">
             <span
-              className="text-[#1A1A1A] font-bold text-sm tracking-[0.5px] uppercase"
+              className="text-app-text font-bold text-sm tracking-[0.5px] uppercase"
               style={{ fontFamily: "var(--font-raleway)" }}
             >
               📸 Comprobante
             </span>
-            <div className="rounded-2xl overflow-hidden bg-white border border-[#D9D6D2]">
+            <div className="rounded-2xl overflow-hidden bg-app-card-bg border border-app-border-strong">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={photoPreview}
@@ -462,7 +461,7 @@ export default function DevolverClient({
         <AlertBanner
           variant="info"
           icon={
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1E40AF" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
               <circle cx="12" cy="12" r="10" />
               <line x1="12" y1="16" x2="12" y2="12" />
               <line x1="12" y1="8" x2="12.01" y2="8" />
@@ -483,7 +482,7 @@ export default function DevolverClient({
         <div className="flex flex-col gap-3 w-full">
           <button
             onClick={() => setStep(2)}
-            className="w-full flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-white border border-[#D9D6D2] text-[#1A1A1A] font-bold text-sm tracking-[0.5px] uppercase cursor-pointer"
+            className="w-full flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-card-bg border border-app-border-strong text-app-text font-bold text-sm tracking-[0.5px] uppercase cursor-pointer"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             ← Atrás
@@ -491,7 +490,7 @@ export default function DevolverClient({
           <button
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-[#35605A] shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center rounded-[100px] py-4 px-5 gap-2 bg-app-primary shadow-[0_4px_12px_rgba(53,96,90,0.2)] text-white font-bold text-sm tracking-[0.5px] uppercase border-none cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             {isSubmitting ? "Enviando..." : "✅ Enviar Devolución"}

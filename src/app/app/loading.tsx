@@ -10,7 +10,7 @@ export default function DashboardLoading() {
   return (
     <div className="flex flex-col">
       {/* ── AppHeader ── */}
-      <header className="flex items-center gap-3 px-5 pt-6 pb-4 sticky top-0 z-10 bg-[#F5F2EF]">
+      <header className="flex items-center gap-3 px-5 pt-6 pb-4 sticky top-0 z-10 bg-app-bg">
         {/* Avatar */}
         <Skeleton className="w-12 h-12 rounded-full flex-shrink-0" />
         {/* Name + Pontos */}
@@ -36,7 +36,7 @@ export default function DashboardLoading() {
           {[1, 2, 3, 4].map((i) => (
             <div
               key={i}
-              className="flex-1 bg-[#EBEBEB] rounded-2xl flex flex-col items-center py-5 px-5 min-w-0"
+              className="flex-1 bg-app-surface rounded-2xl flex flex-col items-center py-5 px-5 min-w-0"
             >
               <Skeleton className="w-8 h-8" />
               <Skeleton className="h-[13px] w-[56px] mt-3" />
@@ -54,7 +54,7 @@ export default function DashboardLoading() {
           <Skeleton className="h-[13px] w-[52px]" />
         </div>
         {/* MaletaCard */}
-        <div className="bg-[#EBEBEB] rounded-2xl px-5 py-5">
+        <div className="bg-app-surface rounded-2xl px-5 py-5">
           <div className="flex items-center justify-between mb-1">
             <Skeleton className="h-[18px] w-[150px]" />
             <Skeleton className="h-[28px] w-[80px] rounded-full" />

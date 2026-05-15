@@ -30,9 +30,9 @@ export function MaletaItemRow({ item, href }: MaletaItemRowProps) {
 
   const content = (
     <div
-      className="flex items-center rounded-2xl gap-4 bg-[#EBEBEB] p-3"
+      className="flex items-center rounded-2xl gap-4 bg-app-surface p-3"
     >
-      <div className="flex items-center justify-center shrink-0 rounded-xl bg-[#D9D6D2] w-16 h-16 overflow-hidden">
+      <div className="flex items-center justify-center shrink-0 rounded-xl bg-app-border-strong w-16 h-16 overflow-hidden">
         {item.imageUrl ? (
           <Image
             src={item.imageUrl}
@@ -43,7 +43,7 @@ export function MaletaItemRow({ item, href }: MaletaItemRowProps) {
             className="w-full h-full object-cover rounded-xl"
           />
         ) : (
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B4ABA2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
             <rect width="18" height="18" x="3" y="3" rx="2" ry="2" />
             <circle cx="9" cy="9" r="2" />
             <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
@@ -52,13 +52,13 @@ export function MaletaItemRow({ item, href }: MaletaItemRowProps) {
       </div>
       <div className="flex flex-col grow min-w-0">
         <span
-          className="mb-0.5 text-[#1A1A1A] font-semibold text-sm leading-[18px] truncate"
+          className="mb-0.5 text-app-text font-semibold text-sm leading-[18px] truncate"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           {item.productName}
         </span>
         <span
-          className="mb-1 text-[#777777] text-xs leading-4 truncate"
+          className="mb-1 text-app-text-secondary text-xs leading-4 truncate"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           SKU: {item.sku} • {formatCurrency(item.precoFixado)}
@@ -96,7 +96,7 @@ export function MaletaItemList({ items, title }: MaletaItemListProps) {
     <div className="flex flex-col gap-3">
       {title && (
         <span
-          className="text-[#1A1A1A] text-lg leading-[22px]"
+          className="text-app-text text-lg leading-[22px]"
           style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
         >
           {title}

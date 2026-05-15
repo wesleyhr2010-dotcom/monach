@@ -67,8 +67,8 @@ export function NotificacionItem({ item, onMarcarLida }: NotificacionItemProps) 
 
   const content = (
     <div
-      className={`flex items-start gap-3 rounded-2xl bg-white p-4 border ${
-        item.lida ? "border-[#EBEBEB] opacity-80" : "border-[#EBEBEB]"
+      className={`flex items-start gap-3 rounded-2xl bg-app-card-bg p-4 border ${
+        item.lida ? "border-app-surface opacity-80" : "border-app-surface"
       }`}
     >
       <div
@@ -79,28 +79,28 @@ export function NotificacionItem({ item, onMarcarLida }: NotificacionItemProps) 
       </div>
       <div className="flex flex-col grow min-w-0 gap-1">
         <span
-          className="text-[#1A1A1A] font-semibold text-sm leading-[18px]"
+          className="text-app-text font-semibold text-sm leading-[18px]"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           {item.titulo}
         </span>
         <span
-          className="text-[#777777] text-[13px] leading-[150%]"
+          className="text-app-text-secondary text-[13px] leading-[150%]"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           {item.mensagem}
         </span>
         <div className="flex items-center justify-between mt-1">
           <span
-            className="text-[#B4ABA2] text-xs leading-4"
+            className="text-app-muted text-xs leading-4"
             style={{ fontFamily: "var(--font-raleway)" }}
           >
             {formatHora(item.created_at)}
           </span>
           {ctaUrl && (
             <span
-              className="flex items-center gap-0.5 text-xs font-semibold"
-              style={{ fontFamily: "var(--font-raleway)", color: "#35605A" }}
+              className="flex items-center gap-0.5 text-xs font-semibold text-app-primary"
+              style={{ fontFamily: "var(--font-raleway)" }}
             >
               Ver más <ChevronRight size={12} strokeWidth={2} />
             </span>

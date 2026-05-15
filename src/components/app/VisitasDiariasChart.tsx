@@ -21,8 +21,8 @@ function CustomTooltip({ active, payload, label }: {
 }) {
   if (active && payload && payload.length) {
     return (
-      <div className="bg-white rounded-lg shadow-lg border border-[#E5E0DB] px-3 py-2">
-        <p className="text-sm font-medium text-[#1A1A1A]">
+      <div className="bg-app-card-bg rounded-lg shadow-lg border border-app-border px-3 py-2">
+        <p className="text-sm font-medium text-app-text">
           {label}: {payload[0].value} visitas
         </p>
       </div>
@@ -51,7 +51,7 @@ export function VisitasDiariasChart({ data }: VisitasDiariasChartProps) {
               <stop offset="100%" stopColor="#a8d5c2" />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#E5E0DB" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="currentColor" vertical={false} />
           <XAxis
             dataKey="dia"
             axisLine={false}

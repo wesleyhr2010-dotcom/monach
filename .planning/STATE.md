@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
 status: executing
-stopped_at: Phase 19 completed
-last_updated: "2026-05-15T22:45:00.000Z"
-last_activity: 2026-05-15 — Phase 19 CSS Token Foundation completed (2/2 plans)
+stopped_at: Phase 20 completed
+last_updated: "2026-05-15T23:30:00.000Z"
+last_activity: 2026-05-15 — Phase 20 /app Hardcoded Color Migration completed (5/5 plans)
 progress:
   total_phases: 7
-  completed_phases: 4
-  total_plans: 11
-  completed_plans: 11
-  percent: 57
+  completed_phases: 5
+  total_plans: 16
+  completed_plans: 16
+  percent: 71
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 20 — /app Hardcoded Color Migration
-Plan: 5 plans created
-Status: Phase 20 planned — ready to execute
-Last activity: 2026-05-15 — Phase 20 planned (5 plans in 3 waves)
+Phase: 21 — ThemeProvider Infrastructure
+Plan: Not started
+Status: Phase 20 completed — ready to execute Phase 21
+Last activity: 2026-05-15 — Phase 20 /app Hardcoded Color Migration completed (5/5 plans)
 
-Progress: [████████░░░░] 57% (4/7 phases complete) | Milestone v1.5
+Progress: [███████████░] 71% (5/7 phases complete) | Milestone v1.5
 
 ## Performance Metrics
 

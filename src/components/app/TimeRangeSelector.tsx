@@ -20,7 +20,7 @@ export function TimeRangeSelector({ value, onChange }: TimeRangeSelectorProps) {
       <select
         value={value}
         onChange={(e) => onChange(e.target.value as TimeRange)}
-        className="appearance-none bg-white border border-[#E5E0DB] rounded-lg px-3 py-2 pr-8 text-sm font-medium text-[#1A1A1A] focus:outline-none focus:ring-2 focus:ring-[#35605A]"
+        className="appearance-none bg-app-card-bg border border-app-border rounded-lg px-3 py-2 pr-8 text-sm font-medium text-app-text focus:outline-none focus:ring-2 focus:ring-app-primary"
         style={{ fontFamily: "var(--font-raleway)" }}
       >
         {OPTIONS.map((opt) => (
@@ -36,7 +36,7 @@ export function TimeRangeSelector({ value, onChange }: TimeRangeSelectorProps) {
         viewBox="0 0 12 8"
         fill="none"
       >
-        <path d="M1 1.5L6 6.5L11 1.5" stroke="#888" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+        <path d="M1 1.5L6 6.5L11 1.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
       </svg>
     </div>
   );

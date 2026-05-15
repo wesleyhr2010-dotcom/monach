@@ -110,19 +110,19 @@ export default function EditarDatosPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F5F2EF] flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-[3px] animate-spin" style={{ borderColor: "#EBEBEB", borderTopColor: "#35605A" }} />
+            <div className="min-h-screen bg-app-bg flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-[3px] animate-spin border-app-surface border-t-app-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F2EF]">
-            <div className="bg-white px-4 py-4 flex items-center gap-3 border-b border-[#E8E2D6] sticky top-0 z-10">
+        <div className="min-h-screen bg-app-bg">
+            <div className="bg-app-card-bg px-4 py-4 flex items-center gap-3 border-b border-app-border sticky top-0 z-10">
                 <button onClick={() => router.push("/app/perfil")} className="p-1 -ml-1">
-                    <ArrowLeft className="w-5 h-5 text-[#1A1A1A]" />
+                    <ArrowLeft className="w-5 h-5 text-app-text" />
                 </button>
-                <h1 className="text-base font-bold text-[#1A1A1A]">Editar Mis Datos</h1>
+                <h1 className="text-base font-bold text-app-text">Editar Mis Datos</h1>
             </div>
 
             <form onSubmit={handleSubmit} className="px-4 py-5 space-y-4 max-w-lg mx-auto">
@@ -135,11 +135,11 @@ export default function EditarDatosPage() {
 
                 {/* Avatar */}
                 <div className="flex flex-col items-center">
-                    <div className="relative w-24 h-24 rounded-full bg-[#F5F0E8] flex items-center justify-center overflow-hidden border-2 border-dashed border-[#D1C7B7]">
+                    <div className="relative w-24 h-24 rounded-full bg-app-surface-warm flex items-center justify-center overflow-hidden border-2 border-dashed border-app-border">
                         {avatarPreview ? (
                             <Image src={avatarPreview} alt="Avatar" fill className="object-cover" />
                         ) : (
-                            <Camera className="w-8 h-8 text-[#917961]" />
+                            <Camera className="w-8 h-8 text-app-accent-brown" />
                         )}
                     </div>
 
@@ -148,7 +148,7 @@ export default function EditarDatosPage() {
                         <button
                             type="button"
                             onClick={() => cameraInputRef.current?.click()}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5F0E8] text-[#35605A] text-xs font-medium active:scale-95 transition-transform"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-app-surface-warm text-app-primary text-xs font-medium active:scale-95 transition-transform"
                         >
                             <Camera className="w-3.5 h-3.5" />
                             Cámara
@@ -156,7 +156,7 @@ export default function EditarDatosPage() {
                         <button
                             type="button"
                             onClick={() => galleryInputRef.current?.click()}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F5F0E8] text-[#35605A] text-xs font-medium active:scale-95 transition-transform"
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-app-surface-warm text-app-primary text-xs font-medium active:scale-95 transition-transform"
                         >
                             <ImageIcon className="w-3.5 h-3.5" />
                             Galería
@@ -180,7 +180,7 @@ export default function EditarDatosPage() {
                         onChange={handleAvatarChange}
                     />
 
-                    <span className="text-xs text-[#6b7280] mt-2">Foto de perfil</span>
+                    <span className="text-xs text-app-text-secondary mt-2">Foto de perfil</span>
                 </div>
 
                 <Field label="Nombre completo" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
@@ -188,7 +188,7 @@ export default function EditarDatosPage() {
                 <Field label="Correo" value="" disabled placeholder="Para acceso y seguridad (solo lectura)" />
 
                 <div className="pt-2">
-                    <p className="text-xs font-semibold text-[#6b7280] uppercase tracking-wider mb-3">Dirección</p>
+                    <p className="text-xs font-semibold text-app-text-secondary uppercase tracking-wider mb-3">Dirección</p>
                     <div className="space-y-3">
                         <Field label="CEP / Código postal" value={form.endereco_cep} onChange={(v) => setForm({ ...form, endereco_cep: v })} />
                         <Field label="Calle / Logradouro" value={form.endereco_logradouro} onChange={(v) => setForm({ ...form, endereco_logradouro: v })} />
@@ -202,7 +202,7 @@ export default function EditarDatosPage() {
                 <button
                     type="submit"
                     disabled={saving}
-                    className="w-full bg-[#2E5A4C] text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+                    className="w-full bg-app-primary text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
                 >
                     <Save className="w-4 h-4" />
                     {saving ? "Guardando..." : "Guardar cambios"}
@@ -229,7 +229,7 @@ function Field({
 }) {
     return (
         <div>
-            <label className="text-sm font-medium text-[#4b5563] mb-1.5 block">
+            <label className="text-sm font-medium text-app-text-dim mb-1.5 block">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
@@ -239,7 +239,7 @@ function Field({
                 disabled={disabled}
                 placeholder={placeholder}
                 required={required}
-                className="w-full px-4 py-3 rounded-xl border border-[#E8E2D6] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2E5A4C]/20 disabled:bg-[#F5F0E8] disabled:text-[#6b7280]"
+                className="w-full px-4 py-3 rounded-xl border border-app-border bg-app-card-bg text-sm focus:outline-none focus:ring-2 focus:ring-app-primary/20 disabled:bg-app-surface-warm disabled:text-app-text-secondary"
             />
         </div>
     );

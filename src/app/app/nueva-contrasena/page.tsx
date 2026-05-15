@@ -93,28 +93,28 @@ export default function NuevaContrasenaPage() {
 
     if (state === "success") {
         return (
-            <div className="flex flex-col min-h-[100dvh] bg-[#F5F2EF] font-['Raleway',sans-serif] antialiased">
+            <div className="flex flex-col min-h-[100dvh] bg-app-bg font-['Raleway',sans-serif] antialiased">
                 <div className="flex flex-col justify-center flex-1 py-10 px-6 max-w-md mx-auto w-full">
                     <LogoMonarca className="mb-10" />
 
-                    <div className="bg-[#EBEBEB] rounded-3xl p-8 flex flex-col items-center text-center">
-                        <div className="size-14 rounded-full bg-[#35605A] flex items-center justify-center mb-5">
+                    <div className="bg-app-surface rounded-3xl p-8 flex flex-col items-center text-center">
+                        <div className="size-14 rounded-full bg-app-primary flex items-center justify-center mb-5">
                             <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                 <polyline points="20 6 9 17 4 12" />
                             </svg>
                         </div>
 
-                        <h2 className="font-['Playfair_Display',serif] font-bold text-xl text-[#1A1A1A] tracking-tight mb-3">
+                        <h2 className="font-['Playfair_Display',serif] font-bold text-xl text-app-text tracking-tight mb-3">
                             ¡Contraseña actualizada!
                         </h2>
 
-                        <p className="text-[13px] text-[#555555] leading-relaxed mb-7">
+                        <p className="text-[13px] text-app-text-dim leading-relaxed mb-7">
                             Tu contraseña fue cambiada exitosamente. Te redirigimos al portal...
                         </p>
 
                         <Link
                             href="/app"
-                            className="w-full flex justify-center items-center py-4 rounded-full border border-[#35605A] text-[#35605A] font-semibold text-sm hover:bg-[#35605A]/5 transition-colors"
+                            className="w-full flex justify-center items-center py-4 rounded-full border border-app-primary text-app-primary font-semibold text-sm hover:bg-app-primary/5 transition-colors"
                         >
                             Ir al inicio
                         </Link>
@@ -125,13 +125,13 @@ export default function NuevaContrasenaPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-[100dvh] bg-[#F5F2EF] font-['Raleway',sans-serif] antialiased text-[#777777]">
+        <div className="flex flex-col min-h-[100dvh] bg-app-bg font-['Raleway',sans-serif] antialiased text-app-text-secondary">
             <div className="flex-1 flex flex-col justify-center gap-5 w-full max-w-[448px] mx-auto px-6 pb-[40px] pt-[52px]">
 
                 <LogoMonarca className="mb-12" />
 
                 <div className="flex flex-col gap-2">
-                    <h2 className="font-['Playfair_Display',serif] font-semibold text-[20px] text-[#1A1A1A] leading-7 tracking-[-0.3px]">
+                    <h2 className="font-['Playfair_Display',serif] font-semibold text-[20px] text-app-text leading-7 tracking-[-0.3px]">
                         Crear nueva contraseña
                     </h2>
                     <p className="text-[13px] leading-5">
@@ -147,7 +147,7 @@ export default function NuevaContrasenaPage() {
                     )}
 
                     {verifyState === "verifying" && (
-                        <p className="text-[13px] text-[#6A9A8A] text-center">
+                        <p className="text-[13px] text-app-primary text-center">
                             Verificando enlace...
                         </p>
                     )}
@@ -181,7 +181,7 @@ export default function NuevaContrasenaPage() {
                 </form>
 
                 <div className="flex justify-center">
-                    <Link href="/app/login" className="text-[#917961] text-[13px] hover:underline">
+                    <Link href="/app/login" className="text-app-accent-brown text-[13px] hover:underline">
                         ← Volver al inicio de sesión
                     </Link>
                 </div>

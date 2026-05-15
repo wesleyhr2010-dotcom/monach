@@ -1,5 +1,51 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-15 — Phase 20: /app Hardcoded Color Migration
+
+### Contexto
+Migração de todas as cores hex hardcoded no PWA (`/app`) para tokens CSS `--color-app-*`, tornando o dark mode testável via DevTools.
+
+### Feito
+
+**Novo tokens adicionados**
+- `globals.css` — 9 tokens semânticos novos com variantes dark: `app-text-secondary`, `app-text-dim`, `app-accent-brown`, `app-surface-warm`, `app-surface`, `app-border`, `app-border-strong`, `app-warning-bg`, `app-primary-light`
+
+**Shell components migrados**
+- `layout.tsx` — body usa `bg-app-bg` em vez de inline `style={{ backgroundColor: "#F5F2EF" }}`; `themeColor` usa `var(--color-app-bg)`
+- `AppShell.tsx` — 7 substituições de hex para tokens
+- `AppBottomNav.tsx` — ícones e textos via tokens condicionais
+- `AppHeader.tsx` — avatar, texto, badge e ícone do sino tokenizados
+- `AppPageShell.tsx` — todos os componentes (AppPageHeader, SectionTitle, SummaryCard, CommissionCard, AlertBanner, SummaryRow, BottomAction) migrados
+
+**Páginas migradas**
+- Home (`page.tsx`, `AppDashboardClient.tsx`), Onboarding (`bienvenida/page.tsx`), Auth (`login`, `nueva-contrasena`, `recuperar-contrasena`)
+- Maleta (`maleta/*`, `MaletaDetailClient.tsx`, `DevolverClient.tsx`, `RegistrarVentaClient.tsx`)
+- Catálogo (`catalogo/*`, `compartir/*`)
+- Perfil (`perfil/*`), Progreso (`progreso/*`), Desempeno (`desempeno/*`)
+- Menu (`mas/page.tsx`), Notificações (`notificacoes/*`)
+
+**Componentes compartilhados migrados**
+- `MaletaCard.tsx`, `MaletaItemRow.tsx`, `MaletaList.tsx`, `StatCard.tsx`, `SectionHeader.tsx`, `MetricCardTrend.tsx`, `ProductosPopularesList.tsx`, `VisitasDiariasChart.tsx`, `NotificacionItem.tsx`, `NotificacionesList.tsx`, `PreferenciasNotificacionesForm.tsx`, `CommissionTiers.tsx`, `TimeRangeSelector.tsx`, `ActionButton.tsx`, `MenuHeader.tsx`
+
+**Estratégia de substituição**
+- Tailwind arbitrary values `-[#...]` → classes `bg-app-*`, `text-app-*`, `border-app-*`
+- Inline styles (`style={{ backgroundColor: ... }}`) → classes condicionais
+- SVG `stroke="#..."` → `stroke="currentColor"` + classe `text-app-*`
+- Cores condicionais (toggle, badge, status) → classes condicionais via template literals
+
+### Arquivos tocados
+- `src/app/globals.css` (9 tokens novos)
+- `src/app/layout.tsx`
+- `src/components/app/AppShell.tsx`, `AppBottomNav.tsx`, `AppHeader.tsx`, `AppPageShell.tsx`
+- 40+ arquivos em `src/app/app/*` e `src/components/app/*`
+
+### Notas
+- Build passa sem erros. Lint sem erros novos.
+- Zero valores hex hardcoded em `src/app/app` e `src/components/app`.
+- Dark mode testável via DevTools adicionando `data-theme="dark"` em `.app-shell`.
+- `text-white` preservado onde apropriado (botões primary, badges).
+- `AlertBanner` mapeado para tokens semânticos: warning → `bg-app-warning-bg text-app-accent-brown`, info → `bg-app-surface text-app-primary`, success → `bg-app-accent-green-bg text-app-accent-green`.
+
 ## 2026-05-15 — Phase 19: CSS Token Foundation (Dark Mode v1.5)
 
 ### Contexto

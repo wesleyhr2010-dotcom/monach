@@ -34,7 +34,7 @@ export function AppBottomNav() {
 
   return (
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav">
-      <div className="flex items-center justify-around bg-white rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
+      <div className="flex items-center justify-around bg-app-card-bg rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = mounted ? isActive(pathname, href, exact) : false;
           return (
@@ -47,24 +47,22 @@ export function AppBottomNav() {
               <Icon
                 size={24}
                 strokeWidth={1.5}
-                className="transition-all duration-200 ease-out"
+                className={`transition-all duration-200 ease-out ${active ? "text-app-primary" : "text-app-muted"}`}
                 style={{
-                  color: active ? "#35605A" : "#B4ABA2",
                   transform: active ? "translateY(-2px)" : "translateY(0)",
                 }}
               />
               <span
-                className="text-[10px] font-medium leading-3 tracking-[0.2px] transition-colors duration-200"
+                className={`text-[10px] font-medium leading-3 tracking-[0.2px] transition-colors duration-200 ${active ? "text-app-primary" : "text-app-muted"}`}
                 style={{
                   fontFamily: "var(--font-raleway)",
-                  color: active ? "#35605A" : "#B4ABA2",
                 }}
               >
                 {label}
               </span>
               {/* Dot sempre presente — evita layout shift e permite animar */}
               <div
-                className="rounded-full bg-[#35605A] transition-all duration-200 ease-out"
+                className={`rounded-full transition-all duration-200 ease-out ${active ? "bg-app-primary" : "bg-app-muted"}`}
                 style={{
                   width: active ? 4 : 0,
                   height: active ? 4 : 0,

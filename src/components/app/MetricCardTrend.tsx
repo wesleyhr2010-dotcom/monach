@@ -18,7 +18,7 @@ export function MetricCardTrend({ label, value, trend }: MetricCardTrendProps) {
     if (trend.pct === null) {
       trendEl = (
         <span
-          className="text-xs font-semibold text-[#917961]"
+          className="text-xs font-semibold text-app-accent-brown"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           Nuevo
@@ -27,7 +27,7 @@ export function MetricCardTrend({ label, value, trend }: MetricCardTrendProps) {
     } else if (trend.pct > 0) {
       trendEl = (
         <span
-          className="text-xs font-semibold text-[#4ADE80]"
+          className="text-xs font-semibold text-app-accent-green"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           ↑ +{trend.pct}%
@@ -36,7 +36,7 @@ export function MetricCardTrend({ label, value, trend }: MetricCardTrendProps) {
     } else if (trend.pct < 0) {
       trendEl = (
         <span
-          className="text-xs font-semibold text-[#E05C5C]"
+          className="text-xs font-semibold text-app-danger"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           ↓ {trend.pct}%
@@ -45,7 +45,7 @@ export function MetricCardTrend({ label, value, trend }: MetricCardTrendProps) {
     } else {
       trendEl = (
         <span
-          className="text-xs font-semibold text-[#888]"
+          className="text-xs font-semibold text-app-text-secondary"
           style={{ fontFamily: "var(--font-raleway)" }}
         >
           —
@@ -55,15 +55,15 @@ export function MetricCardTrend({ label, value, trend }: MetricCardTrendProps) {
   }
 
   return (
-    <div className="bg-white rounded-xl border border-[#E5E0DB] p-4 flex flex-col gap-2">
+    <div className="bg-app-card-bg rounded-xl border border-app-border p-4 flex flex-col gap-2">
       <span
-        className="text-[11px] font-medium text-[#888] uppercase tracking-wider"
+        className="text-[11px] font-medium text-app-text-secondary uppercase tracking-wider"
         style={{ fontFamily: "var(--font-raleway)" }}
       >
         {label}
       </span>
       <span
-        className="text-2xl font-semibold text-[#1A1A1A]"
+        className="text-2xl font-semibold text-app-text"
         style={{ fontFamily: "var(--font-playfair)" }}
       >
         {value}

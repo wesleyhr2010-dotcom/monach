@@ -30,8 +30,8 @@ export function ActionButton({
       disabled={disabled ?? loading}
       className={`flex items-center justify-center rounded-[100px] py-4 gap-2 h-[52px] text-sm font-bold tracking-[0.5px] uppercase transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${
         isPrimary
-          ? "bg-[#35605A] text-white shadow-[0_4px_12px_rgba(53,96,90,0.2)] hover:bg-[#2b4c47]"
-          : "border-2 border-solid border-[#D9D6D2] text-[#777777] hover:bg-[#EBEBEB]"
+          ? "bg-app-primary text-white shadow-[0_4px_12px_rgba(53,96,90,0.2)] hover:bg-app-primary"
+          : "border-2 border-solid border-app-border-strong text-app-text-secondary hover:bg-app-surface"
       } ${className}`}
       style={{ fontFamily: "var(--font-raleway)" }}
     >
@@ -61,7 +61,7 @@ export function SuccessButton({ label, icon, onClick, disabled, className = "" }
       type="button"
       onClick={onClick}
       disabled={disabled}
-      className={`w-full flex items-center justify-center rounded-[100px] py-4 gap-2 h-[52px] bg-[#1F7A4A] text-white font-bold text-sm tracking-[0.5px] uppercase shadow-[0_4px_12px_rgba(31,122,74,0.2)] hover:bg-[#17633b] transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
+      className={`w-full flex items-center justify-center rounded-[100px] py-4 gap-2 h-[52px] bg-app-accent-green text-white font-bold text-sm tracking-[0.5px] uppercase shadow-[0_4px_12px_rgba(31,122,74,0.2)] hover:bg-app-accent-green transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
       style={{ fontFamily: "var(--font-raleway)" }}
     >
       {icon}

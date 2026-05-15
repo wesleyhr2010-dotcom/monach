@@ -92,33 +92,33 @@ export default function DatosBancariosPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#F5F2EF] flex items-center justify-center">
-                <div className="w-8 h-8 rounded-full border-[3px] animate-spin" style={{ borderColor: "#EBEBEB", borderTopColor: "#35605A" }} />
+            <div className="min-h-screen bg-app-bg flex items-center justify-center">
+                <div className="w-8 h-8 rounded-full border-[3px] animate-spin border-app-surface border-t-app-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#F5F2EF]">
-            <div className="bg-white px-4 py-4 flex items-center gap-3 border-b border-[#E8E2D6] sticky top-0 z-10">
+        <div className="min-h-screen bg-app-bg">
+            <div className="bg-app-card-bg px-4 py-4 flex items-center gap-3 border-b border-app-border sticky top-0 z-10">
                 <button onClick={() => router.push("/app/perfil")} className="p-1 -ml-1">
-                    <ArrowLeft className="w-5 h-5 text-[#1A1A1A]" />
+                    <ArrowLeft className="w-5 h-5 text-app-text" />
                 </button>
-                <h1 className="text-base font-bold text-[#1A1A1A]">Datos Bancarios</h1>
+                <h1 className="text-base font-bold text-app-text">Datos Bancarios</h1>
             </div>
 
             <div className="px-4 py-5 max-w-lg mx-auto">
-                <div className="flex items-center gap-2 mb-4 text-[#6b7280]">
+                <div className="flex items-center gap-2 mb-4 text-app-text-secondary">
                     <Landmark className="w-4 h-4" />
                     <p className="text-xs">Usados solo para comisiones</p>
                 </div>
 
                 {/* Tabs */}
-                <div className="flex bg-white rounded-xl p-1 mb-4 border border-[#E8E2D6]">
+                <div className="flex bg-app-card-bg rounded-xl p-1 mb-4 border border-app-border">
                     <button
                         onClick={() => setTab("alias")}
                         className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            tab === "alias" ? "bg-[#2E5A4C] text-white" : "text-[#6b7280] hover:bg-[#F5F0E8]"
+                            tab === "alias" ? "bg-app-primary text-white" : "text-app-text-secondary hover:bg-app-surface-warm"
                         }`}
                     >
                         Alias
@@ -126,7 +126,7 @@ export default function DatosBancariosPage() {
                     <button
                         onClick={() => setTab("cuenta_bancaria")}
                         className={`flex-1 py-2 text-sm font-medium rounded-lg transition-colors ${
-                            tab === "cuenta_bancaria" ? "bg-[#2E5A4C] text-white" : "text-[#6b7280] hover:bg-[#F5F0E8]"
+                            tab === "cuenta_bancaria" ? "bg-app-primary text-white" : "text-app-text-secondary hover:bg-app-surface-warm"
                         }`}
                     >
                         Cuenta Bancaria
@@ -140,11 +140,11 @@ export default function DatosBancariosPage() {
                     {tab === "alias" ? (
                         <>
                             <div>
-                                <label className="text-sm font-medium text-[#4b5563] mb-1.5 block">Tipo de Alias</label>
+                                <label className="text-sm font-medium text-app-text-dim mb-1.5 block">Tipo de Alias</label>
                                 <select
                                     value={aliasForm.alias_tipo}
                                     onChange={(e) => setAliasForm({ ...aliasForm, alias_tipo: e.target.value as any })}
-                                    className="w-full px-4 py-3 rounded-xl border border-[#E8E2D6] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2E5A4C]/20"
+                                    className="w-full px-4 py-3 rounded-xl border border-app-border bg-app-card-bg text-sm focus:outline-none focus:ring-2 focus:ring-app-primary/20"
                                 >
                                     <option value="CI">CI (Cédula de Identidad)</option>
                                     <option value="RUC">RUC</option>
@@ -162,11 +162,11 @@ export default function DatosBancariosPage() {
                             <Field label="Sucursal / Agencia" value={cuentaForm.agencia} onChange={(v) => setCuentaForm({ ...cuentaForm, agencia: v })} />
                             <Field label="Cuenta" value={cuentaForm.cuenta} onChange={(v) => setCuentaForm({ ...cuentaForm, cuenta: v })} required />
                             <div>
-                                <label className="text-sm font-medium text-[#4b5563] mb-1.5 block">Tipo de Cuenta</label>
+                                <label className="text-sm font-medium text-app-text-dim mb-1.5 block">Tipo de Cuenta</label>
                                 <select
                                     value={cuentaForm.tipo_cuenta}
                                     onChange={(e) => setCuentaForm({ ...cuentaForm, tipo_cuenta: e.target.value as any })}
-                                    className="w-full px-4 py-3 rounded-xl border border-[#E8E2D6] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2E5A4C]/20"
+                                    className="w-full px-4 py-3 rounded-xl border border-app-border bg-app-card-bg text-sm focus:outline-none focus:ring-2 focus:ring-app-primary/20"
                                 >
                                     <option value="ahorro">Ahorro</option>
                                     <option value="corriente">Corriente</option>
@@ -180,7 +180,7 @@ export default function DatosBancariosPage() {
                     <button
                         type="submit"
                         disabled={saving}
-                        className="w-full bg-[#2E5A4C] text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
+                        className="w-full bg-app-primary text-white font-medium py-3.5 rounded-xl active:scale-[0.98] transition-transform disabled:opacity-60 flex items-center justify-center gap-2"
                     >
                         <Save className="w-4 h-4" />
                         {saving ? "Guardando..." : "Guardar Datos Bancarios"}
@@ -194,7 +194,7 @@ export default function DatosBancariosPage() {
 function Field({ label, value, onChange, required }: { label: string; value: string; onChange: (v: string) => void; required?: boolean }) {
     return (
         <div>
-            <label className="text-sm font-medium text-[#4b5563] mb-1.5 block">
+            <label className="text-sm font-medium text-app-text-dim mb-1.5 block">
                 {label} {required && <span className="text-red-500">*</span>}
             </label>
             <input
@@ -202,7 +202,7 @@ function Field({ label, value, onChange, required }: { label: string; value: str
                 value={value}
                 onChange={(e) => onChange(e.target.value)}
                 required={required}
-                className="w-full px-4 py-3 rounded-xl border border-[#E8E2D6] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#2E5A4C]/20"
+                className="w-full px-4 py-3 rounded-xl border border-app-border bg-app-card-bg text-sm focus:outline-none focus:ring-2 focus:ring-app-primary/20"
             />
         </div>
     );

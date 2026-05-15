@@ -23,13 +23,13 @@ export default function AppLoginPage() {
     }
 
     return (
-        <div className="flex flex-col min-h-[100dvh] bg-[#F5F2EF] font-['Raleway',sans-serif] antialiased text-[#777777]">
+        <div className="flex flex-col min-h-[100dvh] bg-app-bg font-['Raleway',sans-serif] antialiased text-app-text-secondary">
             <div className="flex flex-col justify-center flex-1 py-10 px-6 max-w-md mx-auto w-full">
                 
                 {/* Logo & Header */}
                 <div className="flex flex-col items-center mb-12">
                     <LogoMonarca className="mb-4" />
-                    <p className="text-[#777777] text-sm text-center">
+                    <p className="text-app-text-secondary text-sm text-center">
                         Portal de revendedora
                     </p>
                 </div>
@@ -62,7 +62,7 @@ export default function AppLoginPage() {
 
                     {/* Forgot Password */}
                     <div className="flex justify-end -mt-2">
-                        <a href="/app/login/recuperar-contrasena" className="text-[#917961] text-[13px] hover:underline">
+                        <a href="/app/login/recuperar-contrasena" className="text-app-accent-brown text-[13px] hover:underline">
                             Olvidé mi contraseña
                         </a>
                     </div>
@@ -76,7 +76,7 @@ export default function AppLoginPage() {
 
                 {/* Footer Link */}
                 <div className="flex justify-center mt-12 text-center text-balance">
-                    <a href="#" className="text-[#777777] text-[13px] hover:underline">
+                    <a href="#" className="text-app-text-secondary text-[13px] hover:underline">
                         ¿Problemas? Habla con tu consultora por WhatsApp
                     </a>
                 </div>
