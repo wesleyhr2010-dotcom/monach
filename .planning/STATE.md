@@ -2,11 +2,11 @@
 gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
-status: planning
+status: ready
 last_updated: "2026-05-15T00:00:00.000Z"
-last_activity: 2026-05-15 -- Milestone v1.5 started
+last_activity: 2026-05-15 -- Roadmap created (Phases 19-22)
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -24,10 +24,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-05-15 — Milestone v1.5 started
+Phase: 19 — CSS Token Foundation
+Plan: Not started
+Status: Roadmap created — ready to execute Phase 19
+Last activity: 2026-05-15 — Roadmap created (Phases 19-22 defined)
+
+Progress: [░░░░░░░░░░░░] 0% (0/4 phases complete) | Milestone v1.5
 
 ## Performance Metrics
 
