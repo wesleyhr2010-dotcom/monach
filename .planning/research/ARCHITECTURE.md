@@ -1,381 +1,437 @@
-# Architecture Research
+# Architecture Research — Dark Mode & Temas
 
-**Project:** NEXT-MONARCA v1.4 — PDV e Ventas de Loja
-**Researched:** 2026-05-08
-**Scope:** PDV, Client Management, Multi-Currency integration with existing Next.js 15 + Prisma codebase
-
----
-
-## New Prisma Models
-
-Add to `prisma/schema.prisma` after Module 3a (EstoqueMovimento). All models belong in a new "Module 3b — PDV" section.
-
-### Enums
-
-```prisma
-enum ClienteOrigem {
-  LOJA
-  REVENDEDORA
-
-  @@map("cliente_origem")
-}
-
-enum Moneda {
-  PYG
-  USD
-  BRL
-
-  @@map("moneda")
-}
-```
-
-### Cliente
-
-```prisma
-model Cliente {
-  id         String        @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  nome       String
-  ruc        String?       @unique
-  cidade     String?
-  telefone   String
-  origem     ClienteOrigem @default(LOJA)
-  created_at DateTime      @default(now()) @db.Timestamptz()
-  updated_at DateTime      @default(now()) @updatedAt @db.Timestamptz()
-
-  vendas_loja VentaLoja[]
-
-  @@index([ruc])
-  @@index([origem])
-  @@index([created_at])
-  @@map("clientes")
-}
-```
-
-`ruc` is `String? @unique`. PostgreSQL treats each NULL as distinct, so multiple REVENDEDORA-origin clients without a RUC will not trigger a unique violation — correct behavior.
-
-### CotizacionDia
-
-```prisma
-model CotizacionDia {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  brl_pyg    Decimal  @db.Decimal(12, 4)
-  usd_pyg    Decimal  @db.Decimal(12, 4)
-  updated_at DateTime @default(now()) @updatedAt @db.Timestamptz()
-  updated_by String   @db.Uuid
-
-  @@map("cotizacion_dia")
-}
-```
-
-Singleton-style: the application always reads the latest row (`ORDER BY updated_at DESC LIMIT 1`). `updated_by` stores the admin's `reseller.id` as a plain UUID — no FK declared to avoid bidirectional dependency with Reseller.
-
-### VentaLoja
-
-```prisma
-model VentaLoja {
-  id                    String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  cliente_id            String   @db.Uuid
-  vendedor_id           String   @db.Uuid
-  moneda                Moneda
-  total_moneda_original Decimal  @db.Decimal(12, 2)
-  total_pyg             Decimal  @db.Decimal(12, 2)
-  cotizacion_brl_pyg    Decimal? @db.Decimal(12, 4)
-  cotizacion_usd_pyg    Decimal? @db.Decimal(12, 4)
-  condicion_venta       String   @default("CONTADO")
-  nota_factura          String?
-  talonario             String?
-  numero_factura        String?
-  tipo_operacion        String?
-  created_at            DateTime @default(now()) @db.Timestamptz()
-
-  cliente Cliente       @relation(fields: [cliente_id], references: [id])
-  itens   VentaLojaItem[]
-
-  @@index([cliente_id])
-  @@index([vendedor_id])
-  @@index([created_at])
-  @@map("ventas_loja")
-}
-```
-
-`cotizacion_brl_pyg` and `cotizacion_usd_pyg` are immutable snapshots of the rate at the time of sale. For PYG-denominated sales they are stored as `null`. `talonario`, `numero_factura`, `tipo_operacion` are persisted without UI in v1.4 — reserved for factura emissão in v1.5.
-
-### VentaLojaItem
-
-```prisma
-model VentaLojaItem {
-  id                     String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  venta_loja_id          String   @db.Uuid
-  product_variant_id     String   @db.Uuid
-  cantidad               Int
-  precio_unitario_moneda Decimal  @db.Decimal(12, 2)
-  precio_unitario_pyg    Decimal  @db.Decimal(12, 2)
-
-  venta_loja      VentaLoja      @relation(fields: [venta_loja_id], references: [id], onDelete: Cascade)
-  product_variant ProductVariant @relation(fields: [product_variant_id], references: [id])
-
-  @@index([venta_loja_id])
-  @@index([product_variant_id])
-  @@map("ventas_loja_itens")
-}
-```
+**Domain:** Theming in Next.js 15 App Router with two independent route groups and an existing CSS custom properties design system
+**Researched:** 2026-05-15
+**Confidence:** HIGH — based on direct codebase inspection, official Next.js docs, and Tailwind v4 docs
 
 ---
 
-## Modified Models
+## Existing Baseline (Critical Context)
 
-### `EstoqueMovimentoTipo` enum — add `venda_loja`
+Before designing anything, understand what already exists:
 
-```prisma
-enum EstoqueMovimentoTipo {
-  reserva_maleta
-  devolucao_maleta
-  ajuste_manual
-  venda_direta   // existing — do not rename
-  venda_loja     // NEW — PDV store sale
-
-  @@map("estoque_movimento_tipo")
-}
-```
-
-The existing schema uses `venda_direta` (not `venda_loja`). Add `venda_loja` as a new value alongside `venda_direta` — renaming the existing value would be a destructive migration.
-
-### `EstoqueMovimento` — add optional `venta_loja_id` FK
-
-```prisma
-model EstoqueMovimento {
-  // ... all existing fields unchanged ...
-  venta_loja_id String? @db.Uuid  // NEW
-
-  // existing relations:
-  product_variant ProductVariant @relation(...)
-  maleta          Maleta?        @relation(...)
-  // NEW:
-  venta_loja      VentaLoja?     @relation(fields: [venta_loja_id], references: [id])
-}
-```
-
-Mirrors the existing nullable `maleta_id` pattern. Provides auditability without making the FK mandatory.
-
-### `ProductVariant` — back-relation for `VentaLojaItem`
-
-```prisma
-model ProductVariant {
-  // ... existing fields and relations ...
-  ventas_loja_itens VentaLojaItem[]  // NEW back-relation
-}
-```
-
-### `VentaLoja` back-relation for `EstoqueMovimento`
-
-```prisma
-model VentaLoja {
-  // ... existing fields ...
-  estoque_movimentos EstoqueMovimento[]  // back-relation (add after VentaLojaItem[] relation)
-}
-```
+- **Admin is already dark-only.** `admin.css` defines `--admin-*` tokens as fixed dark values in `:root`. The panel has no light variant today. Adding dark mode for admin means adding a **light variant**, not a dark one.
+- **PWA (`/app`) is already light-only.** `globals.css` defines `--color-app-*` tokens as fixed light values in `@theme inline`. Adding dark mode for PWA means adding a **dark variant**.
+- **`globals.css` uses Tailwind v4 `@theme inline`.** These tokens compile into Tailwind utility classes (e.g., `bg-app-bg`). Dark variants of these tokens require a separate CSS selector strategy, not just new `@theme` values.
+- **No `next-themes` or any theming library is installed.** Zero existing infrastructure.
+- **Root `layout.tsx`** owns `<html>` and `<body>`. It does not belong to either route group — it wraps both.
+- **`AppShell` (PWA shell) is a Client Component.** It already reads `usePathname` and has state logic.
+- **`AdminLayoutClient` is a Client Component.** It already handles navigation state.
+- The PWA has **View Transitions** tied to `html` class mutations (`html.vt-push`, etc.). Any theme mechanism that also touches `html` class must not conflict.
 
 ---
 
-## New Files
+## Component Architecture
 
-### Schema layer
+### New Components to Create
 
-| File | Action |
-|------|--------|
-| `prisma/schema.prisma` | 4 new models + 2 new enums + modifications above |
-| `prisma/migrations/YYYYMMDD_add_pdv/migration.sql` | Generated by `prisma migrate dev` — run once for all new models |
+**`src/components/app/AppThemeProvider.tsx`** — Client Component
+- Wraps the PWA tree (inside `AppShell`, wrapping its content div)
+- Reads `localStorage.getItem('monarca-app-theme')` on mount
+- Falls back to `window.matchMedia('(prefers-color-scheme: dark)').matches`
+- Applies `data-theme="dark"` (or removes it) to its own root `div` wrapper
+- Exports `useAppTheme(): { theme, preference, setPreference }` hook via React Context
+- storageKey: `'monarca-app-theme'`
 
-### Validators (`src/lib/validators/`)
+**`src/components/admin/AdminThemeProvider.tsx`** — Client Component
+- Wraps the admin tree (inside `AdminLayoutClient`, wrapping the outer `div.admin-layout`)
+- Reads `localStorage.getItem('monarca-admin-theme')` on mount
+- Falls back to `window.matchMedia('(prefers-color-scheme: dark)').matches`
+- Applies `data-theme="light"` to its own root `div` wrapper when resolved theme is light
+- Exports `useAdminTheme(): { theme, preference, setPreference }` hook via React Context
+- storageKey: `'monarca-admin-theme'`
 
-| File | Contents |
-|------|----------|
-| `src/lib/validators/cliente.schema.ts` | `createClienteSchema`, `updateClienteSchema` (nome, ruc, cidade, telefone, origem) |
-| `src/lib/validators/pdv.schema.ts` | `criarVentaLojaSchema` (cliente_id, moneda, items array), `setCotizacionSchema` (brl_pyg, usd_pyg) |
+**`src/components/app/AppThemeToggle.tsx`** — Client Component
+- Calls `useAppTheme()` hook
+- Renders a toggle (sun/moon icon swap, or three-state light/dark/system)
+- Placed inside `/app/perfil` page, in the Preferencias section
+- Must be a Client Component because it uses context and event handlers
 
-### Server Actions (`src/app/admin/`)
+**`src/components/admin/AdminThemeToggle.tsx`** — Client Component
+- Calls `useAdminTheme()` hook
+- Renders a toggle
+- Placed inside `/admin/minha-conta` page
 
-| File | Exports |
-|------|---------|
-| `src/app/admin/actions-clientes.ts` | `getClientes`, `createCliente`, `updateCliente`, `buscarClientePorRuc` |
-| `src/app/admin/actions-pdv.ts` | `getCotizacion`, `setCotizacion`, `criarVentaLoja`, `getVentasLoja` |
+### NOT Using `next-themes`
 
-All follow the established pattern: `"use server"`, `requireAuth(["ADMIN"])`, `safeAction()`, return `ActionResult<T>`.
-
-### Types (`src/lib/types.ts`) — append
-
-| Type | Shape |
-|------|-------|
-| `ClienteListItem` | `{ id, nome, ruc, cidade, telefone, origem, created_at }` |
-| `VentaLojaListItem` | `{ id, cliente: {nome, ruc}, vendedor_nombre, moneda, total_moneda_original, total_pyg, created_at, itens_count }` |
-| `CotizacionDiaDTO` | `{ id, brl_pyg, usd_pyg, updated_at }` |
-
-### Pages and Client Components
-
-| Route | Files |
-|-------|-------|
-| `/admin/clientes` | `src/app/admin/clientes/page.tsx`, `ClientesClient.tsx`, `ClienteForm.tsx` |
-| `/admin/pdv` | `src/app/admin/pdv/page.tsx`, `PdvClient.tsx` |
-| `/admin/config/cotizacion` | `src/app/admin/config/cotizacion/page.tsx`, `CotizacionClient.tsx` |
-| `/admin/ventas-loja` | `src/app/admin/ventas-loja/page.tsx`, `VentasLojaClient.tsx` |
-
-All page.tsx files must include `export const dynamic = "force-dynamic"` (authenticated admin routes).
-
-### Navigation (`src/components/admin/AdminLayoutClient.tsx`)
-
-Add a new `{ type: "section", label: "Ventas", roles: ["ADMIN"] }` section with entries for Clientes, PDV, and Ventas Loja. Add Cotización under the existing "Configurações" section. ADMIN-only for all new entries.
+`next-themes` targets the `<html>` element. This project has two independent theme scopes, each needing a different localStorage key, living inside the same `<html>`. Using `next-themes` for both would require two instances fighting over `<html>` class. The correct architecture is **custom scoped providers** targeting `data-theme` attributes on the route group shell divs, not the `<html>` element.
 
 ---
 
 ## Integration Points
 
-### 1. Stock Decrement via `estoqueMovimento` (central integration)
+### Files to Modify
 
-`criarVentaLoja` orchestrates the same sequential-operations pattern as `criarMaleta`:
+**`src/app/app/layout.tsx`** (PWA route group layout — Server Component)
+- Add inline `<script>` tag for anti-flash — see Anti-Flash Strategy section
+- The script must be rendered inside `<body>` before `AppShell` renders
 
-1. Create `VentaLoja` + `VentaLojaItem` records.
-2. For each item: `prisma.productVariant.update({ data: { stock_quantity: { decrement: cantidad } } })`.
-3. For each successfully decremented item: `prisma.estoqueMovimento.create({ tipo: "venda_loja", venta_loja_id })`.
-4. On any decrement failure: `prisma.ventaLoja.delete({ id })` (cascades to items via `onDelete: Cascade`), return `{ success: false }`.
+**`src/components/app/AppShell.tsx`** (Client Component — existing)
+- Add `AppThemeProvider` wrapper around the outermost `div`
+- Add `suppressHydrationWarning` to the outer shell div
+- The `data-theme` attribute lives on this div, not on `<html>`
+- Migrate hardcoded hex colors in `className` to token utilities (e.g., `bg-[#F5F2EF]` → `bg-app-bg`)
 
-No `$transaction(async)` — the PrismaPg adapter does not support it (documented in PROJECT.md Key Decisions). The compensation pattern is the same as in `criarMaleta`.
+**`src/components/admin/AdminLayoutClient.tsx`** (Client Component — existing)
+- Add `AdminThemeProvider` wrapper around the outer `div.admin-layout`
+- Add `suppressHydrationWarning` to that div
+- The `data-theme` attribute lives on this div
 
-### 2. Product catalog reuse
+**`src/app/globals.css`**
+- Add `@custom-variant dark` declaration for Tailwind v4
+- Add `--color-app-*` dark variant overrides under `[data-theme="dark"]` selector, scoped narrowly to avoid affecting admin
+- Add `.admin-layout[data-theme="light"]` block to re-override Shadcn tokens for light admin
 
-The PDV product picker reads from the existing `Product` + `ProductVariant` tables. The `getAvailableVariants` query used in `actions-maletas.ts` can be called directly from `actions-pdv.ts` or extracted to a shared function in `actions-products.ts`. No new catalog table needed.
+**`src/app/admin/admin.css`**
+- Change `.admin-layout` background and color from hardcoded values to `var(--admin-bg)` and `var(--admin-text)`
+- Add `--admin-*` light variant overrides under `.admin-layout[data-theme="light"]` selector
 
-### 3. Admin user as `vendedor`
+### Files NOT to Modify
 
-`VentaLoja.vendedor_id` = `user.profileId` from `requireAuth(["ADMIN"])`. This is the `resellers.id` UUID of the logged-in admin. When displaying the responsible vendor on sales history, join `resellers` by `vendedor_id` to get the name.
-
-### 4. Cotizacion snapshot at sale time
-
-`criarVentaLoja` reads the latest `CotizacionDia` row immediately before writing the `VentaLoja` record. The rates are written into `cotizacion_brl_pyg` / `cotizacion_usd_pyg` on the sale row and never updated after. This follows the same immutability principle as maleta financial snapshots.
-
-### 5. Unified client list (CLI-04)
-
-`getClientes` uses a SQL UNION strategy in Prisma raw query or two separate queries merged in application code:
-
-- Branch A: `prisma.cliente.findMany()` — loja + revendedora origins from the `clientes` table.
-- Branch B: `prisma.vendaMaleta.findMany({ distinct: ["cliente_nome", "cliente_telefone"] })` — unique name+phone pairs from maleta sales, mapped to synthetic `ClienteListItem` with `origem: "REVENDEDORA"` and no ruc/cidade.
-
-Merge and deduplicate in the action before returning. Filter by `origem` is applied to the appropriate branch. This avoids adding a sync step to `VendaMaleta` creation.
-
-### 6. Cache invalidation
-
-`criarVentaLoja` calls:
-- `revalidatePath("/admin/pdv")` — stock counts updated
-- `revalidatePath("/admin/ventas-loja")` — new sale in list
-- `invalidateCache.catalog()` — public catalog stock counts changed
-
-`setCotizacion` calls:
-- `revalidatePath("/admin/config/cotizacion")`
-- `revalidatePath("/admin/pdv")` — cotizacion affects PDV display
-
-`createCliente` / `updateCliente` call:
-- `revalidatePath("/admin/clientes")`
-
-No new `revalidateTag` keys needed for v1.4.
+**`src/app/layout.tsx`** (root layout) — Do NOT add any theme class, provider, or script here. Theme state belongs to sub-trees. Root layout owns `<html suppressHydrationWarning>` but does not participate in theme logic.
 
 ---
 
-## Suggested Build Order
+## Anti-Flash Strategy
 
-### Phase 16 — Foundation: Schema + Client Management (CLI-01..05, VIS-01..02)
+### The Problem
 
-All downstream phases depend on schema migrations and the `Cliente` model existing.
+On initial page load, the browser renders HTML before JavaScript executes. Without intervention, the page briefly shows the wrong theme before JS applies the correct `data-theme` attribute. This flash is visible and jarring.
 
-Steps:
-1. Add all 4 new models + 2 new enums + modifications to `schema.prisma`. Run `prisma migrate dev` once to generate a single migration covering everything. Running all schema changes together avoids sequential migration dependencies.
-2. Create `src/lib/validators/cliente.schema.ts`.
-3. Create `src/app/admin/actions-clientes.ts`.
-4. Build `/admin/clientes` — page + client + form.
-5. Wire nav in `AdminLayoutClient.tsx`.
+### The Solution: Synchronous Inline Script
 
-Deliver: Working client list with create/edit, unified UNION view of loja + revendedora clients, RUC deduplication check on create.
+An inline `<script>` tag with `dangerouslySetInnerHTML` runs synchronously during HTML parsing — before any CSS paint. It reads localStorage and applies the correct `data-theme` attribute to the shell div immediately.
 
-### Phase 17 — PDV Core: Cotizacion + Sale Flow (PDV-01..06, COT-01..02)
+### Placement: In the Route Group Layout (`src/app/app/layout.tsx`)
 
-Requires Phase 16 migration to be applied. The cotizacion config is a prerequisite for PDV total calculation.
+The PWA layout is a Server Component that renders before `AppShell`. An inline script placed here, inside `<body>` but before `AppShell`, can target the shell div by reaching into `document.body`'s first element or by using a `__MONARCA_APP_THEME__` marker. However, the cleanest approach is:
 
-Steps:
-1. Create `src/lib/validators/pdv.schema.ts`.
-2. Create `src/app/admin/actions-pdv.ts` — `getCotizacion`, `setCotizacion`, `criarVentaLoja`.
-3. Build `/admin/config/cotizacion`.
-4. Build `/admin/pdv` (multi-step flow: client selection → item builder → currency/total → confirmation).
-5. Wire nav entries.
+**Option A — Script in `AppShell` before the outer div (recommended):**
 
-`criarVentaLoja` is the most complex action in v1.4. It must: validate input, auth guard, read cotizacion snapshot, create VentaLoja + items, decrement stock sequentially, create estoqueMovimento entries, compensate on failure, invalidate cache.
+Inside `AppShell.tsx` return, before (or as first child of) the outer `div`:
 
-### Phase 18 — Sales History (VLJ-01..02)
-
-Pure read path. No schema work. Depends on Phase 17 producing real data to display.
-
-Steps:
-1. Add `getVentasLoja` with date range filter to `actions-pdv.ts`.
-2. Build `/admin/ventas-loja` — page + client table with date range filter.
-
-The date range filter UI should reuse the same pattern as the analytics date range picker introduced in v1.3 (already validated in the codebase).
-
----
-
-## Data Flow: PDV Sale (end to end)
-
-```
-Admin navigates to /admin/pdv
-  page.tsx (Server Component)
-    getCotizacion()       → latest CotizacionDia row
-    getAvailableVariants() → ProductVariant[] with stock > 0
-
-  PdvClient.tsx (Client Component, "use client")
-    Step 1: search client by RUC → buscarClientePorRuc(ruc)
-    Step 2: add items → quantity selector per ProductVariant
-    Step 3: select Moneda (PYG/USD/BRL)
-    Step 4: review total (client-side calc using cotizacion from props)
-    Step 5: confirm → criarVentaLoja(payload)
-
-  criarVentaLoja — Server Action
-    requireAuth(["ADMIN"])
-    validate with criarVentaLojaSchema
-    read getCotizacion() → snapshot rates
-    prisma.ventaLoja.create({ data: {...snapshots}, itens: { create: [...] } })
-    for each item:
-      prisma.productVariant.update({ decrement: cantidad })
-      on error → prisma.ventaLoja.delete({ id }) + return failure
-    for each item:
-      prisma.estoqueMovimento.create({ tipo: "venda_loja", venta_loja_id })
-    invalidateCache
-    return { success: true, data: { id } }
-
-  PdvClient.tsx
-    toast.success("Venta registrada")
-    reset form state
+```tsx
+<>
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(function(){try{var t=localStorage.getItem('monarca-app-theme');var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.currentScript.parentElement.setAttribute('data-theme','dark')}catch(e){}})();`
+    }}
+  />
+  <div suppressHydrationWarning className="..." data-theme={undefined}>
+    {/* shell content */}
+  </div>
+</>
 ```
 
+Wait — `document.currentScript.parentElement` is the React fragment root, not the div. This does not work cleanly with a fragment. Use a wrapper:
+
+**Option B — Script as first child inside the shell div (recommended):**
+
+```tsx
+<div suppressHydrationWarning className="flex bg-app-bg text-app-text ..." style={...}>
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(function(){try{var t=localStorage.getItem('monarca-app-theme');var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(d)document.currentScript.parentElement.setAttribute('data-theme','dark')}catch(e){}})();`
+    }}
+  />
+  {/* rest of shell */}
+</div>
+```
+
+`document.currentScript.parentElement` correctly targets the `div` shell. This runs synchronously when the parser encounters the script tag, which is precisely when its parent element exists in the DOM. The CSS variables defined on `[data-theme="dark"]` then apply to everything inside.
+
+**For admin (`AdminLayoutClient.tsx`) — same pattern:**
+
+```tsx
+<div className="admin-layout" suppressHydrationWarning>
+  <script
+    dangerouslySetInnerHTML={{
+      __html: `(function(){try{var t=localStorage.getItem('monarca-admin-theme');var d=t==='dark'||(t!=='light'&&window.matchMedia('(prefers-color-scheme:dark)').matches);if(!d)document.currentScript.parentElement.setAttribute('data-theme','light')}catch(e){}})();`
+    }}
+  />
+  {/* sidebar, main, etc. */}
+</div>
+```
+
+Note the logic inversion: admin defaults to dark, so the script applies `data-theme="light"` only when the resolved theme is NOT dark.
+
+### `suppressHydrationWarning` Requirement
+
+The server renders both shell divs without any `data-theme` attribute (server cannot read localStorage). The inline script adds the attribute synchronously. React hydrates after and sees a mismatch between server-rendered HTML (no attribute) and the DOM (has attribute). `suppressHydrationWarning` on the shell div tells React to ignore this single-element mismatch.
+
+Without this prop, React logs a hydration warning to the console on every page load for users whose theme differs from the default.
+
+### View Transitions Compatibility
+
+The existing View Transitions system mutates `html.vt-push`, `html.vt-pop`, etc. on the `<html>` element. Theme uses `data-theme` on inner divs (`AppShell`'s div and `.admin-layout`). These operate on entirely different elements and different attributes. There is no conflict.
+
 ---
 
-## Scalability Considerations
+## CSS Token Strategy
 
-| Concern | v1.4 Approach | Future Note |
-|---------|---------------|-------------|
-| Client deduplication | RUC unique constraint + pre-create check in action | Full merge/dedupe UI in CRM v1.5 |
-| Concurrent stock decrements | Sequential ops with compensation (no distributed lock) | Advisory lock or optimistic stock field if concurrency becomes real |
-| Cotizacion freshness | Admin-managed singleton row | Automated rate pull from BCP/API in future |
-| Unified client list performance | Two-query merge in application code | Materialized view if list exceeds 50K rows |
-| Factura fields | Stored as nullable strings, no UI | Full emission flow in v1.5 |
+### The Core Problem with Tailwind v4 `@theme inline`
+
+`@theme inline` compiles tokens into static CSS at build time. The custom property `--color-app-bg: #F5F2EF` becomes a fixed value baked into the CSS output. You cannot override it at runtime by toggling a class on `<html>`, because Tailwind utilities like `bg-app-bg` compile to `background-color: #F5F2EF` — the variable reference is resolved at build time.
+
+The correct runtime strategy: define the base values normally (in `@theme inline` OR in `:root`), then override the same CSS custom property names in a scoped selector. The browser's CSS cascade handles runtime switching.
+
+### PWA Dark Token Strategy (`globals.css`)
+
+Add after the existing `@theme inline` block. These are regular CSS rules, not `@theme inline`:
+
+```css
+/* Dark variant — applied when AppShell div has data-theme="dark" */
+/* Narrow selector prevents leaking into admin */
+.app-shell[data-theme="dark"],
+div[data-theme="dark"].app-shell {
+  --color-app-bg: #1C1C1C;
+  --color-app-card-bg: #252525;
+  --color-app-card-border: #333333;
+  --color-app-divider: #2A2A2A;
+  --color-app-icon-bg: #2A2A2A;
+  --color-app-primary: #4FA897;        /* lightened teal for legibility on dark */
+  --color-app-text: #F0EDEA;
+  --color-app-muted: #8A827B;
+  --color-app-accent-green-bg: #1B3322;
+  --color-app-accent-green: #4ADE80;
+  --color-app-danger-bg: #2D1515;
+  --color-app-danger-border: #5C2020;
+  --color-app-danger: #F87171;
+}
+```
+
+Add a class `app-shell` to AppShell's outer div to make the selector unambiguous.
+
+### Tailwind `@custom-variant` for `dark:` Utilities
+
+To enable `dark:bg-slate-900`-style utilities scoped to the PWA, add to `globals.css`:
+
+```css
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+```
+
+This overrides Tailwind v4's default `dark:` behavior (which uses `prefers-color-scheme`) with a selector-based approach. Any element with `data-theme="dark"` or a descendant of such an element will have `dark:` utilities activate.
+
+Because only the PWA shell gets `data-theme="dark"`, admin is unaffected. Admin dark styles are handled entirely via `--admin-*` variable overrides, not Tailwind `dark:` utilities.
+
+### Admin Light Token Strategy (`admin.css`)
+
+Step 1 — Make existing admin layout use variables:
+
+```css
+/* Change from hardcoded to variable-based */
+.admin-layout {
+  background: var(--admin-bg);   /* was hardcoded — now uses token */
+  color: var(--admin-text);
+}
+```
+
+Step 2 — Add light variant block:
+
+```css
+/* Light variant — applied when admin-layout has data-theme="light" */
+.admin-layout[data-theme="light"] {
+  --admin-bg: #F0F0F0;
+  --admin-surface: #FFFFFF;
+  --admin-surface-hover: #F5F5F5;
+  --admin-surface-row-atrasada: #FFF0F0;
+  --admin-surface-row-aguardando: #FFFFF0;
+  --admin-border: #DDDDDD;
+  --admin-border-focus: #35605a;
+  --admin-text: #1A1A1A;
+  --admin-text-muted: #6B6B6B;
+  --admin-text-dim: #9A9A9A;
+  --admin-accent: #35605a;
+  --admin-accent-hover: #2a4d48;
+  --admin-danger: #D32F2F;
+  --admin-danger-hover: #B71C1C;
+  --admin-success: #1F7A4A;
+  --admin-bg-success: #E8F5E9;
+  --admin-border-success: #A5D6A7;
+  --admin-bg-info: #E3F2FD;
+  background: var(--admin-bg);
+  color: var(--admin-text);
+}
+```
+
+### Shadcn Override Block Update (`globals.css`)
+
+`globals.css` already has a `.admin-layout` block that maps Shadcn tokens to the dark admin palette. Add a companion block for light:
+
+```css
+.admin-layout[data-theme="light"] {
+  --color-background: #F0F0F0;
+  --color-foreground: #1A1A1A;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1A1A1A;
+  --color-popover: #FFFFFF;
+  --color-popover-foreground: #1A1A1A;
+  --color-primary: #35605a;
+  --color-primary-foreground: #ffffff;
+  --color-secondary: #EEEEEE;
+  --color-secondary-foreground: #1A1A1A;
+  --color-muted: #E8E8E8;
+  --color-muted-foreground: #6B6B6B;
+  --color-accent: #E8E8E8;
+  --color-accent-foreground: #1A1A1A;
+  --color-destructive: #D32F2F;
+  --color-destructive-foreground: #ffffff;
+  --color-border: #DDDDDD;
+  --color-input: #DDDDDD;
+  --color-ring: #35605a;
+  background: #F0F0F0;
+  color: #1A1A1A;
+}
+```
+
+---
+
+## Build Order
+
+Implement in this sequence to avoid regressions at each step:
+
+### Step 1 — CSS Token Foundation (no JS changes)
+1. In `globals.css`: Add `@custom-variant dark` declaration
+2. In `globals.css`: Add `[data-theme="dark"]` block with dark `--color-app-*` values (no visual change yet — no element has `data-theme="dark"` yet)
+3. In `admin.css`: Change `.admin-layout` background/color from hardcoded to `var(--admin-bg)` / `var(--admin-text)` (no visual change since values are already defined in `:root`)
+4. In `admin.css`: Add `.admin-layout[data-theme="light"]` block (no visual change yet)
+5. In `globals.css`: Add `.admin-layout[data-theme="light"]` Shadcn override block
+6. Verify: build passes, existing visual appearance is pixel-identical
+
+### Step 2 — Migrate Hardcoded Colors in AppShell
+1. Add `app-shell` class to AppShell's outer div
+2. Migrate hardcoded hex values in `AppShell.tsx` `className` props to token utilities (`bg-[#F5F2EF]` → `bg-[var(--color-app-bg)]` or a new Tailwind utility name)
+3. Verify: visual appearance unchanged, tokens drive the colors
+
+### Step 3 — ThemeProvider Infrastructure
+1. Create `src/lib/theme/app-theme-context.tsx` — React Context + `useAppTheme` hook
+2. Create `src/lib/theme/admin-theme-context.tsx` — React Context + `useAdminTheme` hook
+3. Create `src/components/app/AppThemeProvider.tsx`
+4. Create `src/components/admin/AdminThemeProvider.tsx`
+5. Integrate `AppThemeProvider` into `AppShell.tsx` (wrap outermost div)
+6. Integrate `AdminThemeProvider` into `AdminLayoutClient.tsx` (wrap `.admin-layout` div)
+7. Add `suppressHydrationWarning` to both shell divs
+8. Add anti-flash inline scripts to both shell components (as first child inside the div)
+9. Verify: no hydration warnings, no visual regressions, toggling `data-theme` manually in DevTools applies correct styles
+
+### Step 4 — Toggle UI
+1. Create `src/components/app/AppThemeToggle.tsx`
+2. Insert into `/app/perfil/page.tsx` under "Apariencia" section in the menu list
+3. Create `src/components/admin/AdminThemeToggle.tsx`
+4. Insert into `/admin/minha-conta/page.tsx`
+
+### Step 5 — QA
+1. Test PWA in light (default) — unchanged
+2. Test PWA in dark — all token-driven styles render correctly
+3. Test admin in dark (default) — unchanged
+4. Test admin in light — correct light palette
+5. Test OS `prefers-color-scheme: dark` behavior when no explicit localStorage value
+6. Test persistence across page refreshes and navigation
+7. Test that `/app` and `/admin` themes are fully independent
+8. Test View Transitions still work correctly in dark mode (no conflict)
+
+---
+
+## Two Independent Theme Contexts
+
+### The Core Principle
+
+The two route groups share one `<html>` document. A single shared theme context applied to `<html class="dark">` cannot give them independent state. The solution is to scope each theme to its shell div using `data-theme` attributes and separate localStorage keys.
+
+### localStorage Keys
+
+| Surface | Key | Default (no stored value) |
+|---------|-----|--------------------------|
+| PWA `/app` | `monarca-app-theme` | Follow `prefers-color-scheme` |
+| Admin `/admin` | `monarca-admin-theme` | Follow `prefers-color-scheme` |
+
+The two keys are fully independent. A user can have the PWA in dark while the admin is in light. There is no cross-sync.
+
+### Data Flow
+
+```
+1. Server renders shell div without data-theme attribute
+2. Inline <script> runs synchronously during HTML parsing:
+     - reads localStorage.getItem('monarca-app-theme')
+     - if null, reads window.matchMedia('(prefers-color-scheme: dark)')
+     - if dark: sets parentElement.setAttribute('data-theme', 'dark')
+3. CSS cascade: [data-theme="dark"] overrides apply immediately
+4. React hydrates — suppressHydrationWarning prevents console error
+5. useEffect in ThemeProvider runs, syncs React state with DOM attribute
+6. User toggles → setPreference() → localStorage write + DOM attribute update
+```
+
+### Context API Shape
+
+```tsx
+type ThemePreference = 'light' | 'dark' | 'system';
+type ResolvedTheme = 'light' | 'dark';
+
+interface ThemeContextValue {
+  theme: ResolvedTheme;                    // what is currently applied
+  preference: ThemePreference;             // what the user explicitly chose
+  setPreference: (t: ThemePreference) => void;
+}
+```
+
+Storing `'system'` as a preference means "follow OS" without storing a concrete value. The resolved `theme` is always `'light'` or `'dark'`. This allows a three-state toggle UI without architecture changes.
+
+### Handling System Preference Changes at Runtime
+
+```tsx
+useEffect(() => {
+  if (preference !== 'system') return;
+  const mq = window.matchMedia('(prefers-color-scheme: dark)');
+  const handler = (e: MediaQueryListEvent) => applyTheme(e.matches ? 'dark' : 'light');
+  mq.addEventListener('change', handler);
+  return () => mq.removeEventListener('change', handler);
+}, [preference]);
+```
+
+### SSR Behavior
+
+On the server, neither `localStorage` nor `window.matchMedia` is available. The server always renders without `data-theme`. This is correct and expected:
+
+1. Server renders default theme (light for PWA, dark for admin)
+2. HTML streams to browser
+3. Inline script runs before first paint, sets `data-theme` correctly
+4. React hydrates — `suppressHydrationWarning` silences the expected mismatch
+5. `useEffect` in ThemeProvider confirms correct React state
+
+No server-side theme detection via cookies is needed or in scope. This is the standard pattern for this class of problem.
+
+---
+
+## Key Constraints from Existing Code
+
+**`AppShell.tsx` has many hardcoded hex values in `className`.**
+Examples: `bg-[#F5F2EF]`, `text-[#1A1A1A]`, `bg-white`, `border-[#E8E2D6]`. These will NOT respond to CSS variable overrides because they are baked as literal CSS values. Step 2 of the build order must address this before dark mode is testable visually in the PWA. This is the largest surface of work in the entire milestone.
+
+**`admin.css` has hardcoded values in selector rules.**
+`.admin-layout { background: #0a0a0a; color: #ededed; }` must become `background: var(--admin-bg); color: var(--admin-text);` for light override to work. This is a two-line change.
+
+**`@theme inline` in Tailwind v4 produces static values.**
+Dark overrides must be in regular CSS rules, not `@theme inline`. The variable names must be identical so the cascade works.
+
+**`themeColor` in PWA metadata is static.**
+`viewport.themeColor = '#F5F2EF'` in root `layout.tsx` cannot be made dynamic from client state. The meta `theme-color` tag will always show the light value in the OS chrome. This is a known PWA limitation — not worth adding cookie-based server detection for v1.5.
+
+**`Toaster` in both layouts uses `richColors`.**
+`sonner`'s `richColors` respects the system color scheme automatically. No action needed for toasts.
 
 ---
 
 ## Sources
 
-- Codebase (HIGH confidence — direct inspection):
-  - `prisma/schema.prisma` — existing models, enums, patterns
-  - `src/app/admin/actions-maletas.ts` — `criarMaleta` sequential-ops pattern, estoqueMovimento creation, compensation
-  - `src/lib/action-utils.ts` — `ActionResult<T>`, `safeAction`, `BusinessError`
-  - `src/lib/cache/invalidate.ts` — `invalidateCache` helper
-  - `src/lib/user.ts` — `requireAuth`, `getCurrentUser`
-  - `src/app/admin/actions-config.ts` — config CRUD pattern with Zod validation
-  - `src/components/admin/AdminLayoutClient.tsx` — nav structure
-  - `src/lib/types.ts` — DTO conventions
-- PROJECT.md Key Decisions: PrismaPg `$transaction(async)` limitation documented
-- REQUIREMENTS.md v1.4: CLI-01..05, PDV-01..06, COT-01..02, VLJ-01..02
+- Next.js 15 App Router — Server/Client Component composition, context provider patterns (nextjs.org, version 16.2.6, accessed 2026-05-15)
+- Tailwind CSS v4 — `@custom-variant` for custom dark mode selectors (tailwindcss.com, accessed 2026-05-15)
+- Direct codebase inspection (HIGH confidence):
+  - `src/app/layout.tsx`
+  - `src/app/app/layout.tsx`
+  - `src/app/admin/layout.tsx`
+  - `src/components/app/AppShell.tsx`
+  - `src/components/admin/AdminLayoutClient.tsx`
+  - `src/app/globals.css`
+  - `src/app/admin/admin.css`
+  - `docs/design-system/tokens.md`
+  - `package.json` (confirmed no theming libraries installed)

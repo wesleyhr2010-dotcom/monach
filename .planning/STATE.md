@@ -1,14 +1,14 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.4
-milestone_name: PDV e Ventas de Loja
-status: ready
-last_updated: "2026-05-08T00:00:00.000Z"
-last_activity: 2026-05-08 -- Roadmap created (Phases 16-18)
+milestone: v1.5
+milestone_name: Dark Mode & Temas
+status: planning
+last_updated: "2026-05-15T00:00:00.000Z"
+last_activity: 2026-05-15 -- Milestone v1.5 started
 progress:
-  total_phases: 3
+  total_phases: 0
   completed_phases: 0
-  total_plans: 9
+  total_plans: 0
   completed_plans: 0
   percent: 0
 ---
@@ -20,16 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-08)
 
 **Core value:** Revendedoras conseguem receber, registrar vendas e devolver maletas com comprovante — e receber a comissão calculada automaticamente.
-**Current focus:** Milestone v1.4 — PDV e Ventas de Loja
+**Current focus:** Milestone v1.5 — Dark Mode & Temas
 
 ## Current Position
 
-Phase: 16 — Foundation: Schema + Gestão de Clientes
-Plan: Not started
-Status: Roadmap created — ready to execute Phase 16
-Last activity: 2026-05-08 — Roadmap created (Phases 16-18 defined)
-
-Progress: [░░░░░░░░░░░░] 0% (0/3 phases complete) | Milestone v1.4
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-05-15 — Milestone v1.5 started
 
 ## Performance Metrics
 

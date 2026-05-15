@@ -1,60 +1,97 @@
-# Research Summary — NEXT-MONARCA v1.4 PDV e Ventas de Loja
+# Research Summary — NEXT-MONARCA v1.5 Dark Mode & Temas
 
 **Synthesized from:** STACK.md, FEATURES.md, ARCHITECTURE.md, PITFALLS.md
-**Date:** 2026-05-08
+**Date:** 2026-05-15
+**Confidence:** HIGH
+
+---
+
+## Executive Summary
+
+Adiciona dark/light/system theme support a dois surfaces independentes: PWA (`/app`, hoje light-only) e admin (`/admin`, hoje dark-only). Os surfaces compartilham um `<html>` mas exigem preferências independentes, localStorage keys separadas e token sets separados. O risco dominante não é arquitetura — são valores hex hardcoded espalhados em `AppShell.tsx` e todas as páginas `/app/*` que vão quebrar silenciosamente no dark mode se não forem migrados para tokens CSS antes. A migração de tokens é a maior parte do esforço.
 
 ---
 
 ## Stack Additions
 
-**Zero new npm packages.** Tudo implementável com a stack existente.
+**Zero novos pacotes npm.** `next-themes` é REJEITADO — ambos os route groups compartilham um `<html>`, dois ThemeProvider instances targeting `<html>` conflitam. Solução: React Context customizado com `data-theme` no shell div de cada surface.
 
-Additions ao schema — **todos os 5 itens em UMA única migration:**
+**Uma linha CSS a adicionar em `globals.css` logo após `@import "tailwindcss"`:**
 
-| Item | Tipo |
-|------|------|
-| `ClienteOrigem` | Novo enum (`LOJA`, `REVENDEDORA`) |
-| `Moneda` | Novo enum (`PYG`, `USD`, `BRL`) |
-| `venda_loja` | Novo valor em `EstoqueMovimentoTipo` |
-| `CotizacionDia` | Novo model (colunas tipadas BRL/USD, insert-por-update para histórico) |
-| `Cliente` | Novo model (`ruc String? @unique`, partial unique index em raw SQL) |
-| `VentaLoja` | Novo model (snapshot imutável: `cotizacion_brl_pyg`, `cotizacion_usd_pyg`, `total_pyg`, campos reservados para factura) |
-| `VentaLojaItem` | Novo model (`precio_unitario_pyg` snapshot imutável) |
+```css
+@custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
+```
 
-Novo utilitário: `src/lib/currency.ts` — `formatCurrency(amount, moeda)` e `toPYG(amount, moeda, rates)`, TypeScript puro usando `Intl.NumberFormat`.
+Isso faz todas as utilities `dark:` do Tailwind v4 responderem ao atributo `data-theme="dark"` em qualquer ancestral, em vez da media query do OS.
 
 ---
 
-## Feature Table Stakes (10)
+## Key Architecture Decision
 
-1. Busca de cliente por RUC antes da venda
-2. Criação de cliente inline na tela do PDV
-3. Busca e adição de produtos ao carrinho
-4. Preço unitário editável por linha
-5. Seletor de moeda (PYG / USD / BRL)
-6. Total em PYG com cotação exibida em tempo real
-7. Decremento de estoque na confirmação da venda
-8. Tela de resumo antes de confirmar
-9. Histórico de vendas com filtro por período
-10. Página de configuração de cotação (`/admin/config/cotizacion`)
+Dois providers escopados, `data-theme` nos shell divs — sem estado compartilhado, sem envolvimento do `<html>`.
 
-**Anti-features excluídos:** factura PDF, crédito/cuotas, desconto percentual, integração AVATI, impressão de recibo, câmbio automático BCP.
+```
+AppShell outer div [data-theme="dark"|absent]      ← monarca-app-theme (localStorage)
+  └─ AppThemeProvider (Client Component, React Context)
+       └─ <script> anti-flash (1º filho do div, síncrono)
+
+div.admin-layout [data-theme="light"|absent]       ← monarca-admin-theme (localStorage)
+  └─ AdminThemeProvider (Client Component, React Context)
+       └─ <script> anti-flash (1º filho do div, lógica INVERTIDA)
+```
+
+**Anti-flash:** Script síncrono como primeiro filho do shell div, usa `document.currentScript.parentElement`. Roda antes de qualquer paint CSS. **suppressHydrationWarning** obrigatório em ambos os shell divs.
+
+**Seletores CSS de override:**
+```css
+.app-shell[data-theme="dark"]   { --color-app-bg: #1C1C1C; /* ... */ }
+.admin-layout[data-theme="light"] { --admin-bg: #F0F0F0; /* ... */ }
+```
+
+**Atenção ao `@theme inline`:** Tokens declarados em `@theme inline` compilam estáticos no Tailwind v4 — dark overrides devem estar em blocos CSS regulares fora do `@theme`, não dentro dele. Validar ao início da implementação.
 
 ---
 
-## Decisões Arquiteturais
+## Token Work Required
 
-**`criarVentaLoja` espelha `criarMaleta` / `conferirEFecharMaleta`:**
-- Pré-ler estoque de todos os itens (fail fast fora da transaction)
-- Pré-gerar `ventaId = crypto.randomUUID()`
-- `$transaction([ventaLoja.create, ventaLojaItem.createMany, ...productVariant.update × N, ...estoqueMovimento.create × N])`
-- Em falha: cascade delete via `onDelete: Cascade` em `VentaLojaItem`
+**PWA (`/app`) — Esforço ALTO:**
 
-**Cotização snapshot imutável em `VentaLoja`:** taxas lidas do DB na Server Action, escritas nas colunas na criação — nunca recalculadas.
+1. Definir valores dark para todos `--color-app-*` em `.app-shell[data-theme="dark"]`
+2. Auditar e migrar hex hardcoded — locais confirmados:
+   - `AppShell.tsx`: `bg-[#F5F2EF]`, `text-[#1A1A1A]`, `border-[#E8E2D6]` — 6+ ocorrências
+   - `src/app/layout.tsx`: `<body style={{ backgroundColor: "#F5F2EF" }}>` — **bloqueia todos os tokens; deve ser removido**
+   - `/app/perfil/page.tsx` e demais pages: ~8 hex por página
 
-**Lista unificada de clientes via two-query merge:** `getClientes` = `prisma.cliente.findMany()` + `prisma.vendaMaleta.findMany({ distinct: [...] })`, merge na action. Filtro por `origem` por branch.
+Grep antes de começar: `bg-\[#`, `text-\[#`, `border-\[#`, `style={{`
 
-**`CotizacionDia` insert-por-update** (não singleton upsert) — histórico preservado, `findFirst({ orderBy: created_at desc })` para a taxa corrente.
+**Admin (`/admin`) — Esforço MÉDIO:**
+
+Admin já usa `var(--admin-*)` nos componentes — sem migração de componentes. Trabalho é limitado a:
+1. Definir `.admin-layout[data-theme="light"]` com valores light para todos `--admin-*` tokens
+2. Corrigir ~5 hardcoded em `admin.css` (`#141414` em thead, etc.)
+
+---
+
+## Feature Design
+
+**Toggle de 3 estados: Claro / Sistema / Oscuro** — padrão da indústria. Toggle binário omite "Sistema" e força o usuário a reajustar manualmente ao mudar o OS.
+
+**API de contexto (ambos os providers):**
+```tsx
+type ThemePreference = 'light' | 'dark' | 'system';
+type ResolvedTheme = 'light' | 'dark';
+interface ThemeContextValue {
+  theme: ResolvedTheme;
+  preference: ThemePreference;
+  setPreference: (t: ThemePreference) => void;
+}
+```
+
+**Posicionamento do toggle:**
+- `/app/perfil` → row "Apariencia" com ícone `Palette`, segmented pill 3 opções
+- `/admin/minha-conta` → card "APARIENCIA" com ícone `Monitor`, mesmo controle
+
+**Sonner `<Toaster>` — mudança necessária:** mover para dentro de cada ThemeProvider Client Component e passar `theme={resolvedTheme}`. Sem isso, toasts seguem OS independente da preferência localStorage.
 
 ---
 
@@ -62,44 +99,24 @@ Novo utilitário: `src/lib/currency.ts` — `formatCurrency(amount, moeda)` e `t
 
 | Pitfall | Prevenção |
 |---------|-----------|
-| `$transaction(async tx => {})` QUEBRADO com PrismaPg | Usar sempre `$transaction([...ops])` array form |
-| `venda_loja` não existe no enum — Prisma falha em runtime | Adicionar em `EstoqueMovimentoTipo` na primeira migration |
-| Colunas de snapshot ausentes em `VentaLoja` | `cotizacion_brl_pyg`, `cotizacion_usd_pyg`, `total_pyg` desde o schema inicial |
-| Sem row seed em `CotizacionDia` | `INSERT ... ON CONFLICT DO NOTHING` na migration |
-| RUC paraguaio: sem hífen, check digit=0, base de 7 dígitos | Normalizar na escrita; check-digit inválido = warning, não blocker |
-| Precisão: acumulação de float em conversão PYG | `Math.round(Number(price) * Number(rate))` por linha; somar inteiros |
-| Cotização aceita do client payload | Sempre reler do DB dentro da Server Action |
-| Double submit em rede lenta | Desabilitar botão na confirmação; UUID de idempotência com `UNIQUE` |
-
----
-
-## Paraguay Factura — Referência para v1.5
-
-**Formato RUC:** `^\d{1,8}-\d$` com check digit Modulo-11 SET.
-
-**13 campos obrigatórios SET:** talonario, número de factura (sequencial), data de emissão, RUC/razão social/endereço do vendedor, RUC/CI/nome do comprador, condição de venda, descrição + qtd + preço unitário (em PYG), IVA (10%/5%/isento), total IVA, total geral (PYG).
-
-`talonario`, `numero_factura`, `tipo_operacion` reservados como `String?` nullable em `VentaLoja` desde v1.4.
+| `<body style={{ backgroundColor: "#F5F2EF" }}>` anula tokens CSS | Remover na Phase 20 — é o primeiro bloqueador |
+| `@theme inline` compila estático — override `[data-theme]` não muda nada | Validar no DevTools ao início da Phase 19 |
+| Sonner segue OS, não localStorage | Mover `<Toaster>` para dentro do ThemeProvider client wrapper |
+| Dois `ThemeProvider` do `next-themes` conflitam no `<html>` | Não instalar `next-themes` — usar Context customizado |
+| Anti-flash no `<head>` não funciona (elemento ainda não existe) | Script como primeiro filho do shell div via `currentScript.parentElement` |
 
 ---
 
 ## Suggested Phase Order
 
-**Phase 16: Foundation — Schema + Gestão de Clientes**
-- Migration única: todos os 5 itens + constraint de estoque + seed de cotizacion
-- `actions-clientes.ts`, `/admin/clientes`, nav wiring
-- Entrega: CLI-01..05, VIS-01..02
-
-**Phase 17: PDV Core — Cotización + Fluxo de Venda**
-- `actions-pdv.ts` (`setCotizacion`, `criarVentaLoja`, `getCotizacion`)
-- `/admin/config/cotizacion`, `/admin/pdv`
-- Entrega: COT-01..02, PDV-01..06
-
-**Phase 18: Histórico de Ventas**
-- `getVentasLoja` com filtro de período, `/admin/ventas-loja`
-- Reutiliza `DatePickerWithRange` do v1.3
-- Entrega: VLJ-01..02
+| Phase | Nome | Esforço | Entregável |
+|-------|------|---------|-----------|
+| 19 | CSS Token Foundation | Baixo | Tokens dark/light no CSS; sem mudança visual; build passa |
+| 20 | Hardcoded Color Migration /app | Alto | PWA testável em dark mode via DevTools |
+| 21 | ThemeProvider Infrastructure | Médio | Anti-flash funcional, providers wired, Sonner corrigido |
+| 22 | Toggle UI + QA | Baixo | Toggle visível em /app/perfil e /admin/minha-conta |
 
 ---
 
-*Research completed: 2026-05-08*
+*Research completed: 2026-05-15*
+*Ready for roadmap: yes*

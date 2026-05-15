@@ -1,415 +1,408 @@
-# Pitfalls Research — PDV / Multi-Currency (v1.4)
+# Pitfalls Research — Dark Mode & Temas (v1.5)
 
-**Domain:** POS (PDV) with multi-currency (PYG/USD/BRL) on existing Next.js 15 + Prisma 7 + Supabase admin
-**Researched:** 2026-05-08
-**Overall confidence:** HIGH — based on direct codebase inspection + established technical facts about Prisma/PostgreSQL/POS patterns
-
----
-
-## Critical Pitfalls
-
-| Pitfall | Impact | Prevention | Phase |
-|---------|--------|------------|-------|
-| `Number(decimal)` on currency values before arithmetic | Silent floating-point rounding errors accumulate in multi-currency totals | Round each line to integer PYG before summing; never chain `toNumber()` for financial math | Phase 1 (schema + action layer) |
-| Using `$transaction(async tx => {})` for sale + stock decrement | Runtime crash in production — PrismaPg adapter does not support interactive transactions | Always use `$transaction([...ops])` batch array form | Phase 1 (any action touching estoque) |
-| Exchange rate NOT snapshotted on the sale record | Historical totals recalculate differently every time rate changes | Store `cotizacion_usd_pyg`, `cotizacion_brl_pyg`, `total_pyg` as columns on `VentaLoja` at creation | Phase 1 (schema design) |
-| Reading cotizacion from client payload instead of DB | Rate manipulation by tampered requests | Always re-read rate from DB inside the Server Action — never trust client-supplied rate | Phase 1 (PDV action) |
-| Stock read-then-write race condition without DB-level check | Two concurrent operations pass stock validation but together decrement below zero | Add `CHECK (stock_quantity >= 0)` constraint so PostgreSQL rejects the second decrement | Phase 1 (schema migration) |
-| `venda_loja` enum value missing from `EstoqueMovimentoTipo` | Prisma validation error at runtime when creating stock movement for PDV sale | Add `venda_loja` to the enum in `schema.prisma` before implementing the PDV action | Phase 1 (schema migration) |
-| RUC stored without normalisation | Same client stored twice as `80001234-5` and `800012345` | Normalise on write: strip hyphens and spaces, re-insert canonical hyphen before last digit | Phase 1 (validator layer) |
-| PYG displayed with decimal places (Gs. 5.000,00) | Looks wrong — Guarani has no sub-unit | `maximumFractionDigits: 0` in all `Intl.NumberFormat` calls for PYG | Phase 1 (formatting helpers) |
-| No seed row in cotizacion table | PDV crashes on first use if no rate exists | Include seed INSERT in the migration file | Phase 1 (schema migration) |
+**Project:** next-monarca
+**Researched:** 2026-05-15
+**Scope:** Retrofitting dark/light theming onto an existing production Next.js 15 + Tailwind v4 + PWA (Serwist) codebase with CSS custom properties design system
+**Confidence:** HIGH — based on direct codebase inspection of all relevant files
 
 ---
 
-## Currency Precision
+## Flash of Correct Theme (FOCT) / Hydration Mismatch
 
-### The Core Risk: `Number()` Coercion Before Arithmetic
+### Root Cause
 
-Prisma maps `@db.Decimal(12,2)` columns to a `Decimal` object from `decimal.js`. When you call `Number(decimal)` the value becomes an IEEE 754 double, which cannot exactly represent many decimal fractions.
+The browser paints HTML before JavaScript executes. Without intervention, the page renders with whatever the CSS default state is (light theme tokens), then React hydrates and reads `localStorage`, applies `data-theme="dark"` to `<html>`, and repaints — causing a visible flash or a React hydration mismatch error.
 
-**The existing codebase already carries this pattern** in `conferirEFecharMaleta` (`actions-maletas.ts`):
+The hydration mismatch risk is distinct: if any Server Component branches on a theme value that the server cannot know (because `localStorage` is inaccessible server-side), the HTML the server sends will differ from what the client renders. React throws in development and silently corrupts in production.
 
-```ts
-// Existing pattern — works for single-currency PYG because PYG values are integers
-const valorTotalVendido = maleta.itens.reduce(
-  (sum, item) => sum + Number(item.preco_fixado ?? 0) * item.quantidade_vendida,
-  0
-);
+### Prevention
+
+**Inline blocking script in `<head>` — the only reliable solution.** A tiny script that runs synchronously before any CSS paint reads `localStorage` and `matchMedia`, then sets the theme attribute on `<html>` before layout:
+
+```html
+<script>
+  (function() {
+    try {
+      var stored = localStorage.getItem('monarca-theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = stored === 'dark' || stored === 'light'
+        ? stored
+        : (prefersDark ? 'dark' : 'light');
+      document.documentElement.setAttribute('data-theme', theme);
+    } catch (e) {}
+  })();
+</script>
 ```
 
-For single-currency PYG totals with a small number of items this rarely causes observable errors because PYG prices are typically whole integers (1000 Gs, 5000 Gs). For multi-currency totals — especially when multiplying a USD or BRL price by an exchange rate — the compounding rounding error becomes observable in the last 1–2 digits.
+The script MUST be:
+- In `<head>` before any stylesheet
+- Synchronous — no `async`, no `defer`
+- Wrapped in a try/catch (localStorage throws in private-browsing modes in some browsers)
 
-**Concrete example:**
-```
-USD price = 12.99
-Rate = 7580.50 PYG/USD
-Correct result: 12.99 * 7580.50 = 98,490.195 -> rounds to 98,490 Gs.
-JS result: 12.99 * 7580.50 = 98490.19499999999...
-// Math.round gives 98490 -- fine here in isolation
-// BUT: sum of 5 items with different USD prices and the same rate:
-// floating-point accumulation can produce +/-1 Gs divergence from
-// the sum of individually-rounded lines
-```
+**Placement in Next.js App Router:** The root `src/app/layout.tsx` must render this via `<Script strategy="beforeInteractive">` from `next/script`, or via a raw `<script dangerouslySetInnerHTML>` tag inside a `<head>` element. Do NOT use `strategy="afterInteractive"` or `strategy="lazyOnload"` — both execute after paint.
 
-For the v1.4 report layer a 1-Gs discrepancy is cosmetically acceptable. For v1.5 factura emission (where the total stored MUST equal the sum of line totals for SET compliance), even a 1-Gs mismatch is a conformity issue.
+### This Codebase's Current State
 
-**Prevention strategy for v1.4:**
+`src/app/layout.tsx` already has `suppressHydrationWarning` on `<html>`. This is intentional and correct — it suppresses React warnings about the `data-theme` attribute differing between server render (no attribute) and client first paint (attribute set by the inline script). This suppression is scoped to the `<html>` element only; it does not suppress child-level hydration mismatches.
 
-Round each line total to an integer PYG value before summing. Sum integers — no floating-point accumulation:
-```ts
-// In the PDV sale action:
-const lineTotalPYG = Math.round(
-  Number(item.precio_unitario) * Number(cotizacion.usd_a_pyg) * item.cantidad
-);
-// Sum of integer PYGs has no rounding error
-const totalPYG = lineItems.reduce((sum, line) => sum + line.lineTotalPYG, 0);
-```
+Do not remove `suppressHydrationWarning` from `<html>`. It is the correct companion to the anti-flash inline script pattern.
 
-**Do NOT use** `toNumber()` from `action-utils.ts` for intermediate multiplication in the PDV action. Use it only for display formatting where sub-1-unit errors are irrelevant.
+### CSP Compatibility
 
-**Rule for PYG storage:** `@db.Decimal(12,0)` for any column that stores an amount in Guaranies. No fractions exist in PYG.
+`next.config.ts` includes `'unsafe-inline'` in `script-src` for both dev and prod (the dev version also adds `'unsafe-eval'`). The anti-flash inline script will execute without modification. If the CSP is ever hardened to use nonces (removing `'unsafe-inline'`), the theme script must receive the same nonce as the page — this is the standard next-themes / hand-rolled approach.
 
-**Rule for rates:** `@db.Decimal(12,4)` minimum. BRL->PYG is ~1245.67 and USD->PYG is ~7580.50 — four decimal places give adequate precision for the multiplication.
+### What Must NOT Be Done
+
+Do not attempt to read theme from cookies in Server Components to enable server-side initial render with correct theme. This forces `force-dynamic` on every layout that reads the cookie (because `cookies()` is a dynamic API), undoing the ISR work from Phase 4. The inline script approach has zero server-side impact.
 
 ---
 
-## Atomic Stock Decrement Without `$transaction(async)`
+## Hardcoded Colors Breaking in Dark Mode
 
-### Exactly What the Constraint Means
+### Severity: Critical — Most Labor-Intensive Issue in This Codebase
 
-From the Key Decisions in PROJECT.md and the comment at the top of `actions-maletas.ts`:
+This is the dominant risk for v1.5. The PWA (`/app`) has pervasive hardcoded hex values in Tailwind arbitrary classes and inline `style` props. Every hardcoded value is a color that will not adapt to dark mode.
 
-> "Prisma 7 com operacoes sequenciais em vez de `$transaction(async)` -- Driver adapter PrismaPg nao suporta `$transaction(async tx)`"
+### Confirmed Hardcoded Values (from codebase audit)
 
-The `$transaction(async tx => { ... })` form (interactive transaction) requires the driver adapter to hold a connection open for the duration of the async callback. PrismaPg (the Neon/Supabase-compatible pooler adapter) does not support this.
+**In `src/components/app/AppShell.tsx`:**
+- `className="flex bg-[#F5F2EF] text-[#1A1A1A]"` — app shell wrapper
+- `className="bg-white border-r border-[#E8E2D6]"` — desktop sidebar
+- `className="px-6 py-4 border-b border-[#E8E2D6]"` — sidebar header
+- `className="bg-[#2E5A4C]/10 text-[#2E5A4C]"` — active nav state
+- `className="text-[#6b7280] hover:bg-[#F5F0E8] hover:text-[#1f2937]"` — inactive nav
+- `className="border-t border-[#E8E2D6]"` — sidebar footer
 
-**What DOES work — confirmed in `conferirEFecharMaleta`:**
-```ts
-const ops: Prisma.PrismaPromise<unknown>[] = [];
-ops.push(prisma.maletaItem.update({ ... }));
-ops.push(prisma.productVariant.update({ data: { stock_quantity: { increment: n } } }));
-ops.push(prisma.estoqueMovimento.create({ data: { tipo: "devolucao_maleta", ... } }));
-await prisma.$transaction(ops); // batch array form -- WORKS
-```
+**In `src/app/layout.tsx`:**
+- `<body style={{ backgroundColor: "#F5F2EF" }}>` — inline style, overrides all CSS variables
 
-### For PDV: Use the Same Batch Form
+**In `src/app/manifest.ts`:**
+- `background_color: "#F5F2EF"` and `theme_color: "#F5F2EF"` — both hardcoded light values
 
-A PDV sale requires three writes to succeed together:
-1. `VentaLoja.create` — the sale record
-2. `ProductVariant.update` — decrement `stock_quantity`
-3. `EstoqueMovimento.create` — `tipo: "venda_loja"` audit trail
+**In `src/app/app/perfil/page.tsx` (representative of all `/app/*` pages):**
+- `className="flex flex-col min-h-full bg-[#F5F2EF]"` — page background
+- `className="bg-white px-5 pt-8 pb-6 text-center border-b border-[#E8E2D6]"` — header card
+- `className="text-lg font-bold text-[#1A1A1A]"` — headings
+- `className="text-[#917961]"` — muted secondary text
+- `className="bg-[#F5F0E8] rounded-xl"` — info cards
 
-Model it exactly like `conferirEFecharMaleta`:
-```ts
-// Pre-read: validate stock BEFORE building ops (outside transaction)
-const variant = await prisma.productVariant.findUnique({
-  where: { id: input.product_variant_id },
-  select: { stock_quantity: true },
-});
-if (!variant || variant.stock_quantity < input.cantidad) {
-  throw new BusinessError("Stock insuficiente para este producto.");
-}
+**In `src/app/admin/admin.css` (hardcoded despite having a token system):**
+- Line 258: `background: #141414;` — table `th` header (not a token)
+- Lines 630–644: `.admin-toast-success` and `.admin-toast-error` — all hardcoded 8-digit hex
+- Lines 1033–1047: `.admin-alert-error`, `.admin-alert-success`, `.admin-alert-warning` — all hardcoded hex
 
-// Pre-generate UUID so it can be referenced in the movement log
-const ventaId = crypto.randomUUID();
+### Detection Strategy for Implementation Phase
 
-const ops: Prisma.PrismaPromise<unknown>[] = [
-  prisma.ventaLoja.create({ data: { id: ventaId, ...rest } }),
-  prisma.productVariant.update({
-    where: { id: input.product_variant_id },
-    data: { stock_quantity: { decrement: input.cantidad } },
-  }),
-  prisma.estoqueMovimento.create({
-    data: {
-      product_variant_id: input.product_variant_id,
-      cantidad: input.cantidad,
-      tipo: "venda_loja",
-      motivo: `Venta PDV #${ventaId.slice(-8)}`,
-      // No maleta_id -- this is a direct store sale
-    },
-  }),
-];
+Run these searches before writing any dark-mode CSS:
 
-await prisma.$transaction(ops);
-```
+1. Tailwind arbitrary color values in PWA components:
+   Pattern: `bg-\[#`, `text-\[#`, `border-\[#`, `fill-\[#`, `stroke-\[#`
+   Scope: `src/app/app/`, `src/components/app/`
 
-**The static array form limitation:** You cannot use the result of `op1` inside `op2` within the same ops array. By pre-generating the UUID with `crypto.randomUUID()`, the sale ID is available before any DB writes — solving the most common cross-op dependency.
+2. Inline style color values:
+   Pattern: `style={{` in all `.tsx` files under `src/app/app/` and `src/components/app/`
+   Every hit must be reviewed — not every inline style is a color, but all color inline styles must be tokenized
 
-### The Remaining Gap: Race Condition on Last Unit
+3. Hardcoded hex in CSS files:
+   Pattern: `#[0-9a-fA-F]{3,6}` in `admin.css`, `globals.css`, and any `*.css` under `src/app/`
 
-The stock validation (pre-read) runs in a separate query before `$transaction`. Between the read and the transaction, another concurrent operation (another PDV sale, a maleta creation) could decrement the same variant to 0.
+4. The `<body>` inline style in `layout.tsx`:
+   This is a single specific fix — remove `style={{ backgroundColor: "#F5F2EF" }}` and replace with a CSS variable
 
-**Severity in this context:** Low-moderate. The PDV is operated by a single admin user. Two concurrent PDV sales on the exact same variant within a 50ms window are unlikely. However, a maleta creation could compete with a PDV sale.
+### Correct Fix Strategy
 
-**Prevention:** Add a PostgreSQL `CHECK` constraint:
-```sql
-ALTER TABLE product_variants ADD CONSTRAINT stock_non_negative
-  CHECK (stock_quantity >= 0);
-```
+**Do this in order:**
 
-With this constraint, if the race condition occurs, PostgreSQL rejects the decrement and `$transaction` throws a `P2002`-class error. The existing `mapError` in `action-utils.ts` already returns a user-friendly message for constraint violations. Cost: one line in a Prisma migration file.
+1. Define all dark-variant token values in `globals.css` under `[data-theme="dark"]` first — establish the complete token set before touching any component
+2. Replace every hardcoded color in components with the corresponding CSS variable or Tailwind token class
+3. Run a visual pass on every route in both light and dark — check for missed values
 
-Do NOT try to implement optimistic concurrency (version columns + retries) for v1.4 — it is over-engineered for the usage pattern.
+Do not fix components before defining tokens. Do not mix `dark:` Tailwind classes with remaining hardcoded values — mixed approaches compound the debt.
 
-### Do NOT Replicate the `criarMaleta` Pattern for PDV
+### Admin Panel Scope Question
 
-`criarMaleta` uses sequential ops with compensating rollback (create maleta first, then decrement in a loop, then delete maleta if decrement fails). This approach was used because it involves a `create` with nested `create` (itens) which cannot be expressed as a flat array of `PrismaPromise`. PDV sales are simpler: flat ops that fit cleanly into the batch form. Use `$transaction([...ops])` — do not reach for the sequential + compensate pattern unless the batch form genuinely cannot express the writes.
+The admin is currently permanently dark — all `--admin-*` tokens are defined at `:root` as dark values. If v1.5 keeps admin permanently dark (only the PWA gets the toggle), the admin token system requires no changes. The only admin work needed would be replacing the few hardcoded non-token values (`#141414`, the alert colors) with proper tokens.
+
+If admin gets a light/dark toggle too, the `--admin-*` tokens must be split into light and dark variants — a significant restructure of `admin.css`. Confirm the product requirement scope before starting admin token work.
 
 ---
 
-## Exchange Rate Staleness
+## Tailwind v4 Dark Mode Gotchas
 
-### The Three Distinct Problems
+### v4 Has No `tailwind.config.js` — Configuration Is in CSS
 
-**Problem 1: Rate applied at display time, not confirmed at save time.**
-The PDV UI will show the PYG total using the current rate. If the admin changes the rate between when the operator opens the cart and when they press "Confirmar venta," the confirmed amount differs from what was shown.
+In Tailwind v3, dark mode was configured in `tailwind.config.js`:
+```js
+module.exports = { darkMode: 'class' }
+```
 
-**Problem 2: Historical totals recalculate when rate changes.**
-If `VentaLoja` stores only `precio_en_moneda_original` (e.g. USD 12.99) and no rate snapshot, the "total PYG" column in `/admin/ventas-loja` will show different values depending on which day you query it. This makes financial reporting unreliable.
+In Tailwind v4, there is no config file. All configuration is in CSS. **This project already uses v4** (confirmed: `@import "tailwindcss"` in `globals.css`, `tailwindcss: ^4` in `package.json`).
 
-**Problem 3: No cotizacion row on first boot.**
-If the `cotizacion_dia` table has no rows (after first deployment, before the admin configures rates), the PDV action will receive `null` from `findFirst()` and either crash or silently use 0 as the rate.
+### Default v4 Dark Behavior Without Configuration
 
-**Prevention:**
+By default in v4, `dark:` utility classes respond to the `prefers-color-scheme: dark` OS media query. This means:
 
-1. Store the rate snapshot on every sale row:
-   ```prisma
-   model VentaLoja {
-     // ...
-     moneda              String   // "PYG" | "USD" | "BRL"
-     precio_unitario     Decimal  @db.Decimal(12, 2)   // in original currency
-     cotizacion_usd_pyg  Decimal? @db.Decimal(12, 4)   // null if moneda = PYG
-     cotizacion_brl_pyg  Decimal? @db.Decimal(12, 4)   // null if moneda = PYG
-     total_pyg           Decimal  @db.Decimal(12, 0)   // denormalised for reports
-   }
-   ```
+- `dark:bg-neutral-900` will activate automatically based on the OS setting
+- It will NOT respond to `class="dark"` on `<html>` or `data-theme="dark"` on `<html>`
+- localStorage overrides have no effect
 
-2. Read the rate inside the Server Action — never accept it from the client:
-   ```ts
-   const cotizacion = await prisma.cotizacionDia.findFirst({
-     orderBy: { created_at: "desc" },
-   });
-   if (!cotizacion) throw new BusinessError(
-     "No hay cotizacion configurada. Ve a Configuracion > Cotizacion del dia."
-   );
-   ```
+This is the v3 equivalent of `darkMode: 'media'`. For a manual toggle (localStorage), this default is wrong.
 
-3. Seed a default rate in the migration:
-   ```sql
-   INSERT INTO cotizacion_dia (usd_a_pyg, brl_a_pyg)
-   VALUES (7500.0000, 1250.0000)
-   ON CONFLICT DO NOTHING;
-   ```
+### Required Configuration for Class/Attribute-Based Dark Mode
 
-4. Show a staleness warning in the PDV UI: if the latest cotizacion row is older than 48 hours, display a yellow badge "Cotizacion desactualizada — hace X dias." Display hint only, not a blocker.
+Add this to `globals.css` after `@import "tailwindcss"`:
 
-### CotizacionDia Table Design
+```css
+/* Makes dark: classes respond to [data-theme="dark"] on any ancestor */
+@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+```
 
-```prisma
-model CotizacionDia {
-  id         String   @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
-  usd_a_pyg  Decimal  @db.Decimal(12, 4)
-  brl_a_pyg  Decimal  @db.Decimal(12, 4)
-  updated_by String?  @db.Uuid
-  created_at DateTime @default(now()) @db.Timestamptz()
+Or for class-based (`.dark` on `<html>`):
 
-  @@index([created_at])
-  @@map("cotizacion_dia")
+```css
+@variant dark (&:where(.dark, .dark *));
+```
+
+**Prefer `data-theme` over `.dark` class** because:
+- Avoids collisions with existing `.dark` class usage in admin or third-party components
+- Semantically clean — attributes = data state, classes = styling hooks
+- Easier to debug in browser DevTools
+
+This single `@variant dark` declaration must be added before any rule that uses `dark:` utilities. Placement after `@import "tailwindcss"` and before `@layer base` is correct.
+
+### `@theme inline` Tokens Are Static — They Do Not Switch Automatically
+
+The `@theme inline` block in `globals.css` defines CSS custom properties used as Tailwind color utilities. These are fixed values — they do not switch based on any variant. For example:
+
+```css
+@theme inline {
+  --color-app-bg: #F5F2EF;  /* always light — no dark variant here */
 }
 ```
 
-New rates are INSERTs (not UPDATEs) — full history preserved for audit. The PDV always reads `findFirst({ orderBy: { created_at: "desc" } })`. The config page shows the current rate and lets admin insert a new one. No delete functionality needed.
+To make these values switch, define overrides at the `:root` level (not inside `@theme`):
+
+```css
+/* globals.css — outside @theme block */
+:root {
+  --color-app-bg: #F5F2EF;
+  --color-app-card-bg: #FFFFFF;
+  --color-app-text: #1A1A1A;
+  /* ... all app tokens ... */
+}
+
+[data-theme="dark"] {
+  --color-app-bg: #1A1A1A;
+  --color-app-card-bg: #242424;
+  --color-app-text: #EDEDED;
+  /* ... dark overrides ... */
+}
+```
+
+Then use `bg-app-bg` as a Tailwind class — Tailwind resolves `--color-app-bg` at runtime, and it picks up the contextual CSS variable value.
+
+### Specificity Conflict With Existing `.admin-layout` Overrides
+
+`globals.css` currently overrides `--color-*` tokens inside `.admin-layout` (lines 119–141). When dark mode tokens are also defined under `[data-theme="dark"]`, both selectors have the same specificity (one class = one attribute = specificity `[0,1,0]`).
+
+The conflict resolution: whichever appears **later** in the stylesheet wins for equal-specificity selectors. Since `.admin-layout` overrides are defined after the `[data-theme]` rules would be defined, `.admin-layout` wins — which is the correct behavior if admin stays permanently dark.
+
+If both are needed, increase admin specificity: `.admin-layout[data-theme="dark"]` or `.admin-layout` with `:is()` wrappers.
+
+### `dark:` Classes in Server Components Are Safe
+
+`dark:` utility classes compile to static CSS with `:where([data-theme="dark"] *)` in the selector. A Server Component can include `className="dark:bg-neutral-900"` in its JSX — the HTML it sends contains the class string, and the CSS handles activation based on the `<html>` attribute. No JavaScript or hooks are involved. No hydration mismatch occurs.
+
+The unsafe pattern is branching JSX in a Server Component based on theme: `if (theme === 'dark') return <DarkVersion />`. That requires knowing theme server-side, which is impossible without cookies (which breaks ISR).
 
 ---
 
-## RUC Validation
+## PWA / Service Worker Complications
 
-### Paraguay RUC Format
+### Serwist Version and Active Status
 
-The RUC (Registro Unico del Contribuyente) is issued by Paraguay's SET (Subsecretaria de Estado de Tributacion).
+`package.json` has `@serwist/next: ^9.5.11` and `serwist: ^9.5.11`. However, `next.config.ts` wraps only with `withSentryConfig` — no `withSerwist()` wrapper is present. This means the PWA service worker may not currently be active in the build output.
 
-**Structure:**
-- Base number: 1 to 8 digits
-- Separator: hyphen (optional in input, required in canonical form)
-- Check digit: single digit 0-9 (Modulo 11 algorithm)
-- Full format: `{1-8 digits}-{1 digit}`
-- Examples: `123456-7`, `1234567-8`, `80001234-5`
+**Action required before implementing:** Verify whether `/public/sw.js` or `/_next/static/sw.js` exists in the build output. If absent, Serwist is not active and the SW-related pitfalls below are moot for now. If present (configured separately or via a plugin not visible in `next.config.ts`), the caching pitfalls below apply immediately.
 
-**Edge cases that break naive validation:**
+### HTML Caching Can Break the Theme Script
 
-| Case | Example | Risk |
-|------|---------|------|
-| Hyphen omitted in input | `800012345` instead of `80001234-5` | Fails regex, is valid RUC |
-| Trailing or leading space | `80001234-5 ` | Fails exact match, passes visual inspection |
-| Cedula used as RUC | `3456789-1` | Valid format — natural persons use their cedula as RUC |
-| Check digit `0` | `12345678-0` | Valid — `0` is a legitimate check digit; must not be special-cased |
-| No RUC (foreign or anonymous customer) | empty / null | Field must accept null — not all clients have a Paraguay RUC |
-| Legacy systems without check digit | `1234567` | Some old records have no check digit — 7-digit base only |
+Service workers intercept navigation requests. If Serwist caches HTML documents with a `CacheFirst` or aggressive `StaleWhileRevalidate` strategy, a user who has the PWA installed and returns to it may receive a cached HTML that lacks the theme anti-flash script (because the script was added after their last network fetch of the page).
 
-**Modulo 11 check digit algorithm:**
-1. Multiply digits of the base number by weights 2, 3, 4, 5, 6, 7, 2, 3, ... (right to left, cycling at 7)
-2. Sum the products
-3. Remainder = sum mod 11
-4. Check digit = (remainder == 0 or remainder == 1) ? remainder : (11 - remainder)
+**Prevention:** Configure the Serwist default handler to use `NetworkFirst` for HTML document requests. This ensures the `<head>` with the theme script is always fetched fresh:
 
-Implement the check digit verification server-side but treat a failing check digit as a **warning, not a blocking error**. Some RUCs in legacy Paraguay databases have incorrect check digits due to early SET data entry errors. Blocking the form will frustrate operators.
-
-**Normalisation function:**
 ```ts
-// src/lib/validators/ruc.ts
-export function normalizeRuc(raw: string): string | null {
-  if (!raw || raw.trim() === "") return null;
-  const stripped = raw.replace(/[\s\-]/g, "");
-  if (!/^\d{2,9}$/.test(stripped)) return null; // not a plausible RUC
-  return stripped.slice(0, -1) + "-" + stripped.slice(-1);
-}
+// sw.ts
+import { NetworkFirst, StaleWhileRevalidate } from 'serwist';
 
-export function isValidRucFormat(ruc: string): boolean {
-  const normalized = normalizeRuc(ruc);
-  if (!normalized) return false;
-  return /^\d{1,8}-\d$/.test(normalized);
-}
+// HTML pages: always network first
+defaultHandler: new NetworkFirst({
+  cacheName: 'pages',
+  plugins: [new ExpirationPlugin({ maxEntries: 20, maxAgeSeconds: 86400 })]
+})
+
+// JS/CSS/images: stale while revalidate is fine
+// (they don't contain the theme script)
 ```
 
-**DB storage:**
-- Store always in the normalised `{base}-{digit}` form
-- Make RUC nullable on `Cliente` — not all clients have or provide a RUC
-- Partial unique index to prevent duplicates while allowing null:
-  ```sql
-  CREATE UNIQUE INDEX clientes_ruc_unique ON clientes (ruc) WHERE ruc IS NOT NULL;
-  ```
-  Prisma does not support partial unique indexes natively; add this as a raw SQL statement in the migration file alongside the Prisma-generated DDL.
+### `theme_color` in Manifest Is Static
+
+`src/app/manifest.ts` has `theme_color: "#F5F2EF"` (hardcoded light). This controls the browser chrome color when the PWA is installed as a home screen app. It cannot be changed at runtime.
+
+**Partial workaround:** The `viewport.themeColor` in Next.js `layout.tsx` accepts an array for media-query-based switching:
+
+```ts
+export const viewport: Viewport = {
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#F5F2EF' },
+    { media: '(prefers-color-scheme: dark)', color: '#1A1A1A' },
+  ],
+};
+```
+
+This makes the browser chrome adapt to the OS setting. However, it cannot follow the user's localStorage manual override — if the user's OS is in light mode but they set the app to dark manually, the browser chrome stays light. This is an unavoidable platform limitation. Document it as a known gap.
+
+The manifest `background_color` (splash screen) also cannot be dynamic. Change it from `#F5F2EF` to the brand's primary color (`#35605A`) which works acceptably on both light and dark. Alternatively, leave it as-is — the splash screen is visible for < 1 second and is cosmetic only.
+
+### PWA Update Propagation Delay
+
+When the anti-flash theme script is first added to the HTML, users with the PWA already installed will not receive it immediately. The service worker update cycle requires:
+
+1. User visits while online → SW update check triggers
+2. New SW downloads in background
+3. User closes all PWA tabs → new SW activates
+
+This means some users may see the flash for 1–2 sessions after deployment. No mitigation is needed — this is standard SW behavior. Ensure `skipWaiting: true` is set in the Serwist config to minimize the activation gap.
+
+### OneSignal Service Worker Coexistence
+
+This project uses OneSignal for push notifications. OneSignal registers its own service worker (`OneSignalSDKWorker.js`). In Serwist-managed PWAs, there can be conflicts if both try to handle the same navigation events.
+
+Serwist and OneSignal typically coexist safely when the OneSignal SW scope is scoped to `/` and the Serwist SW does not intercept push event handlers. The current configuration (`react-onesignal` v3) handles this via a separate scope. No changes needed for dark mode — this is a pre-existing concern, not a v1.5 issue.
 
 ---
 
-## UX Pitfalls in POS Flows
+## CSS Custom Property Scoping
 
-### 1. Cart Lost on Accidental Navigation
+### Current Dual-Root Architecture
 
-If the operator adds 5 items to the PDV cart and accidentally presses the browser back button, the entire cart is gone. In a physical retail scenario this interrupts the sale and requires restarting.
+The project has two CSS token systems:
 
-**Prevention:** Persist the current cart in `sessionStorage` (not `localStorage` — the cart should not survive a full browser session, only the current window). On mount, check for and restore in-progress cart. Nothing is written to the database until the operator presses "Confirmar venta."
+1. **`globals.css` `@theme inline` block** — defines `--color-app-*` tokens used by Tailwind classes in the PWA
+2. **`admin.css` `:root` block** — defines `--admin-*` tokens used directly in admin CSS
 
-### 2. Currency Switching Ambiguity
+Both are at `:root` level. When `[data-theme="dark"]` is added, it must target `<html>` (which `:root` also targets — they are the same element). The override cascade:
 
-If the PDV allows switching the sale currency after items are already in the cart, operators are confused about whether prices re-convert or stay the same.
-
-**The correct behaviour:** Currency selection determines the payment method (which currency the customer is handing over), not the catalog price. System prices are in PYG. The conversion is display-only.
-
-**Prevention:** Label the selector "Moneda de cobro" (not "Moneda de precios"). Make it clear that switching from PYG to USD shows the equivalent price in USD for informational purposes only. The stored `precio_unitario` is always the catalog PYG value; only `moneda` and `cotizacion_*` vary.
-
-Alternatively, for v1.4 simplicity: set currency at the start of the sale (before adding items), disable currency switching mid-cart. This is less flexible but far less confusing.
-
-### 3. Stock Shows 0 But Item Exists in Store (Maleta Reservation Confusion)
-
-When a maleta is created, `stock_quantity` is decremented by the reserved quantity. If all 10 units of a variant are in active maletas, the PDV stock shows 0 even though the items are physically in the store. Operators will search for a product and see "sin stock" without understanding why.
-
-**Prevention for v1.4:** Show a secondary indicator in the PDV product search results:
 ```
-[Product name] -- Stock: 0 (3 en consignacion activa)
-```
-This requires a sub-query counting active `reserva_maleta` movements. Document this as a known behaviour: items in active maletas are considered reserved and cannot be sold through the PDV without first closing the maleta.
-
-### 4. RUC Search Mismatch Creates Duplicate Clients
-
-Operator types `800012345` (no hyphen). Client was stored as `80001234-5`. Search returns no results. Operator creates a new client — now there are two records for the same person.
-
-**Prevention:** Normalise the search term before querying:
-```ts
-const normalizedSearch = searchTerm.replace(/[\s\-]/g, "");
-const clientes = await prisma.cliente.findMany({
-  where: {
-    OR: [
-      { nombre: { contains: searchTerm, mode: "insensitive" } },
-      // Use ILIKE against stripped RUC since stored value has canonical hyphen
-      { ruc: { contains: normalizedSearch, mode: "insensitive" } },
-    ],
-  },
-  take: 10,
-});
+:root { --color-app-bg: light-value; }         /* baseline */
+[data-theme="dark"] { --color-app-bg: dark-value; }  /* overrides when data-theme is set */
+.admin-layout { --color-*: admin-overrides; }  /* admin keeps its own values */
 ```
 
-Since stored RUC always has the canonical hyphen (`80001234-5`), a search for `800012345` will not match unless PostgreSQL strips hyphens from both sides. More reliable: use `$queryRaw` with `REPLACE(ruc, '-', '') ILIKE $1` for the RUC search path.
+Specificity: `:root` and `[data-theme="dark"]` both have specificity `[0,1,0]`. Position in stylesheet determines which wins for equal specificity. The `[data-theme="dark"]` block must come AFTER `:root` definitions to override correctly.
 
-### 5. No Keyboard Navigation for POS Speed
+### The Admin Token Isolation Problem
 
-Desktop POS operators expect Tab and Enter navigation. A checkout flow that requires mouse clicks adds 5-10 seconds per sale.
+`admin.css` defines all `--admin-*` tokens in `:root` — globally available everywhere. The admin CSS classes (`admin-layout`, `admin-card`, etc.) use those tokens. This is fine as long as admin tokens do not collide with app tokens. Currently they don't (different prefixes).
 
-**Prevention:** Ensure correct `tabIndex` order:
-1. Client search input (auto-focused on page load)
-2. Product search input
-3. Quantity field (per item)
-4. Currency selector
-5. Confirm button (responds to Enter)
+The risk: when `[data-theme="dark"]` is added to toggle `--color-app-*` tokens, it will only affect app tokens — admin tokens remain unchanged. This is the correct behavior. Confirm no admin component accidentally uses `--color-app-*` tokens (it would be a pre-existing bug, not a v1.5 issue).
 
-### 6. Double Submit on Slow Network
+### Variable Inheritance Through Portals
 
-A slow network response causes the operator to press "Confirmar" twice. Two `VentaLoja` records are created, stock is decremented twice.
+React portals (used by sonner, dialogs, sheets) render outside the normal component tree but inherit CSS custom properties from their closest ancestor that defines them. Since theme tokens are on `<html>` (`:root`), all portals inherit the correct theme automatically.
 
-**Prevention:**
-- Disable the confirm button immediately after first click (`isSubmitting = true`)
-- Use `useTransition` from React 19 — pending state is automatically managed
-- Pre-generate a `venta_uuid` client-side and add a `UNIQUE` constraint on it — the second insert throws P2002 which `mapError` already handles gracefully as a user-friendly message
+**Exception:** The sonner `<Toaster>` component has its own `theme` prop that determines its color scheme independently of the page theme. Both `AppLayout` and `AdminLayout` pass `richColors` to `<Toaster>`. Without the `theme` prop, sonner defaults to the OS `prefers-color-scheme` setting — which may conflict with the user's manual localStorage override.
+
+**Fix:** The `ThemeProvider` client component that manages theme state must pass the resolved theme to `<Toaster>`:
+
+```tsx
+// In the client wrapper that holds theme state
+<Toaster theme={resolvedTheme as 'light' | 'dark' | 'system'} richColors />
+```
+
+This means the `<Toaster>` must be rendered by a Client Component that has access to the current theme. The current structure (Server Component layouts rendering `<Toaster>`) needs a client wrapper for this. This is a necessary architectural change.
+
+### Motion Tokens and Dark Mode
+
+`globals.css` defines `--motion-sheet-handle-bg: var(--color-app-divider, #F5F2EF)`. The fallback value `#F5F2EF` is hardcoded light. When `--color-app-divider` is properly tokenized and switches to a dark value under `[data-theme="dark"]`, this variable will automatically adapt. No special action needed — the token reference is correct; only the token's value needs a dark variant.
 
 ---
 
-## Prisma 7 Specific
+## SSR / Server Component Constraints
 
-### Transaction Form Reference Table
+### The Two-Phase Rendering Reality
 
-| Form | Status | When to use |
-|------|--------|-------------|
-| `$transaction(async tx => { ... })` | BROKEN — PrismaPg adapter does not support interactive transactions | NEVER |
-| `$transaction([op1, op2, op3])` | WORKS — confirmed in `conferirEFecharMaleta` | PDV sale + stock decrement + movement log |
-| Sequential ops with compensating rollback | WORKS — used in `criarMaleta` | Only when batch form cannot express the writes (e.g. nested creates where ID is not pre-known) |
-| `$executeRaw` / `$queryRaw` | WORKS | Conditional update idiom, partial index DDL, RUC search with REPLACE |
+Next.js App Router renders pages in two phases:
 
-### Static Array Form Limitation: Cross-Op ID References
+1. **Server phase:** Server Components run, produce HTML. No access to `localStorage`, `window`, `matchMedia`, or any browser API. The server does not know the user's preferred theme.
 
-The `$transaction([...ops])` batch form requires all `PrismaPromise` objects to be built before the call. You cannot use the return value of `op1` as input to `op2`.
+2. **Client phase:** Browser parses HTML, runs the anti-flash inline script (sets `data-theme` before paint), React hydrates. Client Components run, read `localStorage`, establish theme state.
 
-**Solution:** Pre-generate UUIDs with `crypto.randomUUID()` in the Server Action:
-```ts
-import { randomUUID } from "crypto";
+**All theme logic belongs in the client phase.** Server Components must not attempt to read, infer, or branch on theme. They render theme-agnostic HTML with `dark:` utility classes that the CSS activates contextually.
 
-const ventaId = randomUUID(); // available before any DB writes
-const ops = [
-  prisma.ventaLoja.create({ data: { id: ventaId, ...rest } }),
-  prisma.estoqueMovimento.create({ data: { venta_loja_id: ventaId, ... } }),
-];
-await prisma.$transaction(ops);
-```
+### The Cookie-as-Theme Trap
 
-Passing `id: ventaId` explicitly overrides the schema default `@id @default(dbgenerated("uuid_generate_v4()"))`. This is valid and intended — both produce v4 UUIDs, the only difference is whether JS or PostgreSQL generates them.
+A common approach is to set a cookie when the user changes theme, then read that cookie in Server Components to produce the correct initial HTML (avoiding the flash entirely). This approach is appealing but has a severe cost in this codebase:
 
-### `venda_loja` Enum Gap — Schema Migration Required
+- `cookies()` in Next.js is a dynamic function
+- Any Server Component or layout that calls `cookies()` opts out of caching
+- This means `force-dynamic` or equivalent must be applied to every page that needs correct initial theme rendering
+- Phase 4 of v1.0 specifically removed `force-dynamic` from public pages — this would reintroduce it
 
-The current `EstoqueMovimentoTipo` enum in `schema.prisma`:
-```prisma
-enum EstoqueMovimentoTipo {
-  reserva_maleta
-  devolucao_maleta
-  ajuste_manual
-  venda_direta   // NOT the same as venda_loja
+**Do not use cookies for theme storage.** The inline script approach is correct for this codebase. The tradeoff is a theoretical flash on the very first render of new users (OS preference + no stored override). In practice this flash is invisible because the inline script runs before paint.
+
+### Server Components With `dark:` Classes — Safe Pattern
+
+```tsx
+// Server Component — this is safe
+export default async function ProductCard({ product }: Props) {
+  return (
+    <div className="bg-white dark:bg-neutral-900 border border-gray-200 dark:border-neutral-700">
+      <p className="text-gray-900 dark:text-gray-100">{product.name}</p>
+    </div>
+  );
 }
 ```
 
-PROJECT.md milestone requirement specifies `tipo: venda_loja`. This enum value does not exist and must be added in the first schema migration of v1.4.
+The `dark:` classes compile to CSS rules that activate based on `data-theme="dark"` on `<html>`. The Server Component just emits the class string. No hydration mismatch.
 
-**PostgreSQL DDL warning:** `ALTER TYPE ... ADD VALUE` is a DDL operation that commits immediately and **cannot be wrapped in a transaction block**. Prisma generates this correctly in its migration files. If you write a raw migration, do NOT wrap `ALTER TYPE ... ADD VALUE` in `BEGIN/COMMIT`.
+### Server Components Branching on Theme — Unsafe Pattern
 
-### The `toNumber()` Helper Is Not Decimal-Safe for Financial Math
-
-```ts
-// action-utils.ts -- existing helper
-export function toNumber(val: unknown): number | null {
-  if (val === null || val === undefined) return null;
-  return Number(val);  // loses Decimal precision guarantee
+```tsx
+// Server Component — DO NOT DO THIS
+export default async function PageHeader() {
+  // Cannot know theme server-side without cookies() which breaks ISR
+  const cookieStore = await cookies();
+  const theme = cookieStore.get('theme')?.value ?? 'light';
+  
+  return (
+    <header style={{ background: theme === 'dark' ? '#1A1A1A' : '#FFFFFF' }}>
+      ...
+    </header>
+  );
 }
 ```
 
-Using `toNumber()` inside a `reduce` for multi-currency totals introduces the floating-point accumulation described in the Currency Precision section. For the PDV action total calculation, use `Math.round(Number(price) * Number(rate))` per line (rounding at line level prevents accumulation) rather than chaining `toNumber()` calls through an accumulator.
+Use `dark:` classes instead. They achieve the same visual result without any server-side branching.
+
+### `ThemeProvider` as Client Component Boundary
+
+The theme toggle, theme persistence, and `resolvedTheme` state must live in a Client Component. The recommended pattern for this project:
+
+```
+src/app/layout.tsx (Server Component)
+  └─ <ThemeProvider> (Client Component — "use client")
+       └─ {children} (Server Components as children prop — this is allowed)
+```
+
+This pattern is already used in the project: `AppShell.tsx` is a Client Component (it has `"use client"`) that wraps `{children}` which are Server Components. `ThemeProvider` follows the same pattern.
+
+The `ThemeProvider` should:
+- Read `localStorage` on mount
+- Listen to `matchMedia('(prefers-color-scheme: dark)')` changes
+- Set `data-theme` on `document.documentElement`
+- Expose `theme` and `setTheme` via context
+- Render the anti-flash script as an inline `<script>` (in addition to the one in `layout.tsx` root `<head>`)
 
 ---
 
@@ -417,32 +410,44 @@ Using `toNumber()` inside a `reduce` for multi-currency totals introduces the fl
 
 | Phase Topic | Likely Pitfall | Mitigation |
 |-------------|---------------|------------|
-| Schema migration | Missing `venda_loja` in `EstoqueMovimentoTipo` enum | Add enum value first; let Prisma generate `ALTER TYPE ... ADD VALUE` |
-| Schema migration | `ALTER TYPE ... ADD VALUE` inside transaction block in raw migration | Do NOT wrap it in `BEGIN/COMMIT` |
-| Schema migration | `CotizacionDia` table with no seed row | Include `INSERT ... ON CONFLICT DO NOTHING` in migration |
-| Schema migration | `stock_quantity` has no non-negative constraint | Add `CHECK (stock_quantity >= 0)` in the same migration |
-| Schema migration | `VentaLoja` missing rate snapshot columns | Include `cotizacion_usd_pyg`, `cotizacion_brl_pyg`, `total_pyg` from the start — free to add now, painful to retrofit for v1.5 factura |
-| PDV action | Using `$transaction(async tx)` instead of batch form | Always `$transaction([...ops])` — copy `conferirEFecharMaleta` pattern |
-| PDV action | Accepting cotizacion from client payload | Re-read from DB inside Server Action |
-| PDV action | Double submit on slow network | Disable button on first click; pre-generate idempotency UUID with `UNIQUE` constraint |
-| Cliente CRUD | Duplicate clients from RUC normalisation mismatch | Normalise on write; partial unique index; normalise search term |
-| RUC validation | Blocking form on invalid check digit | Check digit failure = warning only, not blocking error |
-| PYG formatting | Displaying Gs. with decimal places | `Intl.NumberFormat("es-PY", { currency: "PYG", maximumFractionDigits: 0 })` |
-| Multi-currency totals | Float accumulation in PYG conversions | `Math.round(Number(price) * Number(rate))` per line, sum integers |
-| PDV UX | Cart lost on back button | Persist cart in `sessionStorage` |
-| PDV UX | Currency selector semantics confusion | Label "Moneda de cobro", not "Moneda de precios" |
-| PDV UX | Stock shows 0 because all units are in maletas | Show secondary "X en consignacion" indicator in product search |
+| Anti-flash script placement | Script placed after CSS or with `defer`/`async` — still flashes | Must be synchronous first child of `<head>`, wrapped in try/catch |
+| `layout.tsx` `<body>` inline style | `style={{ backgroundColor: "#F5F2EF" }}` overrides all CSS variables | Remove inline style; set body background via CSS token `var(--color-app-bg)` |
+| Tailwind v4 `@variant dark` | Not declared → `dark:` classes only respond to OS media, not localStorage | Declare `@variant dark (&:where([data-theme="dark"], [data-theme="dark"] *))` in `globals.css` after `@import "tailwindcss"` |
+| Admin token `:root` scope | `--admin-*` defined globally at `:root`; `[data-theme="dark"]` must not accidentally remap admin tokens | Use different variable names; or define admin overrides last so they win specificity battle |
+| Sonner `<Toaster>` | Without `theme` prop, toast colors follow OS not localStorage toggle | Pass `theme={resolvedTheme}` to both `<Toaster>` instances; requires making them children of the `ThemeProvider` |
+| `manifest.ts` `theme_color` | Cannot be dynamic; hardcoded `#F5F2EF` looks wrong on dark devices | Use `viewport.themeColor` array in `layout.tsx`; accept manifest remains static |
+| `@theme inline` values | Tokens in `@theme inline` do not switch automatically | Define switching values in `:root` / `[data-theme="dark"]` blocks OUTSIDE `@theme inline` |
+| View Transitions + theme toggle | `startViewTransition` captures a DOM snapshot; applying theme mid-transition can produce a mixed light/dark artifact | Apply `data-theme` change inside a `startViewTransition` callback, or debounce until active transition completes |
+| Serwist HTML caching | `CacheFirst` on HTML documents breaks theme script delivery to existing users | Use `NetworkFirst` for navigation/document requests |
+| `admin.css` `#141414` hardcode | Table `th` background not using a token | Add `--admin-surface-dim: #141414` token; replace the hardcoded value |
+| `admin.css` alert/toast colors | `.admin-alert-*` and `.admin-toast-*` use hardcoded 8-digit hex | Either replace with tokens or remove in favor of the sonner system already in use |
+| Cookie-based SSR theming | Tempting for eliminating flash entirely, but forces `force-dynamic` on all pages | Do NOT use. Inline script + `suppressHydrationWarning` is the correct approach for this codebase |
+| PWA splash screen color | `background_color` in manifest is always light `#F5F2EF` | Known limitation — change to brand green `#35605A` which reads well on both light/dark; document as cosmetic |
 
 ---
 
 ## Sources
 
-- Codebase — `src/app/admin/actions-maletas.ts`: Confirmed `$transaction([...ops])` batch form works; confirmed sequential ops + compensating rollback pattern for `criarMaleta`; confirmed `Number(decimal)` coercion pattern in commission math; confirmed stock decrement approach. (HIGH confidence)
-- Codebase — `prisma/schema.prisma`: Confirmed `@db.Decimal(12,2)` for prices; confirmed `EstoqueMovimentoTipo` enum does NOT include `venda_loja`; confirmed no `Cliente`, `VentaLoja`, or `CotizacionDia` models exist yet. (HIGH confidence)
-- Codebase — `src/lib/action-utils.ts`: Confirmed `toNumber()` uses `Number(val)` conversion; confirmed `safeAction`, `mapError`, `BusinessError` patterns. (HIGH confidence)
-- Codebase — `.planning/codebase/CONCERNS.md`: Confirmed Prisma 7 / PrismaPg transaction constraint documented as architecture concern. (HIGH confidence)
-- Codebase — `.planning/PROJECT.md`: Confirmed Key Decision on transaction form; confirmed milestone requirements for `venda_loja` tipo and exchange rate config. (HIGH confidence)
-- PostgreSQL: `ALTER TYPE ... ADD VALUE` cannot be executed inside a transaction block — standard DDL behaviour. (HIGH confidence)
-- Prisma: `$transaction([])` batch form is the supported non-interactive transaction path for adapter mode. (HIGH confidence)
-- Paraguay SET: RUC format is base number (1-8 digits) + hyphen + check digit (1 digit), Modulo 11 algorithm. (HIGH confidence)
-- IEEE 754: Floating-point accumulation errors on decimal fractions are a known, documented property of JavaScript's `number` type. (HIGH confidence)
+- Direct codebase inspection:
+  - `src/app/layout.tsx` — `suppressHydrationWarning` present; `<body>` inline style hardcoded; `viewport.themeColor` single value
+  - `src/app/globals.css` — `@theme inline` structure, `@import "tailwindcss"`, `.admin-layout` overrides
+  - `src/app/admin/admin.css` — `--admin-*` tokens in `:root`, hardcoded `#141414` in table header, hardcoded alert/toast colors
+  - `src/components/app/AppShell.tsx` — pervasive `bg-[#F5F2EF]`, `text-[#1A1A1A]`, `border-[#E8E2D6]` hardcoded classes
+  - `src/app/app/perfil/page.tsx` — representative of `/app/*` page pattern with hardcoded hex throughout
+  - `src/app/app/layout.tsx` — `<Toaster position="top-center" richColors />` without `theme` prop
+  - `src/app/admin/layout.tsx` — `<Toaster position="top-right" richColors />` without `theme` prop
+  - `src/app/manifest.ts` — `background_color: "#F5F2EF"`, `theme_color: "#F5F2EF"` both hardcoded
+  - `next.config.ts` — CSP has `'unsafe-inline'` in `script-src`; no `withSerwist()` wrapper
+  - `package.json` — Tailwind v4 confirmed, `@serwist/next: ^9.5.11` present, `sonner: ^2.0.7`
+
+- Technical foundations (HIGH confidence):
+  - Tailwind v4 `@variant` syntax for dark mode — replaces `darkMode: 'class'` from v3 config
+  - Next.js 15 `viewport.themeColor` array syntax for media-conditional theme colors
+  - `suppressHydrationWarning` scope is limited to the element it is placed on, not its children
+  - CSS specificity: `:root` and `[data-attr]` both have specificity `[0,1,0]`; position in source order resolves ties
+  - `cookies()` in Next.js App Router is a dynamic function that prevents ISR on any page that uses it
+  - Service worker `NetworkFirst` vs `CacheFirst` for HTML documents — standard Workbox/Serwist pattern
+
+- MEDIUM confidence:
+  - Sonner v2 `theme` prop behavior — based on package version + known API; couldn't verify with live docs fetch
+  - Serwist `NetworkFirst` config syntax — based on Workbox ancestry; project's `sw.ts` not found so exact config unverifiable

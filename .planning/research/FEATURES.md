@@ -1,268 +1,174 @@
-# Features Research — v1.4 PDV e Ventas de Loja
+# Features Research — Dark Mode & Temas
 
-**Domain:** Point-of-sale for small retail, client management, multi-currency conversion
-**Researched:** 2026-05-08
-**Overall confidence:** HIGH (codebase-grounded) / MEDIUM (Paraguay legal specifics from authoritative regional knowledge)
-
----
-
-## Table Stakes (must have — missing = product feels broken)
-
-| Feature | Why Expected | Complexity | Dependency |
-|---------|--------------|------------|------------|
-| Client lookup by RUC before sale | Identifies buyer for invoice trail; prevents duplicates | Low | CLI-03: unique constraint on RUC |
-| Inline client creation from PDV | Cashier can't leave sale screen to create client manually | Low | CLI-01 form reused in PDV flow |
-| Product search + add to cart | Core PDV interaction — user expects instant search by name/SKU | Medium | Existing `products` + `product_variants` tables |
-| Editable unit price per line item | Semi-jewelry retail commonly applies ad-hoc discounts or custom negotiation; price must be overridable | Low | `PDV-02` — already in requirements |
-| Currency selector (PYG/USD/BRL) | Cross-border commerce in Paraguay/Brazil border towns is standard | Low | Single enum field + conversion display |
-| Live PYG total with exchange rate | Cashier and customer need to see final Guaraní amount at all times | Low | Reads from `cotizacion` config; real-time re-calc on currency change |
-| Stock decrement on confirm | Sale without stock decrement produces phantom inventory | Medium | Reuses `EstoqueMovimento` with new `venda_loja` type |
-| Sale confirmation summary screen | Review before commit is table stakes; prevents accidental sales | Low | — |
-| Sales history list with filters | Admin needs audit trail of all store sales | Low | `VLJ-01/02` |
-| Exchange rate config page | Without daily update, displayed prices are meaningless | Low | `COT-01/02` |
+**Domain:** Theme switching (dark/light) for mobile PWA + desktop admin panel  
+**Researched:** 2026-05-15  
+**Surfaces:** `/app` (PWA, Raleway, warm beige palette, `--color-app-*`) + `/admin` (dark-first panel, `--admin-*`)
 
 ---
 
-## Differentiators (nice to have for v1.4)
+## Table Stakes
+
+Features users expect. Missing = product feels incomplete or broken.
+
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| System preference auto-detection | Every modern OS exposes `prefers-color-scheme`. Users expect the app to match their OS theme without any manual action on first launch. | Low | Use `matchMedia('(prefers-color-scheme: dark)')` on first visit when no localStorage key is set. |
+| Persistent manual override per device | If a user sets "dark mode" in the app, it must survive page reload and navigation. Theme is device-level, not account-level. | Low | `localStorage.setItem('monarca-theme', 'dark\|light\|system')` — one key, read on every page. |
+| No flash on reload (anti-flash script) | Page loads with wrong theme for even 100ms causes a visible white/black flash. This is the #1 complaint in dark mode implementations. | Medium | Inline `<script>` in `<head>` reads localStorage and sets `data-theme` on `<html>` before the first CSS paint. Must be synchronous — not deferred, not async. |
+| Toggle accessible via keyboard and screen reader | WCAG 2.1 AA. A button without accessible label fails audit. | Low | `<button aria-label="Cambiar tema">` with `aria-pressed` or `role="switch"` depending on binary vs three-way control. |
+| All `--app-*` tokens have dark variants | If even one token is missing a dark counterpart, there will be a harsh light island in a dark screen. | High | Every `--color-app-*` defined in `globals.css` `@theme` block needs a dark counterpart. Many current components also have hardcoded hex values (e.g., the perfil page uses `bg-[#F5F2EF]`, `text-[#1A1A1A]`, etc.) — these must be migrated to tokens before dark mode is applied. |
+| All `--admin-*` tokens have light variants | The admin panel is currently dark-only (`:root` in `admin.css` defines dark values). Light mode for admin requires a new token set. | Medium | Admin already uses `var(--admin-*)` consistently — no hardcoded hex to fix. Only need to define the light counterpart values. |
+| `color-scheme` CSS property set | Tells the browser to render system UI elements (scrollbars, form controls, select menus) in the correct mode. Without it, custom dark UI has light native controls. | Low | One CSS rule: `color-scheme: dark` under `.dark` selector, `color-scheme: light` under `.light`. |
+| Correct PWA toolbar color | When installed as PWA in Standalone mode, the OS chrome (status bar color) must match the active theme. | Low | Two `<meta name="theme-color">` tags in the HTML head, one per media condition. Update dynamically when user toggles manually. |
+
+---
+
+## Differentiators
+
+Features not expected but clearly valued when present.
 
 | Feature | Value Proposition | Complexity | Notes |
 |---------|-------------------|------------|-------|
-| Unified client list (loja + revendedoras) | Single source of truth for all buyers across channels | Low | CLI-04: join `clientes` table with `vendas_maleta.cliente_nome` — display-only, no merge |
-| Client origin filter | Helps admin understand store vs reseller channel mix | Low | CLI-05 |
-| Exchange rate timestamp display | Shows admin when rate was last updated; flags stale data | Low | COT-02 — already in requirements |
-| Reserved factura fields in DB | Enables instant v1.5 invoice UI without schema migration | Low | PDV-06 — already in requirements |
-| Responsible (quem registrou) column in history | Audit trail for multi-operator store environments | Low | VLJ-01 — already in requirements |
+| Three-way toggle: Claro / Sistema / Oscuro | "Sistema" is the most user-friendly default — the user delegates the decision to the OS. Surfacing all three states is the industry standard (iOS Settings, VS Code, Vercel, GitHub all do this). | Low | Adds one extra state (`'system'`) to the ThemeContext. When `'system'` is active, re-read `prefers-color-scheme` at runtime and on change events. |
+| Smooth CSS transition on toggle | Instead of an instant color swap, a brief `transition: background-color 200ms, color 200ms` makes the switch feel intentional rather than glitchy. | Low | Apply on `:root` or theme selectors only, NOT on every element individually. Exclude from images and media elements to avoid jarring effect on photos. |
+| `prefers-reduced-motion` awareness for transition | Skip the transition animation when the user has indicated motion sensitivity. | Low | One CSS media query wrapping the transition rule: `@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }`. |
+| Live OS preference change handling | If the OS switches from light to dark automatically (e.g., scheduled auto dark mode at sunset), the app updates in real time — but only when the stored preference is `'system'`. | Low | `window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', handler)`. Clean up on unmount. |
+| Theme toggle visible in admin topbar | For power users who switch themes often, having the toggle accessible from the topbar reduces friction vs. going to "Minha Conta". | Medium | Optional — placement in profile/settings is the standard. Topbar toggle is a differentiator for the admin panel where users sit for extended sessions. Adds an icon button to `AdminTopHeader`. |
 
 ---
 
-## Anti-Features (explicitly exclude from v1.4)
+## Anti-Features (avoid)
 
 | Anti-Feature | Why Avoid | What to Do Instead |
 |--------------|-----------|-------------------|
-| Factura PDF generation | Requires SET-regulated sequential numbering, talonario management, and legal validation — high legal risk if done wrong | Store reserved fields in DB now (PDV-06); implement in v1.5 with proper SET compliance |
-| Credit sales / cuotas (parcelas) | Adds credit risk management, payment tracking, and collection workflows — scope creep | Contado-only in v1.4; CRM with credit in v1.5+ |
-| Percentage discounts | Requires discount ledger, authorization workflows, margin reporting | Editable unit price covers ad-hoc negotiation; structured discounts in v1.5 |
-| AVATI system integration | AVATI has no API/webhook — confirmed in PROJECT.md | Not feasible; excluded from scope |
-| Customer-facing receipt printing | Requires printer driver integration (ESC/POS, Bluetooth) — native app territory | Out of scope until Capacitor migration |
-| Automatic exchange rate fetch from API (BCP Paraguay) | Adds external dependency; rate may not reflect store's actual buying rate | Manual daily config by admin (COT-01) is simpler and operationally appropriate |
-| Multi-operator concurrent PDV sessions | Requires session locking and real-time conflict resolution | Single-admin use case for v1.4; not needed |
-| Client deduplication / merge | Complex UX; fuzzy matching on names across channels is unreliable | Strict RUC uniqueness for store clients (CLI-03); reseller clients remain separate display |
+| Storing theme preference in the database | Adds a server round-trip on every session start. Theme is a device-level preference. A user on their phone likely wants dark; on a shared office PC, light. Cross-device sync would override this. | Store in `localStorage` only. Per-device divergence is correct and expected behavior. |
+| CSS class on `<body>` instead of `<html>` | The anti-flash inline script runs before `<body>` is parsed. Targeting `<body>` creates a timing gap where the wrong theme flashes briefly. | Always set `data-theme` attribute (or class) on `document.documentElement` (`<html>`). |
+| Two separate ThemeProviders (one per surface) | Doubles code, introduces sync issues if the user visits both `/app` and `/admin` in the same browser session, and creates two separate localStorage keys to manage. | One shared ThemeProvider, one localStorage key (`monarca-theme`). The visual difference between surfaces comes from CSS — the logic is shared. |
+| JavaScript-animated icon transitions | Complex sun-to-moon morphing animations with JS timers add fragility and can delay perceived response to the toggle click. | Simple CSS opacity or scale transition for icon swap. Or instantaneous icon replacement — either is fine. |
+| Binary toggle (sun only or moon only) without "System" option | Omitting "System" forces users to manually match their OS preference every time they change it. Power users find this annoying. | Always surface three states: Claro / Sistema / Oscuro. |
+| Skipping dark mode for admin because it is already dark | The admin panel has a dark-only design. Adding light mode is in scope. Admin users (COLABORADORA, ADMIN) work at desks and may legitimately prefer light mode during the day. Dark-only admin without a toggle means the milestone is only half-complete. | Build light token set for admin. Implement the same toggle in `/admin/minha-conta`. |
+| Hardcoding `transition-colors` on every Tailwind class | Using `transition-colors` on every component produces hundreds of micro-transitions during theme switch and bloats the CSS. | One global transition rule on `:root` or the theme selector, covering `background-color`, `color`, `border-color`. Scope to 150–200ms. |
 
 ---
 
-## Paraguay Factura Basics
+## Toggle UI Patterns
 
-**Context:** Paraguay's tax authority is the **Secretaría de Estado de Tributación (SET)**. Facturas are governed by Resolution 59/2015 and subsequent SIFEN (Sistema Integrado de Facturación Electrónica Nacional) regulations.
+### PWA `/app/perfil` — Profile Page
 
-**Confidence:** MEDIUM — based on authoritative regional knowledge of Paraguayan tax law; verify against SET official documentation at set.gov.py before implementing v1.5 emission.
+**Placement:** Add an inline row "Apariencia" to the existing menu list, positioned between "Notificaciones" and "Soporte y Ayuda". This row does NOT navigate to a sub-page — it renders an inline three-way control. This is the iOS Settings / Android Quick Settings pattern: familiar to the target user base.
 
-### Fields Required on a Paraguayan Factura de Contado
+**Why not a dedicated sub-page?** Theme preference is a single setting. A dedicated page for one control is over-engineering and adds unnecessary navigation taps on mobile.
 
-| Field | Description | Notes |
-|-------|-------------|-------|
-| **Talonario** | Authorization number issued by SET to the seller | Issued per talonario block; sequential range per authorization |
-| **Número de factura** | Sequential invoice number within the talonario | Must be strictly sequential; no gaps allowed |
-| **Fecha de emisión** | Date of issue | Must match sale date |
-| **RUC del vendedor** | Seller's RUC (Monarca's RUC) | Format: `XXXXXXXX-N` |
-| **Razón social del vendedor** | Seller's registered business name | Must match SET registration |
-| **Dirección del vendedor** | Seller's registered address | City and department |
-| **RUC o CI del comprador** | Buyer's RUC (companies) or CI (cédula de identidad, individuals) | RUC for legal entities; CI for natural persons |
-| **Nombre o razón social del comprador** | Buyer's name | Required |
-| **Condición de venta** | "Contado" or "Crédito" | v1.4 is contado-only |
-| **Descripción de bienes/servicios** | Line items with description | One row per product type |
-| **Cantidad** | Quantity per line | Integer for physical goods |
-| **Precio unitario** | Unit price in PYG | All amounts on factura must be in Guaraní |
-| **IVA** | VAT — either 10% (goods) or 5% (basic goods/medicines) or exento | Semi-jewelry is typically 10% IVA |
-| **Total IVA** | Total tax amount | Calculated per rate |
-| **Total general** | Total including all taxes | In PYG |
-| **Tipo de operación** | B2B (empresa a empresa) or B2C (empresa a consumidor final) | Determines reporting category |
-
-### SIFEN (Electronic Invoice) Notes
-
-Paraguay is in phased rollout of electronic invoicing (SIFEN). As of 2025:
-- Large taxpayers ("grandes contribuyentes") are already required to emit facturas electrónicas via SET's KuDE system
-- Small/medium retailers ("pequeños contribuyentes" and "medianos contribuyentes") are being phased in progressively
-- Until mandatory for Monarca's taxpayer category, physical talonario facturas remain valid
-- The reserved fields in v1.4 (`talonario`, `numero_factura`, `tipo_operacion`) should accommodate both physical and electronic factura paths in v1.5
-
-### What v1.4 Must Store (PDV-06)
-
-These fields must be persisted on `VentaLoja` at creation time, even without emission UI:
-
+**Component structure:**
 ```
-talonario           String?   // SET authorization number for the talonario block
-numero_factura      Int?      // Sequential within talonario (null until physically assigned)
-tipo_operacion      String?   // "B2B" | "B2C" | "exento"
-ruc_comprador       String?   // Snapshot from cliente.ruc at sale time
-nombre_comprador    String?   // Snapshot from cliente.nombre at sale time
-condicion_venta     String    // "contado" — default for v1.4, "credito" for v1.5+
+MenuRow (non-link variant, existing pattern)
+  [Palette icon from Lucide]   "Apariencia"   [Claro | Sistema | Oscuro]
 ```
 
-Snapshotting ruc_comprador and nombre_comprador at sale time is critical — client data may change after sale, but invoice data must be immutable.
+The three-way control is a `<div role="radiogroup">` containing three `<button role="radio" aria-checked>` elements. Active button: `background: var(--color-app-primary)` (#35605A), white text. Inactive: transparent background, `var(--color-app-text)` color. Overall width: ~150px, height: 32px, pill-shaped (`border-radius: 16px`).
+
+**Icon for the row:** `Palette` from Lucide. Communicates "visual appearance" better than `Sun` or `Moon`, which imply directionality rather than a settings category.
+
+**Labels:** "Claro" / "Sistema" / "Oscuro" (Spanish, consistent with UI language policy).
+
+**Do NOT use:** A binary on/off toggle switch (fails to expose the "Sistema" state). Do NOT use a `<select>` dropdown on mobile (poor touch target, native look breaks the custom UI).
 
 ---
 
-## Multi-Currency Patterns
+### Admin `/admin/minha-conta` — My Account Page
 
-**Context:** Paraguay borders Brazil (BRL) and Argentina (ARS); USD is also used in commerce. PYG is the legal tender for any formal invoice or receipt. Exchange rates fluctuate daily; border commerce prices are commonly quoted in USD or BRL.
+**Placement:** Add a new card section between the profile card and the quick-links section. Section label: "APARIENCIA" (uppercase, matching admin card section style).
 
-**Confidence:** HIGH — standard retail pattern across Latin American border commerce
-
-### Recommended Approach: Store-in-PYG, Display-in-Selected-Currency
-
-All monetary values stored in the database in PYG (Guaraní). The selected currency and the exchange rate used at time of sale are stored as metadata for audit purposes.
-
-Why: Simplifies accounting (single currency in all reports), avoids cross-currency decimal precision issues, and aligns with Paraguay's factura requirement that all amounts be in PYG.
-
-### Data Model for a Sale
-
+**Component structure:**
 ```
-VentaLoja {
-  total_pyg          Decimal(12,2)   // canonical amount in PYG — always present
-  moeda              Enum            // PYG | USD | BRL
-  total_moeda        Decimal(12,2)   // amount in selected currency (equals total_pyg when moeda=PYG)
-  taxa_cambio        Decimal(12,4)   // rate used at time of sale (e.g. 7500.0000 for USD→PYG)
-  taxa_cambio_at     DateTime        // when the rate was set — for audit
-}
+admin-card
+  Section label: "APARIENCIA"
+  Row: [Monitor icon from Lucide]   "Tema del Panel"   [Claro | Sistema | Oscuro]
 ```
 
-### Cotización Config Model
+The three-way control uses `--admin-*` tokens: active segment uses `--admin-accent` (#35605A) background, white text. Inactive: transparent, `--admin-text` color. Border: `1px solid var(--admin-border)`.
 
-```
-CotizacionDia {
-  id                 UUID
-  usd_pyg            Decimal(12,4)   // e.g. 7500.0000 Gs per USD
-  brl_pyg            Decimal(12,4)   // e.g. 1380.0000 Gs per BRL
-  updated_at         DateTime
-  updated_by         String (Reseller.id)
-}
-```
+**Acceptable alternative for admin:** A `<select>` dropdown (Claro / Sistema / Oscuro) is acceptable for the admin surface since it is desktop-first and accessible without touch optimization. However, the segment control is more visually polished and consistent with how Vercel, Linear, and Notion handle this in their admin panels. Prefer the segment control.
 
-Only one active record needed. Update replaces in-place (single-row upsert) for simplicity. A new row per day would create an audit trail but adds query complexity; single-row upsert is sufficient for v1.4.
-
-### Conversion Display Rules
-
-1. Admin selects currency → PDV recalculates displayed total in selected currency immediately — client-side calculation, no server round-trip needed
-2. Conversion formula: `total_moeda = total_pyg / taxa_cambio` for USD/BRL; `total_moeda = total_pyg` for PYG
-3. Display both amounts simultaneously: "Gs. 750.000 / USD 100,00" — PYG total always visible
-4. Show exchange rate source below total: "Cotización: 1 USD = Gs. 7.500 (actualizado hoy 09:30)"
-5. On confirm: snapshot `taxa_cambio` and `taxa_cambio_at` into the sale record — rate must never change retroactively
-
-### PYG Formatting
-
-Guaraní has no decimal places in practice (smallest denomination is 1 Gs). Display as integer with period as thousand separator (Spanish notation): `7.500.000 Gs`. USD/BRL display with 2 decimal places using comma as decimal separator: `USD 1.250,50`.
+**Icon:** `Monitor` from Lucide — communicates "display settings" in a desktop context rather than general "appearance".
 
 ---
 
-## Client RUC Validation
+### Icon Vocabulary (if a compact icon-only button is ever needed)
 
-**Confidence:** HIGH — RUC format is formally defined by Paraguay's SET
+| Active Theme | Icon | Tooltip / aria-label |
+|---|---|---|
+| Light mode active | `Sun` | "Modo claro activo — cambiar tema" |
+| Dark mode active | `Moon` | "Modo oscuro activo — cambiar tema" |
+| System preference active | `Monitor` | "Siguiendo preferencia del sistema — cambiar tema" |
 
-### RUC Format
-
-```
-Pattern (regex):  ^\d{1,8}-\d$
-Examples:
-  Individual:      12345678-9      (up to 8 digits + hyphen + 1 check digit)
-  Company:         80012345-6      (registered companies)
-  Foreign entity:  44123456-0      (foreign companies registered with SET)
-```
-
-### Check Digit Algorithm (Luhn-like, SET-specific)
-
-1. Take the RUC number digits only (left of hyphen)
-2. Assign position weights cyclically: 2, 3, 4, 5, 6, 7, 8, 9, 2, 3, ... (from right to left)
-3. Multiply each digit by its weight; sum all products
-4. Compute: `remainder = sum mod 11`
-5. Check digit = `11 - remainder`; if result is 10 → check digit is 0; if result is 11 → check digit is 1
-
-**Implementation recommendation for v1.4:**
-- Required: Format validation (`^\d{1,8}-\d$`) — always enforce before save
-- Optional: Check digit algorithm — implement as a utility function in `src/lib/validators/`; format-only validation is acceptable for v1.4 since RUC is used for lookup/storage, not tax filing
-- DB level: `@unique` constraint on `ruc` in the `clientes` table enforces no duplicates
-
-### CI (Cédula de Identidad) — For Future Reference
-
-Some store clients may be individuals without a RUC (buying as consumidor final). CI format: `^\d{6,8}$` (6 to 8 digits, no hyphen). For v1.4, RUC is the primary identifier; CI support can be added in v1.5 when factura emission requires distinguishing B2B (RUC) vs B2C (CI) buyers.
-
-### Duplicate Prevention UX Flow
-
-```
-Admin types RUC in PDV →
-  [onBlur or after 500ms debounce] Server Action: findClientByRUC →
-    Found:     pre-fill client section, show "Cliente ya registrado" confirmation, allow proceed
-    Not found: show inline "Nuevo cliente" form (nombre + ciudad + telefone) to create before sale
-    Invalid:   show format error, block proceed
-```
-
-This pattern avoids route navigation during a sale and maps directly to CLI-03 uniqueness requirement.
+Convention (used by GitHub, VS Code, Vercel): show the **current mode's icon**, not the target mode. This matches `aria-pressed` semantics and is more readable. Clicking cycles: System → Light → Dark → System.
 
 ---
 
-## Dependencies on Existing Stock System
+## System Preference Handling
 
-**Confidence:** HIGH — derived from direct Prisma schema inspection
+### First visit (no localStorage key)
 
-### What Exists (from schema.prisma inspection)
+1. Anti-flash inline `<script>` in `<head>` runs synchronously before first CSS paint.
+2. It checks `window.matchMedia('(prefers-color-scheme: dark)').matches`.
+3. Sets `document.documentElement.setAttribute('data-theme', 'dark' | 'light')`.
+4. No localStorage key is written — the "Sistema" state is implied by absence of an explicit key.
 
-- `EstoqueMovimentoTipo` enum: `reserva_maleta`, `devolucao_maleta`, `ajuste_manual`, `venda_direta`
-- `EstoqueMovimento` model: tracks `product_variant_id`, `quantidade` (signed int), `tipo`, `maleta_id` (nullable FK)
-- Stock quantity lives on `ProductVariant.stock_quantity`
-- `EstoqueMovimento` currently only has `maleta_id` as optional FK — no general-purpose `reference_id`
+### Manual override
 
-### What v1.4 Must Add to the Schema
+1. User selects "Claro" or "Oscuro" → write `localStorage.setItem('monarca-theme', 'light' | 'dark')`.
+2. User selects "Sistema" → `localStorage.removeItem('monarca-theme')` (or write `'system'` — either works; removal is cleaner).
+3. On next page load, the anti-flash script reads the key: if present and `'light'`/`'dark'`, apply directly; if absent or `'system'`, fall back to `matchMedia`.
 
-1. New enum value `venda_loja` in `EstoqueMovimentoTipo` — do not reuse `venda_direta`; explicit naming is essential for filtering in analytics and future reporting
-2. New nullable FK `venda_loja_id` on `EstoqueMovimento` — mirrors `maleta_id` pattern; enables bidirectional query "which stock movements belong to this sale?"
-3. New `VentaLoja` model with all required fields (see PDV-05, PDV-06)
-4. New `VentaLojaItem` model for line items (mirrors `MaletaItem` pattern)
-5. New `Cliente` model for PDV clients
-6. New `CotizacionDia` model (single-row config)
+### Live OS preference change
 
-### Stock Decrement Pattern
-
-- Decrement happens at sale confirmation, not at cart creation (same as maleta pattern)
-- Pre-validate stock availability for all line items before any write — fail fast if any item has insufficient stock
-- If pre-validation passes, sequentially create one `EstoqueMovimento` per line item with `tipo: venda_loja` and negative `quantidade`
-- Use the same sequential-operations pattern (not `$transaction(async tx)`) — confirmed constraint from KEY DECISIONS in PROJECT.md
-- `quantidade` stored as negative integer to decrement (verify sign convention against existing `reserva_maleta` usage before implementing)
-
----
-
-## Feature Dependencies Map
-
+When stored preference is `'system'` (or key absent), register:
+```javascript
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+  if (currentThemePref === 'system') {
+    applyTheme(e.matches ? 'dark' : 'light');
+  }
+});
 ```
-COT-01/02 (cotizacion config)
-        │
-        └──────────────────────────────┐
-                                       ↓
-CLI-01/02/03 (client CRUD) ──→ PDV-01 (lookup by RUC)
-                                       ↓
-                               PDV-02 (add products from catalog)
-                                       ↓
-                               PDV-03 (select currency)
-                                       ↓
-                               PDV-04 (display PYG total) ←── cotizacion rate
-                                       ↓
-                               PDV-05 (confirm sale)
-                                 ├──→ EstoqueMovimento (tipo: venda_loja) × N items
-                                 ├──→ VentaLoja record (canonical)
-                                 └──→ PDV-06 (factura reserved fields snapshotted)
-                                       ↓
-                               VLJ-01/02 (ventas history)
-                                       ↓
-                               CLI-04/05 (unified client list — display only)
+Remove listener on component unmount to avoid memory leaks.
+
+### Anti-flash script constraints (Next.js App Router)
+
+The script must be placed in `src/app/layout.tsx` as:
+```tsx
+<html suppressHydrationWarning>
+  <head>
+    <script dangerouslySetInnerHTML={{ __html: ANTI_FLASH_SCRIPT_STRING }} />
+  </head>
+```
+
+`suppressHydrationWarning` on `<html>` prevents React hydration mismatch warnings caused by the script modifying `data-theme` before React hydrates. The script string must be a constant — not an import — so it can be inlined without a network request.
+
+### PWA installed context — `theme-color` meta tags
+
+Add two `<meta name="theme-color">` tags to the PWA layout:
+```html
+<meta name="theme-color" media="(prefers-color-scheme: light)" content="#F5F2EF" />
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#1A1A1A" />
+```
+
+When the user manually overrides the theme, update the appropriate meta tag:
+```javascript
+document.querySelector('meta[name="theme-color"]')?.setAttribute('content', newColor);
 ```
 
 ---
 
-## Build Order Recommendation
+## Complexity Summary
 
-1. Schema migration — add `venda_loja` enum, `Cliente`, `CotizacionDia`, `VentaLoja`, `VentaLojaItem` models, FK on `EstoqueMovimento`
-2. `COT-01/02` — Exchange rate config (simplest; unblocks PDV display)
-3. `CLI-01/02/03` — Client CRUD with RUC validation and uniqueness (unblocks PDV lookup)
-4. `PDV-01 through PDV-06` — Full PDV flow (depends on clients + cotizacion)
-5. `VLJ-01/02` — Sales history (depends on sales existing)
-6. `CLI-04/05` — Unified client list with origin filter (cosmetic; deferred to end)
-
-**Defer to v1.5:** Factura PDF, IVA breakdown display, check digit validation algorithm, CI field for individual buyers, automatic BCP exchange rate fetch.
+| Area | Effort | Reason |
+|------|--------|--------|
+| Token audit + dark variants for `/app` | **High** | Hardcoded hex values throughout current PWA components (perfil page alone has ~8 hardcoded hex literals). These must be migrated to CSS tokens before dark variants can work. This is the majority of implementation effort in this milestone. |
+| Token audit + light variants for `/admin` | **Medium** | Admin already uses `var(--admin-*)` consistently. Only need to define light-mode values for each token and apply them under a `.light` selector or `[data-theme="light"]` override. No hex migration needed. |
+| ThemeProvider + anti-flash script | **Low** | ~60 lines of React context + ~15 lines of inline script. Well-understood pattern. `next-themes` library implements this for Next.js App Router but adds a dependency; implementing manually is equally viable and avoids the dependency. |
+| Three-way toggle component | **Low** | ~40 lines of React + ~20 lines of CSS. Reusable across both surfaces with different token sets. |
+| `prefers-reduced-motion` + CSS transitions | **Low** | Two media query additions to the theme CSS. |
+| Live OS preference change listener | **Low** | One `addEventListener` + cleanup in the ThemeProvider. |
+| PWA `theme-color` dynamic update | **Low** | Two meta tags + one JS call per toggle. |
+| Admin topbar icon toggle (differentiator) | **Medium** | Requires modifying `AdminTopHeader` component; adds a new clickable element to a shared layout component. Risk: layout shift if not sized carefully. |
