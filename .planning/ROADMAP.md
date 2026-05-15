@@ -60,7 +60,13 @@
 Plans:
 - [x] 19-01-PLAN.md — @custom-variant dark + app dark tokens + shadcn overrides in globals.css
 - [x] 19-02-PLAN.md — Light :root defaults + dark variants in admin.css
-- [ ] **Phase 20: /app Hardcoded Color Migration** — PWA sem valores hex hardcoded; dark mode testável via DevTools — planned
+- [ ] **Phase 20: /app Hardcoded Color Migration** — PWA sem valores hex hardcoded; dark mode testável via DevTools — **5 plans**
+  Plans:
+  - [ ] 20-01-PLAN.md — Token Foundation & Shell Migration (globals.css tokens + AppShell + layout)
+  - [ ] 20-02-PLAN.md — Home, Onboarding, Auth & Secondary Pages
+  - [ ] 20-03-PLAN.md — Maleta & Catalogo Pages
+  - [ ] 20-04-PLAN.md — Perfil, Progreso & Desempeno Pages
+  - [ ] 20-05-PLAN.md — Shared Components & Verification
 - [ ] **Phase 21: ThemeProvider Infrastructure** — Providers escopados, anti-flash e Sonner funcionando em ambas as surfaces — planned
 - [ ] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — planned
 
@@ -172,7 +178,7 @@ Plans:
 | 17. PDV Core — Cotización + Fluxo de Venda | 0/4 | Not started | - |
 | 18. Histórico de Ventas | 0/2 | Not started | - |
 | 19. CSS Token Foundation | 2/2 | Done | 2026-05-15 |
-| 20. /app Hardcoded Color Migration | 0/? | Not started | - |
+| 20. /app Hardcoded Color Migration | 0/5 | Planned | - |
 | 21. ThemeProvider Infrastructure | 0/? | Not started | - |
 | 22. Toggle UI | 0/? | Not started | - |
 
