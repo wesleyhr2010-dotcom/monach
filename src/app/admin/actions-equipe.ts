@@ -425,6 +425,68 @@ export async function vincularRevendedora(
 }
 
 // ============================================
+// Atualizar Revendedora (admin — todos os campos)
+// ============================================
+
+export async function atualizarRevendedoraAdmin(
+    id: string,
+    data: {
+        name: string;
+        email: string;
+        whatsapp: string;
+        cedula: string;
+        instagram: string;
+        edad: string;
+        estado_civil: string;
+        hijos: string;
+        empresa: string;
+        informconf: string;
+        endereco_cep: string;
+        endereco_logradouro: string;
+        endereco_numero: string;
+        endereco_complemento: string;
+        endereco_cidade: string;
+        endereco_estado: string;
+        taxa_comissao: number;
+        is_active: boolean;
+        colaboradora_id: string | null;
+    }
+): Promise<{ success: boolean; error?: string }> {
+    await requireAuth(["ADMIN"]);
+    try {
+        await prisma.reseller.update({
+            where: { id, role: "REVENDEDORA" },
+            data: {
+                name: data.name,
+                email: data.email,
+                whatsapp: data.whatsapp,
+                cedula: data.cedula,
+                instagram: data.instagram,
+                edad: data.edad,
+                estado_civil: data.estado_civil,
+                hijos: data.hijos,
+                empresa: data.empresa,
+                informconf: data.informconf,
+                endereco_cep: data.endereco_cep,
+                endereco_logradouro: data.endereco_logradouro,
+                endereco_numero: data.endereco_numero,
+                endereco_complemento: data.endereco_complemento,
+                endereco_cidade: data.endereco_cidade,
+                endereco_estado: data.endereco_estado,
+                taxa_comissao: data.taxa_comissao,
+                is_active: data.is_active,
+                colaboradora_id: data.colaboradora_id || null,
+            },
+        });
+        invalidateCache.path.admin("/revendedoras");
+        return { success: true };
+    } catch (err: unknown) {
+        const msg = err instanceof Error ? err.message : "Erro desconhecido";
+        return { success: false, error: msg };
+    }
+}
+
+// ============================================
 // Perfil Detalhado — Revendedora
 // ============================================
 

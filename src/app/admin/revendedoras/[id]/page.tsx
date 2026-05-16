@@ -11,10 +11,8 @@ import { type MaletaStatus } from "@/lib/maleta-helpers";
 import { Button } from "@/components/ui/button";
 import {
     MessageCircle,
-    UserCog,
-    Ban,
+    Pencil,
     FileText,
-    ArrowRight,
     Check,
 } from "lucide-react";
 
@@ -179,26 +177,19 @@ export default function RevendedoraPerfilPage() {
                         >
                             <MessageCircle className="w-3.5 h-3.5" /> WhatsApp
                         </a>
-                        {/* Alterar Consultora */}
-                        <button style={{
-                            display: "inline-flex", alignItems: "center", gap: "6px",
-                            padding: "7px 14px", borderRadius: "6px",
-                            background: "var(--admin-surface-hover)", border: "1px solid var(--admin-border)",
-                            color: "var(--admin-text-muted)", fontSize: "12px", fontWeight: 500,
-                            cursor: "pointer",
-                        }}>
-                            <UserCog className="w-3.5 h-3.5" /> Alterar Consultora
-                        </button>
-                        {/* Desativar */}
-                        <button style={{
-                            display: "inline-flex", alignItems: "center", gap: "6px",
-                            padding: "7px 14px", borderRadius: "6px",
-                            background: "var(--admin-surface-hover)", border: "1px solid #3A1515",
-                            color: "var(--admin-danger)", fontSize: "12px", fontWeight: 500,
-                            cursor: "pointer",
-                        }}>
-                            <Ban className="w-3.5 h-3.5" /> Desativar Conta
-                        </button>
+                        {/* Editar */}
+                        <Link
+                            href={`/admin/revendedoras/${perfil.id}/editar`}
+                            style={{
+                                display: "inline-flex", alignItems: "center", gap: "6px",
+                                padding: "7px 14px", borderRadius: "6px",
+                                background: "var(--admin-accent)", border: "none",
+                                color: "#fff", fontSize: "12px", fontWeight: 600,
+                                textDecoration: "none",
+                            }}
+                        >
+                            <Pencil className="w-3.5 h-3.5" /> Editar
+                        </Link>
                     </div>
                 </div>
             </header>
