@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Sun, Moon } from "lucide-react";
 import { useThemeContext } from "@/components/theme/useTheme";
 
@@ -8,7 +9,12 @@ interface ThemeToggleProps {
 }
 
 export function ThemeToggle({ variant = "app" }: ThemeToggleProps) {
-  const { theme, resolvedTheme, setTheme } = useThemeContext();
+  const { resolvedTheme, setTheme } = useThemeContext();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const isDark = resolvedTheme === "dark";
   const nextTheme = isDark ? "light" : "dark";
@@ -33,6 +39,10 @@ export function ThemeToggle({ variant = "app" }: ThemeToggleProps) {
   const iconColor = variant === "app" ? "var(--app-accent-brown)" : "var(--admin-primary)";
   const styles = variant === "app" ? appStyles : adminStyles;
 
+  // Prevent hydration mismatch: server always renders Moon + "Modo oscuro"
+  // Client re-renders after mount with actual resolvedTheme
+  const showSun = mounted && isDark;
+
   return (
     <button
       type="button"
@@ -44,12 +54,12 @@ export function ThemeToggle({ variant = "app" }: ThemeToggleProps) {
         borderColor: styles.borderColor,
       }}
     >
-      {isDark ? (
+      {showSun ? (
         <Sun className="w-4 h-4" style={{ color: iconColor }} />
       ) : (
         <Moon className="w-4 h-4" style={{ color: iconColor }} />
       )}
-      <span className="text-sm font-medium">{label}</span>
+      <span className="text-sm font-medium">{mounted ? label : "Modo oscuro"}</span>
     </button>
   );
 }

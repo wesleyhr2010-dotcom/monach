@@ -205,7 +205,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
     });
 
     return (
-        <div className="admin-layout" data-theme={resolvedTheme}>
+        <div className="admin-layout" data-theme={resolvedTheme} suppressHydrationWarning>
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
                     <LogoImg variant="white" height={32} />
