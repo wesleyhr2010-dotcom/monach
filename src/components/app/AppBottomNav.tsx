@@ -54,18 +54,31 @@ export function AppBottomNav() {
     : "#F5F2EF";
 
   return (
-    <>
-      {/* Fills the iOS safe-area-inset-bottom so the native white/black strip
-          (shown by the OS when no app element covers that area) is hidden. */}
+    // paddingBottom extends the nav into env(safe-area-inset-bottom) so we can
+    // paint that zone with an absolutely-positioned child. Using a child element
+    // (not position:fixed) avoids being clipped by the app-shell overflow:hidden.
+    <nav
+      className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav"
+      data-theme={theme}
+      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
+    >
+      {/* Covers the iOS safe-area strip below the pill with the app bg color.
+          position:absolute + left/right:0 escapes px-4 to go full-width. */}
       <div
         aria-hidden="true"
-        className="md:hidden fixed bottom-0 left-0 right-0 z-[98]"
-        style={{ height: "env(safe-area-inset-bottom)", backgroundColor: safeBg }}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "env(safe-area-inset-bottom)",
+          backgroundColor: safeBg,
+        }}
       />
-    <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav" data-theme={theme}>
+
       <div
         className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
-        style={{ backgroundColor: pillBg }}
+        style={{ backgroundColor: pillBg, position: "relative" }}
       >
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = mounted ? isActive(pathname, href, exact) : false;
@@ -107,6 +120,5 @@ export function AppBottomNav() {
         })}
       </div>
     </nav>
-    </>
   );
 }
