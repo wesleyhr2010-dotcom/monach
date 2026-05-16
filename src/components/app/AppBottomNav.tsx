@@ -56,6 +56,12 @@ export function AppBottomNav() {
       data-theme={theme}
       style={{
         backgroundColor: pageBg,
+        // Extends nav physically into the iOS safe-area zone. Without this, the
+        // nav stops at the safe-area boundary and iOS paints that strip white
+        // (or black in dark mode) — html/body bg does NOT propagate to the
+        // safe area in standalone PWA mode. Padding here forces the nav's
+        // backgroundColor to fill that zone with the page bg color.
+        paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
       <div
