@@ -151,7 +151,7 @@
 }
 
 body {
-  background: var(--color-background);
+  background: var(--color-app-bg);
   color: var(--color-foreground);
   font-family: var(--font-montserrat);
   line-height: 1.6;

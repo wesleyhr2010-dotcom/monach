@@ -7,6 +7,11 @@ export type Theme = "light" | "dark" | "system";
 export const MONARCA_APP_THEME_KEY = "monarca-app-theme";
 export const MONARCA_ADMIN_THEME_KEY = "monarca-admin-theme";
 
+const PAGE_BACKGROUND_BY_THEME = {
+  light: "#F5F2EF",
+  dark: "#1a1816",
+} as const;
+
 export interface ThemeContextType {
   theme: Theme;
   resolvedTheme: "light" | "dark";
@@ -22,6 +27,28 @@ function getSystemTheme(): "light" | "dark" {
 
 function resolveTheme(theme: Theme): "light" | "dark" {
   return theme === "system" ? getSystemTheme() : theme;
+}
+
+function syncDocumentChrome(resolvedTheme: "light" | "dark") {
+  if (typeof document === "undefined") return;
+
+  const backgroundColor = PAGE_BACKGROUND_BY_THEME[resolvedTheme];
+  document.documentElement.style.colorScheme = resolvedTheme;
+  document.documentElement.style.backgroundColor = backgroundColor;
+  document.body.style.backgroundColor = backgroundColor;
+
+  document.querySelectorAll<HTMLMetaElement>('meta[name="theme-color"]').forEach((meta) => {
+    meta.content = backgroundColor;
+  });
+
+  let themeMeta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"][data-monarca-theme]');
+  if (!themeMeta) {
+    themeMeta = document.createElement("meta");
+    themeMeta.name = "theme-color";
+    themeMeta.dataset.monarcaTheme = "true";
+    document.head.appendChild(themeMeta);
+  }
+  themeMeta.content = backgroundColor;
 }
 
 function getInitialTheme(storageKey: string): Theme {
@@ -49,6 +76,10 @@ export function useTheme(storageKey: string): ThemeContextType {
   const [theme, setThemeState] = useState<Theme>(() => getInitialTheme(storageKey));
   const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() => getInitialResolvedTheme(storageKey));
 
+  useEffect(() => {
+    syncDocumentChrome(resolvedTheme);
+  }, [resolvedTheme]);
+
   // Watch system preference changes when in "system" mode
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -59,8 +90,7 @@ export function useTheme(storageKey: string): ThemeContextType {
       if (theme === "system") {
         const systemTheme = getSystemTheme();
         setResolvedTheme(systemTheme);
-        document.documentElement.style.colorScheme = systemTheme;
-        document.documentElement.style.backgroundColor = systemTheme === "dark" ? "#1a1816" : "#F5F2EF";
+        syncDocumentChrome(systemTheme);
       }
     };
 
@@ -78,8 +108,10 @@ export function useTheme(storageKey: string): ThemeContextType {
           event.newValue === "light" || event.newValue === "dark" || event.newValue === "system"
             ? event.newValue
             : "system";
+        const resolved = resolveTheme(newTheme);
         setThemeState(newTheme);
-        setResolvedTheme(resolveTheme(newTheme));
+        setResolvedTheme(resolved);
+        syncDocumentChrome(resolved);
       }
     };
 
@@ -92,11 +124,8 @@ export function useTheme(storageKey: string): ThemeContextType {
       const resolved = resolveTheme(newTheme);
       setThemeState(newTheme);
       setResolvedTheme(resolved);
-      // Keep color-scheme + backgroundColor in sync so iOS updates safe-area colors.
-      if (typeof document !== "undefined") {
-        document.documentElement.style.colorScheme = resolved;
-        document.documentElement.style.backgroundColor = resolved === "dark" ? "#1a1816" : "#F5F2EF";
-      }
+      // Keep the PWA chrome and iOS safe-area canvas in sync with the app theme.
+      syncDocumentChrome(resolved);
       try {
         localStorage.setItem(storageKey, newTheme);
       } catch {

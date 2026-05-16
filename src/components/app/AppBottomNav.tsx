@@ -46,11 +46,18 @@ export function AppBottomNav() {
   const pillBg = mounted
     ? resolvedTheme === "dark" ? "#242220" : "#F5F2EF"
     : "#F5F2EF";
+  const pageBg = mounted
+    ? resolvedTheme === "dark" ? "#1a1816" : "#F5F2EF"
+    : "#F5F2EF";
 
   return (
     <nav
       className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav"
       data-theme={theme}
+      style={{
+        backgroundColor: pageBg,
+        paddingBottom: "env(safe-area-inset-bottom)",
+      }}
     >
       <div
         className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"

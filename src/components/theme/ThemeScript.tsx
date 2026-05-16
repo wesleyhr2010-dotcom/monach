@@ -20,11 +20,29 @@ export function ThemeScript({ surface }: ThemeScriptProps) {
       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : theme;
 
-    // color-scheme + backgroundColor on <html> controls the iOS safe-area strip
-    // color. The <html> element is the page canvas — iOS uses it to paint the
-    // safe-area zone when no web content explicitly covers it.
+    var bgColor = resolved === 'dark' ? '#1a1816' : '#F5F2EF';
+
+    // color-scheme + backgroundColor on the page canvas controls iOS safe-area
+    // strips when no web content explicitly covers them.
     document.documentElement.style.colorScheme = resolved;
-    document.documentElement.style.backgroundColor = resolved === 'dark' ? '#1a1816' : '#F5F2EF';
+    document.documentElement.style.backgroundColor = bgColor;
+    if (document.body) {
+      document.body.style.backgroundColor = bgColor;
+    }
+
+    var themeMetas = document.querySelectorAll('meta[name="theme-color"]');
+    for (var i = 0; i < themeMetas.length; i++) {
+      themeMetas[i].setAttribute("content", bgColor);
+    }
+
+    var themeMeta = document.querySelector('meta[name="theme-color"][data-monarca-theme]');
+    if (!themeMeta) {
+      themeMeta = document.createElement("meta");
+      themeMeta.setAttribute("name", "theme-color");
+      themeMeta.setAttribute("data-monarca-theme", "true");
+      document.head.appendChild(themeMeta);
+    }
+    themeMeta.setAttribute("content", bgColor);
 
     function setTheme() {
       var el = document.querySelector(selector);
