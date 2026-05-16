@@ -1,5 +1,35 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-16 — Bugfixes: acesso a regalos no PWA + upload de imagem nos brindes admin
+
+### Contexto
+Duas correções independentes fora de ciclo de phase: (1) a página de resgate de pontos por brindes no PWA era inacessível por falta de atalhos de navegação; (2) o formulário de brindes no painel admin aceitava apenas URLs externas para imagens, sem suporte a upload direto.
+
+### Feito
+
+**[BUG] Página `/app/progreso/regalos` inacessível no PWA**
+- `src/app/app/progreso/page.tsx` — adicionados dois botões de atalho abaixo do header: `Extracto →` (`/app/progreso/extracto`) e `Canjear Regalos →` (`/app/progreso/regalos`). Conforme `SPEC_EXTRATO_BRINDES.md` §Navegación, o header de `/app/progreso` deve expor esses atalhos.
+- `src/components/app/AppBottomNav.tsx` — adicionado `/app/progreso` ao conjunto de rotas que ativam a aba "Más". A ausência desta regra deixava todas as abas sem destaque quando a revendedora navegava pelo fluxo de progresso/brindes.
+
+**[FEAT] Upload de imagem nos brindes do admin**
+- `src/components/admin/BrindeImageUploader.tsx` (novo) — componente reutilizável com zona de drag-and-drop (ou clique), upload direto ao Cloudflare R2 via `/api/upload-r2` no path `brindes/{timestamp}-{rand}.{ext}`, spinner de progresso usando `admin-spinner`, preview da imagem com overlay "Cambiar imagen" no hover, e fallback retrátil "O escribir URL" para inserção manual de link externo.
+- `src/app/admin/brindes/BrindeForm.tsx` — campo "Imagen URL" substituído por `<BrindeImageUploader />`.
+- `src/app/admin/brindes/nuevo/page.tsx` — campo "Imagen URL" substituído por `<BrindeImageUploader />`; adicionada validação client-side que bloqueia submit se nenhuma imagem foi selecionada/inserida.
+- Não foram necessárias alterações no backend: o path `brindes/` já estava na whitelist de ADMIN/COLABORADORA em `/api/upload-r2`.
+
+### Arquivos tocados
+- `src/app/app/progreso/page.tsx`
+- `src/components/app/AppBottomNav.tsx`
+- `src/components/admin/BrindeImageUploader.tsx` (novo)
+- `src/app/admin/brindes/BrindeForm.tsx`
+- `src/app/admin/brindes/nuevo/page.tsx`
+
+### Commits
+- `fd66bcd` fix: add regalos/extracto shortcuts to progreso and fix bottom nav active state
+- `fb37b9e` feat: replace URL-only input with R2 file upload in admin brindes
+
+---
+
 ## 2026-05-16 — Phase 22: Toggle UI
 
 ### Contexto
