@@ -4,7 +4,7 @@ milestone: v1.5
 milestone_name: Dark Mode & Temas
 status: executing
 stopped_at: Phase 20 completed
-last_updated: "2026-05-15T23:30:00.000Z"
+last_updated: "2026-05-16T00:01:00.000Z"
 last_activity: 2026-05-15 — Phase 20 /app Hardcoded Color Migration completed (5/5 plans)
 progress:
   total_phases: 7
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 ## Current Position
 
 Phase: 21 — ThemeProvider Infrastructure
-Plan: Not started
-Status: Phase 20 completed — ready to execute Phase 21
-Last activity: 2026-05-15 — Phase 20 /app Hardcoded Color Migration completed (5/5 plans)
+Plan: 01 — Core ThemeProviders & Anti-Flash Infrastructure
+Status: Plan 01 completed — ready for Plan 02
+Last activity: 2026-05-16 — Phase 21 Plan 01 completed (ThemeProvider Infrastructure, 3/3 tasks)
 
-Progress: [███████████░] 71% (5/7 phases complete) | Milestone v1.5
+Progress: [███████████░] 71% (5/7 phases complete, 1/2 plans in Phase 21) | Milestone v1.5
 
 ## Performance Metrics
 
@@ -52,6 +52,8 @@ Progress: [███████████░] 71% (5/7 phases complete) | Mil
 
 ### Decisions
 
+- **D-21-01** (2026-05-16): Lazy state initialization in useState instead of useEffect for localStorage reads — avoids react-hooks/set-state-in-effect ESLint error and eliminates an extra render cycle
+- **D-21-02** (2026-05-16): Anti-flash script wrapped in try/catch per threat model T-21-03 — prevents hydration blocking on localStorage/DOM errors
 - **D-16-01** (2026-05-08): Migration única para todos os 5 itens de schema v1.4 — `ClienteOrigem`, `Moneda`, `venda_loja` em enum, `CotizacionDia`, `Cliente`, `VentaLoja`, `VentaLojaItem`
 - **D-16-02** (2026-05-08): Lista unificada de clientes via two-query merge — `prisma.cliente.findMany()` + `prisma.vendaMaleta.findMany({ distinct: [...] })`; filtro por `origem` por branch na Server Action
 - **D-17-01** (2026-05-08): `CotizacionDia` insert-por-update (não singleton upsert) — histórico preservado; `findFirst({ orderBy: { createdAt: "desc" } })` para taxa corrente
@@ -111,6 +113,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-15T21:59:48.087Z
-Stopped at: Phase 19 context gathered
-Resume: `/gsd-plan-phase 16` (Schema migration + Gestão de Clientes)
+Last session: 2026-05-16T00:01:00.000Z
+Stopped at: Phase 21 Plan 01 completed — ready for Plan 02
+Resume: Execute Phase 21 Plan 02 (Sonner Integration & End-to-End Verification)
