@@ -47,7 +47,21 @@ export function AppBottomNav() {
     ? resolvedTheme === "dark" ? "#242220" : "#F5F2EF"
     : "#F5F2EF";
 
+  // iOS safe area background: use the page bg color (not pill color) so the
+  // strip below the pill blends with the rest of the app background.
+  const safeBg = mounted
+    ? resolvedTheme === "dark" ? "#1a1816" : "#F5F2EF"
+    : "#F5F2EF";
+
   return (
+    <>
+      {/* Fills the iOS safe-area-inset-bottom so the native white/black strip
+          (shown by the OS when no app element covers that area) is hidden. */}
+      <div
+        aria-hidden="true"
+        className="md:hidden fixed bottom-0 left-0 right-0 z-[98]"
+        style={{ height: "env(safe-area-inset-bottom)", backgroundColor: safeBg }}
+      />
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav" data-theme={theme}>
       <div
         className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
@@ -93,5 +107,6 @@ export function AppBottomNav() {
         })}
       </div>
     </nav>
+    </>
   );
 }
