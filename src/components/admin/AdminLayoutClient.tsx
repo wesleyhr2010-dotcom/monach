@@ -205,7 +205,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
 
     return (
         <AdminThemeProvider>
-        <div className="admin-layout" data-theme="light">
+        <div className="admin-layout">
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
                     <LogoImg variant="white" height={32} />

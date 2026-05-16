@@ -38,7 +38,7 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
     return (
         <AppThemeProvider>
         <AppTransitionProvider>
-        <div className="app-shell flex bg-app-bg text-app-text font-sans" data-theme="light"
+        <div className="app-shell flex bg-app-bg text-app-text font-sans"
             style={{ position: "fixed", inset: 0, overflow: "hidden", paddingTop: "env(safe-area-inset-top)", overscrollBehavior: "none" }}>
             <OneSignalWrapper />
             {/* Sidebar (Desktop) */}
