@@ -20,8 +20,11 @@ export function ThemeScript({ surface }: ThemeScriptProps) {
       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : theme;
 
-    // color-scheme on <html> tells iOS to use dark/light safe-area backgrounds.
+    // color-scheme + backgroundColor on <html> controls the iOS safe-area strip
+    // color. The <html> element is the page canvas — iOS uses it to paint the
+    // safe-area zone when no web content explicitly covers it.
     document.documentElement.style.colorScheme = resolved;
+    document.documentElement.style.backgroundColor = resolved === 'dark' ? '#1a1816' : '#F5F2EF';
 
     function setTheme() {
       var el = document.querySelector(selector);

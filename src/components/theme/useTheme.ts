@@ -57,7 +57,10 @@ export function useTheme(storageKey: string): ThemeContextType {
 
     const handleChange = () => {
       if (theme === "system") {
-        setResolvedTheme(getSystemTheme());
+        const systemTheme = getSystemTheme();
+        setResolvedTheme(systemTheme);
+        document.documentElement.style.colorScheme = systemTheme;
+        document.documentElement.style.backgroundColor = systemTheme === "dark" ? "#1a1816" : "#F5F2EF";
       }
     };
 
@@ -89,9 +92,10 @@ export function useTheme(storageKey: string): ThemeContextType {
       const resolved = resolveTheme(newTheme);
       setThemeState(newTheme);
       setResolvedTheme(resolved);
-      // Keep color-scheme in sync so iOS updates safe-area colors immediately.
+      // Keep color-scheme + backgroundColor in sync so iOS updates safe-area colors.
       if (typeof document !== "undefined") {
         document.documentElement.style.colorScheme = resolved;
+        document.documentElement.style.backgroundColor = resolved === "dark" ? "#1a1816" : "#F5F2EF";
       }
       try {
         localStorage.setItem(storageKey, newTheme);

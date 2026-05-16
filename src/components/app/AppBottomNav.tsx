@@ -47,35 +47,11 @@ export function AppBottomNav() {
     ? resolvedTheme === "dark" ? "#242220" : "#F5F2EF"
     : "#F5F2EF";
 
-  // iOS safe area background: use the page bg color (not pill color) so the
-  // strip below the pill blends with the rest of the app background.
-  const safeBg = mounted
-    ? resolvedTheme === "dark" ? "#1a1816" : "#F5F2EF"
-    : "#F5F2EF";
-
   return (
-    // paddingBottom extends the nav into env(safe-area-inset-bottom) so we can
-    // paint that zone with an absolutely-positioned child. Using a child element
-    // (not position:fixed) avoids being clipped by the app-shell overflow:hidden.
     <nav
       className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav"
       data-theme={theme}
-      style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
     >
-      {/* Covers the iOS safe-area strip below the pill with the app bg color.
-          position:absolute + left/right:0 escapes px-4 to go full-width. */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          height: "env(safe-area-inset-bottom)",
-          backgroundColor: safeBg,
-        }}
-      />
-
       <div
         className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
         style={{ backgroundColor: pillBg, position: "relative" }}
