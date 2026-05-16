@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { criarBrinde } from "../actions";
 import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
+import { BrindeImageUploader } from "@/components/admin/BrindeImageUploader";
 
 export default function NuevoBrindePage() {
     const router = useRouter();
@@ -14,6 +15,12 @@ export default function NuevoBrindePage() {
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setError("");
+
+        if (!imagemUrl) {
+            setError("La imagen es requerida.");
+            return;
+        }
+
         setLoading(true);
 
         const formData = new FormData(e.currentTarget);
@@ -49,27 +56,7 @@ export default function NuevoBrindePage() {
                 <FormField label="Nombre" name="nome" type="text" required />
                 <FormField label="Descripción" name="descricao" type="textarea" />
 
-                {/* Imagem */}
-                <div>
-                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
-                        Imagen URL
-                    </label>
-                    <input
-                        type="url"
-                        value={imagemUrl}
-                        onChange={(e) => setImagemUrl(e.target.value)}
-                        placeholder="https://..."
-                        required
-                        style={inputStyle}
-                    />
-                    {imagemUrl && (
-                        <img
-                            src={imagemUrl}
-                            alt="Preview"
-                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "var(--admin-border)" }}
-                        />
-                    )}
-                </div>
+                <BrindeImageUploader value={imagemUrl} onChange={setImagemUrl} />
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                     <FormField label="Costo en puntos" name="custo_pontos" type="number" min={1} required />

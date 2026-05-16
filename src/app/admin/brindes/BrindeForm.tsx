@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { atualizarBrinde } from "./actions";
 import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
+import { BrindeImageUploader } from "@/components/admin/BrindeImageUploader";
 
 interface BrindeFormProps {
     brinde: {
@@ -61,26 +62,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
                 <FormField label="Nombre" name="nome" type="text" defaultValue={brinde.nome} required />
                 <FormField label="Descripción" name="descricao" type="textarea" defaultValue={brinde.descricao} />
 
-                <div>
-                    <label style={{ display: "block", fontSize: 13, fontWeight: 500, color: "var(--admin-text-muted)", marginBottom: 6 }}>
-                        Imagen URL
-                    </label>
-                    <input
-                        type="url"
-                        value={imagemUrl}
-                        onChange={(e) => setImagemUrl(e.target.value)}
-                        placeholder="https://..."
-                        required
-                        style={inputStyle}
-                    />
-                    {imagemUrl && (
-                        <img
-                            src={imagemUrl}
-                            alt="Preview"
-                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "var(--admin-surface-hover)" }}
-                        />
-                    )}
-                </div>
+                <BrindeImageUploader value={imagemUrl} onChange={setImagemUrl} />
 
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16 }}>
                     <FormField label="Costo en puntos" name="custo_pontos" type="number" min={1} defaultValue={String(brinde.custo_pontos)} required />
