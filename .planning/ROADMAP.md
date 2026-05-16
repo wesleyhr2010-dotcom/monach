@@ -168,8 +168,12 @@ Plans:
   1. Revendedora acessa `/app/perfil`, localiza a seção "Apariencia", clica no toggle sol/lua — a interface alterna imediatamente entre dark e light, e a preferência persiste após recarregar a página
   2. Admin/Colaboradora acessa `/admin/minha-conta`, localiza a seção "Apariencia", usa o toggle para alternar o tema — o painel admin alterna imediatamente e a preferência persiste após recarregar
   3. Após alternar o tema no PWA via toggle, disparar qualquer ação que gera um toast (ex: salvar perfil) — o toast aparece no tema correto, confirmando que o Sonner segue a preferência localStorage
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 22-01-PLAN.md — ThemeToggle Component & PWA Profile Integration
+- [ ] 22-02-PLAN.md — Admin Account Integration & Sonner Verification
 
 ---
 
@@ -183,7 +187,7 @@ Plans:
 | 19. CSS Token Foundation | 2/2 | Done | 2026-05-15 |
 | 20. /app Hardcoded Color Migration | 5/5 | Done | 2026-05-15 |
 | 21. ThemeProvider Infrastructure | 2/2 | Done | 2026-05-16 |
-| 22. Toggle UI | 0/? | Not started | - |
+| 22. Toggle UI | 0/2 | Planned | - |
 
 ---
 

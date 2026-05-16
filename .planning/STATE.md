@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
 status: executing
-stopped_at: Phase 21 completed
-last_updated: "2026-05-16T00:17:00.000Z"
-last_activity: 2026-05-16 — Phase 21 ThemeProvider Infrastructure completed (2/2 plans)
+stopped_at: Phase 22 planned
+last_updated: "2026-05-16T00:30:00.000Z"
+last_activity: 2026-05-16 — Phase 22 planning completed (2/2 plans)
 progress:
   total_phases: 7
   completed_phases: 6
-  total_plans: 18
+  total_plans: 20
   completed_plans: 18
   percent: 86
 ---
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 ## Current Position
 
-Phase: 21 — ThemeProvider Infrastructure
-Plan: 02 — Sonner Integration & End-to-End Verification
-Status: Plan 02 completed — Phase 21 complete, ready for Phase 22
-Last activity: 2026-05-16 — Phase 21 Plan 02 completed (Sonner Integration & End-to-End Verification, 3/3 tasks)
+Phase: 22 — Toggle UI
+Plan: 02 — Admin Account Integration & Sonner Verification
+Status: Phase 22 planned, ready to execute
+Last activity: 2026-05-16 — Phase 22 planning completed (2 plans)
 
-Progress: [████████████░░] 86% (6/7 phases complete, 2/2 plans in Phase 21) | Milestone v1.5
+Progress: [████████████░░] 86% (6/7 phases complete, 0/2 plans in Phase 22) | Milestone v1.5
 
 ## Performance Metrics
 
