@@ -39,7 +39,7 @@ export function CommissionTiers({ tiers, commissionInfo }: CommissionTiersProps)
               className="rounded-full px-3 py-[6px]"
               style={{
                 backgroundColor: isReached ? "#35605A" : "#D9D6D2",
-                border: isCurrent ? "2px solid #1A1A1A" : "2px solid transparent",
+                border: "none",
               }}
             >
               <span

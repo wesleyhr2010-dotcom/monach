@@ -7,7 +7,7 @@
 @source not "../../docs/**";
 @source not "../../CLAUDE.md";
 
-@theme inline {
+@theme {
   /* ---- Monarca Brand ---- */
   --color-background: #ffffff;
   --color-foreground: #363636;
@@ -123,6 +123,18 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+  }
+}
+
+.app-shell, .app-shell *,
+.admin-layout, .admin-layout * {
+  transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease, fill 250ms ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-shell, .app-shell *,
+  .admin-layout, .admin-layout * {
+    transition: none;
   }
 }
 

@@ -25,18 +25,18 @@ export function ThemeToggle({ variant = "app" }: ThemeToggleProps) {
   };
 
   const appStyles = {
-    backgroundColor: "var(--app-card-bg)",
-    color: "var(--app-text)",
-    borderColor: "var(--app-border)",
+    backgroundColor: "var(--color-app-card-bg)",
+    color: "var(--color-app-text)",
+    borderColor: "var(--color-app-border)",
   };
 
   const adminStyles = {
-    backgroundColor: "var(--admin-card-bg)",
+    backgroundColor: "var(--admin-surface)",
     color: "var(--admin-text)",
     borderColor: "var(--admin-border)",
   };
 
-  const iconColor = variant === "app" ? "var(--app-accent-brown)" : "var(--admin-primary)";
+  const iconColor = variant === "app" ? "var(--color-app-accent-brown)" : "var(--admin-primary)";
   const styles = variant === "app" ? appStyles : adminStyles;
 
   // Prevent hydration mismatch: server always renders Moon + "Modo oscuro"
