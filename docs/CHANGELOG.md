@@ -1,5 +1,39 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-16 — Feat: edição de revendedoras no painel admin
+
+### Contexto
+O perfil da revendedora em `/admin/revendedoras/[id]` era apenas de leitura. O admin precisava de uma forma de corrigir dados cadastrais, endereço, informações de candidatura e configurações de conta (comissão, consultora, status) sem depender de acesso direto ao banco.
+
+### Feito
+
+**Nova rota `/admin/revendedoras/[id]/editar`**
+- `src/app/admin/revendedoras/[id]/editar/page.tsx` — server component: busca `getPerfilRevendedora` e `getColaboradoras` em paralelo e passa como props (sem loading spinner no client).
+- `src/app/admin/revendedoras/[id]/editar/RevendedoraEditForm.tsx` — client form com 4 seções:
+  - **Identificación**: nome, cédula, e-mail, WhatsApp
+  - **Dirección**: cidade, departamento, logradouro, número, complemento, CEP
+  - **Datos de Candidatura**: Instagram, edad, estado civil, hijos, empresa, observações Informconf
+  - **Cuenta**: taxa de comissão (%), select de consultora, toggle ativo/desativado com feedback visual verde/vermelho
+- Ao salvar: toast de sucesso/erro via `sonner`, redirect para o perfil.
+
+**`actions-equipe.ts`** — nova server action `atualizarRevendedoraAdmin(id, data)`:
+- Restrita a `ADMIN` (`requireAuth(["ADMIN"])`).
+- Atualiza todos os campos acima em uma única `prisma.reseller.update`.
+- Invalida cache `/revendedoras` após a atualização.
+
+**`/admin/revendedoras/[id]/page.tsx`** — os botões placeholder "Alterar Consultora" e "Desativar Conta" foram substituídos por um botão funcional **"Editar"** que navega para `/admin/revendedoras/[id]/editar`.
+
+### Arquivos tocados
+- `src/app/admin/actions-equipe.ts`
+- `src/app/admin/revendedoras/[id]/page.tsx`
+- `src/app/admin/revendedoras/[id]/editar/page.tsx` (novo)
+- `src/app/admin/revendedoras/[id]/editar/RevendedoraEditForm.tsx` (novo)
+
+### Commit
+- `f5ba41e` feat: add reseller edit page in admin panel
+
+---
+
 ## 2026-05-16 — Bugfixes: acesso a regalos no PWA + upload de imagem nos brindes admin
 
 ### Contexto
