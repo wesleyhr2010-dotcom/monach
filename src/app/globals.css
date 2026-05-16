@@ -71,6 +71,14 @@
   --radius-xl: 0.75rem;
 }
 
+/* Bottom nav sets its own data-theme to avoid iOS WebKit cascade bug
+   (absolute-positioned elements don't always inherit updated CSS vars). */
+.vt-nav[data-theme="dark"] {
+  --color-app-card-bg: #242220;
+  --color-app-primary: #35605A;
+  --color-app-muted: #8a8078;
+}
+
 .app-shell[data-theme="dark"] {
   /* ---- App PWA Dark Tokens ---- */
   --color-app-bg: #1a1816;

@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import { useSyncExternalStore } from "react";
 import { Compass, LayoutGrid, ShoppingBag, MoreHorizontal } from "lucide-react";
 import { TransitionLink } from "@/components/app/transitions/TransitionLink";
+import { useThemeContext } from "@/components/theme/useTheme";
 
 const NAV_ITEMS = [
   { href: "/app", label: "Início", Icon: Compass, exact: true },
@@ -27,14 +28,20 @@ function isActive(pathname: string, href: string, exact: boolean) {
 
 export function AppBottomNav() {
   const pathname = usePathname() ?? "";
+  const { resolvedTheme } = useThemeContext();
   const mounted = useSyncExternalStore(
     () => () => {},
     () => true,
     () => false
   );
 
+  // Set data-theme directly on the nav so iOS WebKit doesn't rely on distant
+  // ancestor cascade (known WebKit bug with absolute-positioned elements and
+  // dynamically changed CSS custom properties on ancestor).
+  const theme = mounted ? resolvedTheme : undefined;
+
   return (
-    <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav">
+    <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav" data-theme={theme}>
       <div className="flex items-center justify-around bg-app-card-bg rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = mounted ? isActive(pathname, href, exact) : false;
