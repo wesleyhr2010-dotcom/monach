@@ -71,7 +71,7 @@ Plans:
   Plans:
   - [x] 21-01-PLAN.md — Core ThemeProviders & Anti-Flash Infrastructure — completed 2026-05-16
   - [x] 21-02-PLAN.md — Sonner Integration & End-to-End Verification — completed 2026-05-16
-- [ ] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — planned
+- [x] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — completed 2026-05-16
 
 ## Phase Details
 
@@ -172,8 +172,8 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 22-01-PLAN.md — ThemeToggle Component & PWA Profile Integration
-- [ ] 22-02-PLAN.md — Admin Account Integration & Sonner Verification
+- [x] 22-01-PLAN.md — ThemeToggle Component & PWA Profile Integration — completed 2026-05-16
+- [x] 22-02-PLAN.md — Admin Account Integration & Sonner Verification — completed 2026-05-16
 
 ---
 
@@ -187,7 +187,7 @@ Plans:
 | 19. CSS Token Foundation | 2/2 | Done | 2026-05-15 |
 | 20. /app Hardcoded Color Migration | 5/5 | Done | 2026-05-15 |
 | 21. ThemeProvider Infrastructure | 2/2 | Done | 2026-05-16 |
-| 22. Toggle UI | 0/2 | Planned | - |
+| 22. Toggle UI | 2/2 | Done | 2026-05-16 |
 
 ---
 

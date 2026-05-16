@@ -1,5 +1,42 @@
 # Changelog — Monarca Semijoyas
 
+## 2026-05-16 — Phase 22: Toggle UI
+
+### Contexto
+Entrega final do milestone v1.5 "Dark Mode & Temas". Componente de toggle binário (sol/lua) para alternar entre dark e light mode manualmente nas telas de preferências da revendedora (`/app/perfil`) e da consultora/admin (`/admin/minha-conta`).
+
+### Feito
+
+**ThemeToggle componente reutilizável**
+- `src/components/theme/ThemeToggle.tsx` — client component com `useThemeContext()`
+- Toggle binário: alterna apenas entre `"light"` e `"dark"` (não oferece "system")
+- Ícones `Sun`/`Moon` do lucide-react; label indica a ação: "Modo claro" quando dark, "Modo oscuro" quando light
+- Variante `app` (tokens `--app-*`) e `admin` (tokens `--admin-*`)
+- Estilos via CSS custom properties (zero hex hardcoded)
+- `aria-label="Cambiar tema"`
+
+**Integração no PWA**
+- `src/app/app/perfil/page.tsx` — seção "Apariencia" adicionada ao menu, com ícone `Palette` e `<ThemeToggle variant="app" />`
+
+**Integração no Admin**
+- `src/app/admin/minha-conta/page.tsx` — card "APARIENCIA" abaixo de "Acessos Rápidos" com `<ThemeToggle variant="admin" />`
+
+**Verificação Sonner (TOG-03)**
+- `SonnerThemer.tsx` usa `resolvedTheme` (concreto `"light"` | `"dark"`), nunca `"system"`
+- `useTheme.ts` persiste preferência em localStorage e resolve corretamente
+
+### Arquivos tocados
+- `src/components/theme/ThemeToggle.tsx` (novo)
+- `src/app/app/perfil/page.tsx`
+- `src/app/admin/minha-conta/page.tsx`
+
+### Notas
+- Build passa sem erros. Lint sem erros nos arquivos modificados.
+- Milestone v1.5 "Dark Mode & Temas" completo (Phases 19–22).
+- Próximo milestone: v1.6 (a definir).
+
+---
+
 ## 2026-05-15 — Phase 20: /app Hardcoded Color Migration
 
 ### Contexto

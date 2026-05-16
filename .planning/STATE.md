@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
 status: executing
-stopped_at: Phase 22 planned
-last_updated: "2026-05-16T00:30:00.000Z"
-last_activity: 2026-05-16 — Phase 22 planning completed (2/2 plans)
+stopped_at: Phase 22 complete — Milestone v1.5 Dark Mode & Temas ready for verification
+last_updated: "2026-05-16T01:30:00.000Z"
+last_activity: 2026-05-16 — Phase 22 executed (2/2 plans) — ThemeToggle in /app/perfil and /admin/minha-conta
 progress:
   total_phases: 7
-  completed_phases: 6
-  total_plans: 20
-  completed_plans: 18
-  percent: 86
+  completed_phases: 7
+  total_plans: 22
+  completed_plans: 20
+  percent: 100
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -27,10 +27,10 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 
 Phase: 22 — Toggle UI
 Plan: 02 — Admin Account Integration & Sonner Verification
-Status: Phase 22 planned, ready to execute
-Last activity: 2026-05-16 — Phase 22 planning completed (2 plans)
+Status: Phase 22 complete — all TOG requirements satisfied
+Last activity: 2026-05-16 — Phase 22 execution completed (2 plans)
 
-Progress: [████████████░░] 86% (6/7 phases complete, 0/2 plans in Phase 22) | Milestone v1.5
+Progress: [██████████████] 100% (7/7 phases complete, 2/2 plans in Phase 22) | Milestone v1.5
 
 ## Performance Metrics
 
