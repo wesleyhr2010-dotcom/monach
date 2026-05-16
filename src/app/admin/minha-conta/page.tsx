@@ -14,6 +14,7 @@ import {
     TrendingUp,
     Wallet,
 } from "lucide-react";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export const dynamic = "force-dynamic";
 
@@ -141,6 +142,20 @@ export default async function MinhaContaPage() {
                         <span className="text-sm">Minhas Revendedoras</span>
                         <ArrowRight size={16} style={{ color: "var(--admin-text-muted)" }} />
                     </Link>
+                </div>
+            </div>
+
+            {/* Apariencia */}
+            <div className="admin-card">
+                <h3
+                    className="text-sm font-semibold mb-3"
+                    style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, system-ui, sans-serif" }}
+                >
+                    APARIENCIA
+                </h3>
+                <div className="flex items-center justify-between">
+                    <span className="text-sm" style={{ color: "var(--admin-text)" }}>Tema</span>
+                    <ThemeToggle variant="admin" />
                 </div>
             </div>
             </div>
