@@ -86,8 +86,13 @@ export function useTheme(storageKey: string): ThemeContextType {
 
   const setTheme = useCallback(
     (newTheme: Theme) => {
+      const resolved = resolveTheme(newTheme);
       setThemeState(newTheme);
-      setResolvedTheme(resolveTheme(newTheme));
+      setResolvedTheme(resolved);
+      // Keep color-scheme in sync so iOS updates safe-area colors immediately.
+      if (typeof document !== "undefined") {
+        document.documentElement.style.colorScheme = resolved;
+      }
       try {
         localStorage.setItem(storageKey, newTheme);
       } catch {
