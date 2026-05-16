@@ -1,6 +1,6 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import { createContext, useContext, useEffect, useState, useCallback } from "react";
 
 export type Theme = "light" | "dark" | "system";
 
@@ -24,23 +24,30 @@ function resolveTheme(theme: Theme): "light" | "dark" {
   return theme === "system" ? getSystemTheme() : theme;
 }
 
-export function useTheme(storageKey: string): ThemeContextType {
-  const [theme, setThemeState] = useState<Theme>("system");
-  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">("light");
+function getInitialTheme(storageKey: string): Theme {
+  if (typeof window === "undefined") return "system";
+  try {
+    const stored = localStorage.getItem(storageKey);
+    return stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+  } catch {
+    return "system";
+  }
+}
 
-  // Initialize from localStorage
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem(storageKey);
-      const initialTheme: Theme = stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
-      setThemeState(initialTheme);
-      setResolvedTheme(resolveTheme(initialTheme));
-    } catch {
-      // localStorage may be unavailable (private mode, etc.)
-      setThemeState("system");
-      setResolvedTheme(getSystemTheme());
-    }
-  }, [storageKey]);
+function getInitialResolvedTheme(storageKey: string): "light" | "dark" {
+  if (typeof window === "undefined") return "light";
+  try {
+    const stored = localStorage.getItem(storageKey);
+    const initialTheme = stored === "light" || stored === "dark" || stored === "system" ? stored : "system";
+    return resolveTheme(initialTheme);
+  } catch {
+    return getSystemTheme();
+  }
+}
+
+export function useTheme(storageKey: string): ThemeContextType {
+  const [theme, setThemeState] = useState<Theme>(() => getInitialTheme(storageKey));
+  const [resolvedTheme, setResolvedTheme] = useState<"light" | "dark">(() => getInitialResolvedTheme(storageKey));
 
   // Watch system preference changes when in "system" mode
   useEffect(() => {

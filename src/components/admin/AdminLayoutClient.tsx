@@ -8,6 +8,7 @@ import { BottomNav } from "@/components/admin/BottomNav";
 import { BrindesBadge } from "@/components/admin/BrindesBadge";
 import { AdminAlertBell } from "@/components/admin/AdminAlertBell";
 import { LogoImg } from "@/components/LogoImg";
+import AdminThemeProvider from "@/components/theme/AdminThemeProvider";
 import type { Role } from "@/lib/user";
 import {
     AlignJustify,
@@ -203,7 +204,8 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
     });
 
     return (
-        <div className="admin-layout" data-theme="dark">
+        <AdminThemeProvider>
+        <div className="admin-layout">
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
                     <LogoImg variant="white" height={32} />
@@ -330,5 +332,6 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
 
             <BottomNav userRole={userRole} />
         </div>
+        </AdminThemeProvider>
     );
 }

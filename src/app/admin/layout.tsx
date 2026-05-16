@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/user";
 import { getMaletaScope } from "@/lib/auth/get-reseller-scope";
 import { prisma } from "@/lib/prisma";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
+import { ThemeScript } from "@/components/theme/ThemeScript";
 import { Toaster } from "sonner";
 
 /**
@@ -68,6 +69,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
 
     return (
         <>
+            <ThemeScript surface="admin" />
             <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
                 {children}
             </AdminLayoutClient>
