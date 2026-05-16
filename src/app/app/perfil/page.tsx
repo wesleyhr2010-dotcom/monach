@@ -1,9 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import { redirect } from "next/navigation";
-import { ChevronRight, User, FileText, Landmark, Bell, HelpCircle, LogOut } from "lucide-react";
+import { ChevronRight, User, FileText, Landmark, Bell, HelpCircle, LogOut, Palette } from "lucide-react";
 import { getPerfilCompleto } from "./actions";
 import { logoutApp } from "@/lib/actions/auth";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 
 export default async function PerfilPage() {
     const result = await getPerfilCompleto();
@@ -66,6 +67,14 @@ export default async function PerfilPage() {
                         <ChevronRight className="w-4 h-4 text-app-text-secondary" />
                     </Link>
                 ))}
+                <div className="border-t border-app-border my-2" />
+                <div className="flex items-center gap-3 px-4 py-3.5 bg-app-card-bg rounded-xl text-app-text">
+                    <span className="text-app-accent-brown">
+                        <Palette className="w-5 h-5" />
+                    </span>
+                    <span className="flex-1 text-sm font-medium">Apariencia</span>
+                    <ThemeToggle variant="app" />
+                </div>
             </div>
 
             {/* Logout */}
