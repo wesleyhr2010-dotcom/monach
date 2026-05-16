@@ -40,9 +40,19 @@ export function AppBottomNav() {
   // dynamically changed CSS custom properties on ancestor).
   const theme = mounted ? resolvedTheme : undefined;
 
+  // Light: use warm beige (#F5F2EF = --color-app-bg) so the pill blends with the
+  // app's warm background instead of showing pure white. Dark: slightly lighter
+  // than the dark page (#242220 vs #1a1816) to create subtle elevation.
+  const pillBg = mounted
+    ? resolvedTheme === "dark" ? "#242220" : "#F5F2EF"
+    : "#F5F2EF";
+
   return (
     <nav className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav" data-theme={theme}>
-      <div className="flex items-center justify-around bg-app-card-bg rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.06)] select-none">
+      <div
+        className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
+        style={{ backgroundColor: pillBg }}
+      >
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
           const active = mounted ? isActive(pathname, href, exact) : false;
           return (
