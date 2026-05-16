@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.5
 milestone_name: Dark Mode & Temas
 status: executing
-stopped_at: Phase 20 completed
-last_updated: "2026-05-16T00:01:00.000Z"
-last_activity: 2026-05-15 — Phase 20 /app Hardcoded Color Migration completed (5/5 plans)
+stopped_at: Phase 21 completed
+last_updated: "2026-05-16T00:17:00.000Z"
+last_activity: 2026-05-16 — Phase 21 ThemeProvider Infrastructure completed (2/2 plans)
 progress:
   total_phases: 7
-  completed_phases: 5
-  total_plans: 16
-  completed_plans: 16
-  percent: 71
+  completed_phases: 6
+  total_plans: 18
+  completed_plans: 18
+  percent: 86
 ---
 
 # STATE.md — NEXT-MONARCA
@@ -26,11 +26,11 @@ See: .planning/PROJECT.md (updated 2026-05-08)
 ## Current Position
 
 Phase: 21 — ThemeProvider Infrastructure
-Plan: 01 — Core ThemeProviders & Anti-Flash Infrastructure
-Status: Plan 01 completed — ready for Plan 02
-Last activity: 2026-05-16 — Phase 21 Plan 01 completed (ThemeProvider Infrastructure, 3/3 tasks)
+Plan: 02 — Sonner Integration & End-to-End Verification
+Status: Plan 02 completed — Phase 21 complete, ready for Phase 22
+Last activity: 2026-05-16 — Phase 21 Plan 02 completed (Sonner Integration & End-to-End Verification, 3/3 tasks)
 
-Progress: [███████████░] 71% (5/7 phases complete, 1/2 plans in Phase 21) | Milestone v1.5
+Progress: [████████████░░] 86% (6/7 phases complete, 2/2 plans in Phase 21) | Milestone v1.5
 
 ## Performance Metrics
 
@@ -52,6 +52,8 @@ Progress: [███████████░] 71% (5/7 phases complete, 1/2 p
 
 ### Decisions
 
+- **D-21-03** (2026-05-16): SonnerThemer uses `useTheme(storageKey)` directly instead of `useThemeContext()` because it is rendered outside the ThemeProvider tree (as a sibling of the shell in the server layout)
+- **D-21-04** (2026-05-16): MutationObserver with 1s safety timeout in ThemeScript ensures the anti-flash script can find `.app-shell`/`.admin-layout` even when those elements are rendered by client components and not present at HTML parse time
 - **D-21-01** (2026-05-16): Lazy state initialization in useState instead of useEffect for localStorage reads — avoids react-hooks/set-state-in-effect ESLint error and eliminates an extra render cycle
 - **D-21-02** (2026-05-16): Anti-flash script wrapped in try/catch per threat model T-21-03 — prevents hydration blocking on localStorage/DOM errors
 - **D-16-01** (2026-05-08): Migration única para todos os 5 itens de schema v1.4 — `ClienteOrigem`, `Moneda`, `venda_loja` em enum, `CotizacionDia`, `Cliente`, `VentaLoja`, `VentaLojaItem`
@@ -113,6 +115,6 @@ None.
 
 ## Session Continuity
 
-Last session: 2026-05-16T00:01:00.000Z
-Stopped at: Phase 21 Plan 01 completed — ready for Plan 02
-Resume: Execute Phase 21 Plan 02 (Sonner Integration & End-to-End Verification)
+Last session: 2026-05-16T00:17:00.000Z
+Stopped at: Phase 21 Plan 02 completed — Phase 21 complete, ready for Phase 22
+Resume: Execute Phase 22 (Toggle UI) — manual theme switching in /app/perfil and /admin/minha-conta

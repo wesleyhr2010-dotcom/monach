@@ -67,10 +67,10 @@ Plans:
   - [x] 20-03-PLAN.md — Maleta & Catalogo Pages
   - [x] 20-04-PLAN.md — Perfil, Progreso & Desempeno Pages
   - [x] 20-05-PLAN.md — Shared Components & Verification
-- [~] **Phase 21: ThemeProvider Infrastructure** — Providers escopados, anti-flash e Sonner funcionando em ambas as surfaces — In Progress
+- [x] **Phase 21: ThemeProvider Infrastructure** — Providers escopados, anti-flash e Sonner funcionando em ambas as surfaces — completed 2026-05-16
   Plans:
   - [x] 21-01-PLAN.md — Core ThemeProviders & Anti-Flash Infrastructure — completed 2026-05-16
-  - [ ] 21-02-PLAN.md — Sonner Integration & End-to-End Verification
+  - [x] 21-02-PLAN.md — Sonner Integration & End-to-End Verification — completed 2026-05-16
 - [ ] **Phase 22: Toggle UI** — Revendedora e admin alternam tema manualmente via toggle em suas telas de preferências — planned
 
 ## Phase Details
@@ -182,10 +182,10 @@ Plans:
 | 18. Histórico de Ventas | 0/2 | Not started | - |
 | 19. CSS Token Foundation | 2/2 | Done | 2026-05-15 |
 | 20. /app Hardcoded Color Migration | 5/5 | Done | 2026-05-15 |
-| 21. ThemeProvider Infrastructure | 1/2 | In Progress | 2026-05-16 |
+| 21. ThemeProvider Infrastructure | 2/2 | Done | 2026-05-16 |
 | 22. Toggle UI | 0/? | Not started | - |
 
 ---
 
 *Roadmap created: 2026-05-04*
-*Last updated: 2026-05-16 — Phase 21 Plan 01 completed (ThemeProvider Infrastructure)*
+*Last updated: 2026-05-16 — Phase 21 Plan 02 completed (Sonner Integration & End-to-End Verification)*
