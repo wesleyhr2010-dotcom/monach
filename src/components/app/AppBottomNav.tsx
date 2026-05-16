@@ -65,7 +65,7 @@ export function AppBottomNav() {
       }}
     >
       <div
-        className="flex items-center justify-around rounded-full h-[59px] select-none"
+        className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
         style={{ backgroundColor: pillBg, position: "relative" }}
       >
         {NAV_ITEMS.map(({ href, label, Icon, exact }) => {
