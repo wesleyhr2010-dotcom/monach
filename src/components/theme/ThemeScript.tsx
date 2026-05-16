@@ -14,14 +14,29 @@ export function ThemeScript({ surface }: ThemeScriptProps) {
   try {
     var key = "${key}";
     var selector = "${selector}";
-    var root = document.querySelector(selector);
     var stored = localStorage.getItem(key);
     var theme = stored || "system";
     var resolved = theme === "system"
       ? (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")
       : theme;
-    if (root) {
-      root.setAttribute("data-theme", resolved);
+
+    function setTheme() {
+      var el = document.querySelector(selector);
+      if (el) {
+        el.setAttribute("data-theme", resolved);
+        return true;
+      }
+      return false;
+    }
+
+    if (!setTheme()) {
+      var observer = new MutationObserver(function() {
+        if (setTheme()) {
+          observer.disconnect();
+        }
+      });
+      observer.observe(document.documentElement, { childList: true, subtree: true });
+      setTimeout(function() { observer.disconnect(); }, 1000);
     }
   } catch (e) {
     // Fallback: do nothing on error to avoid blocking hydration
