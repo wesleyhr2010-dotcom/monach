@@ -18,7 +18,8 @@ function isActive(pathname: string, href: string, exact: boolean) {
       pathname.startsWith("/app/mas") ||
       pathname.startsWith("/app/perfil") ||
       pathname.startsWith("/app/notificaciones") ||
-      pathname.startsWith("/app/desempeno")
+      pathname.startsWith("/app/desempeno") ||
+      pathname.startsWith("/app/progreso")
     );
   }
   return exact ? pathname === href : pathname.startsWith(href);

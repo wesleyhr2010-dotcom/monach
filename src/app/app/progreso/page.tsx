@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { getRegrasProgresso } from "./actions";
 import { Star, ShoppingBag, Trophy, Clock, Share2, Briefcase, UserCheck, Sparkles } from "lucide-react";
 
@@ -22,7 +23,7 @@ export default async function ProgressoPage() {
     return (
         <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh]">
             {/* Header */}
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
                 <h1
                     className="text-[20px] text-app-text leading-7 tracking-[-0.3px]"
                     style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
@@ -40,6 +41,24 @@ export default async function ProgressoPage() {
                         {totalPuntos.toLocaleString("es-PY")} pts
                     </span>
                 </div>
+            </div>
+
+            {/* Atalhos */}
+            <div className="flex gap-2 mb-5">
+                <Link
+                    href="/app/progreso/extracto"
+                    className="flex-1 bg-app-surface rounded-xl py-2.5 px-4 text-center text-[13px] font-semibold text-app-text-secondary"
+                    style={{ fontFamily: "var(--font-raleway)" }}
+                >
+                    Extracto →
+                </Link>
+                <Link
+                    href="/app/progreso/regalos"
+                    className="flex-1 bg-app-primary rounded-xl py-2.5 px-4 text-center text-[13px] font-semibold text-white"
+                    style={{ fontFamily: "var(--font-raleway)" }}
+                >
+                    Canjear Regalos →
+                </Link>
             </div>
 
             {/* Lista de regras */}
