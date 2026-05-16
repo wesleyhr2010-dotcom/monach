@@ -51,8 +51,8 @@ export function ConferirRevendedoraDeclarou({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            backgroundColor: "#0F2E1E",
-            border: "1px solid #1A4A2E",
+            backgroundColor: "var(--admin-success-15)",
+            border: "1px solid var(--admin-border)",
             borderRadius: 10,
             padding: "14px 16px",
           }}
@@ -107,8 +107,8 @@ export function ConferirRevendedoraDeclarou({
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            backgroundColor: "#1A1A2E",
-            border: "1px solid #2A2A4A",
+            backgroundColor: "rgba(79, 109, 212, 0.15)",
+            border: "1px solid var(--admin-border)",
             borderRadius: 10,
             padding: "14px 16px",
           }}
@@ -183,8 +183,8 @@ export function ConferirRevendedoraDeclarou({
           display: "flex",
           alignItems: "flex-start",
           gap: 8,
-          backgroundColor: "#1A1500",
-          border: "1px solid #3A2E00",
+          backgroundColor: "var(--admin-warning-15)",
+          border: "1px solid var(--admin-border)",
           borderRadius: 8,
           padding: "10px 13px",
         }}

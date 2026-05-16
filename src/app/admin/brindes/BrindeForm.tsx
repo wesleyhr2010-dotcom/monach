@@ -52,7 +52,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
             <AdminTopHeader breadcrumb="Brindes" backHref="/admin/brindes" title="Editar Brinde" />
             <div style={{ padding: "28px 32px" }}>
             {error && (
-                <div style={{ background: "#3a1f1f", color: "#e74c3c", padding: 12, borderRadius: 8, marginBottom: 20 }}>
+                <div style={{ background: "var(--admin-danger-15)", color: "var(--admin-danger)", padding: 12, borderRadius: 8, marginBottom: 20 }}>
                     {error}
                 </div>
             )}
@@ -77,7 +77,7 @@ export function BrindeForm({ brinde }: BrindeFormProps) {
                         <img
                             src={imagemUrl}
                             alt="Preview"
-                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "#2a2a2a" }}
+                            style={{ width: 120, height: 120, objectFit: "cover", borderRadius: 8, marginTop: 8, background: "var(--admin-surface-hover)" }}
                         />
                     )}
                 </div>
@@ -134,10 +134,10 @@ function FormField({ label, name, type, required, min, defaultValue }: { label: 
 const inputStyle: React.CSSProperties = {
     width: "100%",
     padding: "12px 14px",
-    background: "#1a1a1a",
-    border: "1px solid #2a2a2a",
+    background: "var(--admin-surface)",
+    border: "1px solid var(--admin-border)",
     borderRadius: 8,
-    color: "#fff",
+    color: "var(--admin-text)",
     fontSize: 14,
     outline: "none",
 };

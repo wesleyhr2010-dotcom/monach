@@ -20,7 +20,7 @@ interface MetricCardProps {
 function TrendBadge({ type, text }: SubValue) {
     if (type === "up") {
         return (
-            <div style={{ display: "flex", alignItems: "center", gap: 3, background: "#0F2E1E", borderRadius: 4, padding: "2px 6px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 3, background: "var(--admin-success-10)", borderRadius: 4, padding: "2px 6px" }}>
                 <ChevronUp size={10} color="var(--admin-success)" strokeWidth={2.5} style={{ flexShrink: 0 }} />
                 <span style={{ color: "var(--admin-success)", fontFamily: "Raleway, sans-serif", fontWeight: 700, fontSize: 11, lineHeight: "14px" }}>{text}</span>
             </div>
@@ -28,7 +28,7 @@ function TrendBadge({ type, text }: SubValue) {
     }
     if (type === "down") {
         return (
-            <div style={{ display: "flex", alignItems: "center", gap: 3, background: "#2A1A1A", borderRadius: 4, padding: "2px 6px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 3, background: "var(--admin-danger-10)", borderRadius: 4, padding: "2px 6px" }}>
                 <Dot size={12} color="var(--admin-danger)" strokeWidth={3} style={{ flexShrink: 0, margin: "-1px" }} />
                 <span style={{ color: "var(--admin-danger)", fontFamily: "Raleway, sans-serif", fontWeight: 700, fontSize: 11, lineHeight: "14px" }}>{text}</span>
             </div>
@@ -55,8 +55,8 @@ export function MetricCard({
 
     return (
         <div style={{
-            background: isDanger ? "#1A0F0F" : "var(--admin-surface)",
-            border: `1px solid ${isDanger ? "#2E1A1A" : "var(--admin-surface-hover)"}`,
+            background: isDanger ? "var(--admin-danger-15)" : "var(--admin-surface)",
+            border: `1px solid ${isDanger ? "var(--admin-border)" : "var(--admin-surface-hover)"}`,
             borderRadius: 12,
             padding: "20px 22px",
             display: "flex",

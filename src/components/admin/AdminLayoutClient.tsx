@@ -8,6 +8,7 @@ import { BottomNav } from "@/components/admin/BottomNav";
 import { BrindesBadge } from "@/components/admin/BrindesBadge";
 import { AdminAlertBell } from "@/components/admin/AdminAlertBell";
 import { LogoImg } from "@/components/LogoImg";
+import { ThemeToggle } from "@/components/theme/ThemeToggle";
 import { useThemeContext } from "@/components/theme/useTheme";
 import type { Role } from "@/lib/user";
 import {
@@ -208,7 +209,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
         <div className="admin-layout" data-theme={resolvedTheme} suppressHydrationWarning>
             <aside className="admin-sidebar md:flex">
                 <div className="admin-sidebar-logo">
-                    <LogoImg variant="white" height={32} />
+                    <LogoImg variant="auto" height={32} />
                     <span>Admin</span>
                 </div>
 
@@ -222,7 +223,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                                     gap: 5,
                                     padding: "10px 14px 4px",
                                 }}>
-                                    <div style={{ height: 1, background: "#1D1D1D", flexShrink: 0 }} />
+                                    <div style={{ height: 1, background: "var(--admin-border)", flexShrink: 0 }} />
                                     <span style={{
                                         color: "var(--admin-border)",
                                         fontFamily: "Raleway, sans-serif",
@@ -291,6 +292,7 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                 </nav>
 
                 <div style={{ padding: "16px 20px", borderTop: "1px solid var(--admin-border)", display: "flex", flexDirection: "column", gap: 12 }}>
+                    <ThemeToggle variant="admin" />
                     <Link href="/" className="admin-nav-link" style={{ fontSize: 13 }}>
                         <ArrowLeft size={16} strokeWidth={1.5} />
                         Volver al sitio

@@ -23,7 +23,7 @@ export function VitrinaCsvDownload({ csv, filename }: Props) {
   return (
     <button
       onClick={handleDownload}
-      className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors bg-[#1a1a1a] text-[#888] hover:text-white border border-[#333] inline-flex items-center gap-1.5"
+      className="px-3 py-1.5 rounded-md text-xs font-medium transition-colors bg-[var(--admin-surface)] text-[var(--admin-text-muted)] hover:text-[var(--admin-text)] border border-[var(--admin-border)] inline-flex items-center gap-1.5"
     >
       <Download className="w-3.5 h-3.5" />
       Exportar CSV

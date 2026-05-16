@@ -38,8 +38,8 @@ export default async function BrindesPage() {
                     alignItems: "center",
                     gap: 12,
                     padding: "14px 18px",
-                    background: "#2a1f0f",
-                    border: "1px solid #5c4033",
+                    background: "var(--admin-warning-15)",
+                    border: "1px solid var(--admin-border)",
                     borderRadius: 12,
                 }}>
                     <AlertTriangle size={20} color="#e6a23c" />

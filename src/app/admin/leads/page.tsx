@@ -60,7 +60,7 @@ export default function LeadsAdminPage() {
                         <span style={{
                             display: "inline-flex", alignItems: "center", gap: 6,
                             padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
-                            background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
+                            background: "var(--admin-warning-15)", color: "var(--admin-warning)", border: "1px solid var(--admin-border)",
                         }}>
                             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-warning)" }} />
                             {pendentes} pendentes

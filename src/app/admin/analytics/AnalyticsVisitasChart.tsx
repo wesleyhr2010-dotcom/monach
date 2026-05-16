@@ -20,8 +20,8 @@ function CustomTooltip({ active, payload, label }: {
 }) {
   if (active && payload && payload.length) {
     return (
-      <div style={{ background: "#1a1a1a", border: "1px solid #333", borderRadius: "8px", padding: "8px 12px" }}>
-        <p style={{ fontSize: "13px", fontWeight: 600, color: "#fff", margin: 0 }}>
+      <div style={{ background: "var(--admin-surface)", border: "1px solid var(--admin-border)", borderRadius: "8px", padding: "8px 12px" }}>
+        <p style={{ fontSize: "13px", fontWeight: 600, color: "var(--admin-text)", margin: 0 }}>
           {label}: {payload[0].value} visitas
         </p>
       </div>
@@ -49,12 +49,12 @@ export function AnalyticsVisitasChart({ data }: Props) {
               <stop offset="100%" stopColor="#60A5FA" />
             </linearGradient>
           </defs>
-          <CartesianGrid strokeDasharray="3 3" stroke="#333" vertical={false} />
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--admin-border)" vertical={false} />
           <XAxis
             dataKey="dia"
             axisLine={false}
             tickLine={false}
-            tick={{ fill: "#888", fontSize: 12 }}
+            tick={{ fill: "var(--admin-text-muted)", fontSize: 12 }}
             tickFormatter={(value: string) => value.slice(5)}
           />
           <Tooltip content={<CustomTooltip />} cursor={{ fill: "rgba(53,96,90,0.1)" }} />

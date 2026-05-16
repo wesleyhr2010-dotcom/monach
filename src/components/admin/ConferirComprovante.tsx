@@ -114,7 +114,7 @@ export function ConferirComprovante({ url }: ConferirComprovanteProps) {
             alignItems: "center",
             justifyContent: "center",
             gap: 8,
-            background: "linear-gradient(135deg, #1A2A1A 0%, #131A13 100%)",
+            background: "linear-gradient(135deg, var(--admin-surface) 0%, var(--admin-surface-hover) 100%)",
           }}
         >
           {/* Expand icon */}

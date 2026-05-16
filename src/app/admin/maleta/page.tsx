@@ -58,9 +58,9 @@ export default function MaletasPage() {
         <AdminTopHeader breadcrumb="Admin / Maletas" title="Maletas" />
         <div className="admin-page-body">
           <div className="flex flex-col gap-3">
-            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-            <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+            <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
+            <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
+            <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
           </div>
         </div>
       </>

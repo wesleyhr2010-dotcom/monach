@@ -79,10 +79,10 @@ function MaletaBadge({ status }: { status: string | null | undefined }) {
         );
     }
     const configs: Record<string, { bg: string; color: string; border: string; label: string }> = {
-        ativa: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "#2A5A2A", label: "Ativa" },
-        atrasada: { bg: "#3A1C1C", color: "var(--admin-danger)", border: "#5A2A2A", label: "Atrasada" },
-        aguardando_revisao: { bg: "#3A3A1C", color: "var(--admin-warning)", border: "#5A5A2A", label: "Ag. revisão" },
-        concluida: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "#2A5A2A", label: "Concluída" },
+        ativa: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "var(--admin-border)", label: "Ativa" },
+        atrasada: { bg: "var(--admin-danger-15)", color: "var(--admin-danger)", border: "var(--admin-border)", label: "Atrasada" },
+        aguardando_revisao: { bg: "var(--admin-warning-15)", color: "var(--admin-warning)", border: "var(--admin-border)", label: "Ag. revisão" },
+        concluida: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "var(--admin-border)", label: "Concluída" },
     };
     const cfg = configs[status] || configs.ativa;
     return (
@@ -113,7 +113,7 @@ function StatusBadge({ active }: { active: boolean }) {
             fontWeight: 600,
             background: "var(--admin-accent-hover)",
             color: "var(--admin-success)",
-            border: "1px solid #2A5A2A",
+            border: "1px solid var(--admin-border)",
         }}>
             Ativa
         </span>
@@ -146,7 +146,7 @@ function DocBadge({ status, label }: { status: string | null | undefined; label:
             borderRadius: "4px",
             fontSize: "10px",
             fontWeight: 500,
-            background: ok ? "var(--admin-accent-hover)" : "#3A1C1C",
+            background: ok ? "var(--admin-accent-hover)" : "var(--admin-danger-15)",
             color: ok ? "var(--admin-success)" : "var(--admin-danger)",
         }}>
             {label} {ok && <Check className="w-3 h-3" />}
@@ -280,7 +280,7 @@ export default function RevendedorasPage() {
                         <span style={{
                             display: "inline-flex", alignItems: "center", gap: 6,
                             padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
-                            background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid #2A5A2A",
+                            background: "var(--admin-accent-hover)", color: "var(--admin-success)", border: "1px solid var(--admin-border)",
                         }}>
                             <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-success)" }} />
                             {ativas} ativas
@@ -289,7 +289,7 @@ export default function RevendedorasPage() {
                             <span style={{
                                 display: "inline-flex", alignItems: "center", gap: 6,
                                 padding: "5px 12px", borderRadius: 100, fontSize: 12, fontWeight: 500,
-                                background: "#3A3A1C", color: "var(--admin-warning)", border: "1px solid #5A5A2A",
+                                background: "var(--admin-warning-15)", color: "var(--admin-warning)", border: "1px solid var(--admin-border)",
                             }}>
                                 <span style={{ width: 6, height: 6, borderRadius: "50%", background: "var(--admin-warning)" }} />
                                 {pendentes} pendentes
@@ -458,9 +458,9 @@ export default function RevendedorasPage() {
                 {/* ── Tabela ─────────────────────────────────────────────────── */}
                 {loading ? (
                     <div className="flex flex-col gap-3 py-4">
-                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
-                        <SkeletonCard className="bg-[#1a1a1a] border-[#2a2a2a]" />
+                        <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
+                        <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
+                        <SkeletonCard className="bg-[var(--admin-surface)] border-[var(--admin-border)]" />
                     </div>
                 ) : error ? (
                     <ErrorState
@@ -509,7 +509,7 @@ export default function RevendedorasPage() {
                                 <div key={r.id} style={{
                                     display: "flex", alignItems: "center",
                                     height: "58px", paddingInline: "24px",
-                                    background: "#141A12",
+                                    background: "var(--admin-surface)",
                                     borderBottom: "1px solid var(--admin-surface)",
                                     fontSize: "12px", lineHeight: "16px",
                                 }}>
@@ -536,7 +536,7 @@ export default function RevendedorasPage() {
                                                         marginLeft: "8px",
                                                         padding: "1px 6px", borderRadius: "4px",
                                                         fontSize: "9px", fontWeight: 600,
-                                                        background: "#3A3A1C", color: "var(--admin-warning)",
+                                                        background: "var(--admin-warning-15)", color: "var(--admin-warning)",
                                                     }}>
                                                         CI pendente
                                                     </span>

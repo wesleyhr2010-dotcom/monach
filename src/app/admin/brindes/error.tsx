@@ -25,7 +25,7 @@ export default function BrindesError({
                 {error.message}
             </p>
             {error.stack && (
-                <pre style={{ color: "#777", fontSize: 12, overflow: "auto", maxHeight: 300, background: "#1a1a1a", padding: 16, borderRadius: 8 }}>
+                <pre style={{ color: "var(--admin-text-muted)", fontSize: 12, overflow: "auto", maxHeight: 300, background: "var(--admin-surface)", padding: 16, borderRadius: 8 }}>
                     {error.stack}
                 </pre>
             )}

@@ -307,7 +307,7 @@
     letter-spacing: 1px;
     color: var(--admin-text-dim);
     border-bottom: 1px solid var(--admin-border);
-    background: #141414;
+    background: var(--admin-surface-hover);
 }
 
 .admin-table td {
@@ -465,7 +465,7 @@
 
 .admin-input::placeholder,
 .admin-textarea::placeholder {
-    color: #555;
+    color: var(--admin-text-dim);
 }
 
 .admin-form-row {
@@ -758,7 +758,7 @@
     bottom: 0;
     left: 0;
     right: 0;
-    background: rgba(26, 26, 26, 0.95);
+    background: var(--admin-surface);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border-top: 1px solid var(--admin-border);

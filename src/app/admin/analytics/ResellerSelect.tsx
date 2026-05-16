@@ -18,7 +18,7 @@ export function ResellerSelect({ resellers, periodDays, selectedResellerId, from
                 name="reseller"
                 defaultValue={selectedResellerId ?? ""}
                 onChange={(e) => e.currentTarget.form?.submit()}
-                className="px-2 py-1.5 rounded-md text-xs font-medium bg-[#1a1a1a] text-[#888] border border-[#333]"
+                className="px-2 py-1.5 rounded-md text-xs font-medium bg-[var(--admin-surface)] text-[var(--admin-text-muted)] border border-[var(--admin-border)]"
             >
                 <option value="">Todas las revendedoras</option>
                 {resellers.map((r) => (
