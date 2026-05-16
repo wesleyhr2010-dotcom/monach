@@ -56,7 +56,6 @@ export function AppBottomNav() {
       data-theme={theme}
       style={{
         backgroundColor: pageBg,
-        paddingBottom: "env(safe-area-inset-bottom)",
       }}
     >
       <div
