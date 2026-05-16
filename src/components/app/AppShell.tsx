@@ -7,7 +7,7 @@ import { AppBottomNav } from "@/components/app/AppBottomNav";
 import { LogoMonarca } from "@/components/LogoMonarca";
 import { AppTransitionProvider } from "@/components/app/transitions/AppTransitionProvider";
 import { TransitionLink } from "@/components/app/transitions/TransitionLink";
-import AppThemeProvider from "@/components/theme/AppThemeProvider";
+import { useThemeContext } from "@/components/theme/useTheme";
 
 const navItems = [
     { href: "/app", label: "Início", icon: <LayoutGrid className="w-5 h-5 sm:w-6 sm:h-6" />, exact: true },
@@ -24,6 +24,7 @@ interface AppShellProps {
 export default function AppShell({ children, logoutAction }: AppShellProps) {
     const pathname = usePathname() ?? "";
     const router = useRouter();
+    const { resolvedTheme } = useThemeContext();
 
     const handleLogout = async () => {
         await logoutAction();
@@ -36,9 +37,8 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
     }
 
     return (
-        <AppThemeProvider>
         <AppTransitionProvider>
-        <div className="app-shell flex bg-app-bg text-app-text font-sans"
+        <div className="app-shell flex bg-app-bg text-app-text font-sans" data-theme={resolvedTheme}
             style={{ position: "fixed", inset: 0, overflow: "hidden", paddingTop: "env(safe-area-inset-top)", overscrollBehavior: "none" }}>
             <OneSignalWrapper />
             {/* Sidebar (Desktop) */}
@@ -103,6 +103,5 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
             <AppBottomNav />
         </div>
     </AppTransitionProvider>
-    </AppThemeProvider>
     );
 }

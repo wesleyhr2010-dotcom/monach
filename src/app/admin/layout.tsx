@@ -4,6 +4,7 @@ import { getCurrentUser } from "@/lib/user";
 import { getMaletaScope } from "@/lib/auth/get-reseller-scope";
 import { prisma } from "@/lib/prisma";
 import AdminLayoutClient from "@/components/admin/AdminLayoutClient";
+import AdminThemeProvider from "@/components/theme/AdminThemeProvider";
 import { ThemeScript } from "@/components/theme/ThemeScript";
 import { SonnerThemer } from "@/components/theme/SonnerThemer";
 
@@ -68,12 +69,12 @@ export default async function AdminLayout({ children }: { children: React.ReactN
     });
 
     return (
-        <>
+        <AdminThemeProvider>
             <ThemeScript surface="admin" />
             <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
                 {children}
             </AdminLayoutClient>
             <SonnerThemer surface="admin" />
-        </>
+        </AdminThemeProvider>
     );
 }
