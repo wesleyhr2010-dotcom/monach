@@ -92,11 +92,6 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
                 style={{ WebkitOverflowScrolling: "touch", overscrollBehavior: "none" }}
             >
                 {children}
-                {/* Spacer so content clears the floating bottom nav */}
-                <div
-                    className="md:hidden flex-shrink-0"
-                    style={{ height: "calc(59px + env(safe-area-inset-bottom))" }}
-                />
             </main>
 
             {/* Bottom nav (mobile) — floating pill; view-transition-name garante estabilidade */}
