@@ -46,34 +46,12 @@ export function AppBottomNav() {
   const pillBg = mounted
     ? resolvedTheme === "dark" ? "#242220" : "#F5F2EF"
     : "#F5F2EF";
-  const pageBg = mounted
-    ? resolvedTheme === "dark" ? "#1a1816" : "#F5F2EF"
-    : "#F5F2EF";
 
   return (
     <nav
       className="md:hidden absolute bottom-0 left-0 right-0 z-[100] px-4 vt-nav"
       data-theme={theme}
-      style={{
-        // Nav itself is transparent so scrolling content shows behind the
-        // floating pill. Only the safe-area zone (filler below) is painted.
-        paddingBottom: "env(safe-area-inset-bottom)",
-      }}
     >
-      {/* Safe-area filler — opaque only in the bottom env(safe-area-inset-bottom)
-          zone so iOS doesn't paint that strip white in standalone PWA. The rest
-          of the nav stays transparent so content scrolls visibly behind it. */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: "env(safe-area-inset-bottom)",
-          backgroundColor: pageBg,
-        }}
-      />
       <div
         className="flex items-center justify-around rounded-full h-[59px] shadow-[0_-2px_16px_rgba(0,0,0,0.08)] select-none"
         style={{ backgroundColor: pillBg, position: "relative" }}
