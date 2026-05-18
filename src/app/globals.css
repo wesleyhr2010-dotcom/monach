@@ -163,6 +163,21 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Lock html/body in place to prevent iOS WebKit rubber-band bounce dragging
+   the floating bottom nav down. The actual scrolling happens inside <main>
+   (overflow-y-auto), which has its own overscroll-behavior: none. */
+html, body {
+  overscroll-behavior: none;
+}
+
+html:has(.app-shell), body:has(.app-shell) {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
 
 .container-monarca {
   width: 100%;
