@@ -66,7 +66,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 {/* Header */}
                 <div className="flex items-center justify-between px-6 py-5 border-b border-gray-100">
                     <h2 className="text-[16px] font-inter uppercase tracking-wide text-darkslategray-200" suppressHydrationWarning>
-                        Mi Joyero ({mounted ? items.length : 0})
+                        {mounted ? `Mi Joyero (${items.length})` : "Mi Joyero"}
                     </h2>
                     <button
                         onClick={onClose}
