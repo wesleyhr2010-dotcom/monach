@@ -18,7 +18,6 @@ interface ProductDisplayProps {
   backLink?: { href: string; label: string };
   relatedProducts?: ProductDisplayData[];
   relatedTitle?: string;
-  relatedPriceFormatter?: (price: number | null) => string;
 }
 
 export default function ProductDisplay({
@@ -27,15 +26,9 @@ export default function ProductDisplay({
   backLink,
   relatedProducts,
   relatedTitle = "PRODUCTOS PARA EXPLORAR",
-  relatedPriceFormatter,
 }: ProductDisplayProps) {
   const mainImage = product.images?.[0] || "/placeholder.svg";
   const displayDescription = product.short_description || product.description;
-
-  const formatRelatedPrice =
-    relatedPriceFormatter ||
-    ((price: number | null) =>
-      price != null ? `₲ ${price.toLocaleString("es-PY")}` : "");
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -146,7 +139,7 @@ export default function ProductDisplay({
                         {rp.name}
                       </h4>
                       <p className="text-sm font-medium leading-6 text-darkslategray-200">
-                        {formatRelatedPrice(rp.price)}
+                        {formatGs(rp.price)}
                       </p>
                     </div>
                   </article>
