@@ -5,6 +5,7 @@ import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import { getCartCount, CART_UPDATED_EVENT } from "@/lib/cart";
 import CartDrawer from "./CartDrawer";
+import SearchOverlay from "./SearchOverlay";
 import { getCategoryHierarchy, type CategoryNode } from "@/app/actions";
 
 interface HeaderProps {
@@ -18,6 +19,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
     const [cartCount, setCartCount] = useState(0);
     const [categories, setCategories] = useState<CategoryNode[]>([]);
     const [activeCategory, setActiveCategory] = useState<CategoryNode | null>(null);
+    const [searchOpen, setSearchOpen] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 40);
@@ -120,7 +122,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
 
                     {/* Icons */}
                     <div className="flex items-center gap-4">
-                        <button aria-label="Buscar">
+                        <button aria-label="Buscar" onClick={() => setSearchOpen(true)}>
                             <img
                                 src="/images/lupa.svg"
                                 alt="Buscar"
@@ -247,6 +249,9 @@ export default function Header({ variant = "light" }: HeaderProps) {
                     </motion.div>
                 )}
             </AnimatePresence>
+
+            {/* Search Overlay */}
+            <SearchOverlay isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
 
             {/* Cart Drawer */}
             <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
