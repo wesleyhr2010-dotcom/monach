@@ -81,6 +81,20 @@ export async function getCatalogProducts(
 }
 
 // ============================================
+// Public — Representative image for a category (used as banner background)
+// ============================================
+
+export async function getCategoryBannerImage(categoryName: string): Promise<string> {
+    const product = await prisma.product.findFirst({
+        where: { categories: { some: { category: { name: categoryName } } } },
+        orderBy: { created_at: "desc" },
+        select: { images: true },
+    });
+    const images = product?.images as string[] | undefined;
+    return images?.[0] ?? "/placeholder.svg";
+}
+
+// ============================================
 // Public — All Categories (for filters)
 // ============================================
 

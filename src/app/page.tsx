@@ -3,15 +3,30 @@ import Header from "@/components/Header";
 export const revalidate = 60; // ISR — página pública, cachear por 60s
 import HeroBanner from "@/components/HeroBanner";
 import ValueProps from "@/components/ValueProps";
-import CategoryTabs from "@/components/CategoryTabs";
-import ProductGrid from "@/components/ProductGrid";
+import HomeCategorySection from "@/components/HomeCategorySection";
 import ResellerCTA from "@/components/ResellerCTA";
 import HistoryCTA from "@/components/HistoryCTA";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
+import { getCatalogProducts, getCategoryBannerImage } from "@/app/actions";
 
-export default function Home() {
+export default async function Home() {
+  const [
+    { products: initialProducts },
+    collarConDijeImg,
+    collarSinDijeImg,
+  ] = await Promise.all([
+    getCatalogProducts(1, "Aros", 10),
+    getCategoryBannerImage("Con dije"),
+    getCategoryBannerImage("Sin dije"),
+  ]);
+
+  const collarBanners = {
+    conDije: collarConDijeImg,
+    sinDije: collarSinDijeImg,
+  };
+
   return (
     <>
       <Header />
@@ -19,8 +34,7 @@ export default function Home() {
       <main>
         <HeroBanner />
         <ValueProps />
-        <CategoryTabs />
-        <ProductGrid />
+        <HomeCategorySection initialProducts={initialProducts} collarBanners={collarBanners} />
         <ResellerCTA />
         <HistoryCTA />
         <FAQ />
