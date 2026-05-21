@@ -90,15 +90,21 @@ export async function getRelatedProductsByCategory(
 export async function getCatalogProducts(
     page = 1,
     category = "all",
-    pageSize = 24
+    pageSize = 24,
+    search = ""
 ): Promise<ProductsResponse> {
     const offset = (page - 1) * pageSize;
 
     const where: Prisma.ProductWhereInput = {};
+
     if (category && category !== "all") {
         where.categories = {
             some: { category: { name: category } },
         };
+    }
+
+    if (search.trim()) {
+        where.name = { contains: search.trim(), mode: "insensitive" };
     }
 
     const [total, products] = await Promise.all([

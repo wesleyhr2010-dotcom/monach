@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getCatalogProducts, getAllCategories } from "@/app/actions";
 import ProductCard from "@/components/ProductCard";
 import CatalogClient from "./CatalogClient";
+import CatalogSearch from "./CatalogSearch";
 import Footer from "@/components/Footer";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
@@ -15,14 +16,15 @@ export const metadata = {
 export default async function CatalogoGeneralPage({
     searchParams,
 }: {
-    searchParams: Promise<{ category?: string; page?: string }>;
+    searchParams: Promise<{ category?: string; page?: string; search?: string }>;
 }) {
     const params = await searchParams;
     const currentCategory = params.category || "all";
     const currentPage = parseInt(params.page || "1", 10);
+    const currentSearch = params.search || "";
 
     const [{ products, total, pageSize }, categories] = await Promise.all([
-        getCatalogProducts(currentPage, currentCategory),
+        getCatalogProducts(currentPage, currentCategory, 24, currentSearch),
         getAllCategories(),
     ]);
 
@@ -34,7 +36,7 @@ export default async function CatalogoGeneralPage({
             <AnalyticsTracker tipoEvento="catalogo_geral" pageUrl="/catalogo" />
 
             <main className="flex-1 mt-[100px] max-w-[1200px] mx-auto w-full px-6 md:px-12 py-10">
-                <div className="text-center mb-10">
+                <div className="text-center mb-8">
                     <h1 className="text-[28px] md:text-[36px] font-light tracking-[0.02em] text-darkslategray-200">
                         Catálogo Monarca
                     </h1>
@@ -43,10 +45,29 @@ export default async function CatalogoGeneralPage({
                     </p>
                 </div>
 
+                {/* Search */}
+                <div className="mb-8">
+                    <Suspense>
+                        <CatalogSearch initialValue={currentSearch} />
+                    </Suspense>
+                </div>
+
+                {/* Active search feedback */}
+                {currentSearch && (
+                    <p className="text-center text-sm text-gray-500 mb-6">
+                        {total} resultado{total !== 1 ? "s" : ""} para{" "}
+                        <span className="font-medium text-darkslategray-200">&ldquo;{currentSearch}&rdquo;</span>
+                        {" — "}
+                        <Link href={`/catalogo${currentCategory !== "all" ? `?category=${encodeURIComponent(currentCategory)}` : ""}`} className="underline hover:text-[#35605a]">
+                            limpiar
+                        </Link>
+                    </p>
+                )}
+
                 {/* Categories Filter */}
                 <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
                     <Link
-                        href="/catalogo"
+                        href={currentSearch ? `/catalogo?search=${encodeURIComponent(currentSearch)}` : "/catalogo"}
                         className={`px-4 py-2 text-[13px] rounded-full border transition-colors ${currentCategory === "all"
                             ? "bg-[#35605a] text-white border-[#35605a]"
                             : "bg-transparent text-gray-600 border-gray-200 hover:border-[#35605a]"
@@ -54,18 +75,23 @@ export default async function CatalogoGeneralPage({
                     >
                         Todos
                     </Link>
-                    {categories.map((cat) => (
-                        <Link
-                            key={cat}
-                            href={`/catalogo?category=${encodeURIComponent(cat)}`}
-                            className={`px-4 py-2 text-[13px] rounded-full border transition-colors ${currentCategory === cat
-                                ? "bg-[#35605a] text-white border-[#35605a]"
-                                : "bg-transparent text-gray-600 border-gray-200 hover:border-[#35605a]"
-                                }`}
-                        >
-                            {cat}
-                        </Link>
-                    ))}
+                    {categories.map((cat) => {
+                        const href = currentSearch
+                            ? `/catalogo?category=${encodeURIComponent(cat)}&search=${encodeURIComponent(currentSearch)}`
+                            : `/catalogo?category=${encodeURIComponent(cat)}`;
+                        return (
+                            <Link
+                                key={cat}
+                                href={href}
+                                className={`px-4 py-2 text-[13px] rounded-full border transition-colors ${currentCategory === cat
+                                    ? "bg-[#35605a] text-white border-[#35605a]"
+                                    : "bg-transparent text-gray-600 border-gray-200 hover:border-[#35605a]"
+                                    }`}
+                            >
+                                {cat}
+                            </Link>
+                        );
+                    })}
                 </div>
 
                 {/* Products Grid */}
@@ -92,7 +118,7 @@ export default async function CatalogoGeneralPage({
                             <div className="flex items-center justify-center gap-2 mt-12">
                                 {currentPage > 1 && (
                                     <Link
-                                        href={`/catalogo?category=${encodeURIComponent(currentCategory)}&page=${currentPage - 1}`}
+                                        href={`/catalogo?category=${encodeURIComponent(currentCategory)}&page=${currentPage - 1}${currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""}`}
                                         className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-[#35605a] hover:text-[#35605a] transition-colors"
                                     >
                                         ←
@@ -105,7 +131,7 @@ export default async function CatalogoGeneralPage({
 
                                 {currentPage < totalPages && (
                                     <Link
-                                        href={`/catalogo?category=${encodeURIComponent(currentCategory)}&page=${currentPage + 1}`}
+                                        href={`/catalogo?category=${encodeURIComponent(currentCategory)}&page=${currentPage + 1}${currentSearch ? `&search=${encodeURIComponent(currentSearch)}` : ""}`}
                                         className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-[#35605a] hover:text-[#35605a] transition-colors"
                                     >
                                         →
