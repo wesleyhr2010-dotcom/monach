@@ -156,7 +156,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 </div>
             </nav>
 
-            {/* ── Menu overlay container ── */}
+            {/* ── Menu overlay ── */}
             <AnimatePresence>
                 {menuOpen && (
                     <motion.div
@@ -165,69 +165,62 @@ export default function Header({ variant = "light" }: HeaderProps) {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ duration: 0.2 }}
+                        transition={{ duration: 0.25 }}
                     >
-                        <AnimatePresence mode="wait" initial={false}>
-                            {!activeCategory ? (
-                                /* ── Panel 1: categories ── */
-                                <motion.div
-                                    key="panel-main"
-                                    className="absolute inset-0 bg-white overflow-y-auto"
-                                    initial={{ x: "100%" }}
-                                    animate={{ x: 0 }}
-                                    exit={{ x: "-100%" }}
-                                    transition={{ duration: 0.35, ease: [0.32, 0, 0.67, 0] }}
-                                >
-                                    <div className="px-8 md:px-24 pt-28 pb-20">
-                                        <div className="grid grid-cols-2 gap-y-10 gap-x-8">
-                                            {allItems.map((item) => {
-                                                const href =
-                                                    item.name === "Acerca de Nosotros"
-                                                        ? "/nosotros"
-                                                        : item.name === "Contacto"
-                                                        ? "/contacto"
-                                                        : `/catalogo?category=${encodeURIComponent(item.name)}`;
+                        {/* Panel 1 — always visible behind panel 2 */}
+                        <div className="absolute inset-0 bg-white overflow-y-auto">
+                            <div className="px-8 md:px-24 pt-28 pb-20">
+                                <div className="grid grid-cols-2 gap-y-10 gap-x-8">
+                                    {allItems.map((item) => {
+                                        const href =
+                                            item.name === "Acerca de Nosotros"
+                                                ? "/nosotros"
+                                                : item.name === "Contacto"
+                                                ? "/contacto"
+                                                : `/catalogo?category=${encodeURIComponent(item.name)}`;
 
-                                                if (item.children.length > 0) {
-                                                    return (
-                                                        <button
-                                                            key={item.name}
-                                                            onClick={() => setActiveCategory(item)}
-                                                            className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
-                                                        >
-                                                            {item.name}
-                                                        </button>
-                                                    );
-                                                }
-                                                return (
-                                                    <Link
-                                                        key={item.name}
-                                                        href={href}
-                                                        onClick={closeMenu}
-                                                        className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
-                                                    >
-                                                        {item.name}
-                                                    </Link>
-                                                );
-                                            })}
-                                        </div>
-                                    </div>
-                                </motion.div>
-                            ) : (
-                                /* ── Panel 2: subcategories ── */
+                                        if (item.children.length > 0) {
+                                            return (
+                                                <button
+                                                    key={item.name}
+                                                    onClick={() => setActiveCategory(item)}
+                                                    className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                >
+                                                    {item.name}
+                                                </button>
+                                            );
+                                        }
+                                        return (
+                                            <Link
+                                                key={item.name}
+                                                href={href}
+                                                onClick={closeMenu}
+                                                className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                            >
+                                                {item.name}
+                                            </Link>
+                                        );
+                                    })}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Panel 2 — slides over panel 1 from the right, 83% width */}
+                        <AnimatePresence>
+                            {activeCategory && (
                                 <motion.div
-                                    key={`panel-sub-${activeCategory.name}`}
-                                    className="absolute inset-0 overflow-y-auto"
-                                    style={{ backgroundColor: "#E8E2D9" }}
+                                    key={activeCategory.name}
+                                    className="absolute top-0 right-0 h-full overflow-y-auto"
+                                    style={{ width: "83%", backgroundColor: "#E8E2D9" }}
                                     initial={{ x: "100%" }}
                                     animate={{ x: 0 }}
                                     exit={{ x: "100%" }}
-                                    transition={{ duration: 0.35, ease: [0.32, 0, 0.67, 0] }}
+                                    transition={{ duration: 0.38, ease: [0.25, 0.46, 0.45, 0.94] }}
                                 >
-                                    <div className="px-8 md:px-24 pt-28 pb-20">
+                                    <div className="px-8 md:px-16 pt-28 pb-20">
                                         <button
                                             onClick={() => setActiveCategory(null)}
-                                            className="text-[#1a1a1a]/60 text-sm underline underline-offset-4 mb-12 block hover:text-[#1a1a1a] transition-colors"
+                                            className="text-[#1a1a1a]/50 text-sm underline underline-offset-4 mb-12 block hover:text-[#1a1a1a] transition-colors"
                                         >
                                             Volver
                                         </button>
