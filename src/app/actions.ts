@@ -91,7 +91,9 @@ export async function getCatalogProducts(
     page = 1,
     category = "all",
     pageSize = 24,
-    search = ""
+    search = "",
+    minPrice?: number,
+    maxPrice?: number
 ): Promise<ProductsResponse> {
     const offset = (page - 1) * pageSize;
 
@@ -105,6 +107,13 @@ export async function getCatalogProducts(
 
     if (search.trim()) {
         where.name = { contains: search.trim(), mode: "insensitive" };
+    }
+
+    if (minPrice != null || maxPrice != null) {
+        where.price = {
+            ...(minPrice != null && { gte: minPrice }),
+            ...(maxPrice != null && { lte: maxPrice }),
+        };
     }
 
     const [total, products] = await Promise.all([
