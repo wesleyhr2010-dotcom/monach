@@ -78,9 +78,9 @@ export default function Header({ variant = "light" }: HeaderProps) {
             {/* Main Nav — always on top (z-[45] within header stacking context) */}
             <nav
                 className={`relative z-[45] transition-all duration-300 ${
-                    isScrolled
+                    isScrolled && !menuOpen
                         ? "bg-white/95 backdrop-blur-md shadow-sm"
-                        : menuOpen || variant === "dark"
+                        : !menuOpen && variant === "dark"
                         ? "bg-white"
                         : "bg-transparent"
                 }`}
@@ -173,7 +173,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
                             animate={{ x: activeCategory ? "-100%" : "0%" }}
                             transition={{ duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
                         >
-                            <div className="px-8 md:px-24 pt-28 pb-20">
+                            <div className="px-8 md:px-24 pt-36 pb-20">
                                 <div className="grid grid-cols-2 gap-y-10 gap-x-8">
                                     {allItems.map((item) => {
                                         const href =
@@ -221,7 +221,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
                                     exit={{ x: "100%" }}
                                     transition={{ duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
                                 >
-                                    <div className="px-8 md:px-16 pt-28 pb-20">
+                                    <div className="px-8 md:px-16 pt-36 pb-20">
                                         <button
                                             onClick={() => setActiveCategory(null)}
                                             className="text-[#1a1a1a]/50 text-sm underline underline-offset-4 mb-12 block hover:text-[#1a1a1a] transition-colors"
