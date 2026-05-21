@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { AnimatePresence, motion } from "framer-motion";
 import { getCartCount, CART_UPDATED_EVENT } from "@/lib/cart";
 import CartDrawer from "./CartDrawer";
 import { getCategoryHierarchy, type CategoryNode } from "@/app/actions";
@@ -155,83 +156,101 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 </div>
             </nav>
 
-            {/* ── Panel 1: White full-screen menu ── */}
-            <div
-                className={`fixed inset-0 bg-white z-40 overflow-y-auto transition-opacity duration-300 ${
-                    menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
-                }`}
-            >
-                <div className="px-8 md:px-24 pt-28 pb-20">
-                    <div className="grid grid-cols-2 gap-y-10 gap-x-8">
-                        {allItems.map((item) => {
-                            const href =
-                                item.name === "Acerca de Nosotros"
-                                    ? "/nosotros"
-                                    : item.name === "Contacto"
-                                    ? "/contacto"
-                                    : `/catalogo?category=${encodeURIComponent(item.name)}`;
-
-                            if (item.children.length > 0) {
-                                return (
-                                    <button
-                                        key={item.name}
-                                        onClick={() => setActiveCategory(item)}
-                                        className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
-                                    >
-                                        {item.name}
-                                    </button>
-                                );
-                            }
-                            return (
-                                <Link
-                                    key={item.name}
-                                    href={href}
-                                    onClick={closeMenu}
-                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+            {/* ── Menu overlay container ── */}
+            <AnimatePresence>
+                {menuOpen && (
+                    <motion.div
+                        key="menu-overlay"
+                        className="fixed inset-0 z-40 overflow-hidden"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                    >
+                        <AnimatePresence mode="wait" initial={false}>
+                            {!activeCategory ? (
+                                /* ── Panel 1: categories ── */
+                                <motion.div
+                                    key="panel-main"
+                                    className="absolute inset-0 bg-white overflow-y-auto"
+                                    initial={{ x: "100%" }}
+                                    animate={{ x: 0 }}
+                                    exit={{ x: "-100%" }}
+                                    transition={{ duration: 0.35, ease: [0.32, 0, 0.67, 0] }}
                                 >
-                                    {item.name}
-                                </Link>
-                            );
-                        })}
-                    </div>
-                </div>
-            </div>
+                                    <div className="px-8 md:px-24 pt-28 pb-20">
+                                        <div className="grid grid-cols-2 gap-y-10 gap-x-8">
+                                            {allItems.map((item) => {
+                                                const href =
+                                                    item.name === "Acerca de Nosotros"
+                                                        ? "/nosotros"
+                                                        : item.name === "Contacto"
+                                                        ? "/contacto"
+                                                        : `/catalogo?category=${encodeURIComponent(item.name)}`;
 
-            {/* ── Panel 2: Beige subcategory drawer (slides from right) ── */}
-            <div
-                className="fixed top-0 right-0 h-full z-[42] overflow-y-auto transition-transform duration-400 ease-in-out"
-                style={{
-                    width: "83%",
-                    backgroundColor: "#E8E2D9",
-                    transform: activeCategory ? "translateX(0)" : "translateX(100%)",
-                }}
-            >
-                {activeCategory && (
-                    <div className="px-8 md:px-16 pt-28 pb-20">
-                        {/* Volver */}
-                        <button
-                            onClick={() => setActiveCategory(null)}
-                            className="text-[#1a1a1a]/60 text-sm underline underline-offset-4 mb-10 hover:text-[#1a1a1a] transition-colors"
-                        >
-                            Volver
-                        </button>
-
-                        {/* Subcategory links */}
-                        <div className="flex flex-col gap-8 mt-2">
-                            {activeCategory.children.map((child) => (
-                                <Link
-                                    key={child}
-                                    href={`/catalogo?category=${encodeURIComponent(child)}`}
-                                    onClick={closeMenu}
-                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                if (item.children.length > 0) {
+                                                    return (
+                                                        <button
+                                                            key={item.name}
+                                                            onClick={() => setActiveCategory(item)}
+                                                            className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                        >
+                                                            {item.name}
+                                                        </button>
+                                                    );
+                                                }
+                                                return (
+                                                    <Link
+                                                        key={item.name}
+                                                        href={href}
+                                                        onClick={closeMenu}
+                                                        className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                    >
+                                                        {item.name}
+                                                    </Link>
+                                                );
+                                            })}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            ) : (
+                                /* ── Panel 2: subcategories ── */
+                                <motion.div
+                                    key={`panel-sub-${activeCategory.name}`}
+                                    className="absolute inset-0 overflow-y-auto"
+                                    style={{ backgroundColor: "#E8E2D9" }}
+                                    initial={{ x: "100%" }}
+                                    animate={{ x: 0 }}
+                                    exit={{ x: "100%" }}
+                                    transition={{ duration: 0.35, ease: [0.32, 0, 0.67, 0] }}
                                 >
-                                    {child}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
+                                    <div className="px-8 md:px-24 pt-28 pb-20">
+                                        <button
+                                            onClick={() => setActiveCategory(null)}
+                                            className="text-[#1a1a1a]/60 text-sm underline underline-offset-4 mb-12 block hover:text-[#1a1a1a] transition-colors"
+                                        >
+                                            Volver
+                                        </button>
+
+                                        <div className="flex flex-col gap-8">
+                                            {activeCategory.children.map((child) => (
+                                                <Link
+                                                    key={child}
+                                                    href={`/catalogo?category=${encodeURIComponent(child)}`}
+                                                    onClick={closeMenu}
+                                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                >
+                                                    {child}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+                    </motion.div>
                 )}
-            </div>
+            </AnimatePresence>
 
             {/* Cart Drawer */}
             <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
