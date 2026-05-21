@@ -153,6 +153,109 @@ export async function getAllCategories(): Promise<string[]> {
 }
 
 // ============================================
+// Public — Category hierarchy for menu navigation
+// ============================================
+
+export interface CategoryNode {
+    name: string;
+    children: string[];
+}
+
+// Subcategories that don't follow the "Parent (X)" naming pattern
+const EXPLICIT_PARENTS: Record<string, string> = {
+    "Pequeños":             "Aros",
+    "Medianos":             "Aros",
+    "Grandes":              "Aros",
+    "Con dije":             "Collares",
+    "Sin dije":             "Collares",
+    "Alianzas":             "Accesorios",
+    "Berloques":            "Accesorios",
+    "Dijes":                "Accesorios",
+    "Clutch":               "Accesorios",
+};
+
+export async function getCategoryHierarchy(): Promise<CategoryNode[]> {
+    const all = await prisma.category.findMany({
+        orderBy: { name: "asc" },
+        select: { name: true },
+    });
+
+    const names = all.map((c) => c.name);
+    const nameSet = new Set(names);
+
+    // Determine which names are children (either explicit or pattern "X (Y)")
+    const childrenOf: Record<string, string[]> = {};
+    const isChild = new Set<string>();
+
+    for (const name of names) {
+        // Explicit parent mapping
+        if (EXPLICIT_PARENTS[name]) {
+            const parent = EXPLICIT_PARENTS[name];
+            if (nameSet.has(parent)) {
+                childrenOf[parent] ??= [];
+                childrenOf[parent].push(name);
+                isChild.add(name);
+                continue;
+            }
+        }
+
+        // Carteras / Lentes — names with leading zero-width char or slash belong to Accesorios
+        const cleaned = name.replace(/[​-‍﻿⁠]/g, "").trim();
+        if (cleaned !== name || name.includes("Carteras") || name.includes("Lentes de sol")) {
+            childrenOf["Accesorios"] ??= [];
+            childrenOf["Accesorios"].push(name);
+            isChild.add(name);
+            continue;
+        }
+
+        // Pattern: "X (Y)" — parent is X if X exists
+        const match = name.match(/^(.+)\s+\((.+)\)$/);
+        if (match) {
+            const parent = match[1].trim();
+            if (nameSet.has(parent)) {
+                childrenOf[parent] ??= [];
+                childrenOf[parent].push(name);
+                isChild.add(name);
+            }
+            // If parent doesn't exist (e.g., "Collar" vs "Collares"), try "Collares"
+            else if (nameSet.has(parent + "s")) {
+                const p = parent + "s";
+                childrenOf[p] ??= [];
+                childrenOf[p].push(name);
+                isChild.add(name);
+            }
+        }
+    }
+
+    // Build result: main categories (not children) with their children
+    const ORDER = [
+        "Aros", "Pulseras", "Collares", "Collar", "Anillos",
+        "Tobilleras", "Piercings", "Conjuntos", "Accesorios",
+        "Fiesta", "Infantil", "Plateado", "Outlet", "Organizador para joyas",
+    ];
+
+    const result: CategoryNode[] = [];
+    const added = new Set<string>();
+
+    // Add in preferred order first
+    for (const name of ORDER) {
+        if (nameSet.has(name) && !isChild.has(name)) {
+            result.push({ name, children: childrenOf[name] ?? [] });
+            added.add(name);
+        }
+    }
+
+    // Append any remaining main categories not in ORDER
+    for (const name of names) {
+        if (!isChild.has(name) && !added.has(name)) {
+            result.push({ name, children: childrenOf[name] ?? [] });
+        }
+    }
+
+    return result;
+}
+
+// ============================================
 // Public — Reseller by Slug
 // ============================================
 
