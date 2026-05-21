@@ -5,7 +5,7 @@ import Footer from "@/components/Footer";
 import AddToCartButton from "@/components/AddToCartButton";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import ProductDisplay from "@/components/shared/ProductDisplay";
-import { getProductBySlug, getRelatedProducts } from "@/app/actions";
+import { getProductBySlug, getRelatedProductsByCategory } from "@/app/actions";
 
 export const revalidate = 60; // ISR — página pública, cachear por 60s
 
@@ -27,14 +27,17 @@ export async function generateMetadata({ params }: ProductPageProps) {
 export default async function ProductPage({ params }: ProductPageProps) {
   const { slug } = await params;
 
-  const [product, relatedProducts] = await Promise.all([
-    getProductBySlug(slug),
-    getRelatedProducts(4),
-  ]);
+  const product = await getProductBySlug(slug);
 
   if (!product) {
     notFound();
   }
+
+  const relatedProducts = await getRelatedProductsByCategory(
+    product.id,
+    product.categories,
+    4
+  );
 
   return (
     <div className="bg-white min-h-screen flex flex-col font-montserrat">

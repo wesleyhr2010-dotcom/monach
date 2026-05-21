@@ -25,7 +25,7 @@ export async function getProductBySlug(slug: string): Promise<Product | null> {
 }
 
 // ============================================
-// Public — Related Products
+// Public — Related Products (same category, excludes current product)
 // ============================================
 
 export async function getRelatedProducts(limit = 4): Promise<Product[]> {
@@ -42,6 +42,45 @@ export async function getRelatedProducts(limit = 4): Promise<Product[]> {
         created_at: p.created_at.toISOString(),
         updated_at: p.updated_at.toISOString(),
     })) as Product[];
+}
+
+export async function getRelatedProductsByCategory(
+    currentProductId: string,
+    categories: string[],
+    limit = 4
+): Promise<Product[]> {
+    const where: Prisma.ProductWhereInput = {
+        id: { not: currentProductId },
+        ...(categories.length > 0 && {
+            categories: {
+                some: { category: { name: { in: categories } } },
+            },
+        }),
+    };
+
+    const products = await prisma.product.findMany({
+        where,
+        take: limit,
+        orderBy: { created_at: "desc" },
+        include: { categories: { include: { category: true } } },
+    });
+
+    // Fallback: if same-category returns fewer than limit, fill with recent products
+    if (products.length < limit) {
+        const existingIds = new Set(products.map((p) => p.id));
+        existingIds.add(currentProductId);
+
+        const fallback = await prisma.product.findMany({
+            where: { id: { notIn: [...existingIds] } },
+            take: limit - products.length,
+            orderBy: { created_at: "desc" },
+            include: { categories: { include: { category: true } } },
+        });
+
+        products.push(...fallback);
+    }
+
+    return products.map(mapProductToDTO);
 }
 
 // ============================================
