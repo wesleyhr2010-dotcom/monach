@@ -28,11 +28,6 @@ export default function Header({ variant = "light" }: HeaderProps) {
         getCategoryHierarchy().then(setCategories);
     }, []);
 
-    function closeMenu() {
-        setMenuOpen(false);
-        setActiveCategory(null);
-    }
-
     // Sync cart count
     useEffect(() => {
         const sync = () => setCartCount(getCartCount());
@@ -41,12 +36,36 @@ export default function Header({ variant = "light" }: HeaderProps) {
         return () => window.removeEventListener(CART_UPDATED_EVENT, sync);
     }, []);
 
-    const isDark = isScrolled || variant === "dark";
+    function closeMenu() {
+        setMenuOpen(false);
+        setActiveCategory(null);
+    }
+
+    function toggleMenu() {
+        if (menuOpen) {
+            closeMenu();
+        } else {
+            setMenuOpen(true);
+        }
+    }
+
+    const isDark = isScrolled || variant === "dark" || menuOpen;
+
+    // All items to show in the 2-column grid
+    const navExtras: CategoryNode[] = [
+        { name: "Acerca de Nosotros", children: [] },
+        { name: "Contacto", children: [] },
+    ];
+    const allItems = [...categories, ...navExtras];
 
     return (
         <header className="fixed top-0 left-0 w-full z-50">
-            {/* Announcement Bar */}
-            <div className="bg-black text-white pt-2.5 pb-3.5 text-xs tracking-wide overflow-hidden min-h-10 flex items-center justify-center">
+            {/* Announcement Bar — hidden when menu open */}
+            <div
+                className={`bg-black text-white pt-2.5 pb-3.5 text-xs tracking-wide overflow-hidden min-h-10 flex items-center justify-center transition-all duration-300 ${
+                    menuOpen ? "opacity-0 pointer-events-none h-0 min-h-0 py-0" : ""
+                }`}
+            >
                 <div className="animate-marquee whitespace-nowrap flex gap-16">
                     <span>✨ Envío a todo Paraguay — Calidad Garantizada ✨</span>
                     <span>✨ 1 año de garantía en todas las semijoyas ✨</span>
@@ -55,32 +74,36 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 </div>
             </div>
 
-            {/* Main Nav */}
+            {/* Main Nav — always on top (z-[45] within header stacking context) */}
             <nav
-                className={`transition-all duration-300 ${isScrolled
-                    ? "bg-white/95 backdrop-blur-md shadow-sm"
-                    : variant === "dark" ? "bg-white" : "bg-transparent"
-                    }`}
+                className={`relative z-[45] transition-all duration-300 ${
+                    isScrolled
+                        ? "bg-white/95 backdrop-blur-md shadow-sm"
+                        : menuOpen || variant === "dark"
+                        ? "bg-white"
+                        : "bg-transparent"
+                }`}
             >
-                <div className="max-w-[1440px] min-w-96 mx-auto px-20 py-7 flex items-center justify-between relative">
-                    {/* Hamburger */}
+                <div className="max-w-[1440px] min-w-96 mx-auto px-8 md:px-20 py-7 flex items-center justify-between relative">
+                    {/* Hamburger / Close */}
                     <button
-                        onClick={() => { setMenuOpen(!menuOpen); if (menuOpen) setActiveCategory(null); }}
-                        className="flex flex-col gap-1.5 w-8 cursor-pointer z-50"
-                        aria-label="Abrir menú"
+                        onClick={toggleMenu}
+                        className="w-8 h-8 flex items-center justify-center cursor-pointer relative"
+                        aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                     >
-                        <span
-                            className={`h-0.5 w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"
-                                } ${menuOpen ? "rotate-45 translate-y-2" : ""}`}
-                        />
-                        <span
-                            className={`h-0.5 w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"
-                                } ${menuOpen ? "opacity-0" : ""}`}
-                        />
-                        <span
-                            className={`h-0.5 w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"
-                                } ${menuOpen ? "-rotate-45 -translate-y-2" : ""}`}
-                        />
+                        {menuOpen && activeCategory ? (
+                            /* Panel 2 state: boxed X */
+                            <span className="border border-current text-sm leading-none px-1.5 py-1 text-black">
+                                ✕
+                            </span>
+                        ) : (
+                            /* Hamburger → X animation */
+                            <span className="flex flex-col gap-1.5 w-6">
+                                <span className={`h-px w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"} ${menuOpen ? "rotate-45 translate-y-[7px]" : ""}`} />
+                                <span className={`h-px w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"} ${menuOpen ? "opacity-0 scale-x-0" : ""}`} />
+                                <span className={`h-px w-full transition-all duration-300 ${isDark ? "bg-black" : "bg-white"} ${menuOpen ? "-rotate-45 -translate-y-[7px]" : ""}`} />
+                            </span>
+                        )}
                     </button>
 
                     {/* Logo */}
@@ -97,36 +120,34 @@ export default function Header({ variant = "light" }: HeaderProps) {
 
                     {/* Icons */}
                     <div className="flex items-center gap-4">
-                        {/* Search */}
                         <button aria-label="Buscar">
                             <img
                                 src="/images/lupa.svg"
                                 alt="Buscar"
                                 width={20}
                                 height={20}
-                                className="transition-all duration-300"
                                 style={{ filter: isDark ? "none" : "brightness(0) invert(1)" }}
                             />
                         </button>
 
-                        {/* Cart */}
-                        <button
-                            aria-label="Carrito"
-                            className="relative"
-                            onClick={() => setCartOpen(true)}
-                        >
+                        <button aria-label="Carrito" className="relative" onClick={() => setCartOpen(true)}>
                             <img
                                 src="/images/carrinho.svg"
                                 alt="Carrito"
                                 width={20}
                                 height={20}
-                                className="transition-all duration-300"
                                 style={{ filter: isDark ? "none" : "brightness(0) invert(1)" }}
                             />
-                            <span suppressHydrationWarning className={`absolute -top-2 -right-2 text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center transition-all ${cartCount > 0
-                                    ? "bg-[#35605a] text-white"
-                                    : isDark ? "bg-gray-200 text-gray-500" : "bg-white text-black"
-                                }`}>
+                            <span
+                                suppressHydrationWarning
+                                className={`absolute -top-2 -right-2 text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center transition-all ${
+                                    cartCount > 0
+                                        ? "bg-[#35605a] text-white"
+                                        : isDark
+                                        ? "bg-gray-200 text-gray-500"
+                                        : "bg-white text-black"
+                                }`}
+                            >
                                 {cartCount}
                             </span>
                         </button>
@@ -134,130 +155,96 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 </div>
             </nav>
 
-            {/* Menu Overlay */}
+            {/* ── Panel 1: White full-screen menu ── */}
             <div
-                className={`fixed inset-0 bg-black/95 z-40 overflow-hidden transition-all duration-500 ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"}`}
+                className={`fixed inset-0 bg-white z-40 overflow-y-auto transition-opacity duration-300 ${
+                    menuOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+                }`}
             >
-                {/* Two-panel container */}
-                <div
-                    className="flex h-full transition-transform duration-400 ease-in-out"
-                    style={{ transform: activeCategory ? "translateX(-100%)" : "translateX(0)" }}
-                >
-                    {/* ── Panel 1: main categories ── */}
-                    <div className="w-full flex-shrink-0 overflow-y-auto flex flex-col">
-                        <div className="flex flex-col px-10 pt-28 pb-16 gap-0">
-                            {/* Primary links */}
-                            <Link href="/" onClick={closeMenu}
-                                className="text-white text-xl font-inter uppercase tracking-[5px] py-4 border-b border-white/10 hover:text-white/70 transition-colors">
-                                Tienda
-                            </Link>
-                            <Link href="/carrinho" onClick={closeMenu}
-                                className="text-white text-xl font-inter uppercase tracking-[5px] py-4 border-b border-white/10 hover:text-white/70 transition-colors">
-                                Mi Joyero
-                            </Link>
+                <div className="px-8 md:px-24 pt-28 pb-20">
+                    <div className="grid grid-cols-2 gap-y-10 gap-x-8">
+                        {allItems.map((item) => {
+                            const href =
+                                item.name === "Acerca de Nosotros"
+                                    ? "/nosotros"
+                                    : item.name === "Contacto"
+                                    ? "/contacto"
+                                    : `/catalogo?category=${encodeURIComponent(item.name)}`;
 
-                            {/* Category label */}
-                            <p className="text-white/30 text-[10px] uppercase tracking-[4px] font-inter mt-8 mb-2">
-                                Categorías
-                            </p>
-
-                            {/* Category rows */}
-                            {categories.map((cat) =>
-                                cat.children.length > 0 ? (
+                            if (item.children.length > 0) {
+                                return (
                                     <button
-                                        key={cat.name}
-                                        onClick={() => setActiveCategory(cat)}
-                                        className="flex items-center justify-between text-white text-base font-inter uppercase tracking-[3px] py-3.5 border-b border-white/10 hover:text-white/70 transition-colors text-left w-full"
+                                        key={item.name}
+                                        onClick={() => setActiveCategory(item)}
+                                        className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
                                     >
-                                        {cat.name}
-                                        <svg className="w-4 h-4 opacity-40 flex-shrink-0" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                            <path d="m9 18 6-6-6-6" />
-                                        </svg>
+                                        {item.name}
                                     </button>
-                                ) : (
-                                    <Link
-                                        key={cat.name}
-                                        href={`/catalogo?category=${encodeURIComponent(cat.name)}`}
-                                        onClick={closeMenu}
-                                        className="text-white text-base font-inter uppercase tracking-[3px] py-3.5 border-b border-white/10 hover:text-white/70 transition-colors block"
-                                    >
-                                        {cat.name}
-                                    </Link>
-                                )
-                            )}
-
-                            {/* Footer links */}
-                            <div className="flex gap-8 mt-10">
-                                <Link href="/nosotros" onClick={closeMenu}
-                                    className="text-white/40 text-xs font-inter uppercase tracking-[3px] hover:text-white/70 transition-colors">
-                                    Nosotros
-                                </Link>
-                                <Link href="/contacto" onClick={closeMenu}
-                                    className="text-white/40 text-xs font-inter uppercase tracking-[3px] hover:text-white/70 transition-colors">
-                                    Contacto
-                                </Link>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* ── Panel 2: subcategories ── */}
-                    <div className="w-full flex-shrink-0 overflow-y-auto flex flex-col">
-                        {activeCategory && (
-                            <div className="flex flex-col px-10 pt-28 pb-16 gap-0">
-                                {/* Back */}
-                                <button
-                                    onClick={() => setActiveCategory(null)}
-                                    className="flex items-center gap-2 text-white/50 text-xs uppercase tracking-[3px] font-inter mb-6 hover:text-white transition-colors"
+                                );
+                            }
+                            return (
+                                <Link
+                                    key={item.name}
+                                    href={href}
+                                    onClick={closeMenu}
+                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
                                 >
-                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
-                                        <path d="m15 18-6-6 6-6" />
-                                    </svg>
-                                    Volver
-                                </button>
-
-                                {/* Category title + ver todos */}
-                                <div className="flex items-baseline justify-between border-b border-white/10 pb-4 mb-2">
-                                    <h2 className="text-white text-xl font-inter uppercase tracking-[5px]">
-                                        {activeCategory.name}
-                                    </h2>
-                                    <Link
-                                        href={`/catalogo?category=${encodeURIComponent(activeCategory.name)}`}
-                                        onClick={closeMenu}
-                                        className="text-white/40 text-[11px] uppercase tracking-[2px] hover:text-white transition-colors"
-                                    >
-                                        Ver todos
-                                    </Link>
-                                </div>
-
-                                {/* Subcategory links */}
-                                {activeCategory.children.map((child) => (
-                                    <Link
-                                        key={child}
-                                        href={`/catalogo?category=${encodeURIComponent(child)}`}
-                                        onClick={closeMenu}
-                                        className="text-white/80 text-base font-inter uppercase tracking-[3px] py-3.5 border-b border-white/10 hover:text-white transition-colors block"
-                                    >
-                                        {child}
-                                    </Link>
-                                ))}
-                            </div>
-                        )}
+                                    {item.name}
+                                </Link>
+                            );
+                        })}
                     </div>
                 </div>
+            </div>
+
+            {/* ── Panel 2: Beige subcategory drawer (slides from right) ── */}
+            <div
+                className="fixed top-0 right-0 h-full z-[42] overflow-y-auto transition-transform duration-400 ease-in-out"
+                style={{
+                    width: "83%",
+                    backgroundColor: "#E8E2D9",
+                    transform: activeCategory ? "translateX(0)" : "translateX(100%)",
+                }}
+            >
+                {activeCategory && (
+                    <div className="px-8 md:px-16 pt-28 pb-20">
+                        {/* Volver */}
+                        <button
+                            onClick={() => setActiveCategory(null)}
+                            className="text-[#1a1a1a]/60 text-sm underline underline-offset-4 mb-10 hover:text-[#1a1a1a] transition-colors"
+                        >
+                            Volver
+                        </button>
+
+                        {/* Subcategory links */}
+                        <div className="flex flex-col gap-8 mt-2">
+                            {activeCategory.children.map((child) => (
+                                <Link
+                                    key={child}
+                                    href={`/catalogo?category=${encodeURIComponent(child)}`}
+                                    onClick={closeMenu}
+                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                >
+                                    {child}
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+                )}
             </div>
 
             {/* Cart Drawer */}
             <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
             <style jsx>{`
-        @keyframes marquee {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .animate-marquee {
-          animation: marquee 20s linear infinite;
-        }
-      `}</style>
+                @keyframes marquee {
+                    0% { transform: translateX(0); }
+                    100% { transform: translateX(-50%); }
+                }
+                .animate-marquee {
+                    animation: marquee 20s linear infinite;
+                }
+            `}</style>
         </header>
     );
 }
