@@ -6,16 +6,6 @@ import { getCartCount, CART_UPDATED_EVENT } from "@/lib/cart";
 import CartDrawer from "./CartDrawer";
 import { getAllCategories } from "@/app/actions";
 
-// Categorias internas/de tamanho que não devem aparecer no menu
-const HIDDEN_CATEGORIES = new Set([
-    "Grandes", "Medianos", "Pequeños", "Produtos",
-    "Con dije", "Sin dije",
-]);
-
-function isMainCategory(name: string) {
-    return !name.includes("(") && !HIDDEN_CATEGORIES.has(name);
-}
-
 interface HeaderProps {
     variant?: "light" | "dark";
 }
@@ -34,9 +24,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
     }, []);
 
     useEffect(() => {
-        getAllCategories().then((all) =>
-            setCategories(all.filter(isMainCategory))
-        );
+        getAllCategories().then(setCategories);
     }, []);
 
     // Sync cart count
