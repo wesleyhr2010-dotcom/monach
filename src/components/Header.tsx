@@ -161,67 +161,67 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 {menuOpen && (
                     <motion.div
                         key="menu-overlay"
-                        className="fixed inset-0 z-40 overflow-hidden"
+                        className="fixed inset-0 z-40 overflow-hidden bg-white"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.2 }}
                     >
-                        {/* Sliding track — 200vw wide, holds both panels side by side */}
+                        {/* Panel 1 content — exits left when subcategory opens */}
                         <motion.div
-                            className="flex h-full"
-                            style={{ width: "200vw" }}
-                            animate={{ x: activeCategory ? "-100vw" : "0vw" }}
+                            className="absolute inset-0 overflow-y-auto"
+                            animate={{ x: activeCategory ? "-100%" : "0%" }}
                             transition={{ duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
                         >
-                            {/* Panel 1 — categories */}
-                            <div
-                                className="h-full overflow-y-auto bg-white flex-shrink-0"
-                                style={{ width: "100vw" }}
-                            >
-                                <div className="px-8 md:px-24 pt-28 pb-20">
-                                    <div className="grid grid-cols-2 gap-y-10 gap-x-8">
-                                        {allItems.map((item) => {
-                                            const href =
-                                                item.name === "Acerca de Nosotros"
-                                                    ? "/nosotros"
-                                                    : item.name === "Contacto"
-                                                    ? "/contacto"
-                                                    : `/catalogo?category=${encodeURIComponent(item.name)}`;
+                            <div className="px-8 md:px-24 pt-28 pb-20">
+                                <div className="grid grid-cols-2 gap-y-10 gap-x-8">
+                                    {allItems.map((item) => {
+                                        const href =
+                                            item.name === "Acerca de Nosotros"
+                                                ? "/nosotros"
+                                                : item.name === "Contacto"
+                                                ? "/contacto"
+                                                : `/catalogo?category=${encodeURIComponent(item.name)}`;
 
-                                            if (item.children.length > 0) {
-                                                return (
-                                                    <button
-                                                        key={item.name}
-                                                        onClick={() => setActiveCategory(item)}
-                                                        className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
-                                                    >
-                                                        {item.name}
-                                                    </button>
-                                                );
-                                            }
+                                        if (item.children.length > 0) {
                                             return (
-                                                <Link
+                                                <button
                                                     key={item.name}
-                                                    href={href}
-                                                    onClick={closeMenu}
-                                                    className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                                    onClick={() => setActiveCategory(item)}
+                                                    className="text-left text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
                                                 >
                                                     {item.name}
-                                                </Link>
+                                                </button>
                                             );
-                                        })}
-                                    </div>
+                                        }
+                                        return (
+                                            <Link
+                                                key={item.name}
+                                                href={href}
+                                                onClick={closeMenu}
+                                                className="text-[#1a1a1a] text-2xl md:text-[26px] font-light uppercase tracking-[0.08em] hover:opacity-50 transition-opacity"
+                                            >
+                                                {item.name}
+                                            </Link>
+                                        );
+                                    })}
                                 </div>
                             </div>
+                        </motion.div>
 
-                            {/* Panel 2 — subcategories */}
-                            <div
-                                className="h-full overflow-y-auto flex-shrink-0"
-                                style={{ width: "100vw", backgroundColor: "#E8E2D9" }}
-                            >
-                                {activeCategory && (
-                                    <div className="px-8 md:px-24 pt-28 pb-20">
+                        {/* Panel 2 — 83% from right, slides over white bg strip */}
+                        <AnimatePresence>
+                            {activeCategory && (
+                                <motion.div
+                                    key={activeCategory.name}
+                                    className="absolute top-0 right-0 h-full overflow-y-auto"
+                                    style={{ width: "83%", backgroundColor: "#E8E2D9" }}
+                                    initial={{ x: "100%" }}
+                                    animate={{ x: 0 }}
+                                    exit={{ x: "100%" }}
+                                    transition={{ duration: 0.42, ease: [0.25, 0.46, 0.45, 0.94] }}
+                                >
+                                    <div className="px-8 md:px-16 pt-28 pb-20">
                                         <button
                                             onClick={() => setActiveCategory(null)}
                                             className="text-[#1a1a1a]/50 text-sm underline underline-offset-4 mb-12 block hover:text-[#1a1a1a] transition-colors"
@@ -242,9 +242,9 @@ export default function Header({ variant = "light" }: HeaderProps) {
                                             ))}
                                         </div>
                                     </div>
-                                )}
-                            </div>
-                        </motion.div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </motion.div>
                 )}
             </AnimatePresence>
