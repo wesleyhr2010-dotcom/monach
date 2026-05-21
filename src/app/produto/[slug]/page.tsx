@@ -64,7 +64,6 @@ export default async function ProductPage({ params }: ProductPageProps) {
               sku={product.sku}
             />
           }
-          showShippingBanner
           relatedProducts={relatedProducts.map((rp) => ({
             id: rp.id,
             name: rp.name,

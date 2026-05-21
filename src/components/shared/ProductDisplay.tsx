@@ -16,7 +16,6 @@ interface ProductDisplayProps {
   product: ProductDisplayData;
   actionButton: React.ReactNode;
   backLink?: { href: string; label: string };
-  showShippingBanner?: boolean;
   relatedProducts?: ProductDisplayData[];
   relatedTitle?: string;
   relatedPriceFormatter?: (price: number | null) => string;
@@ -26,7 +25,6 @@ export default function ProductDisplay({
   product,
   actionButton,
   backLink,
-  showShippingBanner = false,
   relatedProducts,
   relatedTitle = "PRODUCTOS PARA EXPLORAR",
   relatedPriceFormatter,
@@ -113,17 +111,6 @@ export default function ProductDisplay({
             </div>
           </div>
         </div>
-
-        {/* Shipping Banner */}
-        {showShippingBanner && (
-          <div className="w-full bg-black py-4 px-6 mt-12 mb-16">
-            <div className="max-w-[1440px] mx-auto flex flex-col md:flex-row items-center justify-center gap-4 text-center">
-              <span className="text-white text-[12px] md:text-[14px]">
-                Hacemos envíos a cualquier rincón del país! 🚚
-              </span>
-            </div>
-          </div>
-        )}
 
         {/* Related Products */}
         {relatedProducts && relatedProducts.length > 0 && (
