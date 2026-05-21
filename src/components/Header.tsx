@@ -93,8 +93,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
                         aria-label={menuOpen ? "Cerrar menú" : "Abrir menú"}
                     >
                         {menuOpen && activeCategory ? (
-                            /* Panel 2 state: boxed X */
-                            <span className="border border-current text-sm leading-none px-1.5 py-1 text-black">
+                            <span className="text-sm leading-none text-black">
                                 ✕
                             </span>
                         ) : (
