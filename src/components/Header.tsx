@@ -4,6 +4,17 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { getCartCount, CART_UPDATED_EVENT } from "@/lib/cart";
 import CartDrawer from "./CartDrawer";
+import { getAllCategories } from "@/app/actions";
+
+// Categorias internas/de tamanho que não devem aparecer no menu
+const HIDDEN_CATEGORIES = new Set([
+    "Grandes", "Medianos", "Pequeños", "Produtos",
+    "Con dije", "Sin dije",
+]);
+
+function isMainCategory(name: string) {
+    return !name.includes("(") && !HIDDEN_CATEGORIES.has(name);
+}
 
 interface HeaderProps {
     variant?: "light" | "dark";
@@ -14,11 +25,18 @@ export default function Header({ variant = "light" }: HeaderProps) {
     const [menuOpen, setMenuOpen] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
     const [cartCount, setCartCount] = useState(0);
+    const [categories, setCategories] = useState<string[]>([]);
 
     useEffect(() => {
         const handleScroll = () => setIsScrolled(window.scrollY > 40);
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
+
+    useEffect(() => {
+        getAllCategories().then((all) =>
+            setCategories(all.filter(isMainCategory))
+        );
     }, []);
 
     // Sync cart count
@@ -122,39 +140,71 @@ export default function Header({ variant = "light" }: HeaderProps) {
                 </div>
             </nav>
 
-            {/* Mobile Menu Overlay */}
+            {/* Menu Overlay */}
             <div
-                className={`fixed inset-0 bg-black/95 z-40 flex flex-col items-center justify-center gap-8 transition-all duration-500 ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+                className={`fixed inset-0 bg-black/95 z-40 flex flex-col transition-all duration-500 overflow-y-auto ${menuOpen ? "opacity-100 visible" : "opacity-0 invisible pointer-events-none"
                     }`}
             >
-                <Link
-                    href="/"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
-                >
-                    Tienda
-                </Link>
-                <Link
-                    href="/carrinho"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
-                >
-                    Mi Joyero
-                </Link>
-                <Link
-                    href="/nosotros"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
-                >
-                    Nosotros
-                </Link>
-                <Link
-                    href="/contacto"
-                    onClick={() => setMenuOpen(false)}
-                    className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
-                >
-                    Contacto
-                </Link>
+                {/* Top nav links */}
+                <div className="flex flex-col items-center gap-6 pt-32 pb-8">
+                    <Link
+                        href="/"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
+                    >
+                        Tienda
+                    </Link>
+                    <Link
+                        href="/carrinho"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-white text-2xl font-inter uppercase tracking-[6px] hover:text-gold transition-colors"
+                    >
+                        Mi Joyero
+                    </Link>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full max-w-xs mx-auto border-t border-white/20" />
+
+                {/* Categories */}
+                <div className="flex flex-col items-center gap-4 py-8 px-8">
+                    <p className="text-white/40 text-[11px] uppercase tracking-[4px] font-inter">
+                        Categorías
+                    </p>
+                    <div className="flex flex-wrap justify-center gap-3 max-w-sm">
+                        {categories.map((cat) => (
+                            <Link
+                                key={cat}
+                                href={`/catalogo?category=${encodeURIComponent(cat)}`}
+                                onClick={() => setMenuOpen(false)}
+                                className="text-white/80 text-sm font-inter uppercase tracking-[2px] hover:text-white transition-colors border border-white/20 hover:border-white/60 rounded-full px-4 py-1.5"
+                            >
+                                {cat}
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Divider */}
+                <div className="w-full max-w-xs mx-auto border-t border-white/20" />
+
+                {/* Bottom links */}
+                <div className="flex flex-col items-center gap-6 py-8 pb-16">
+                    <Link
+                        href="/nosotros"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-white/60 text-base font-inter uppercase tracking-[4px] hover:text-white transition-colors"
+                    >
+                        Nosotros
+                    </Link>
+                    <Link
+                        href="/contacto"
+                        onClick={() => setMenuOpen(false)}
+                        className="text-white/60 text-base font-inter uppercase tracking-[4px] hover:text-white transition-colors"
+                    >
+                        Contacto
+                    </Link>
+                </div>
             </div>
 
             {/* Cart Drawer */}
