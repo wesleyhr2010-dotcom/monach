@@ -51,9 +51,9 @@ function formatDateShort(dateStr: string) {
 function MaletaStatusBadge({ status }: { status: string }) {
     const configs: Record<string, { bg: string; color: string; label: string }> = {
         ativa: { bg: "var(--admin-accent-hover)", color: "var(--admin-success)", label: "ATIVA" },
-        atrasada: { bg: "#3A1C1C", color: "var(--admin-danger)", label: "ATRASADA" },
-        aguardando_revisao: { bg: "#3A3A1C", color: "var(--admin-warning)", label: "AG. REVISÃO" },
-        concluida: { bg: "#1A2A20", color: "var(--admin-success)", label: "CONCLUÍDA" },
+        atrasada: { bg: "var(--admin-danger-10, rgba(239,68,68,0.12))", color: "var(--admin-danger)", label: "ATRASADA" },
+        aguardando_revisao: { bg: "var(--admin-warning-10)", color: "var(--admin-warning)", label: "AG. REVISÃO" },
+        concluida: { bg: "var(--admin-success-10)", color: "var(--admin-success)", label: "CONCLUÍDA" },
     };
     const cfg = configs[status] || configs.ativa;
     return (
@@ -74,9 +74,9 @@ function DocStatusBadge({ status }: { status: string }) {
             display: "inline-flex", alignItems: "center", gap: "3px",
             padding: "2px 9px", borderRadius: "10px",
             fontSize: "10px", fontWeight: 600, lineHeight: "12px",
-            background: isAprovado ? "#1A2A20" : "#2A1F0A",
+            background: isAprovado ? "var(--admin-success-10)" : "var(--admin-warning-10)",
             color: isAprovado ? "var(--admin-success)" : "var(--admin-warning)",
-            border: isAprovado ? "none" : "1px solid #3A2A0A",
+            border: isAprovado ? "none" : "1px solid var(--admin-warning-15)",
         }}>
             {isAprovado ? "APROVADO" : "PENDENTE"} {isAprovado && <Check className="w-3 h-3" />}
         </span>
@@ -170,7 +170,7 @@ export default function RevendedoraPerfilPage() {
                             style={{
                                 display: "inline-flex", alignItems: "center", gap: "6px",
                                 padding: "7px 14px", borderRadius: "6px",
-                                background: "#1A2A20", border: "1px solid var(--admin-accent-hover)",
+                                background: "var(--admin-success-10)", border: "1px solid var(--admin-success-15)",
                                 color: "var(--admin-success)", fontSize: "12px", fontWeight: 600,
                                 textDecoration: "none",
                             }}
@@ -204,7 +204,7 @@ export default function RevendedoraPerfilPage() {
                     {/* Avatar */}
                     <div style={{
                         width: "64px", height: "64px", borderRadius: "50%",
-                        background: "#2A3A30", border: "2px solid var(--admin-accent-hover)",
+                        background: "var(--admin-success-15)", border: "2px solid var(--admin-accent-hover)",
                         color: "var(--admin-success)", display: "flex", alignItems: "center", justifyContent: "center",
                         fontSize: "22px", fontWeight: 700, flexShrink: 0,
                         overflow: "hidden",
@@ -284,7 +284,7 @@ export default function RevendedoraPerfilPage() {
                             <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
                                 <div style={{
                                     width: "22px", height: "22px", borderRadius: "50%",
-                                    background: "#2A3A30", color: "var(--admin-success)",
+                                    background: "var(--admin-success-15)", color: "var(--admin-success)",
                                     display: "flex", alignItems: "center", justifyContent: "center",
                                     fontSize: "8px", fontWeight: 700, flexShrink: 0,
                                 }}>
@@ -339,7 +339,7 @@ export default function RevendedoraPerfilPage() {
 
                         {/* Maletas */}
                         <div style={{
-                            padding: "20px 24px", background: "#161616",
+                            padding: "20px 24px", background: "var(--admin-surface)",
                             border: "1px solid var(--admin-border)", borderRadius: "10px",
                         }}>
                             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
@@ -360,7 +360,7 @@ export default function RevendedoraPerfilPage() {
                                     perfil.maletas.slice(0, 5).map((m) => (
                                         <div key={m.id} style={{
                                             display: "flex", alignItems: "center", justifyContent: "space-between",
-                                            padding: "10px 12px", background: "#161616", borderRadius: "7px",
+                                            padding: "10px 12px", background: "var(--admin-surface-hover)", borderRadius: "7px",
                                         }}>
                                             <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                 <span style={{ color: "var(--admin-text-muted)", fontSize: "12px", fontWeight: 600 }}>
@@ -407,7 +407,7 @@ export default function RevendedoraPerfilPage() {
                                 ].map((item) => (
                                     <div key={item.label} style={{
                                         display: "flex", alignItems: "center", justifyContent: "space-between",
-                                        padding: "10px 12px", background: "#161616", borderRadius: "7px",
+                                        padding: "10px 12px", background: "var(--admin-surface-hover)", borderRadius: "7px",
                                     }}>
                                         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                             <FileText className="w-3.5 h-3.5" style={{ color: "var(--admin-text-muted)", flexShrink: 0 }} />
