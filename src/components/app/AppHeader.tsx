@@ -61,7 +61,7 @@ export function AppHeader({ name, avatarUrl, rank, pontos, notificacoes = 0 }: A
 
       {/* Bell */}
       <Link
-        href="/app/notificacoes"
+        href="/app/notificaciones"
         className="relative w-10 h-10 flex items-center justify-center flex-shrink-0 -mr-2 text-app-text"
       >
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
