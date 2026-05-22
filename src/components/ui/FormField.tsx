@@ -31,7 +31,7 @@ export function FormField({
 }: FormFieldProps) {
     return (
         <div className={`flex flex-col gap-2 ${className}`}>
-            <label className="font-medium text-[14px] text-[#1A1A1A]" htmlFor={id}>
+            <label className="font-medium text-[14px] text-app-text" htmlFor={id}>
                 {label}
             </label>
             <input
@@ -45,7 +45,7 @@ export function FormField({
                 autoComplete={autoComplete}
                 inputMode={inputMode}
                 required={required}
-                className="bg-[#EBEBEB] border border-[#D9D6D2] text-[#1A1A1A] placeholder:text-[#AAAAAA] px-5 py-4 rounded-2xl text-[14px] focus:outline-none focus:ring-2 focus:ring-[#35605A]/30 transition-all disabled:opacity-60"
+                className="bg-app-surface border border-app-border-strong text-app-text placeholder:text-app-muted px-5 py-4 rounded-2xl text-[14px] focus:outline-none focus:ring-2 focus:ring-app-primary/30 transition-all disabled:opacity-60"
             />
         </div>
     );

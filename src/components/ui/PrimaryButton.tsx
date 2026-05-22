@@ -22,7 +22,7 @@ export function PrimaryButton({
             type={type}
             disabled={disabled ?? loading}
             onClick={onClick}
-            className={`mt-5 flex justify-center items-center py-4 rounded-full bg-[#35605A] text-white font-semibold text-base shadow-sm hover:bg-[#2b4c47] hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
+            className={`mt-5 flex justify-center items-center py-4 rounded-full bg-app-primary text-white font-semibold text-base shadow-sm hover:brightness-90 hover:shadow-md transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
         >
             {loading ? (
                 <>

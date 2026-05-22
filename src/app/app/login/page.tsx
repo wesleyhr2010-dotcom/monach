@@ -38,7 +38,7 @@ export default function AppLoginPage() {
                 <form action={handleSubmit} className="flex flex-col gap-5">
                     {/* Error Box */}
                     {error && (
-                        <div className="bg-red-50 text-red-600 text-sm p-4 rounded-2xl text-center">
+                        <div className="bg-app-danger-bg text-app-danger text-sm p-4 rounded-2xl text-center">
                             {error}
                         </div>
                     )}
