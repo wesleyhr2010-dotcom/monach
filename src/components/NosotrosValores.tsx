@@ -31,7 +31,7 @@ export default function NosotrosValores() {
                     {/* Foto da fundadora */}
                     <div className="relative h-[420px] md:h-[720px] bg-gray-100">
                         <Image
-                            src="/images/nosotros/fundadora.jpg"
+                            src="/images/jooh-monarca-1025x1536.jpg"
                             alt="Jooh Fonini — Fundadora de Monarca Semijoyas"
                             fill
                             className="object-cover object-top"

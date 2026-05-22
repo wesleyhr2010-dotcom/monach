@@ -5,15 +5,24 @@ const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY
     ? Buffer.from(process.env.ENCRYPTION_KEY, "hex")
     : null;
 
-if (!ENCRYPTION_KEY || ENCRYPTION_KEY.length !== 32) {
-    if (process.env.NODE_ENV === "production") {
+// Aviso em produção sem bloquear o carregamento do módulo.
+// O throw por chave inválida ocorre apenas ao usar encrypt()/decrypt(),
+// de forma que server actions sem dados bancários nunca são afetadas.
+if (process.env.NODE_ENV === "production" && !ENCRYPTION_KEY) {
+    console.warn("[SECURITY] ENCRYPTION_KEY não configurada — dados bancários NÃO serão cifrados.");
+}
+
+function assertKeyValid(): void {
+    if (!ENCRYPTION_KEY) return; // sem chave → sem cifração (aviso já logado)
+    if (ENCRYPTION_KEY.length !== 32) {
         throw new Error(
-            "ENCRYPTION_KEY inválida ou ausente. Deve ser 32 bytes hex (64 chars)."
+            "ENCRYPTION_KEY inválida: deve ser 32 bytes hex (64 chars). Corrija a variável de ambiente."
         );
     }
 }
 
 function encrypt(value: string): string {
+    assertKeyValid();
     if (!ENCRYPTION_KEY) return value;
     const iv = crypto.randomBytes(16);
     const cipher = crypto.createCipheriv("aes-256-gcm", ENCRYPTION_KEY, iv);
@@ -23,6 +32,7 @@ function encrypt(value: string): string {
 }
 
 function decrypt(value: string): string {
+    assertKeyValid();
     if (!ENCRYPTION_KEY) return value;
     const parts = value.split(":");
     if (parts.length !== 3) return value; // não cifrado (seed legado ou já plano)

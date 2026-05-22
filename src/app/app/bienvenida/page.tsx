@@ -127,8 +127,8 @@ export default function BienvenidaPage() {
                     })
                     .catch(() => setLoading(false));
             })
-            .catch((err) => {
-                setError(err instanceof Error ? err.message : "Error");
+            .catch(() => {
+                setError("Error de conexión. Por favor, intenta de nuevo.");
                 setLoading(false);
             });
     }, [router]);
@@ -231,7 +231,9 @@ export default function BienvenidaPage() {
         return (
             <div className="min-h-screen bg-app-card-bg flex items-center justify-center p-6">
                 <div className="text-center">
-                    <p className="text-red-500 text-sm font-medium mb-3">{error}</p>
+                    <p className="text-red-500 text-sm font-medium mb-3">
+                        Ocurrió un error al cargar tu perfil.
+                    </p>
                     <button onClick={() => window.location.reload()} className="text-sm text-app-primary font-medium hover:underline">
                         Intentar de nuevo
                     </button>

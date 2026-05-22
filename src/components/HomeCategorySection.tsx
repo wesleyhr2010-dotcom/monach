@@ -44,19 +44,27 @@ function card(p: Product) {
 function AroGrid({ products }: { products: Product[] }) {
     return (
         <div className="flex flex-col gap-5">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
                 {products.slice(0, 4).map(card)}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-5">
-                <CategoryBanner {...ARO_BANNERS[0]} />
+            {/* tablet: banner ocupa largura toda (col-span-2), produtos ficam abaixo em 2 col */}
+            {/* desktop: 3 colunas com proporção 2fr_1fr_1fr */}
+            <div className="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-5">
+                <div className="col-span-2 lg:col-span-1">
+                    <CategoryBanner {...ARO_BANNERS[0]} />
+                </div>
                 {products.slice(4, 6).map(card)}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr] gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-5">
                 {products.slice(6, 8).map(card)}
-                <CategoryBanner {...ARO_BANNERS[1]} />
+                <div className="col-span-2 lg:col-span-1">
+                    <CategoryBanner {...ARO_BANNERS[1]} />
+                </div>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-5">
-                <CategoryBanner {...ARO_BANNERS[2]} />
+            <div className="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-5">
+                <div className="col-span-2 lg:col-span-1">
+                    <CategoryBanner {...ARO_BANNERS[2]} />
+                </div>
                 {products.slice(8, 10).map(card)}
             </div>
         </div>
@@ -66,16 +74,20 @@ function AroGrid({ products }: { products: Product[] }) {
 function CollarGrid({ products, banners }: { products: Product[]; banners: CollarBanners }) {
     return (
         <div className="flex flex-col gap-5">
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
                 {products.slice(0, 4).map(card)}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[2fr_1fr_1fr] gap-5">
-                <CategoryBanner title="Collar" subtitle="Con Dije" image={banners.conDije} />
+            <div className="grid grid-cols-2 lg:grid-cols-[2fr_1fr_1fr] gap-5">
+                <div className="col-span-2 lg:col-span-1">
+                    <CategoryBanner title="Collar" subtitle="Con Dije" image={banners.conDije} />
+                </div>
                 {products.slice(4, 6).map(card)}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-[1fr_1fr_2fr] gap-5">
+            <div className="grid grid-cols-2 lg:grid-cols-[1fr_1fr_2fr] gap-5">
                 {products.slice(6, 8).map(card)}
-                <CategoryBanner title="Collar" subtitle="Sin Dije" image={banners.sinDije} />
+                <div className="col-span-2 lg:col-span-1">
+                    <CategoryBanner title="Collar" subtitle="Sin Dije" image={banners.sinDije} />
+                </div>
             </div>
         </div>
     );
@@ -83,7 +95,7 @@ function CollarGrid({ products, banners }: { products: Product[]; banners: Colla
 
 function SimpleGrid({ products }: { products: Product[] }) {
     return (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
             {products.map(card)}
         </div>
     );

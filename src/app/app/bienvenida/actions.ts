@@ -14,29 +14,32 @@ const quickProfileSchema = z.object({
 });
 
 export async function awardPrimeiroAcesso(): Promise<{ awarded: boolean; pontos: number }> {
-    const user = await requireAuth(["REVENDEDORA"]);
-    const resellerId = user.profileId!;
+    try {
+        const user = await requireAuth(["REVENDEDORA"]);
+        const resellerId = user.profileId!;
 
-    // Verificar se já foi concedido
-    const existing = await prisma.pontosExtrato.findFirst({
-        where: {
-            reseller_id: resellerId,
-            regra: { acao: "primeiro_acesso" },
-        },
-    });
+        const existing = await prisma.pontosExtrato.findFirst({
+            where: {
+                reseller_id: resellerId,
+                regra: { acao: "primeiro_acesso" },
+            },
+        });
 
-    if (existing) {
+        if (existing) {
+            return { awarded: false, pontos: 0 };
+        }
+
+        await awardPoints(resellerId, "primeiro_acesso");
+
+        const regra = await prisma.gamificacaoRegra.findUnique({
+            where: { acao: "primeiro_acesso" },
+            select: { pontos: true },
+        });
+
+        return { awarded: true, pontos: regra?.pontos ?? 50 };
+    } catch {
         return { awarded: false, pontos: 0 };
     }
-
-    await awardPoints(resellerId, "primeiro_acesso");
-
-    const regra = await prisma.gamificacaoRegra.findUnique({
-        where: { acao: "primeiro_acesso" },
-        select: { pontos: true },
-    });
-
-    return { awarded: true, pontos: regra?.pontos ?? 50 };
 }
 
 export async function completeOnboarding(
