@@ -106,7 +106,7 @@ export default function LeadsAdminPage() {
                 <div style={{ background: "var(--admin-surface)", border: "1px solid var(--admin-surface-hover)", borderRadius: 12, overflow: "hidden" }}>
                     {loading ? (
                         <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>
-                            Carregando...
+                            Cargando...
                         </div>
                     ) : leads.length === 0 ? (
                         <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>

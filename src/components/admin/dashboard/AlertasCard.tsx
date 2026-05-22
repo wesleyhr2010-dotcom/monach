@@ -15,7 +15,7 @@ const statusConfig = {
         border: "#2A2A1A",
         badgeBg: "var(--admin-warning)1A",
         badgeColor: "var(--admin-warning)",
-        label: () => "ACERTO PENDENTE",
+        label: () => "AJUSTE PENDIENTE",
     },
     vence_amanha: {
         bg: "#141A14",
@@ -45,7 +45,7 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
         }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                 <span style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontWeight: 600, fontSize: 13 }}>
-                    Maletas com Atenção
+                    Maletas con Atención
                 </span>
                 <Link href="/admin/maleta" style={{ color: "var(--admin-accent)", fontFamily: "Raleway, sans-serif", fontSize: 12, textDecoration: "none" }}>
                     Ver todas →
@@ -55,7 +55,7 @@ export function AlertasCard({ items, basePath = "/admin/maleta" }: AlertasCardPr
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                 {items.length === 0 && (
                     <div style={{ color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13, padding: "12px 0" }}>
-                        Nenhuma maleta requer atenção.
+                        Ninguna maleta requiere atención.
                     </div>
                 )}
                 {items.map((item) => {

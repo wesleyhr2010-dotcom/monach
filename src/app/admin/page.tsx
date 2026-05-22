@@ -79,7 +79,7 @@ export default async function AdminDashboardPage({
                         Admin / Dashboard
                     </span>
                     <span style={{ color: "var(--admin-text)", fontFamily: "'Playfair Display', serif", fontSize: 20, lineHeight: "24px", fontWeight: 600 }}>
-                        {isSuperAdmin ? "Dashboard" : `Olá, ${user.name.split(" ")[0]}`}
+                        {isSuperAdmin ? "Dashboard" : `Hola, ${user.name.split(" ")[0]}`}
                     </span>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -112,7 +112,7 @@ export default async function AdminDashboardPage({
                 {/* KPI Row */}
                 <div className="admin-kpi-grid">
                     <MetricCard
-                        label="Faturamento"
+                        label="Facturación"
                         value={formatCurrency(metricas.faturamento)}
                         iconBg="#35605A18"
                         iconColor="#35605A"
@@ -125,7 +125,7 @@ export default async function AdminDashboardPage({
 
                     {!isSuperAdmin && minhaComissao !== null && (
                         <MetricCard
-                            label="Minha Comissão"
+                            label="Mi Comisión"
                             value={formatCurrency(minhaComissao)}
                             iconBg="#35605A18"
                             iconColor="#35605A"
@@ -154,12 +154,12 @@ export default async function AdminDashboardPage({
                         icon={<Users size={15} color="var(--admin-beige)" strokeWidth={1.5} />}
                         subValue={metricas.revendedorasNovas > 0 ? {
                             type: "up",
-                            text: `+${metricas.revendedorasNovas} novas`,
+                            text: `+${metricas.revendedorasNovas} nuevas`,
                         } : undefined}
                     />
 
                     <MetricCard
-                        label="Atenção"
+                        label="Atención"
                         value={String(metricas.totalAlertas)}
                         iconBg="#E05C5C1A"
                         iconColor="#E05C5C"
@@ -192,7 +192,7 @@ export default async function AdminDashboardPage({
                 <div className="admin-row-split">
                     <AlertasCard items={alertas} />
                     <RankingTable
-                        title={isSuperAdmin ? "Desempenho por Consultora" : "Ranking das Minhas Revendedoras"}
+                        title={isSuperAdmin ? "Desempeño por Consultora" : "Ranking de Mis Revendedoras"}
                         items={ranking}
                     />
                 </div>

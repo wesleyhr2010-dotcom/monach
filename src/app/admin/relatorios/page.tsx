@@ -28,7 +28,7 @@ const EXPORTS: ExportCard[] = [
     {
         id: "produtos",
         title: "Produtos",
-        description: "Lista completa de produtos com SKU, preço, estoque e variantes.",
+        description: "Lista completa de productos con SKU, precio, stock y variantes.",
         icon: <Package className="w-5 h-5 text-blue-500" />,
         csv: true,
         xlsx: true,
@@ -37,7 +37,7 @@ const EXPORTS: ExportCard[] = [
     {
         id: "revendedoras",
         title: "Revendedoras",
-        description: "Lista de revendedoras com comissão, colaboradora vinculada e status.",
+        description: "Lista de revendedoras con comisión, consultora vinculada y estado.",
         icon: <Users className="w-5 h-5 text-purple-500" />,
         csv: true,
         xlsx: true,
@@ -46,7 +46,7 @@ const EXPORTS: ExportCard[] = [
     {
         id: "colaboradoras",
         title: "Colaboradoras",
-        description: "Lista de colaboradoras com equipas e número de revendedoras.",
+        description: "Lista de consultoras con equipos y número de revendedoras.",
         icon: <Users className="w-5 h-5 text-emerald-500" />,
         csv: true,
         xlsx: true,
@@ -55,7 +55,7 @@ const EXPORTS: ExportCard[] = [
     {
         id: "maletas",
         title: "Maletas",
-        description: "Todas as maletas com status, peças, vendas e valores.",
+        description: "Todas las maletas con estado, piezas, ventas y valores.",
         icon: <Briefcase className="w-5 h-5 text-amber-500" />,
         csv: true,
         xlsx: true,
@@ -64,7 +64,7 @@ const EXPORTS: ExportCard[] = [
     {
         id: "analytics",
         title: "Analytics (30 dias)",
-        description: "Eventos de acesso dos últimos 30 dias com revendedora e tipo.",
+        description: "Eventos de acceso de los últimos 30 días con revendedora y tipo.",
         icon: <BarChart3 className="w-5 h-5 text-rose-500" />,
         csv: true,
         xlsx: true,
@@ -88,7 +88,7 @@ export default function RelatoriosPage() {
             const res = await fetch(url);
             if (!res.ok) {
                 const err = await res.json().catch(() => ({}));
-                alert(err.error || "Erro ao exportar");
+                alert(err.error || "Error al exportar");
                 return;
             }
 
@@ -106,7 +106,7 @@ export default function RelatoriosPage() {
             a.remove();
             URL.revokeObjectURL(a.href);
         } catch {
-            alert("Erro ao descarregar ficheiro");
+            alert("Error al descargar archivo");
         } finally {
             setDownloading(null);
         }
@@ -114,7 +114,7 @@ export default function RelatoriosPage() {
 
     return (
         <>
-            <AdminTopHeader breadcrumb="Admin" title="Relatórios e Exportação" />
+            <AdminTopHeader breadcrumb="Admin" title="Reportes y Exportación" />
             <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
                 {/* PDF Summary Report */}
                 <div className="admin-card" style={{ border: "1px solid color-mix(in srgb, var(--admin-accent) 30%, transparent)" }}>
@@ -131,7 +131,7 @@ export default function RelatoriosPage() {
                             <div>
                                 <p style={{ fontWeight: 600, fontSize: 15, color: "var(--admin-text)", margin: 0 }}>Relatório Geral (PDF)</p>
                                 <p style={{ fontSize: 13, color: "var(--admin-text-muted)", margin: 0 }}>
-                                    Resumo completo com todas as métricas da Monarca, formatado para impressão.
+                                    Resumen completo con todas las métricas de Monarca, formateado para impresión.
                                 </p>
                             </div>
                         </div>
@@ -146,7 +146,7 @@ export default function RelatoriosPage() {
                             ) : (
                                 <Download className="w-4 h-4" />
                             )}
-                            Descarregar PDF
+                            Descargar PDF
                         </button>
                     </div>
                 </div>
