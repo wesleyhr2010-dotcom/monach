@@ -19,32 +19,34 @@ export function AppHeader({ name, avatarUrl, rank, pontos, notificacoes = 0 }: A
 
   return (
     <header className="flex items-center gap-3 px-5 pt-6 pb-4 sticky top-0 z-10 bg-app-bg">
-      {/* Avatar */}
-      <div
-        className="w-12 h-12 rounded-full bg-app-surface flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-app-primary"
-      >
-        {avatarUrl ? (
-          <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
-        ) : (
-          <User size={24} className="text-app-text" strokeWidth={1.5} />
-        )}
-      </div>
+      {/* Avatar + Nome — clicável para editar perfil */}
+      <Link href="/app/perfil/datos" className="flex items-center gap-3 flex-1 min-w-0 active:opacity-70 transition-opacity">
+        <div
+          className="w-12 h-12 rounded-full bg-app-surface flex items-center justify-center flex-shrink-0 overflow-hidden border-2 border-app-primary"
+        >
+          {avatarUrl ? (
+            <img src={avatarUrl} alt={firstName} className="w-full h-full object-cover" />
+          ) : (
+            <User size={24} className="text-app-text" strokeWidth={1.5} />
+          )}
+        </div>
 
-      {/* Name + Pontos */}
-      <div className="flex flex-col flex-1 min-w-0">
-        <span
-          className="text-[16px] text-app-text leading-5"
-          style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
-        >
-          Hola, {firstName}
-        </span>
-        <span
-          className="text-[12px] text-app-text-secondary leading-4"
-          style={{ fontFamily: "var(--font-raleway)", fontWeight: 500 }}
-        >
-          {pontos.toLocaleString("es-PY")} pts
-        </span>
-      </div>
+        {/* Name + Pontos */}
+        <div className="flex flex-col min-w-0">
+          <span
+            className="text-[16px] text-app-text leading-5"
+            style={{ fontFamily: "var(--font-raleway)", fontWeight: 600 }}
+          >
+            Hola, {firstName}
+          </span>
+          <span
+            className="text-[12px] text-app-text-secondary leading-4"
+            style={{ fontFamily: "var(--font-raleway)", fontWeight: 500 }}
+          >
+            {pontos.toLocaleString("es-PY")} pts
+          </span>
+        </div>
+      </Link>
 
       {/* Rank badge */}
       <div
