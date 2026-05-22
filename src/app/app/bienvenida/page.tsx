@@ -221,7 +221,7 @@ export default function BienvenidaPage() {
 
     if (loading) {
         return (
-            <div className="min-h-[100dvh] bg-app-card-bg flex items-center justify-center">
+            <div className="min-h-[100dvh] bg-app-bg flex items-center justify-center">
                 <div className="w-8 h-8 rounded-full border-[3px] animate-spin border-app-surface border-t-app-primary" />
             </div>
         );
@@ -229,7 +229,7 @@ export default function BienvenidaPage() {
 
     if (error) {
         return (
-            <div className="min-h-[100dvh] bg-app-card-bg flex items-center justify-center p-6">
+            <div className="min-h-[100dvh] bg-app-bg flex items-center justify-center p-6">
                 <div className="text-center">
                     <p className="text-red-500 text-sm font-medium mb-3">
                         Ocurrió un error al cargar tu perfil.
@@ -244,7 +244,7 @@ export default function BienvenidaPage() {
 
     return (
         <div
-            className="min-h-[100dvh] bg-app-card-bg flex flex-col"
+            className="min-h-[100dvh] bg-app-bg flex flex-col"
             style={{
                 paddingTop: "env(safe-area-inset-top)",
                 paddingBottom: "env(safe-area-inset-bottom)",
