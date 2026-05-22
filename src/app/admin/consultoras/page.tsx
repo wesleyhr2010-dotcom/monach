@@ -58,11 +58,11 @@ export default function ConsultorasPage() {
     }
 
     function handleDelete(id: string, name: string) {
-        if (!confirm(`Remover "${name}"? Esta ação não pode ser desfeita.`)) return;
+        if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                toast.success(`"${name}" removida`);
+                toast.success(`"${name}" eliminada`);
                 loadData();
             } else {
                 toast.error(res.error || "Erro ao remover");
@@ -114,17 +114,17 @@ export default function ConsultorasPage() {
                         <Dialog open={showNew} onOpenChange={setShowNew}>
                             <DialogTrigger asChild>
                                 <Button style={{ background: "var(--admin-accent)", color: "#fff" }}>
-                                    <UserPlus className="w-4 h-4 mr-2" /> Nova Consultora
+                                    <UserPlus className="w-4 h-4 mr-2" /> Nueva Consultora
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Nova Consultora</DialogTitle>
+                                    <DialogTitle>Nueva Consultora</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleNew} className="space-y-4">
                                     <div>
-                                        <Label htmlFor="new-name">Nome *</Label>
-                                        <Input id="new-name" name="name" required placeholder="Nome completo" />
+                                        <Label htmlFor="new-name">Nombre *</Label>
+                                        <Input id="new-name" name="name" required placeholder="Nombre completo" />
                                     </div>
                                     <div>
                                         <Label htmlFor="new-whatsapp">WhatsApp *</Label>
@@ -143,7 +143,7 @@ export default function ConsultorasPage() {
                                         <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
                                     </div>
                                     <Button type="submit" className="w-full" disabled={isPending}>
-                                        {isPending ? "Criando..." : "Criar e Enviar Convite"}
+                                        {isPending ? "Creando..." : "Crear y Enviar Invitación"}
                                     </Button>
                                 </form>
                             </DialogContent>
@@ -158,7 +158,7 @@ export default function ConsultorasPage() {
                     <div style={{ position: "relative", flex: "1 1 300px", maxWidth: "420px" }}>
                         <Search className="w-4 h-4" style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "var(--admin-text-muted)" }} />
                         <Input
-                            placeholder="Buscar por nome ou e-mail..."
+                            placeholder="Buscar por nombre o email..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             style={{ paddingLeft: "36px" }}
@@ -183,12 +183,12 @@ export default function ConsultorasPage() {
                 {/* Table */}
                 {loading ? (
                     <div style={{ textAlign: "center", padding: "60px 0", color: "var(--admin-text-muted)", fontFamily: "Raleway, sans-serif", fontSize: 13 }}>
-                        Carregando...
+                        Cargando...
                     </div>
                 ) : filtered.length === 0 ? (
                     <AdminEmptyState
                         icon={Users}
-                        title={search || statusFilter !== "todos" ? "Nenhuma consultora encontrada" : "Nenhuma consultora cadastrada"}
+                        title={search || statusFilter !== "todos" ? "Ninguna consultora encontrada" : "Ninguna consultora registrada"}
                     />
                 ) : (
                     <div style={{ background: "var(--admin-surface)", border: "1px solid var(--admin-surface-hover)", borderRadius: 12, overflow: "hidden" }}>

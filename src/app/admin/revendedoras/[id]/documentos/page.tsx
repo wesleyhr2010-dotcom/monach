@@ -111,7 +111,7 @@ export default function DocumentosRevendedoraPage() {
         {loading ? (
           <div style={{ padding: 40, textAlign: "center", color: "var(--admin-text-muted)", fontSize: 14 }}>Cargando documentos...</div>
         ) : documentos.length === 0 ? (
-          <AdminEmptyState icon={FileText} title="Nenhum documento enviado" description="A revendedora ainda não enviou documentos." />
+          <AdminEmptyState icon={FileText} title="Ningún documento enviado" description="La revendedora aún no ha enviado documentos." />
         ) : (
           <>
             {/* Documento Atual */}

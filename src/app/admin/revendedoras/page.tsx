@@ -388,7 +388,7 @@ export default function RevendedorasPage() {
                             transform: "translateY(-50%)", color: "var(--admin-text-muted)",
                         }} />
                         <Input
-                            placeholder="Buscar por nome, CI ou e-mail..."
+                            placeholder="Buscar por nombre, CI o email..."
                             value={search}
                             onChange={(e) => setSearch(e.target.value)}
                             style={{

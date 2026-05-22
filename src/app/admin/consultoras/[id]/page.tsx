@@ -58,8 +58,8 @@ export default function ConsultoraPerfilPage() {
     if (loading) {
         return (
             <>
-                <AdminTopHeader breadcrumb="Consultoras" backHref="/admin/consultoras" title="Perfil da Consultora" />
-                <div style={{ padding: "28px 32px", color: "var(--admin-text-muted)", fontSize: 14 }}>Carregando perfil...</div>
+                <AdminTopHeader breadcrumb="Consultoras" backHref="/admin/consultoras" title="Perfil de la Consultora" />
+                <div style={{ padding: "28px 32px", color: "var(--admin-text-muted)", fontSize: 14 }}>Cargando perfil...</div>
             </>
         );
     }
@@ -67,7 +67,7 @@ export default function ConsultoraPerfilPage() {
     if (!perfil) {
         return (
             <>
-                <AdminTopHeader breadcrumb="Consultoras" backHref="/admin/consultoras" title="Perfil da Consultora" />
+                <AdminTopHeader breadcrumb="Consultoras" backHref="/admin/consultoras" title="Perfil de la Consultora" />
                 <div style={{ padding: "28px 32px", color: "var(--admin-text-muted)", fontSize: 14 }}>Consultora não encontrada</div>
             </>
         );
@@ -82,7 +82,7 @@ export default function ConsultoraPerfilPage() {
                 action={
                     <div style={{ display: "flex", gap: 8 }}>
                         <button className="admin-btn admin-btn-secondary" onClick={() => setShowEdit(true)}>
-                            Editar Dados
+                            Editar Datos
                         </button>
                         <button
                             className="admin-btn"
@@ -174,7 +174,7 @@ export default function ConsultoraPerfilPage() {
                         <span style={{ fontSize: 12, color: "var(--admin-text-muted)" }}>{perfil.revendedoras.length} total</span>
                     </div>
                     {perfil.revendedoras.length === 0 ? (
-                        <div style={{ padding: 24, color: "var(--admin-text-muted)", fontSize: 13 }}>Nenhuma revendedora vinculada</div>
+                        <div style={{ padding: 24, color: "var(--admin-text-muted)", fontSize: 13 }}>Ninguna revendedora vinculada</div>
                     ) : (
                         <div className="admin-table-wrap">
                             <table className="admin-table">
@@ -263,7 +263,7 @@ export default function ConsultoraPerfilPage() {
                         </div>
                         <form onSubmit={handleEdit} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                             {[
-                                { id: "edit-name", name: "name", label: "Nome *", required: true, defaultValue: perfil.name },
+                                { id: "edit-name", name: "name", label: "Nombre *", required: true, defaultValue: perfil.name },
                                 { id: "edit-whatsapp", name: "whatsapp", label: "WhatsApp *", required: true, defaultValue: perfil.whatsapp },
                                 { id: "edit-email", name: "email", label: "Email", type: "email", defaultValue: perfil.email },
                                 { id: "edit-taxa", name: "taxa_comissao", label: "Comissão %", type: "number", defaultValue: String(perfil.taxa_comissao), step: "0.01" },
@@ -290,11 +290,11 @@ export default function ConsultoraPerfilPage() {
                                 </select>
                             </div>
                             <div>
-                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nova Foto</label>
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nueva Foto</label>
                                 <input name="avatar" type="file" accept="image/*" className="admin-input" style={{ width: "100%" }} />
                             </div>
                             <button type="submit" disabled={isPending} className="admin-btn admin-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
-                                {isPending ? "Salvando..." : "Salvar Alterações"}
+                                {isPending ? "Guardando..." : "Guardar Cambios"}
                             </button>
                         </form>
                     </div>

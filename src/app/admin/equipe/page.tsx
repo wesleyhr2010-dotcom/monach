@@ -49,7 +49,7 @@ export default function EquipePage() {
         startTransition(async () => {
             const res = await criarColaboradora(fd);
             if (res.success) {
-                toast.success("Colaboradora criada!");
+                toast.success("Consultora creada!");
                 setShowNewColab(false);
                 loadData();
             } else {
@@ -64,7 +64,7 @@ export default function EquipePage() {
         startTransition(async () => {
             const res = await criarRevendedora(fd);
             if (res.success) {
-                toast.success("Revendedora criada!");
+                toast.success("Revendedora creada!");
                 setShowNewRevend(false);
                 loadData();
             } else {
@@ -74,11 +74,11 @@ export default function EquipePage() {
     }
 
     function handleDelete(id: string, name: string) {
-        if (!confirm(`Remover "${name}"? Esta ação não pode ser desfeita.`)) return;
+        if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                toast.success(`"${name}" removida`);
+                toast.success(`"${name}" eliminada`);
                 loadData();
             } else {
                 toast.error(res.error || "Erro");
@@ -91,7 +91,7 @@ export default function EquipePage() {
             const cId = colaboradoraId === "none" ? null : colaboradoraId;
             const res = await vincularRevendedora(revendedoraId, cId);
             if (res.success) {
-                toast.success("Vínculo atualizado!");
+                toast.success("¡Vínculo actualizado!");
                 loadData();
             } else {
                 toast.error(res.error || "Erro");
@@ -112,7 +112,7 @@ export default function EquipePage() {
                             onClick={() => setShowNewColab(true)}
                         >
                             <UserPlus size={14} />
-                            Nova Consultora
+                                Nueva Consultora
                         </button>
                     ) : (
                         <button
@@ -121,7 +121,7 @@ export default function EquipePage() {
                             onClick={() => setShowNewRevend(true)}
                         >
                             <UserPlus size={14} />
-                            Nova Revendedora
+                            Nueva Revendedora
                         </button>
                     )
                 }
@@ -154,7 +154,7 @@ export default function EquipePage() {
                 {/* ===== COLABORADORAS TAB ===== */}
                 {tab === "colaboradoras" && (
                     colaboradoras.length === 0 ? (
-                        <AdminEmptyState icon={Users} title="Nenhuma consultora cadastrada" description="Adicione a primeira consultora pelo botão acima." />
+                        <AdminEmptyState icon={Users} title="Ninguna consultora registrada" description="Agregue la primera consultora con el botón de arriba." />
                     ) : (
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 16 }}>
                             {colaboradoras.map((c) => (
@@ -170,7 +170,7 @@ export default function EquipePage() {
                                         <button
                                             className="admin-btn-icon"
                                             onClick={() => handleDelete(c.id, c.name)}
-                                            title="Remover"
+                                            title="Eliminar"
                                             style={{ background: "transparent", border: "none", color: "var(--admin-danger)", cursor: "pointer" }}
                                         >
                                             <Trash2 size={15} />
@@ -193,13 +193,13 @@ export default function EquipePage() {
                 {/* ===== REVENDEDORAS TAB ===== */}
                 {tab === "revendedoras" && (
                     revendedoras.length === 0 ? (
-                        <AdminEmptyState icon={Users} title="Nenhuma revendedora cadastrada" description="Adicione a primeira revendedora pelo botão acima." />
+                        <AdminEmptyState icon={Users} title="Ninguna revendedora registrada" description="Agregue la primera revendedora con el botón de arriba." />
                     ) : (
                         <div className="admin-card" style={{ padding: 0 }}>
                             <table className="admin-table">
                                 <thead>
                                     <tr>
-                                        <th>Nome</th>
+                                        <th>Nombre</th>
                                         <th>WhatsApp</th>
                                         <th>Comissão</th>
                                         <th>Consultora</th>
@@ -236,7 +236,7 @@ export default function EquipePage() {
                                                         cursor: "pointer",
                                                     }}
                                                 >
-                                                    <option value="none">Sem vínculo</option>
+                                                    <option value="none">Sin vínculo</option>
                                                     {colaboradoras.map((c) => (
                                                         <option key={c.id} value={c.id}>{c.name}</option>
                                                     ))}
@@ -275,7 +275,7 @@ export default function EquipePage() {
                     }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                             <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: "var(--admin-text)", margin: 0 }}>
-                                Nova Consultora
+                            Nueva Consultora
                             </h3>
                             <button className="admin-btn-icon" onClick={() => setShowNewColab(false)}>
                                 <X size={16} />
@@ -283,8 +283,8 @@ export default function EquipePage() {
                         </div>
                         <form onSubmit={handleNewColab} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                             <div>
-                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nome *</label>
-                                <input name="name" required placeholder="Nome completo" className="admin-input" style={{ width: "100%" }} />
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nombre *</label>
+                                <input name="name" required placeholder="Nombre completo" className="admin-input" style={{ width: "100%" }} />
                             </div>
                             <div>
                                 <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>WhatsApp *</label>
@@ -303,7 +303,7 @@ export default function EquipePage() {
                                 <input name="avatar" type="file" accept="image/*" className="admin-input" style={{ width: "100%" }} />
                             </div>
                             <button type="submit" disabled={isPending} className="admin-btn admin-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
-                                {isPending ? "Criando..." : "Criar Consultora"}
+                                {isPending ? "Creando..." : "Crear Consultora"}
                             </button>
                         </form>
                     </div>
@@ -325,7 +325,7 @@ export default function EquipePage() {
                     }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                             <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 18, color: "var(--admin-text)", margin: 0 }}>
-                                Nova Revendedora
+                            Nueva Revendedora
                             </h3>
                             <button className="admin-btn-icon" onClick={() => setShowNewRevend(false)}>
                                 <X size={16} />
@@ -333,8 +333,8 @@ export default function EquipePage() {
                         </div>
                         <form onSubmit={handleNewRevend} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
                             <div>
-                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nome *</label>
-                                <input name="name" required placeholder="Nome completo" className="admin-input" style={{ width: "100%" }} />
+                                <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Nombre *</label>
+                                <input name="name" required placeholder="Nombre completo" className="admin-input" style={{ width: "100%" }} />
                             </div>
                             <div>
                                 <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>WhatsApp *</label>
@@ -351,7 +351,7 @@ export default function EquipePage() {
                             <div>
                                 <label style={{ fontSize: 11, fontWeight: 700, letterSpacing: 1, textTransform: "uppercase", color: "var(--admin-text-dim)", display: "block", marginBottom: 6 }}>Consultora</label>
                                 <select name="colaboradora_id" style={{ width: "100%", padding: "8px 12px", borderRadius: 6, border: "1px solid var(--admin-border)", background: "var(--admin-bg)", color: "var(--admin-text)", fontSize: 13 }}>
-                                    <option value="">Sem consultora</option>
+                                    <option value="">Sin consultora</option>
                                     {colaboradoras.map((c) => (
                                         <option key={c.id} value={c.id}>{c.name}</option>
                                     ))}
@@ -362,7 +362,7 @@ export default function EquipePage() {
                                 <input name="avatar" type="file" accept="image/*" className="admin-input" style={{ width: "100%" }} />
                             </div>
                             <button type="submit" disabled={isPending} className="admin-btn admin-btn-primary" style={{ width: "100%", justifyContent: "center" }}>
-                                {isPending ? "Criando..." : "Criar Revendedora"}
+                                {isPending ? "Creando..." : "Crear Revendedora"}
                             </button>
                         </form>
                     </div>

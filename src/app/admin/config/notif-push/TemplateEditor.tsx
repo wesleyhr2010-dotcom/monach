@@ -24,7 +24,7 @@ const TIPO_LABELS: Record<string, string> = {
   prazo_proximo_d1: "Prazo próximo (D-1)",
   maleta_atrasada: "Maleta atrasada",
   maleta_devolvida_admin: "Devolución recibida (admin)",
-  nova_maleta_revendedora: "Nova maleta (revendedora)",
+  nova_maleta_revendedora: "Nueva maleta (revendedora)",
   brinde_disponivel: "Brinde aprobado",
   pontos_concedidos: "Puntos ganhos",
   teste: "Prueba",

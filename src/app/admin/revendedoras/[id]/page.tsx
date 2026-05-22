@@ -355,7 +355,7 @@ export default function RevendedoraPerfilPage() {
                             </div>
                             <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
                                 {perfil.maletas.length === 0 ? (
-                                    <AdminEmptyState title="Nenhuma maleta" />
+                                    <AdminEmptyState title="Ninguna maleta" />
                                 ) : (
                                     perfil.maletas.slice(0, 5).map((m) => (
                                         <div key={m.id} style={{
@@ -477,7 +477,7 @@ export default function RevendedoraPerfilPage() {
                                     )}
                                 </div>
                             ) : (
-                                <AdminEmptyState title="Nenhum dado bancário cadastrado" />
+                                <AdminEmptyState title="Ningún dato bancario registrado" />
                             )}
                         </div>
 
