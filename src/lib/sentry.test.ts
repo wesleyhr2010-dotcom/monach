@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { captureServerActionError, setUserContext, clearUserContext } from "./sentry";
 
 // Mock Sentry
@@ -16,9 +16,9 @@ const mockCaptureException = vi.fn();
 const mockSetUserGlobal = vi.fn();
 
 vi.mock("@sentry/nextjs", () => ({
-  withScope: (...args: unknown[]) => mockWithScope(...args),
-  captureException: (...args: unknown[]) => mockCaptureException(...args),
-  setUser: (...args: unknown[]) => mockSetUserGlobal(...args),
+  withScope: (cb: unknown) => mockWithScope(cb),
+  captureException: (err: unknown) => mockCaptureException(err),
+  setUser: (user: unknown) => mockSetUserGlobal(user),
 }));
 
 describe("sentry helpers", () => {

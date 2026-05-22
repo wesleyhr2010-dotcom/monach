@@ -22,6 +22,9 @@ describe("RBAC Scope Leak Suite", () => {
                 role: "COLABORADORA",
                 email: "a@test.com",
                 name: "Colab A",
+                isActive: true,
+                colaboradoraId: null,
+                rawUser: { id: "auth-a" },
             };
             const scope = getResellerScope(colabA);
             expect(scope).toEqual({ colaboradora_id: "colab-a" });
@@ -72,6 +75,9 @@ describe("RBAC Scope Leak Suite", () => {
                 role: "COLABORADORA",
                 email: "a@test.com",
                 name: "Colab A",
+                isActive: true,
+                colaboradoraId: null,
+                rawUser: { id: "auth-a" },
             };
             // COLABORADORA não deve ter acesso a dados de outras COLABORADORAs
             expect(colabA.role).not.toBe("ADMIN");
@@ -137,6 +143,9 @@ describe("RBAC Scope Leak Suite", () => {
                 role: "REVENDEDORA",
                 email: "rev@test.com",
                 name: "Rev A",
+                isActive: true,
+                colaboradoraId: null,
+                rawUser: { id: "auth-rev" },
             };
             expect(rev.role).not.toBe("ADMIN");
             expect(rev.role).not.toBe("COLABORADORA");
@@ -149,6 +158,9 @@ describe("RBAC Scope Leak Suite", () => {
                 role: "COLABORADORA",
                 email: "colab@test.com",
                 name: "Colab A",
+                isActive: true,
+                colaboradoraId: null,
+                rawUser: { id: "auth-colab" },
             };
             expect(colab.role).not.toBe("ADMIN");
         });
@@ -160,6 +172,9 @@ describe("RBAC Scope Leak Suite", () => {
                 role: "REVENDEDORA",
                 email: "rev@test.com",
                 name: "Rev A",
+                isActive: true,
+                colaboradoraId: null,
+                rawUser: { id: "auth-rev" },
             };
             const scope = getResellerScope(rev);
             expect(scope).toEqual({ id: "rev-a" });

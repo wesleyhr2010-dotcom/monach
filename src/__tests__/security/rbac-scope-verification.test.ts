@@ -61,8 +61,7 @@ describe("RBAC Scope Verification", () => {
     it("retorna error quando revendedora não pertence à colaboradora", async () => {
       mockedPrisma.reseller.findFirst.mockResolvedValue(null);
       const result = await assertIsInGroup("rev-1", "colab-1");
-      expect(result.success).toBe(false);
-      expect(result.error).toContain("no pertenece a tu equipo");
+      expect(result).toMatchObject({ success: false, error: expect.stringContaining("no pertenece a tu equipo") });
     });
   });
 });

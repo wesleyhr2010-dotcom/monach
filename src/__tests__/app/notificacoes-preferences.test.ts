@@ -44,7 +44,10 @@ const MOCK_USER = {
     email: "test@example.com",
     role: "REVENDEDORA" as const,
     profileId: MOCK_RESELLER_ID,
+    name: "Test User",
     isActive: true,
+    colaboradoraId: null,
+    rawUser: { id: "user-123" },
 };
 
 describe("Preferências de Notificações — getPreferenciasNotificaciones", () => {
@@ -124,7 +127,6 @@ describe("Preferências de Notificações — actualizarPreferenciasNotificacion
     });
 
     it("deve validar schema Zod e rejeitar dados inválidos", async () => {
-        // @ts-expect-error — teste de validação com dados inválidos
         const invalidData = {
             nova_maleta: "sim", // deve ser boolean
             prazo_proximo: true,
@@ -134,6 +136,7 @@ describe("Preferências de Notificações — actualizarPreferenciasNotificacion
             pontos_ganhos: false,
         };
 
+        // @ts-expect-error — teste de validação com dado inválido (nova_maleta como string)
         await expect(actualizarPreferenciasNotificaciones(invalidData)).rejects.toThrow();
         expect(mockedPrisma.notificacaoPreferencia.upsert).not.toHaveBeenCalled();
     });

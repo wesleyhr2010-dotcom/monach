@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { htmlToPlainText, substituirVariaveis } from "@/lib/notifications-shared";
 import { sanitizeTemplateVars } from "@/lib/notifications-server";
 

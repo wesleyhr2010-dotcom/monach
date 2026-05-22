@@ -110,8 +110,7 @@ describe("Segurança — assertIsInGroup", () => {
     it("deve retornar error quando revendedora não pertence à colaboradora", async () => {
         mockedPrisma.reseller.findFirst.mockResolvedValue(null);
         const result = await assertIsInGroup("rev-1", "colab-1");
-        expect(result.success).toBe(false);
-        expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
+        expect(result).toMatchObject({ success: false, error: expect.stringContaining("Esta revendedora no pertenece a tu equipo.") });
     });
 
     it("deve retornar success quando revendedora pertence à colaboradora", async () => {
@@ -156,19 +155,18 @@ describe("Segurança — IDOR na app (/app actions)", () => {
     email: "colab@example.com",
     profileId: "colab-1",
     name: "Colab",
-    role: "COLABORADORA",
+    role: "COLABORADORA" as const,
     isActive: true,
     colaboradoraId: null,
     rawUser: { id: "u1" },
-  } as Awaited<ReturnType<typeof getCurrentUser>>;
+  };
 
   it("COLABORADORA não deve acessar getMinhasMaletas de revendedora fora do grupo", async () => {
     mockedRequireAuth.mockResolvedValue(colabUser);
     mockedPrisma.reseller.findFirst.mockResolvedValue(null); // fora do grupo
 
     const result = await getMinhasMaletas("rev-fora-do-grupo");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
+    expect(result).toMatchObject({ success: false, error: expect.stringContaining("Esta revendedora no pertenece a tu equipo.") });
   });
 
   it("COLABORADORA não deve acessar getMinhasVendas de revendedora fora do grupo", async () => {
@@ -176,8 +174,7 @@ describe("Segurança — IDOR na app (/app actions)", () => {
     mockedPrisma.reseller.findFirst.mockResolvedValue(null);
 
     const result = await getMinhasVendas("rev-fora-do-grupo");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
+    expect(result).toMatchObject({ success: false, error: expect.stringContaining("Esta revendedora no pertenece a tu equipo.") });
   });
 
   it("COLABORADORA não deve acessar getResumoFinanceiro de revendedora fora do grupo", async () => {
@@ -185,7 +182,6 @@ describe("Segurança — IDOR na app (/app actions)", () => {
     mockedPrisma.reseller.findFirst.mockResolvedValue(null);
 
     const result = await getResumoFinanceiro("rev-fora-do-grupo");
-    expect(result.success).toBe(false);
-    expect(result.error).toContain("Esta revendedora no pertenece a tu equipo.");
+    expect(result).toMatchObject({ success: false, error: expect.stringContaining("Esta revendedora no pertenece a tu equipo.") });
   });
 });
