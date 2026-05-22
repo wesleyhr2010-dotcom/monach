@@ -108,7 +108,8 @@ async function criarUsuarioAuthEEnviarConvite(params: {
 // ============================================
 
 export async function getColaboradoras(): Promise<ColaboradoraItem[]> {
-    await requireAuth(["ADMIN"]);
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+    if (user.role !== "ADMIN") return [];
     const data = await prisma.reseller.findMany({
         where: { role: "COLABORADORA" },
         orderBy: { name: "asc" },
