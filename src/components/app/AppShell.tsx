@@ -32,7 +32,11 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
         router.refresh();
     };
 
-    if (pathname.startsWith("/app/login") || pathname.startsWith("/app/bienvenida")) {
+    if (
+        pathname.startsWith("/app/login") ||
+        pathname.startsWith("/app/bienvenida") ||
+        pathname.startsWith("/app/nueva-contrasena")
+    ) {
         return (
             <div className="app-shell bg-app-bg text-app-text font-sans min-h-[100dvh]" data-theme={resolvedTheme} suppressHydrationWarning>
                 {children}

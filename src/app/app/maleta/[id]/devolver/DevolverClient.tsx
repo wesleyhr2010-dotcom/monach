@@ -121,7 +121,7 @@ export default function DevolverClient({
   // ── Paso 4 (read-only o sucesso) ──
   if (step === 4 || isReadOnly) {
     return (
-      <div className="flex flex-col min-h-full bg-app-bg relative px-5 pt-6 pb-10">
+      <div className="flex flex-col min-h-full bg-app-bg relative px-5 pt-6 pb-10 app-nav-clearance">
         <AppPageHeader
           title={isReadOnly ? "Estado de Devolución" : "¡Devolución Enviada!"}
           backHref={`/app/maleta/${maleta.id}`}
@@ -192,7 +192,7 @@ export default function DevolverClient({
           backPattern="modal-close"
         />
 
-        <div className="flex flex-col px-5 gap-5 pb-[120px]">
+        <div className="flex flex-col px-5 gap-5 pb-2 app-nav-clearance">
           {isOverdue && (
             <AlertBanner
               variant="warning"
@@ -287,7 +287,7 @@ export default function DevolverClient({
           backPattern="modal-close"
         />
 
-        <div className="flex flex-col px-5 gap-5 pb-[120px]">
+        <div className="flex flex-col px-5 gap-5 pb-2 app-nav-clearance">
           <p
             className="text-app-text-secondary font-medium text-sm leading-[18px]"
             style={{ fontFamily: "var(--font-raleway)" }}

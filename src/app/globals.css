@@ -155,6 +155,17 @@
   }
 }
 
+/* Bottom-nav clearance: ensures last element clears the floating AppBottomNav (mobile only).
+   Nav pill is 59px tall; +24px breathing room; respects iOS safe-area-inset-bottom. */
+.app-nav-clearance {
+  padding-bottom: calc(59px + env(safe-area-inset-bottom) + 24px);
+}
+@media (min-width: 768px) {
+  .app-nav-clearance {
+    padding-bottom: 0;
+  }
+}
+
 .app-shell, .app-shell *,
 .admin-layout, .admin-layout * {
   transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease, fill 250ms ease;

@@ -116,7 +116,7 @@ export default async function MaletaPage() {
       </div>
 
       {/* Content */}
-      <div className="flex flex-col pb-[140px] gap-3 px-5">
+      <div className="flex flex-col pb-2 app-nav-clearance gap-3 px-5">
         <MaletaList maletas={maletas} />
       </div>
     </div>

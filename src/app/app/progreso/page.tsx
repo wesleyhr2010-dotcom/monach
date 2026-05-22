@@ -21,7 +21,7 @@ export default async function ProgressoPage() {
     const { regras, totalPuntos } = await getRegrasProgresso();
 
     return (
-        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh]">
+        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-full app-nav-clearance">
             {/* Header */}
             <div className="flex items-center justify-between mb-4">
                 <h1

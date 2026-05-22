@@ -332,7 +332,7 @@ export default function PreferenciasNotificacionesForm({
             </p>
 
             {/* Lista de preferências */}
-            <div className="px-4 pb-4 space-y-2">
+            <div className="px-4 pb-4 space-y-2 app-nav-clearance">
                 {NOTIFICACIONES_CONFIG.map((config) => {
                     const isOn = optimisticPrefs[config.key];
                     return (

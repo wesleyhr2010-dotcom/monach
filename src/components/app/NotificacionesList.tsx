@@ -58,7 +58,7 @@ export function NotificacionesList({ grupo }: NotificacionesListProps) {
     <div className="flex flex-col min-h-full bg-app-bg">
       <AppPageHeader title="Notificaciones" backHref="/app" />
 
-      <div className="flex-1 px-5 pb-8 flex flex-col gap-6">
+      <div className="flex-1 px-5 pb-8 app-nav-clearance flex flex-col gap-6">
         {total === 0 && <NotificacionEmptyState />}
 
         {hoy.length > 0 && (

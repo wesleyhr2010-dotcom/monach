@@ -128,7 +128,7 @@ export function DesempenoView({
       </div>
 
       {isLoading && (
-        <div className="px-5 pb-8 flex flex-col gap-4">
+        <div className="px-5 pb-8 app-nav-clearance flex flex-col gap-4">
           <div className="grid grid-cols-2 gap-3">
             <SkeletonCard />
             <SkeletonCard />
@@ -141,7 +141,7 @@ export function DesempenoView({
       )}
 
       {!isLoading && isEmpty && (
-        <div className="px-5 pb-8 flex-1 flex items-center justify-center">
+        <div className="px-5 pb-8 app-nav-clearance flex-1 flex items-center justify-center">
           <EmptyState
             title="Sin datos aún"
             description="Tu vitrina aún no tiene visitas. ¡Comparte tu catálogo para empezar a ver métricas!"
@@ -150,7 +150,7 @@ export function DesempenoView({
       )}
 
       {!isLoading && data && !isEmpty && (
-        <div className="px-5 pb-8 flex flex-col gap-5">
+        <div className="px-5 pb-8 app-nav-clearance flex flex-col gap-5">
           {/* Metric Cards */}
           <div className="grid grid-cols-2 gap-3">
             <MetricCardTrend

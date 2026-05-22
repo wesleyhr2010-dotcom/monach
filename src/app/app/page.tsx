@@ -86,7 +86,7 @@ export default async function AppDashboardPage() {
     null;
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col app-nav-clearance">
       {/* Header */}
       <AppHeader
         name={data.nome}

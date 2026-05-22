@@ -44,7 +44,7 @@ export default async function MaisPage() {
     <div className="flex flex-col min-h-full bg-app-bg">
       <MenuHeader title="MÁS OPCIONES" backHref="/app" />
 
-      <div className="flex-1 px-5 pb-8 flex flex-col gap-5">
+      <div className="flex-1 px-5 pb-4 app-nav-clearance flex flex-col gap-5">
         {/* Mi Cuenta */}
         <MenuSectionCard label="Mi Cuenta">
           <MenuRow icon={<UserCog {...ICON_PROPS} />} label="Editar Perfil" href="/app/perfil" />

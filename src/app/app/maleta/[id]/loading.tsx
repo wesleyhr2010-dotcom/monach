@@ -8,7 +8,7 @@ import { Skeleton } from "@/components/ui/skeleton";
  */
 export default function MaletaDetailLoading() {
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-app-bg relative">
+    <div className="flex flex-col min-h-full bg-app-bg relative">
       {/* ── Header ── */}
       <div className="flex items-center pt-6 pb-4 gap-4 bg-app-bg px-5 sticky top-0 z-10">
         <Skeleton className="w-6 h-6 flex-shrink-0" />
@@ -20,7 +20,7 @@ export default function MaletaDetailLoading() {
       </div>
 
       {/* ── Scrollable content ── */}
-      <div className="flex flex-col pb-[200px] px-5 gap-5">
+      <div className="flex flex-col pb-2 app-nav-clearance px-5 gap-5">
         {/* Total Vendido summary card */}
         <div className="flex items-center justify-between rounded-2xl bg-app-surface p-4">
           <div className="flex items-center gap-3">

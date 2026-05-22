@@ -10,7 +10,7 @@ export default async function ExtractoPage() {
     const { extrato, saldo, hasMore } = await getExtratoPontos(0);
 
     return (
-        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh]">
+        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-full app-nav-clearance">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <Link href="/app/progreso" className="text-app-text-secondary text-sm flex items-center gap-1">

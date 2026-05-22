@@ -69,7 +69,7 @@ export default function MaletaDetailClient({ maleta }: MaletaDetailClientProps) 
       </div>
 
       {/* Scrollable content */}
-      <div className="flex flex-col pb-[200px] px-5 gap-5">
+      <div className="flex flex-col pb-2 app-nav-clearance px-5 gap-5">
         {/* Total Vendido summary card */}
         <SummaryCard
           icon={

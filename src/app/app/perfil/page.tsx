@@ -78,7 +78,7 @@ export default async function PerfilPage() {
             </div>
 
             {/* Logout */}
-            <div className="px-4 pb-8 pt-2">
+            <div className="px-4 pb-8 pt-2 app-nav-clearance">
                 <form action={logoutApp}>
                     <button
                         type="submit"

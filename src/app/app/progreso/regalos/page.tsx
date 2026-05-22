@@ -40,7 +40,7 @@ export default function RegalosPage() {
 
     if (error && !data) {
         return (
-            <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh] items-center justify-center">
+            <div className="flex flex-col px-5 py-6 bg-app-bg min-h-full app-nav-clearance items-center justify-center">
                 <p className="text-red-500 text-sm">{error}</p>
             </div>
         );
@@ -48,14 +48,14 @@ export default function RegalosPage() {
 
     if (loading || !data) {
         return (
-            <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh] items-center justify-center">
+            <div className="flex flex-col px-5 py-6 bg-app-bg min-h-full app-nav-clearance items-center justify-center">
                 <div className="w-8 h-8 rounded-full border-[3px] animate-spin border-app-surface border-t-app-primary" />
             </div>
         );
     }
 
     return (
-        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-[100dvh]">
+        <div className="flex flex-col px-5 py-6 bg-app-bg min-h-full app-nav-clearance">
             {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <Link href="/app/progreso" className="text-app-text-secondary text-sm flex items-center gap-1">

@@ -92,14 +92,14 @@ export default function DatosBancariosPage() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-app-bg flex items-center justify-center">
+            <div className="min-h-full bg-app-bg flex items-center justify-center">
                 <div className="w-8 h-8 rounded-full border-[3px] animate-spin border-app-surface border-t-app-primary" />
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-app-bg">
+        <div className="min-h-full bg-app-bg">
             <div className="bg-app-card-bg px-4 py-4 flex items-center gap-3 border-b border-app-border sticky top-0 z-10">
                 <button onClick={() => router.push("/app/perfil")} className="p-1 -ml-1">
                     <ArrowLeft className="w-5 h-5 text-app-text" />
@@ -107,7 +107,7 @@ export default function DatosBancariosPage() {
                 <h1 className="text-base font-bold text-app-text">Datos Bancarios</h1>
             </div>
 
-            <div className="px-4 py-5 max-w-lg mx-auto">
+            <div className="px-4 py-5 max-w-lg mx-auto app-nav-clearance">
                 <div className="flex items-center gap-2 mb-4 text-app-text-secondary">
                     <Landmark className="w-4 h-4" />
                     <p className="text-xs">Usados solo para comisiones</p>
