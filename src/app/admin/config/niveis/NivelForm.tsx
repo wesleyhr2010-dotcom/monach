@@ -73,7 +73,7 @@ export default function NivelForm({ nivel, onClose, onSaved }: NivelFormProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <h3 style={{ margin: "0 0 16px", fontSize: "16px", fontWeight: 600 }}>
-          {nivel ? "Editar Nivel" : "Novo Nivel de Gamificación"}
+          {nivel ? "Editar Nivel" : "Nuevo Nivel de Gamificación"}
         </h3>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>

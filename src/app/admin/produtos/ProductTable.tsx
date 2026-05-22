@@ -125,7 +125,7 @@ export function ProductTable({ products }: { products: Product[] }) {
                                     {/* Tipo */}
                                     <td>
                                         <span className={`admin-badge ${product.product_type === "variable" ? "admin-badge-variable" : "admin-badge-simple"}`}>
-                                            {product.product_type === "variable" ? "Variable" : "Simple"}
+                                            {product.product_type === "variable" ? "Variable" : "Sencillo"}
                                         </span>
                                     </td>
 

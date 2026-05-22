@@ -60,7 +60,7 @@ export default function ContratosClient({ initialContratos }: ContratosClientPro
           onClick={() => setShowUpload(true)}
           className="admin-btn admin-btn-primary admin-btn-sm"
         >
-          <Plus size={14} /> Novo Contrato
+          <Plus size={14} /> Nuevo Contrato
         </button>
       </div>
 
@@ -69,9 +69,9 @@ export default function ContratosClient({ initialContratos }: ContratosClientPro
           <thead>
             <tr>
               <th>Nombre</th>
-              <th>Obrigatório</th>
+              <th>Obligatorio</th>
               <th>Estado</th>
-              <th style={{ width: "140px" }}>Ações</th>
+              <th style={{ width: "140px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -79,7 +79,7 @@ export default function ContratosClient({ initialContratos }: ContratosClientPro
               <tr>
                 <td colSpan={4} style={{ textAlign: "center", padding: "32px", color: "var(--admin-text-muted)" }}>
                   <AlertTriangle size={20} style={{ marginBottom: "8px" }} />
-                  <p>Nenhum contrato cadastrado.</p>
+                  <p>Ningún contrato registrado.</p>
                 </td>
               </tr>
             ) : (

@@ -25,11 +25,11 @@ export default function ComissoesClient({ initialTiers }: ComissoesClientProps) 
   const [isPending, startTransition] = useTransition();
 
   async function handleDelete(id: string) {
-    if (!confirm("¿Eliminar esta faixa?")) return;
+    if (!confirm("¿Eliminar esta franja?")) return;
     startTransition(async () => {
       const result = await deleteCommissionTier(id);
       if (result.success) {
-        toast.success("Faixa eliminada");
+        toast.success("Franja eliminada");
         setTiers((prev) => prev.filter((t) => t.id !== id));
       } else {
         toast.error(result.error || "Error al eliminar");
@@ -46,13 +46,13 @@ export default function ComissoesClient({ initialTiers }: ComissoesClientProps) 
   return (
     <>
       <AdminSectionCard
-        title="Faixas de Comissão"
+        title="Franjas de Comisión"
         action={
           <button
             className="admin-btn admin-btn-primary admin-btn-sm"
             onClick={() => { setEditingTier(null); setShowForm(true); }}
           >
-            <Plus size={14} /> Nova Faixa
+            <Plus size={14} /> Nueva Franja
           </button>
         }
         noPadContent
@@ -63,14 +63,14 @@ export default function ComissoesClient({ initialTiers }: ComissoesClientProps) 
               <th>Mínimo de ventas (Gs)</th>
               <th>Comisión (%)</th>
               <th>Estado</th>
-              <th style={{ width: 100 }}>Ações</th>
+              <th style={{ width: 100 }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
             {tiers.length === 0 ? (
               <tr>
                 <td colSpan={4} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
-                  Nenhuma faixa cadastrada.
+                  Ninguna franja registrada.
                 </td>
               </tr>
             ) : tiers.map((tier) => (
@@ -100,7 +100,7 @@ export default function ComissoesClient({ initialTiers }: ComissoesClientProps) 
                     </button>
                     <button
                       className="admin-btn admin-btn-icon"
-                      title={tier.min_sales_value === 0 ? "No se puede eliminar la faixa base" : "Eliminar"}
+                      title={tier.min_sales_value === 0 ? "No se puede eliminar la franja base" : "Eliminar"}
                       style={{ color: "var(--admin-danger)", opacity: tier.min_sales_value === 0 ? 0.4 : 1 }}
                       onClick={() => handleDelete(tier.id)}
                       disabled={isPending || tier.min_sales_value === 0}

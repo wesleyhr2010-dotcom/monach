@@ -347,7 +347,7 @@ function ConferirItemsTable({ itens, recebidos, onChangeRecebido }: ConferirItem
               fontFamily: "Raleway,system-ui,sans-serif",
             }}
           >
-            Todos os itens foram vendidos — nenhum retorno esperado.
+            Todos los artículos fueron vendidos — ningún retorno esperado.
           </div>
         )}
       </div>

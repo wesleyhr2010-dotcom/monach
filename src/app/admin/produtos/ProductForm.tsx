@@ -147,7 +147,7 @@ export function ProductForm({ product, allCategories = [] }: ProductFormProps) {
                                     value={productType}
                                     onChange={(e) => setProductType(e.target.value)}
                                 >
-                                    <option value="simple">Simple</option>
+                                    <option value="simple">Sencillo</option>
                                     <option value="variable">Variable</option>
                                 </select>
                             </div>

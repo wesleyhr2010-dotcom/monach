@@ -76,7 +76,7 @@ export default function MaletasPage() {
           <Link href="/admin/maleta/nova">
             <button className="admin-btn admin-btn-primary" style={{ borderRadius: "var(--admin-radius-pill)", display: "inline-flex", alignItems: "center", gap: 6 }}>
               <Plus className="w-3.5 h-3.5" />
-              Nova Maleta
+              Nueva Maleta
             </button>
           </Link>
         }

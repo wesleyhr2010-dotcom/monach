@@ -54,7 +54,7 @@ export default function NiveisClient({ initialNiveis }: NiveisClientProps) {
           }}
           className="admin-btn admin-btn-primary admin-btn-sm"
         >
-          <Plus size={14} /> Novo Nivel
+          <Plus size={14} /> Nuevo Nivel
         </button>
       </div>
 
@@ -67,7 +67,7 @@ export default function NiveisClient({ initialNiveis }: NiveisClientProps) {
               <th>Color</th>
               <th>Orden</th>
               <th>Estado</th>
-              <th style={{ width: "100px" }}>Ações</th>
+              <th style={{ width: "100px" }}>Acciones</th>
             </tr>
           </thead>
           <tbody>
@@ -75,7 +75,7 @@ export default function NiveisClient({ initialNiveis }: NiveisClientProps) {
               <tr>
                 <td colSpan={6} style={{ textAlign: "center", padding: "32px", color: "var(--admin-text-muted)" }}>
                   <AlertTriangle size={20} style={{ marginBottom: "8px" }} />
-                  <p>Nenhum nivel cadastrado.</p>
+                  <p>Ningún nivel registrado.</p>
                 </td>
               </tr>
             ) : (

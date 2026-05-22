@@ -98,7 +98,7 @@ export default function ContratoUploadModal({
         onClick={(e) => e.stopPropagation()}
       >
         <h3 style={{ margin: "0 0 16px", fontSize: "16px", fontWeight: 600 }}>
-          Novo Contrato
+          Nuevo Contrato
         </h3>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>
@@ -170,7 +170,7 @@ export default function ContratoUploadModal({
                 checked={obrigatorio}
                 onChange={(e) => setObrigatorio(e.target.checked)}
               />
-              Obrigatorio para nuevas revendedoras
+              Obligatorio para nuevas revendedoras
             </label>
             <label style={{ display: "flex", alignItems: "center", gap: "8px", fontSize: "13px", cursor: "pointer" }}>
               <input

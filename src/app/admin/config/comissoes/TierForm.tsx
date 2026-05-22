@@ -33,7 +33,7 @@ export default function TierForm({ tier, onClose, onSaved }: TierFormProps) {
         ativo,
       });
       if (result.success) {
-        toast.success(tier ? "Faixa actualizada" : "Faixa creada");
+        toast.success(tier ? "Franja actualizada" : "Franja creada");
         onSaved();
       } else {
         toast.error(result.error || "Error al guardar");
@@ -67,7 +67,7 @@ export default function TierForm({ tier, onClose, onSaved }: TierFormProps) {
         onClick={(e) => e.stopPropagation()}
       >
         <h3 style={{ margin: "0 0 16px", fontFamily: "'Playfair Display', serif", fontSize: 18, fontWeight: 600, color: "var(--admin-text)" }}>
-          {tier ? "Editar Faixa" : "Nova Faixa de Comissão"}
+          {tier ? "Editar Franja" : "Nueva Franja de Comisión"}
         </h3>
 
         <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "14px" }}>

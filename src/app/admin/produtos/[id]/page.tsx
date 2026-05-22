@@ -27,7 +27,7 @@ export default async function EditProductPage(props: {
                 title={product.name}
                 action={
                     <span className={`admin-badge ${product.product_type === "variable" ? "admin-badge-variable" : "admin-badge-simple"}`}>
-                        {product.product_type === "variable" ? "Variable" : "Simple"}
+                        {product.product_type === "variable" ? "Variable" : "Sencillo"}
                     </span>
                 }
             />
