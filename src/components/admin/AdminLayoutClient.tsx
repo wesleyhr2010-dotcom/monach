@@ -25,7 +25,6 @@ import {
     LogOut,
     Mail,
     Package,
-    Receipt,
     Star,
     User,
     Users,
@@ -67,18 +66,6 @@ const allNavEntries: (NavItem | NavSection)[] = [
         href: "/admin/maleta",
         label: "Maletas",
         icon: <Briefcase size={16} strokeWidth={1.5} />,
-        roles: ["ADMIN", "COLABORADORA"],
-    },
-    {
-        href: "/admin/ventas",
-        label: "Ventas",
-        icon: <Receipt size={16} strokeWidth={1.5} />,
-        roles: ["ADMIN", "COLABORADORA"],
-    },
-    {
-        href: "/admin/pdv",
-        label: "PDV",
-        icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
         roles: ["ADMIN", "COLABORADORA"],
     },
     {

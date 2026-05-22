@@ -19,7 +19,6 @@ import {
     Mail,
     MoreHorizontal,
     Package,
-    Receipt,
     Star,
     User,
     UserCheck,
@@ -54,9 +53,6 @@ const primaryItems: NavItem[] = [
 // ── Sheet: espelha a sidebar completa (sem os 4 primários) ─────
 const sheetEntries: (NavItem | NavSection)[] = [
     // Operações diárias
-    { href: "/admin/ventas",    label: "Ventas", icon: Receipt,          roles: ["ADMIN", "COLABORADORA"] },
-    { href: "/admin/pdv",       label: "PDV",    icon: CircleDollarSign, roles: ["ADMIN", "COLABORADORA"] },
-
     // Gestão (ADMIN)
     { href: "/admin/leads",       label: "Candidaturas", icon: Bell, roles: ["ADMIN"] },
     { href: "/admin/consultoras", label: "Consultoras",  icon: User, roles: ["ADMIN"] },
