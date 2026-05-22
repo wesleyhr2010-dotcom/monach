@@ -76,8 +76,8 @@ const sheetEntries: (NavItem | NavSection)[] = [
 
     // Mi Cuenta (COLABORADORA)
     { type: "section", label: "Mi Cuenta", roles: ["COLABORADORA"] },
-    { href: "/admin/minha-conta",           label: "Perfil",    icon: User,            roles: ["COLABORADORA"] },
-    { href: "/admin/minha-conta/comissoes", label: "Comisiones",icon: CircleDollarSign,roles: ["COLABORADORA"] },
+    { href: "/admin/mi-cuenta",           label: "Perfil",    icon: User,            roles: ["COLABORADORA"] },
+    { href: "/admin/mi-cuenta/comissoes", label: "Comisiones",icon: CircleDollarSign,roles: ["COLABORADORA"] },
 ];
 
 // ── Componente ─────────────────────────────────────────────────

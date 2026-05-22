@@ -119,7 +119,7 @@ export default async function MinhaContaPage() {
                 </h3>
                 <div className="flex flex-col gap-2">
                     <Link
-                        href="/admin/minha-conta/comissoes"
+                        href="/admin/mi-cuenta/comissoes"
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
                         style={{ border: "1px solid var(--admin-border)" }}
                     >

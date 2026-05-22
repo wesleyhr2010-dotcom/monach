@@ -43,7 +43,7 @@ export default function ExtratoComissoesPage() {
 
     return (
         <>
-            <AdminTopHeader breadcrumb="Minha Conta" backHref="/admin/minha-conta" title="Extrato de Comissões" />
+            <AdminTopHeader breadcrumb="Mi Cuenta" backHref="/admin/mi-cuenta" title="Extracto de Comisiones" />
             <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* Filtro de ano */}

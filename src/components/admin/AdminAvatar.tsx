@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { cn } from "@/lib/utils";
 
 type AdminAvatarProps = {
@@ -16,6 +15,7 @@ const pxMap = { sm: 32, md: 40, lg: 48 };
 export function AdminAvatar({ src, name, size = "md", className }: AdminAvatarProps) {
   const initials = name
     .split(" ")
+    .filter(Boolean)
     .map((n) => n[0])
     .join("")
     .substring(0, 2)
@@ -23,7 +23,7 @@ export function AdminAvatar({ src, name, size = "md", className }: AdminAvatarPr
 
   if (src) {
     return (
-      <Image
+      <img
         src={src}
         alt={name}
         width={pxMap[size]}

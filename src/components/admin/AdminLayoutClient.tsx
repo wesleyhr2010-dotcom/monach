@@ -157,13 +157,13 @@ const allNavEntries: (NavItem | NavSection)[] = [
     },
     { type: "section", label: "Mi Cuenta", roles: ["COLABORADORA"] },
     {
-        href: "/admin/minha-conta",
+        href: "/admin/mi-cuenta",
         label: "Perfil",
         icon: <User size={16} strokeWidth={1.5} />,
         roles: ["COLABORADORA"],
     },
     {
-        href: "/admin/minha-conta/comissoes",
+        href: "/admin/mi-cuenta/comissoes",
         label: "Comisiones",
         icon: <CircleDollarSign size={16} strokeWidth={1.5} />,
         roles: ["COLABORADORA"],
