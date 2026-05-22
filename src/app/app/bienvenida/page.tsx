@@ -188,7 +188,7 @@ export default function BienvenidaPage() {
                     ? undefined
                     : {
                           whatsapp: profile.whatsapp || undefined,
-                          avatar_url: avatarUrl,
+                          avatar_url: avatarUrl || undefined,
                       }
             );
 
