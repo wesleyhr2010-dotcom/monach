@@ -1,7 +1,6 @@
 "use client";
 
 import { useCallback, useEffect, useRef } from "react";
-import OneSignal from "react-onesignal";
 import { createBrowserClient } from "@supabase/ssr";
 
 export default function OneSignalWrapper() {
@@ -105,6 +104,10 @@ export default function OneSignalWrapper() {
                 }
 
                 scheduleLog("[1] Iniciando OneSignal.init...");
+
+                // Dynamic import — evita que o SDK carregue no bundle principal e
+                // inicialize traduções globalmente em modo browser (causa TypeError).
+                const { default: OneSignal } = await import("react-onesignal");
 
                 await OneSignal.init({
                     appId,
