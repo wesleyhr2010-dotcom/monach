@@ -34,6 +34,7 @@ export interface LeadItem {
 const submitLeadSchema = z.object({
   nome: z.string().min(2, "El nombre es obligatorio"),
   cedula: z.string().min(1, "La cédula es obligatoria"),
+  email: z.string().email("Correo electrónico inválido").min(1, "El correo es obligatorio"),
   edad: z.string().optional(),
   direccion: z.string().min(1, "La dirección es obligatoria"),
   estado_civil: z.string().optional(),
@@ -56,6 +57,7 @@ export async function submitLead(
       data: {
         nome: data.nome,
         cedula: data.cedula,
+        email: data.email,
         edad: data.edad ?? "",
         direccion: data.direccion,
         estado_civil: data.estado_civil ?? "",

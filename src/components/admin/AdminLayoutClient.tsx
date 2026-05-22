@@ -92,7 +92,6 @@ const allNavEntries: (NavItem | NavSection)[] = [
         href: "/admin/leads",
         label: "Candidaturas",
         icon: <Bell size={16} strokeWidth={1.5} />,
-        badge: { text: "SA", variant: "role" },
         roles: ["ADMIN"],
     },
     {
@@ -190,9 +189,10 @@ interface AdminLayoutClientProps {
     children: React.ReactNode;
     userRole: Role;
     alertCount: number;
+    leadsCount?: number;
 }
 
-export default function AdminLayoutClient({ children, userRole, alertCount }: AdminLayoutClientProps) {
+export default function AdminLayoutClient({ children, userRole, alertCount, leadsCount = 0 }: AdminLayoutClientProps) {
     const pathname = usePathname();
     const { resolvedTheme } = useThemeContext();
 
@@ -252,6 +252,25 @@ export default function AdminLayoutClient({ children, userRole, alertCount }: Ad
                                 {entry.icon}
                                 <span style={{ flex: 1 }}>{entry.label}</span>
                                 {entry.customBadge}
+                                {entry.href === "/admin/leads" && leadsCount > 0 && (
+                                    <span style={{
+                                        background: "#8B1C1C",
+                                        color: "#fff",
+                                        borderRadius: "50%",
+                                        minWidth: 18,
+                                        height: 18,
+                                        display: "flex",
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        fontFamily: "Raleway, sans-serif",
+                                        fontWeight: 700,
+                                        fontSize: 9,
+                                        padding: "0 4px",
+                                        flexShrink: 0,
+                                    }}>
+                                        {leadsCount > 99 ? "99+" : leadsCount}
+                                    </span>
+                                )}
                                 {entry.badge?.variant === "count" && (
                                     <span style={{
                                         background: "#8B1C1C",

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
-import { Bell, X, PackageCheck, ChevronRight } from "lucide-react";
+import { Bell, X, PackageCheck, ChevronRight, ClipboardList } from "lucide-react";
 import type { Role } from "@/lib/user";
 
 interface MaletaAlerta {
@@ -23,12 +23,15 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
   const [maletas, setMaletas] = useState<MaletaAlerta[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const [leadsCount, setLeadsCount] = useState(0);
+
   const fetchCount = useCallback(async () => {
     try {
       const res = await fetch("/api/admin/alertas/count");
       if (!res.ok) return;
       const data = await res.json();
       setCount(data.count ?? 0);
+      setLeadsCount(data.leadsCount ?? 0);
     } catch {
       // Silencioso — não quebrar UI
     }
@@ -221,7 +224,43 @@ export function AdminAlertBell({ initialCount, userRole }: AdminAlertBellProps) 
               </button>
             </div>
 
-            {/* Lista */}
+            {/* Seção candidaturas pendentes */}
+            {leadsCount > 0 && (
+              <div
+                style={{
+                  padding: "12px 16px",
+                  borderBottom: "1px solid var(--admin-border)",
+                }}
+              >
+                <Link
+                  href="/admin/leads"
+                  onClick={() => setOpen(false)}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "14px 16px",
+                    background: "rgba(139,28,28,0.08)",
+                    border: "1px solid rgba(139,28,28,0.2)",
+                    borderRadius: "var(--admin-radius)",
+                    textDecoration: "none",
+                  }}
+                >
+                  <ClipboardList size={20} strokeWidth={1.5} style={{ color: "#8B1C1C", flexShrink: 0 }} />
+                  <div style={{ flex: 1 }}>
+                    <p style={{ fontSize: "13px", fontWeight: 700, color: "var(--admin-text)", margin: 0 }}>
+                      {leadsCount} candidatura{leadsCount !== 1 ? "s" : ""} pendiente{leadsCount !== 1 ? "s" : ""}
+                    </p>
+                    <p style={{ fontSize: "12px", color: "var(--admin-text-muted)", margin: "2px 0 0" }}>
+                      Revisar en Candidaturas
+                    </p>
+                  </div>
+                  <ChevronRight size={16} style={{ color: "var(--admin-text-muted)", flexShrink: 0 }} />
+                </Link>
+              </div>
+            )}
+
+            {/* Lista maletas */}
             <div
               style={{
                 flex: 1,

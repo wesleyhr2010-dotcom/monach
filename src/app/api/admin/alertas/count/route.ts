@@ -26,14 +26,16 @@ export async function GET() {
 
     const scope = getMaletaScope(user);
 
-    const count = await prisma.maleta.count({
-      where: {
-        ...scope,
-        status: "aguardando_revisao",
-      },
-    });
+    const [maletaCount, leadsCount] = await Promise.all([
+      prisma.maleta.count({
+        where: { ...scope, status: "aguardando_revisao" },
+      }),
+      user.role === "ADMIN"
+        ? prisma.revendedoraLead.count({ where: { status: "pendente" } })
+        : Promise.resolve(0),
+    ]);
 
-    return NextResponse.json({ count });
+    return NextResponse.json({ count: maletaCount + leadsCount, maletaCount, leadsCount });
   } catch (error) {
     console.error("[api/admin/alertas/count] error:", error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

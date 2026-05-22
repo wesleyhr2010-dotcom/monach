@@ -59,19 +59,22 @@ export default async function AdminLayout({ children }: { children: React.ReactN
         }
     }
 
-    // Contagem inicial de devoluções pendentes (SSR, sem waterfall)
+    // Contagem inicial de devoluções pendentes + leads (SSR, sem waterfall)
     const scope = getMaletaScope(user);
-    const alertCount = await prisma.maleta.count({
-        where: {
-            ...scope,
-            status: "aguardando_revisao",
-        },
-    });
+    const [maletaCount, leadsCount] = await Promise.all([
+        prisma.maleta.count({
+            where: { ...scope, status: "aguardando_revisao" },
+        }),
+        user.role === "ADMIN"
+            ? prisma.revendedoraLead.count({ where: { status: "pendente" } })
+            : Promise.resolve(0),
+    ]);
+    const alertCount = maletaCount + leadsCount;
 
     return (
         <AdminThemeProvider>
             <ThemeScript surface="admin" />
-            <AdminLayoutClient userRole={user.role} alertCount={alertCount}>
+            <AdminLayoutClient userRole={user.role} alertCount={alertCount} leadsCount={leadsCount}>
                 {children}
             </AdminLayoutClient>
             <SonnerThemer surface="admin" />
