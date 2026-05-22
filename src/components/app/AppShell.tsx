@@ -33,7 +33,11 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
     };
 
     if (pathname.startsWith("/app/login") || pathname.startsWith("/app/bienvenida")) {
-        return <>{children}</>;
+        return (
+            <div className="app-shell bg-app-bg text-app-text font-sans min-h-[100dvh]" data-theme={resolvedTheme} suppressHydrationWarning>
+                {children}
+            </div>
+        );
     }
 
     return (
