@@ -154,7 +154,6 @@ const allNavEntries: (NavItem | NavSection)[] = [
         href: "/admin/config/notif-push",
         label: "Notif. Push",
         icon: <Bell size={16} strokeWidth={1.5} />,
-        badge: { text: "SA", variant: "role" },
         roles: ["ADMIN"],
     },
     {

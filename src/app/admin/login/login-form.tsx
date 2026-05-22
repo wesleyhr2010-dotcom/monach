@@ -46,7 +46,7 @@ export function LoginForm() {
           fontSize: "11px",
           fontWeight: 500,
           letterSpacing: "0.08em",
-          color: "#4A4A4A",
+          color: "var(--admin-text-muted)",
         }}
       >
         <span>v1.0</span>
@@ -159,12 +159,12 @@ export function LoginForm() {
             marginBottom: "28px",
           }}
         >
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#222222" }} />
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--admin-border)" }} />
           <span
             style={{
               fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
               fontSize: "11px",
-              color: "#444444",
+              color: "var(--admin-text-dim)",
               letterSpacing: "0.06em",
               textTransform: "uppercase",
               whiteSpace: "nowrap",
@@ -172,7 +172,7 @@ export function LoginForm() {
           >
             {T.divider}
           </span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "#222222" }} />
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--admin-border)" }} />
         </div>
 
         {/* Info box */}
@@ -181,8 +181,8 @@ export function LoginForm() {
             display: "flex",
             alignItems: "flex-start",
             gap: "12px",
-            backgroundColor: "#171717",
-            border: "1px solid #2A2A2A",
+            backgroundColor: "var(--admin-surface)",
+            border: "1px solid var(--admin-border)",
             borderRadius: "10px",
             padding: "16px 20px",
           }}
@@ -190,13 +190,13 @@ export function LoginForm() {
           <svg
             viewBox="0 0 16 16"
             fill="none"
-            stroke="var(--admin-beige)"
+            stroke="var(--admin-text-muted)"
             strokeWidth="1.5"
             strokeLinecap="round"
             strokeLinejoin="round"
             width="16"
             height="16"
-            style={{ flexShrink: 0, marginTop: "1px", opacity: 0.5 }}
+            style={{ flexShrink: 0, marginTop: "1px", opacity: 0.6 }}
           >
             <circle cx="8" cy="8" r="7" />
             <path d="M8 7v4M8 5h.01" />
@@ -205,7 +205,7 @@ export function LoginForm() {
             style={{
               fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
               fontSize: "12px",
-              color: "#555555",
+              color: "var(--admin-text-muted)",
               lineHeight: 1.6,
               margin: 0,
             }}
@@ -224,7 +224,7 @@ export function LoginForm() {
           transform: "translateX(-50%)",
           fontFamily: "var(--font-raleway, 'Raleway', sans-serif)",
           fontSize: "11px",
-          color: "#2A2A2A",
+          color: "var(--admin-text-dim)",
           letterSpacing: "0.04em",
           whiteSpace: "nowrap",
           margin: 0,
