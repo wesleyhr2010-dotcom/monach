@@ -17,6 +17,13 @@ function createPrismaClient() {
         idleTimeoutMillis: 30000,   // Liberar conexões ociosas após 30s
         connectionTimeoutMillis: 5000, // Timeout de conexão de 5s
     });
+
+    // Evita crash da função serverless quando o Supabase/PgBouncer fecha
+    // uma conexão idle sem avisar o cliente pg (erro não tratado mata o processo).
+    pool.on("error", (err) => {
+        console.error("[Pool] Idle client error:", err.message);
+    });
+
     const adapter = new PrismaPg(pool);
 
     const client = new PrismaClient({
