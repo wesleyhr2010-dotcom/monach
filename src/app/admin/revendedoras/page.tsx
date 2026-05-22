@@ -10,6 +10,7 @@ import {
     atualizarMembro,
     deletarMembro,
     vincularRevendedora,
+    getUserRoleInfo,
 } from "../actions-equipe";
 import type { RevendedoraItem, ColaboradoraItem } from "../actions-equipe";
 import Link from "next/link";
@@ -168,17 +169,22 @@ export default function RevendedorasPage() {
     const [editId, setEditId] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const [userRole, setUserRole] = useState<string>("");
+    const [userProfileId, setUserProfileId] = useState<string | null>(null);
 
     const loadData = useCallback(async () => {
         setLoading(true);
         setError(null);
         try {
-            const [r, c] = await Promise.all([
+            const [r, c, roleInfo] = await Promise.all([
                 getRevendedoras(),
                 getColaboradoras().catch((): ColaboradoraItem[] => []),
+                getUserRoleInfo(),
             ]);
             setRevendedoras(r);
             setColaboradoras(c);
+            setUserRole(roleInfo.role);
+            setUserProfileId(roleInfo.profileId);
         } catch (err) {
             setError(err instanceof Error ? err.message : "Error al cargar los datos");
         } finally {
@@ -193,14 +199,17 @@ export default function RevendedorasPage() {
     function handleNew(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         const fd = new FormData(e.currentTarget);
+        if (userRole === "COLABORADORA" && userProfileId) {
+            fd.set("colaboradora_id", userProfileId);
+        }
         startTransition(async () => {
             const res = await criarRevendedora(fd);
             if (res.success) {
-                toast.success("Revendedora criada com sucesso!");
+                toast.success("¡Revendedora creada con éxito!");
                 setShowNew(false);
                 loadData();
             } else {
-                toast.error(res.error || "Erro ao criar revendedora");
+                toast.error(res.error || "Error al crear la revendedora");
             }
         });
     }
@@ -212,24 +221,24 @@ export default function RevendedorasPage() {
         startTransition(async () => {
             const res = await atualizarMembro(editId, fd);
             if (res.success) {
-                toast.success("Revendedora atualizada!");
+                toast.success("¡Revendedora actualizada!");
                 setEditId(null);
                 loadData();
             } else {
-                toast.error(res.error || "Erro ao atualizar");
+                toast.error(res.error || "Error al actualizar");
             }
         });
     }
 
     function handleDelete(id: string, name: string) {
-        if (!confirm(`Remover "${name}"? Esta ação não pode ser desfeita.`)) return;
+        if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
         startTransition(async () => {
             const res = await deletarMembro(id);
             if (res.success) {
-                toast.success(`"${name}" removida`);
+                toast.success(`"${name}" eliminada`);
                 loadData();
             } else {
-                toast.error(res.error || "Erro ao remover");
+                toast.error(res.error || "Error al eliminar");
             }
         });
     }
@@ -239,10 +248,10 @@ export default function RevendedorasPage() {
             const cId = colaboradoraId === "none" ? null : colaboradoraId;
             const res = await vincularRevendedora(revendedoraId, cId);
             if (res.success) {
-                toast.success("Vínculo atualizado!");
+                toast.success("¡Vínculo actualizado!");
                 loadData();
             } else {
-                toast.error(res.error || "Erro ao vincular");
+                toast.error(res.error || "Error al vincular");
             }
         });
     }
@@ -307,53 +316,55 @@ export default function RevendedorasPage() {
                         <Dialog open={showNew} onOpenChange={setShowNew}>
                             <DialogTrigger asChild>
                                 <Button size="sm" style={{ background: "var(--admin-accent)", color: "#fff" }}>
-                                    <UserPlus className="w-4 h-4 mr-2" /> Nova revendedora
+                                    <UserPlus className="w-4 h-4 mr-2" /> Nueva revendedora
                                 </Button>
                             </DialogTrigger>
                             <DialogContent>
                                 <DialogHeader>
-                                    <DialogTitle>Nova Revendedora</DialogTitle>
+                                    <DialogTitle>Nueva Revendedora</DialogTitle>
                                 </DialogHeader>
                                 <form onSubmit={handleNew} className="space-y-4">
                                     <div>
-                                        <Label htmlFor="new-name">Nome *</Label>
-                                        <Input id="new-name" name="name" required placeholder="Nome completo" />
+                                        <Label htmlFor="new-name">Nombre *</Label>
+                                        <Input id="new-name" name="name" required placeholder="Nombre completo" />
                                     </div>
                                     <div>
                                         <Label htmlFor="new-whatsapp">WhatsApp *</Label>
-                                        <Input id="new-whatsapp" name="whatsapp" required placeholder="+55 ..." />
+                                        <Input id="new-whatsapp" name="whatsapp" required placeholder="+595 ..." />
                                     </div>
                                     <div>
                                         <Label htmlFor="new-email">Email</Label>
-                                        <Input id="new-email" name="email" type="email" placeholder="email@exemplo.com" />
+                                        <Input id="new-email" name="email" type="email" placeholder="email@ejemplo.com" />
                                     </div>
                                     <div>
-                                        <Label htmlFor="new-taxa">Comissão %</Label>
+                                        <Label htmlFor="new-taxa">Comisión %</Label>
                                         <Input id="new-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue="10" />
                                     </div>
-                                    <div>
-                                        <Label htmlFor="new-colab">Colaboradora</Label>
-                                        <select
-                                            id="new-colab"
-                                            name="colaboradora_id"
-                                            style={{
-                                                width: "100%", padding: "8px 12px", borderRadius: "6px",
-                                                border: "1px solid var(--admin-border)",
-                                                background: "var(--admin-bg)", color: "var(--admin-text)",
-                                            }}
-                                        >
-                                            <option value="">Sem colaboradora</option>
-                                            {colaboradoras.map((c) => (
-                                                <option key={c.id} value={c.id}>{c.name}</option>
-                                            ))}
-                                        </select>
-                                    </div>
+                                    {userRole === "ADMIN" && (
+                                        <div>
+                                            <Label htmlFor="new-colab">Consultora</Label>
+                                            <select
+                                                id="new-colab"
+                                                name="colaboradora_id"
+                                                style={{
+                                                    width: "100%", padding: "8px 12px", borderRadius: "6px",
+                                                    border: "1px solid var(--admin-border)",
+                                                    background: "var(--admin-bg)", color: "var(--admin-text)",
+                                                }}
+                                            >
+                                                <option value="">Sin consultora</option>
+                                                {colaboradoras.map((c) => (
+                                                    <option key={c.id} value={c.id}>{c.name}</option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                    )}
                                     <div>
                                         <Label htmlFor="new-avatar">Foto</Label>
                                         <Input id="new-avatar" name="avatar" type="file" accept="image/*" />
                                     </div>
                                     <Button type="submit" className="w-full" disabled={isPending}>
-                                        {isPending ? "Criando..." : "Criar Revendedora"}
+                                        {isPending ? "Creando..." : "Crear Revendedora"}
                                     </Button>
                                 </form>
                             </DialogContent>
@@ -682,7 +693,7 @@ export default function RevendedorasPage() {
                         {editingRevend && (
                             <form onSubmit={handleEdit} className="space-y-4">
                                 <div>
-                                    <Label htmlFor="edit-name">Nome *</Label>
+                                    <Label htmlFor="edit-name">Nombre *</Label>
                                     <Input id="edit-name" name="name" required defaultValue={editingRevend.name} />
                                 </div>
                                 <div>
@@ -694,29 +705,31 @@ export default function RevendedorasPage() {
                                     <Input id="edit-email" name="email" type="email" defaultValue={editingRevend.email} />
                                 </div>
                                 <div>
-                                    <Label htmlFor="edit-taxa">Comissão %</Label>
+                                    <Label htmlFor="edit-taxa">Comisión %</Label>
                                     <Input id="edit-taxa" name="taxa_comissao" type="number" step="0.01" defaultValue={editingRevend.taxa_comissao} />
                                 </div>
+                                {userRole === "ADMIN" && (
+                                    <div>
+                                        <Label htmlFor="edit-colab">Consultora</Label>
+                                        <select
+                                            id="edit-colab"
+                                            name="colaboradora_id"
+                                            defaultValue={editingRevend.colaboradora?.id || ""}
+                                            style={{
+                                                width: "100%", padding: "8px 12px", borderRadius: "6px",
+                                                border: "1px solid var(--admin-border)",
+                                                background: "var(--admin-bg)", color: "var(--admin-text)",
+                                            }}
+                                        >
+                                            <option value="">Sin consultora</option>
+                                            {colaboradoras.map((c) => (
+                                                <option key={c.id} value={c.id}>{c.name}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+                                )}
                                 <div>
-                                    <Label htmlFor="edit-colab">Colaboradora</Label>
-                                    <select
-                                        id="edit-colab"
-                                        name="colaboradora_id"
-                                        defaultValue={editingRevend.colaboradora?.id || ""}
-                                        style={{
-                                            width: "100%", padding: "8px 12px", borderRadius: "6px",
-                                            border: "1px solid var(--admin-border)",
-                                            background: "var(--admin-bg)", color: "var(--admin-text)",
-                                        }}
-                                    >
-                                        <option value="">Sem colaboradora</option>
-                                        {colaboradoras.map((c) => (
-                                            <option key={c.id} value={c.id}>{c.name}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                                <div>
-                                    <Label htmlFor="edit-active">Status</Label>
+                                    <Label htmlFor="edit-active">Estado</Label>
                                     <select
                                         id="edit-active"
                                         name="is_active"
@@ -727,16 +740,16 @@ export default function RevendedorasPage() {
                                             background: "var(--admin-bg)", color: "var(--admin-text)",
                                         }}
                                     >
-                                        <option value="true">Ativa</option>
-                                        <option value="false">Inativa</option>
+                                        <option value="true">Activa</option>
+                                        <option value="false">Inactiva</option>
                                     </select>
                                 </div>
                                 <div>
-                                    <Label htmlFor="edit-avatar">Nova Foto</Label>
+                                    <Label htmlFor="edit-avatar">Nueva Foto</Label>
                                     <Input id="edit-avatar" name="avatar" type="file" accept="image/*" />
                                 </div>
                                 <Button type="submit" className="w-full" disabled={isPending}>
-                                    {isPending ? "Salvando..." : "Salvar Alterações"}
+                                    {isPending ? "Guardando..." : "Guardar Cambios"}
                                 </Button>
                             </form>
                         )}

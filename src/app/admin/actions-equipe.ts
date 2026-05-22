@@ -104,6 +104,15 @@ async function criarUsuarioAuthEEnviarConvite(params: {
 }
 
 // ============================================
+// Papel e profileId do usuário logado
+// ============================================
+
+export async function getUserRoleInfo(): Promise<{ role: string; profileId: string | null }> {
+    const user = await requireAuth(["ADMIN", "COLABORADORA"]);
+    return { role: user.role, profileId: user.profileId };
+}
+
+// ============================================
 // List Colaboradoras (com métricas agregadas)
 // ============================================
 
