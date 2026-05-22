@@ -32,7 +32,7 @@ export default async function MinhaContaPage() {
 
     return (
         <>
-            <AdminTopHeader breadcrumb="Admin" title="Minha Conta" />
+            <AdminTopHeader breadcrumb="Admin" title="Mi Cuenta" />
             <div style={{ padding: "28px 32px", display: "flex", flexDirection: "column", gap: 20 }}>
 
             {/* Perfil */}
@@ -58,10 +58,10 @@ export default async function MinhaContaPage() {
                             className="text-sm font-semibold"
                             style={{ color: "var(--admin-primary)" }}
                         >
-                            Taxa de Comissão: {formatPct(perfil.taxa_comissao)}
+                            Tasa de Comisión: {formatPct(perfil.taxa_comissao)}
                         </div>
                         <p className="text-xs" style={{ color: "var(--admin-text-dim)" }}>
-                            Definida pelo administrador
+                            Definida por el administrador
                         </p>
                     </div>
                 </div>
@@ -70,41 +70,41 @@ export default async function MinhaContaPage() {
             {/* Resumo do mês */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AdminStatCard
-                    label="Minha Comissão (mês)"
+                    label="Mi Comisión (mes)"
                     value={formatGs(resumo.comissaoMes)}
-                    icon={CircleDollarSign}
+                    icon={<CircleDollarSign className="w-5 h-5 inline mr-2 -mt-1" />}
                     color="success"
                 />
                 <AdminStatCard
-                    label="Faturamento do Grupo (mês)"
+                    label="Facturación del Grupo (mes)"
                     value={formatGs(resumo.faturamentoGrupoMes)}
-                    icon={TrendingUp}
+                    icon={<TrendingUp className="w-5 h-5 inline mr-2 -mt-1" />}
                     color="info"
                 />
                 <AdminStatCard
-                    label="Maletas Ativas"
+                    label="Maletines Activos"
                     value={`${resumo.maletasAtivas}`}
-                    icon={Briefcase}
+                    icon={<Briefcase className="w-5 h-5 inline mr-2 -mt-1" />}
                     color="warning"
                 />
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <AdminStatCard
-                    label="Revendedoras Ativas"
+                    label="Revendedoras Activas"
                     value={`${resumo.revendedorasAtivas} / ${resumo.revendedorasTotal}`}
-                    icon={Users}
+                    icon={<Users className="w-5 h-5 inline mr-2 -mt-1" />}
                 />
                 <AdminStatCard
-                    label="Maletas Aguard. Conf."
+                    label="Maletines Pend. Conf."
                     value={`${resumo.maletasAguardando}`}
-                    icon={Briefcase}
+                    icon={<Briefcase className="w-5 h-5 inline mr-2 -mt-1" />}
                     color={resumo.maletasAguardando > 0 ? "danger" : "default"}
                 />
                 <AdminStatCard
-                    label="Comissão Total (histórico)"
+                    label="Comisión Total (histórico)"
                     value={formatGs(resumo.comissaoTotal)}
-                    icon={Wallet}
+                    icon={<Wallet className="w-5 h-5 inline mr-2 -mt-1" />}
                     color="success"
                 />
             </div>
@@ -115,7 +115,7 @@ export default async function MinhaContaPage() {
                     className="text-sm font-semibold mb-3"
                     style={{ color: "var(--admin-text-dim)", fontFamily: "Raleway, system-ui, sans-serif" }}
                 >
-                    ACESSOS RÁPIDOS
+                    ACCESOS RÁPIDOS
                 </h3>
                 <div className="flex flex-col gap-2">
                     <Link
@@ -123,7 +123,7 @@ export default async function MinhaContaPage() {
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
                         style={{ border: "1px solid var(--admin-border)" }}
                     >
-                        <span className="text-sm">Ver Extrato de Comissões</span>
+                        <span className="text-sm">Ver Extracto de Comisiones</span>
                         <ArrowRight size={16} style={{ color: "var(--admin-text-muted)" }} />
                     </Link>
                     <Link
@@ -131,7 +131,7 @@ export default async function MinhaContaPage() {
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
                         style={{ border: "1px solid var(--admin-border)" }}
                     >
-                        <span className="text-sm">Analytics do Grupo</span>
+                        <span className="text-sm">Analytics del Grupo</span>
                         <ArrowRight size={16} style={{ color: "var(--admin-text-muted)" }} />
                     </Link>
                     <Link
@@ -139,7 +139,7 @@ export default async function MinhaContaPage() {
                         className="flex items-center justify-between p-3 rounded-lg hover:bg-white/5 transition-colors"
                         style={{ border: "1px solid var(--admin-border)" }}
                     >
-                        <span className="text-sm">Minhas Revendedoras</span>
+                        <span className="text-sm">Mis Revendedoras</span>
                         <ArrowRight size={16} style={{ color: "var(--admin-text-muted)" }} />
                     </Link>
                 </div>

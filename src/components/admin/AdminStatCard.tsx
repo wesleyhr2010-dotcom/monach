@@ -1,12 +1,12 @@
 "use client";
 
+import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import type { LucideIcon } from "lucide-react";
 
 type AdminStatCardProps = {
   label: string;
   value: string | number;
-  icon?: LucideIcon;
+  icon?: ReactNode;
   color?: "default" | "success" | "danger" | "warning" | "info";
   onClick?: () => void;
   className?: string;
@@ -20,7 +20,7 @@ const colorMap = {
   info: "text-[var(--admin-info-light)]",
 };
 
-export function AdminStatCard({ label, value, icon: Icon, color = "default", onClick, className }: AdminStatCardProps) {
+export function AdminStatCard({ label, value, icon, color = "default", onClick, className }: AdminStatCardProps) {
   return (
     <div
       className={cn("admin-stat-card", onClick && "cursor-pointer hover:border-[var(--admin-accent)55] transition-colors", className)}
@@ -30,7 +30,7 @@ export function AdminStatCard({ label, value, icon: Icon, color = "default", onC
     >
       <div className="admin-stat-label">{label}</div>
       <div className={cn("admin-stat-value", colorMap[color])}>
-        {Icon && <Icon className="w-5 h-5 inline mr-2 -mt-1" />}
+        {icon}
         {value}
       </div>
     </div>
