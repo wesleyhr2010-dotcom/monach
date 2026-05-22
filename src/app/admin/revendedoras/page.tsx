@@ -171,10 +171,19 @@ export default function RevendedorasPage() {
 
     const loadData = useCallback(async () => {
         setLoading(true);
-        const [r, c] = await Promise.all([getRevendedoras(), getColaboradoras()]);
-        setRevendedoras(r);
-        setColaboradoras(c);
-        setLoading(false);
+        setError(null);
+        try {
+            const [r, c] = await Promise.all([
+                getRevendedoras(),
+                getColaboradoras().catch((): ColaboradoraItem[] => []),
+            ]);
+            setRevendedoras(r);
+            setColaboradoras(c);
+        } catch (err) {
+            setError(err instanceof Error ? err.message : "Error al cargar los datos");
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
     useEffect(() => {
