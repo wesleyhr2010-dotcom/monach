@@ -21,8 +21,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import {
     Search,
     ChevronDown,
-    ChevronLeft,
-    ChevronRight,
     Download,
     UserPlus,
     Check,
@@ -632,55 +630,12 @@ export default function RevendedorasPage() {
                 {/* ── Footer ─────────────────────────────────────────────────── */}
                 {!loading && filtered.length > 0 && (
                     <div style={{
-                        display: "flex", alignItems: "center", justifyContent: "space-between",
                         marginTop: "16px", paddingTop: "12px",
                         borderTop: "1px solid var(--admin-border)",
                     }}>
                         <span style={{ fontSize: "13px", color: "var(--admin-text-muted)" }}>
                             Total: {filtered.length} revendedoras
                         </span>
-                        <div style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                            <button style={{
-                                width: "28px", height: "28px", borderRadius: "6px",
-                                border: "1px solid var(--admin-border)", background: "var(--admin-bg)",
-                                color: "var(--admin-text-muted)", display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer",
-                            }}>
-                                <ChevronLeft className="w-4 h-4" />
-                            </button>
-                            <button style={{
-                                width: "28px", height: "28px", borderRadius: "6px",
-                                border: "1px solid var(--admin-accent)", background: "var(--admin-accent)",
-                                color: "#fff", display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", fontSize: "12px", fontWeight: 600,
-                            }}>
-                                1
-                            </button>
-                            <button style={{
-                                width: "28px", height: "28px", borderRadius: "6px",
-                                border: "1px solid var(--admin-border)", background: "var(--admin-bg)",
-                                color: "var(--admin-text-muted)", display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", fontSize: "12px",
-                            }}>
-                                2
-                            </button>
-                            <button style={{
-                                width: "28px", height: "28px", borderRadius: "6px",
-                                border: "1px solid var(--admin-border)", background: "var(--admin-bg)",
-                                color: "var(--admin-text-muted)", display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer", fontSize: "12px",
-                            }}>
-                                3
-                            </button>
-                            <button style={{
-                                width: "28px", height: "28px", borderRadius: "6px",
-                                border: "1px solid var(--admin-border)", background: "var(--admin-bg)",
-                                color: "var(--admin-text-muted)", display: "flex", alignItems: "center", justifyContent: "center",
-                                cursor: "pointer",
-                            }}>
-                                <ChevronRight className="w-4 h-4" />
-                            </button>
-                        </div>
                     </div>
                 )}
 
