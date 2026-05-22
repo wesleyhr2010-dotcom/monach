@@ -17,9 +17,15 @@ export interface LeadItem {
   id: string;
   nome: string;
   cedula: string;
-  whatsapp: string;
   email: string;
+  whatsapp: string;
+  edad: string;
   direccion: string;
+  estado_civil: string;
+  hijos: string;
+  instagram: string;
+  empresa: string;
+  informconf: string;
   status: string;
   taxa_comissao: number | null;
   observacao_admin: string | null;
@@ -100,9 +106,15 @@ export async function getLeads(
       id: l.id,
       nome: l.nome,
       cedula: l.cedula,
-      whatsapp: l.whatsapp,
       email: l.email,
+      whatsapp: l.whatsapp,
+      edad: l.edad,
       direccion: l.direccion,
+      estado_civil: l.estado_civil,
+      hijos: l.hijos,
+      instagram: l.instagram,
+      empresa: l.empresa,
+      informconf: l.informconf,
       status: l.status,
       taxa_comissao: l.taxa_comissao ? Number(l.taxa_comissao) : null,
       observacao_admin: l.observacao_admin,
