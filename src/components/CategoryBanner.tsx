@@ -20,7 +20,7 @@ export default function CategoryBanner({ title, subtitle, image }: CategoryBanne
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
             {/* Content */}
             <div className="absolute bottom-5 left-5 z-10 text-white">
-                <h3 className="font-inter text-3xl md:text-4xl uppercase leading-10 font-light">
+                <h3 className="font-tt-ramillas text-3xl md:text-4xl uppercase leading-10 font-light">
                     {title}
                 </h3>
                 <p className="text-base capitalize">

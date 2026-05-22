@@ -36,7 +36,7 @@ export default function ValueProps() {
                                 />
                             </div>
                             <div>
-                                <h3 className="font-inter text-base md:text-lg uppercase leading-7 text-dark font-medium">
+                                <h3 className="font-tt-ramillas text-base md:text-lg uppercase leading-7 text-dark font-medium">
                                     {feature.title}
                                 </h3>
                                 <p className="text-xs md:text-sm leading-6 text-dark/70 -mt-0.5">

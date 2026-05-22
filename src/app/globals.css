@@ -1,6 +1,28 @@
+/* ── Google Fonts (UI / admin) ─────────────────────────── */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap');
+
+/* ── Montserrat local (Regular) ────────────────────────── */
+@font-face {
+  font-family: 'Montserrat';
+  src: url('/fonts/Montserrat-Regular.woff2') format('woff2'),
+       url('/fonts/Montserrat-Regular.woff') format('woff'),
+       url('/fonts/Montserrat-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── TT Ramillas — títulos do site público ─────────────── */
+@font-face {
+  font-family: 'TT Ramillas';
+  src: url('/fonts/TT_Ramillas_Regular-1.woff2') format('woff2'),
+       url('/fonts/TT-Ramillas-Regular.ttf') format('truetype');
+  font-weight: 400 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @import "tailwindcss";
 @custom-variant dark (&:where([data-theme=dark], [data-theme=dark] *));
 @source not "../../.planning/**";
@@ -17,10 +39,9 @@
   --color-dark: #363636;
   --color-snow: #fffbfb;
 
+  --font-tt-ramillas: 'TT Ramillas', serif;
   --font-montserrat: 'Montserrat', sans-serif;
   --font-inter: 'Inter', sans-serif;
-  --font-raleway: 'Raleway', sans-serif;
-  --font-playfair: 'Playfair Display', serif;
 
   /* ---- App PWA Tokens ---- */
   --color-app-bg: #F5F2EF;
@@ -148,6 +169,11 @@
 
 @keyframes admin-spin {
   to { transform: rotate(360deg); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
 }
 
 body {

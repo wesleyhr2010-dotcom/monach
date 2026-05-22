@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { getCartCount, CART_UPDATED_EVENT } from "@/lib/cart";
 import CartDrawer from "./CartDrawer";
 import SearchOverlay from "./SearchOverlay";
+import TypewriterText from "./TypewriterText";
 import { getCategoryHierarchy, type CategoryNode } from "@/app/actions";
 
 interface HeaderProps {
@@ -69,12 +70,7 @@ export default function Header({ variant = "light" }: HeaderProps) {
                     menuOpen ? "opacity-0 pointer-events-none h-0 min-h-0 py-0" : ""
                 }`}
             >
-                <div className="animate-marquee whitespace-nowrap flex gap-16">
-                    <span>✨ Envío a todo Paraguay — Calidad Garantizada ✨</span>
-                    <span>✨ 1 año de garantía en todas las semijoyas ✨</span>
-                    <span>✨ Envío a todo Paraguay — Calidad Garantizada ✨</span>
-                    <span>✨ 1 año de garantía en todas las semijoyas ✨</span>
-                </div>
+                <TypewriterText />
             </div>
 
             {/* Main Nav — always on top (z-[45] within header stacking context) */}
@@ -256,15 +252,6 @@ export default function Header({ variant = "light" }: HeaderProps) {
             {/* Cart Drawer */}
             <CartDrawer isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-            <style jsx>{`
-                @keyframes marquee {
-                    0% { transform: translateX(0); }
-                    100% { transform: translateX(-50%); }
-                }
-                .animate-marquee {
-                    animation: marquee 20s linear infinite;
-                }
-            `}</style>
         </header>
     );
 }

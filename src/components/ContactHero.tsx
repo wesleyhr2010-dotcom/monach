@@ -8,7 +8,7 @@ export default function ContactHero() {
                         <p className="text-xs tracking-[0.2em] uppercase text-dark/50 mb-3">
                             Contáctanos
                         </p>
-                        <h1 className="font-inter text-3xl md:text-4xl uppercase font-bold text-dark leading-tight mb-6">
+                        <h1 className="font-tt-ramillas text-3xl md:text-4xl uppercase font-bold text-dark leading-tight mb-6">
                             ¡Estamos aquí para vos!
                         </h1>
                         <p className="text-sm md:text-base leading-7 text-dark/70 mb-8">

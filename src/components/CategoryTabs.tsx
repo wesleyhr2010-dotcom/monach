@@ -15,12 +15,13 @@ export default function CategoryTabs() {
                         <button
                             key={cat}
                             onClick={() => setActive(i)}
-                            className={`font-inter text-lg md:text-xl uppercase leading-9 whitespace-nowrap transition-all duration-200 cursor-pointer pb-1 ${active === i
-                                    ? "text-dark border-b-2 border-black font-medium"
-                                    : "text-dark/50 hover:text-dark"
-                                }`}
+                            className={`font-tt-ramillas text-lg md:text-xl uppercase whitespace-nowrap transition-all duration-200 cursor-pointer py-3 ${
+                                active === i ? "text-dark font-medium" : "text-dark/50 hover:text-dark"
+                            }`}
                         >
-                            {cat}
+                            <span className={active === i ? "border-b-2 border-black pb-0.5" : ""}>
+                                {cat}
+                            </span>
                         </button>
                     ))}
                 </div>

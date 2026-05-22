@@ -9,7 +9,7 @@ export default function Footer() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-5 pb-9">
                     {/* Links */}
                     <div>
-                        <h4 className="font-inter text-lg uppercase leading-7 mb-2">
+                        <h4 className="font-tt-ramillas text-lg uppercase leading-7 mb-2">
                             Enlaces:
                         </h4>
                         <nav className="flex flex-col gap-0.5">
@@ -27,7 +27,7 @@ export default function Footer() {
 
                     {/* Social */}
                     <div>
-                        <h4 className="font-inter text-lg uppercase leading-7 mb-2">
+                        <h4 className="font-tt-ramillas text-lg uppercase leading-7 mb-2">
                             Redes sociales:
                         </h4>
                         <div className="flex gap-5">

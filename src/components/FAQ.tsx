@@ -35,7 +35,7 @@ export default function FAQ({ items = defaultItems }: { items?: FAQItem[] }) {
             <div className="container-monarca">
                 <div className="flex justify-center mb-12">
                     <div className="text-center">
-                        <h2 className="font-inter text-2xl md:text-3xl uppercase tracking-wide leading-tight text-dark max-w-2xl mx-auto">
+                        <h2 className="font-tt-ramillas text-2xl md:text-3xl uppercase tracking-wide leading-tight text-dark max-w-2xl mx-auto">
                             Aclará tus dudas y descubrí el secreto de nuestra sofisticación
                         </h2>
                     </div>

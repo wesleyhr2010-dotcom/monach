@@ -14,9 +14,9 @@ const CATEGORIES: { label: string; dbName: string }[] = [
 ];
 
 const ARO_BANNERS = [
-    { title: "Aros", subtitle: "Pequeños", image: "/images/categories/aros-pequenos.svg" },
-    { title: "Aros", subtitle: "Medianos", image: "/images/categories/aros-medianos.svg" },
-    { title: "Aros", subtitle: "Grandes",  image: "/images/categories/aros-grandes.svg" },
+    { title: "Aros", subtitle: "Pequeños", image: "/images/categoria__wrapper-aros-pequenos.jpg" },
+    { title: "Aros", subtitle: "Medianos", image: "/images/categoria__wrapper-aros-medios.jpg" },
+    { title: "Aros", subtitle: "Grandes",  image: "/images/categoria__wrapper-aros-grandes.jpg" },
 ];
 
 interface CollarBanners {
@@ -128,13 +128,15 @@ export default function HomeCategorySection({ initialProducts, collarBanners }: 
                         <button
                             key={dbName}
                             onClick={() => handleCategoryChange(dbName)}
-                            className={`font-inter text-lg md:text-xl uppercase leading-9 whitespace-nowrap transition-all duration-200 cursor-pointer pb-1 ${
+                            className={`font-tt-ramillas text-lg md:text-xl uppercase whitespace-nowrap transition-all duration-200 cursor-pointer py-3 ${
                                 activeDbName === dbName
-                                    ? "text-dark border-b-2 border-black font-medium"
+                                    ? "text-dark font-medium"
                                     : "text-dark/50 hover:text-dark"
                             }`}
                         >
-                            {label}
+                            <span className={activeDbName === dbName ? "border-b-2 border-black pb-0.5" : ""}>
+                                {label}
+                            </span>
                         </button>
                     ))}
                 </div>

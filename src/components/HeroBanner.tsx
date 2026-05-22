@@ -25,7 +25,7 @@ export default function HeroBanner() {
                     <p className="text-sm md:text-base tracking-[19px] uppercase mb-1 text-shadow">
                         Semijoyas
                     </p>
-                    <h1 className="font-inter text-3xl md:text-4xl tracking-[4px] uppercase font-light leading-tight mb-5">
+                    <h1 className="font-tt-ramillas text-3xl md:text-4xl uppercase font-light leading-tight mb-5" style={{ letterSpacing: "4px", textShadow: "0 4px 8px rgba(0,0,0,0.8)" }}>
                         Esenciales
                     </h1>
                     <p className="text-base leading-7 max-w-[250px]" style={{ textShadow: "0px 4px 8px #000" }}>
@@ -34,14 +34,6 @@ export default function HeroBanner() {
                 </div>
             </div>
 
-            {/* Dot indicator */}
-            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-10">
-                <div className="flex gap-2">
-                    <span className="w-2.5 h-2.5 rounded-full bg-white" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-white/40" />
-                    <span className="w-2.5 h-2.5 rounded-full bg-white/40" />
-                </div>
-            </div>
         </section>
     );
 }

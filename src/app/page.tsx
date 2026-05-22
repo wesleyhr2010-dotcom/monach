@@ -9,22 +9,14 @@ import HistoryCTA from "@/components/HistoryCTA";
 import FAQ from "@/components/FAQ";
 import Footer from "@/components/Footer";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
-import { getCatalogProducts, getCategoryBannerImage } from "@/app/actions";
+import { getCatalogProducts } from "@/app/actions";
 
 export default async function Home() {
-  const [
-    { products: initialProducts },
-    collarConDijeImg,
-    collarSinDijeImg,
-  ] = await Promise.all([
-    getCatalogProducts(1, "Aros", 10),
-    getCategoryBannerImage("Con dije"),
-    getCategoryBannerImage("Sin dije"),
-  ]);
+  const { products: initialProducts } = await getCatalogProducts(1, "Aros", 10);
 
   const collarBanners = {
-    conDije: collarConDijeImg,
-    sinDije: collarSinDijeImg,
+    conDije: "/images/categoria__collar_com_dije.jpg",
+    sinDije: "/images/categoria__collar_sin_dije.jpg",
   };
 
   return (

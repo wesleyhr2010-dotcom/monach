@@ -25,7 +25,7 @@ export default function HistoryCTA() {
                     Conoce
                 </p>
                 <h2
-                    className="font-inter text-2xl md:text-4xl tracking-[3px] uppercase font-light text-center leading-tight"
+                    className="font-tt-ramillas text-2xl md:text-4xl tracking-[3px] uppercase font-light text-center leading-tight"
                     style={{ textShadow: "0px 0px 10px #000" }}
                 >
                     Nuestra Historia
