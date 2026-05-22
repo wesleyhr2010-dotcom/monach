@@ -6,7 +6,6 @@ import type { Role } from "@/lib/user";
 import { logout } from "@/lib/actions/auth";
 import {
     AlignJustify,
-    ArrowLeft,
     Award,
     BarChart3,
     Bell,
@@ -161,10 +160,6 @@ export function BottomNav({ userRole }: BottomNavProps) {
 
                     {/* Footer fixo */}
                     <div className="admin-bottom-more-footer">
-                        <Link href="/" className="admin-bottom-more-item" onClick={() => setMoreOpen(false)}>
-                            <ArrowLeft size={20} strokeWidth={1.75} />
-                            <span>Volver al sitio</span>
-                        </Link>
                         <form action={logout}>
                             <button type="submit" className="admin-bottom-more-item admin-bottom-more-item--danger">
                                 <LogOut size={20} strokeWidth={1.75} />

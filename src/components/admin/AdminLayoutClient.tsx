@@ -13,7 +13,6 @@ import { useThemeContext } from "@/components/theme/useTheme";
 import type { Role } from "@/lib/user";
 import {
     AlignJustify,
-    ArrowLeft,
     Award,
     Bell,
     Briefcase,
@@ -311,10 +310,6 @@ export default function AdminLayoutClient({ children, userRole, alertCount, lead
 
                 <div style={{ padding: "16px 20px", borderTop: "1px solid var(--admin-border)", display: "flex", flexDirection: "column", gap: 12 }}>
                     <ThemeToggle variant="admin" />
-                    <Link href="/" className="admin-nav-link" style={{ fontSize: 13 }}>
-                        <ArrowLeft size={16} strokeWidth={1.5} />
-                        Volver al sitio
-                    </Link>
                     <form action={logout}>
                         <button
                             type="submit"
