@@ -13,7 +13,7 @@ import { AdminEmptyState } from "@/components/admin/AdminEmptyState";
 import { fmtCurrency, daysRemaining, type MaletaStatus } from "@/lib/maleta-helpers";
 import {
   Upload, XCircle, Package, Plus,
-  MessageSquare, Bell, ChevronLeft, Check, AlertTriangle,
+  MessageSquare, ChevronLeft, Check, AlertTriangle,
 } from "lucide-react";
 
 type Tab = "itens" | "acerto" | "historico";
@@ -159,12 +159,12 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
 
   function getItemStatus(item: MaletaDetail["itens"][number]): { label: string; color: string; bg: string } {
     if (item.quantidade_vendida === item.quantidade_enviada) {
-      return { label: "Vendido", color: "var(--admin-success)", bg: "rgba(74,222,128,0.1)" };
+      return { label: "Vendido", color: "var(--admin-success)", bg: "var(--admin-success-10)" };
     }
     if (item.quantidade_vendida === 0) {
-      return { label: "Disponível", color: "var(--admin-info)", bg: "rgba(100,119,221,0.12)" };
+      return { label: "Disponível", color: "var(--admin-info)", bg: "var(--admin-bg-info)" };
     }
-    return { label: "Parcial", color: "var(--admin-warning)", bg: "rgba(250,204,21,0.1)" };
+    return { label: "Parcial", color: "var(--admin-warning)", bg: "var(--admin-warning-10)" };
   }
 
   return (
@@ -202,12 +202,6 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
               Contatar {maleta.reseller.name.split(" ")[0]}
             </a>
           )}
-          <div style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: 9, background: "var(--admin-accent-hover)", border: "1px solid rgba(53,96,90,0.33)" }}>
-            <Bell style={{ width: 15, height: 15, color: "var(--admin-success)" }} />
-            {isAguardando && (
-              <span style={{ position: "absolute", top: -4, right: -4, display: "flex", alignItems: "center", justifyContent: "center", width: 16, height: 16, borderRadius: "50%", background: "var(--admin-danger)", border: "1.5px solid var(--admin-bg)", fontSize: 9, fontWeight: 700, color: "#fff", fontFamily: "Raleway, system-ui, sans-serif" }}>1</span>
-            )}
-          </div>
         </div>
       </div>
 
@@ -222,7 +216,7 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
             Revendedora
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: "50%", background: "linear-gradient(135deg, #5a3e2b, #8b6f47)", color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "Raleway, system-ui, sans-serif", flexShrink: 0 }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", width: 44, height: 44, borderRadius: "50%", background: "var(--admin-accent)", color: "#fff", fontWeight: 700, fontSize: 16, fontFamily: "Raleway, system-ui, sans-serif", flexShrink: 0 }}>
               {initials}
             </div>
             <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -298,12 +292,12 @@ export default function MaletaDetailPage({ params }: MaletaDetailPageProps) {
               <span style={{ fontSize: 14, fontWeight: 600, color: "var(--admin-text)", fontFamily: "'Playfair Display', system-ui, serif" }}>{fmtCurrency(totalEnviado)}</span>
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <div style={{ flex: 1, display: "flex", flexDirection: "column", borderRadius: 8, padding: "8px 12px", gap: 2, background: "#0F2E1E" }}>
-                <span style={{ fontSize: 11, color: "rgba(74,222,128,0.53)", fontFamily: "Raleway, system-ui, sans-serif" }}>Vendido</span>
+              <div style={{ flex: 1, display: "flex", flexDirection: "column", borderRadius: 8, padding: "8px 12px", gap: 2, background: "var(--admin-bg-success)" }}>
+                <span style={{ fontSize: 11, color: "var(--admin-text-muted)", fontFamily: "Raleway, system-ui, sans-serif" }}>Vendido</span>
                 <span style={{ fontSize: 14, fontWeight: 600, color: "var(--admin-success)", fontFamily: "'Playfair Display', system-ui, serif" }}>{fmtCurrency(totalVendido)}</span>
               </div>
               <div style={{ flex: 1, display: "flex", flexDirection: "column", borderRadius: 8, padding: "8px 12px", gap: 2, background: "var(--admin-bg-info)" }}>
-                <span style={{ fontSize: 11, color: "rgba(102,119,221,0.53)", fontFamily: "Raleway, system-ui, sans-serif" }}>Retorno</span>
+                <span style={{ fontSize: 11, color: "var(--admin-text-muted)", fontFamily: "Raleway, system-ui, sans-serif" }}>Retorno</span>
                 <span style={{ fontSize: 14, fontWeight: 600, color: "var(--admin-info)", fontFamily: "'Playfair Display', system-ui, serif" }}>{fmtCurrency(totalRetorno)}</span>
               </div>
             </div>
