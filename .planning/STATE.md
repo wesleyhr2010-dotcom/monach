@@ -113,7 +113,7 @@ None.
 | analytics-date-range-fix | 2026-05-12 | Fix DatePickerWithRange — 3 bugs (addToRange min=0, classNames mismatch, CSS conflito v9) | e071250 |
 | bottom-nav-mas-sheet | 2026-05-12 | Bottom nav mobile — botão Más com sheet de itens extras e logout | 2ad87c6 |
 | vamos-atualizar-todo-o-texto-do-painel-a | 2026-05-22 | Admin panel text translated to Spanish (all pages) | da5721a |
-| fix-onesignal-optin-freeze | 2026-05-23 | Corrigir trava ao ativar push na PWA iOS — remover await SW ready antes de optIn() | TBD |
+| fix-onesignal-optin-freeze | 2026-05-23 | Corrigir trava ao ativar push na PWA iOS — remover await SW ready antes de optIn() | 34ac17d |
 
 ## Session Continuity
 
