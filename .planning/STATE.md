@@ -5,7 +5,7 @@ milestone_name: Dark Mode & Temas
 status: executing
 stopped_at: Phase 22 complete — Milestone v1.5 Dark Mode & Temas ready for verification
 last_updated: "2026-05-22T20:46:09.330Z"
-last_activity: 2026-05-22 — Completed quick task 260522-oog: Admin panel text translated to Spanish (all pages)
+last_activity: 2026-05-23 — Completed quick task 260523-001: Corrigir trava ao ativar push na PWA iOS
 progress:
   total_phases: 7
   completed_phases: 7
@@ -113,6 +113,7 @@ None.
 | analytics-date-range-fix | 2026-05-12 | Fix DatePickerWithRange — 3 bugs (addToRange min=0, classNames mismatch, CSS conflito v9) | e071250 |
 | bottom-nav-mas-sheet | 2026-05-12 | Bottom nav mobile — botão Más com sheet de itens extras e logout | 2ad87c6 |
 | vamos-atualizar-todo-o-texto-do-painel-a | 2026-05-22 | Admin panel text translated to Spanish (all pages) | da5721a |
+| fix-onesignal-optin-freeze | 2026-05-23 | Corrigir trava ao ativar push na PWA iOS — remover await SW ready antes de optIn() | TBD |
 
 ## Session Continuity
 

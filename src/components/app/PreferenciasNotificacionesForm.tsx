@@ -183,7 +183,7 @@ export default function PreferenciasNotificacionesForm({
 
             // STEP 2: aguardar resposta da prompt nativa
             if (permissionPromise) {
-                const result = await withTimeout(permissionPromise, 60_000, "requestPermission");
+                const result = await withTimeout(permissionPromise, 15_000, "requestPermission");
                 if (result === "timeout") {
                     setPushError("La ventana de permisos no respondió a tiempo. Cerrá la app y volvé a abrirla.");
                     return;
@@ -201,27 +201,19 @@ export default function PreferenciasNotificacionesForm({
                 return;
             }
 
-            // STEP 3: garantir que o Service Worker está ATIVO antes de subscribe
-            // (race condition comum no iOS: optIn() falha silenciosamente se SW está em "installing")
-            try {
-                if ("serviceWorker" in navigator) {
-                    await Promise.race([
-                        navigator.serviceWorker.ready,
-                        new Promise((_, reject) => setTimeout(() => reject(new Error("SW ready timeout")), 10_000)),
-                    ]);
-                }
-            } catch (err) {
-                console.warn("[push] serviceWorker.ready failed:", err);
-            }
-
-            // STEP 4: opt-in no OneSignal — cria PushManager.subscribe() e registra no servidor da OneSignal
+            // STEP 3: opt-in no OneSignal — cria PushManager.subscribe() e registra no servidor da OneSignal.
+            // IMPORTANTE: não inserir nenhum await entre requestPermission e optIn().
+            // No iOS, PushManager.subscribe() (chamado internamente pelo SDK) exige que o contexto
+            // de gesto do usuário ainda esteja ativo. Qualquer await de operação real (ex.: SW ready)
+            // antes deste ponto mata esse contexto e faz optIn() travar indefinidamente.
+            // O SW já foi registrado e aguardado pelo OneSignalWrapper antes desta tela ser acessível.
             if (OneSignal.User.PushSubscription.optIn) {
-                await withTimeout(OneSignal.User.PushSubscription.optIn(), 30_000, "optIn");
+                await withTimeout(OneSignal.User.PushSubscription.optIn(), 25_000, "optIn");
             }
 
-            // STEP 5: polling do subscription.id — só consideramos sucesso quando existe ID real
+            // STEP 4: polling do subscription.id — só consideramos sucesso quando existe ID real
             let subscriptionId: string | null = null;
-            for (let i = 0; i < 30; i++) {
+            for (let i = 0; i < 20; i++) {
                 await new Promise((r) => setTimeout(r, 500));
                 try {
                     const id = await Promise.resolve(OneSignal.User.PushSubscription.id);
