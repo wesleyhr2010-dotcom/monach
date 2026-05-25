@@ -596,3 +596,39 @@ export async function registrarPuntosCompartirCatalogo() {
         return { success: true };
     });
 }
+
+// ============================================
+// Gamificação — Compartilhar link da vitrina
+// ============================================
+
+export async function getSlugRevendedora() {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        if (!user.profileId) {
+            throw new Error("Perfil no encontrado.");
+        }
+        const resellerId = user.profileId;
+
+        const reseller = await prisma.reseller.findUnique({
+            where: { id: resellerId },
+            select: { slug: true },
+        });
+        if (!reseller) {
+            throw new Error("Revendedora no encontrada.");
+        }
+        return { slug: reseller.slug };
+    });
+}
+
+export async function registrarPuntosCompartirLinkVitrina() {
+    return safeAction(async () => {
+        const user = await requireAuth(["REVENDEDORA"]);
+        if (!user.profileId) {
+            throw new Error("Perfil no encontrado.");
+        }
+        const resellerId = user.profileId;
+
+        await awardPoints(resellerId, "compartilhou_link_vitrina");
+        return { success: true };
+    });
+}
