@@ -99,7 +99,8 @@ export async function awardPoints(
   tx?: Omit<
     ExtendedPrismaClient,
     "$connect" | "$disconnect" | "$on" | "$transaction" | "$use" | "$extends"
-  >
+  >,
+  valorVenda?: number
 ): Promise<{ pontos: number; descricao: string } | null> {
   const db = tx || prisma;
 
@@ -107,7 +108,7 @@ export async function awardPoints(
     where: { acao },
   });
 
-  if (!regra || !regra.ativo || regra.pontos <= 0) return null;
+  if (!regra || !regra.ativo || (regra.pontos <= 0 && regra.pontos_por_guarani == null)) return null;
 
   const now = new Date();
 
@@ -145,14 +146,19 @@ export async function awardPoints(
     if (countMonth > 0) return null;
   }
 
+  let pontosEfetivos = regra.pontos;
+  if (regra.pontos_por_guarani != null && valorVenda != null && valorVenda > 0) {
+    pontosEfetivos = Math.max(1, Math.floor(valorVenda * Number(regra.pontos_por_guarani)));
+  }
+
   await db.pontosExtrato.create({
     data: {
       reseller_id: resellerId,
       regra_id: regra.id,
-      pontos: regra.pontos,
+      pontos: pontosEfetivos,
       descricao: regra.nome,
     },
   });
 
-  return { pontos: regra.pontos, descricao: regra.nome };
+  return { pontos: pontosEfetivos, descricao: regra.nome };
 }
