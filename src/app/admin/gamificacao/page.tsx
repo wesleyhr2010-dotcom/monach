@@ -84,14 +84,13 @@ export default function GamificacaoAdminPage() {
                                 <th>Acción</th>
                                 <th>Tipo</th>
                                 <th style={{ textAlign: "right" }}>Puntos</th>
-                                <th style={{ textAlign: "right", whiteSpace: "nowrap" }}>Pts/Gs</th>
                                 <th style={{ textAlign: "center", width: 80 }}>Activo</th>
                             </tr>
                         </thead>
                         <tbody>
                             {regras.length === 0 ? (
                                 <tr>
-                                    <td colSpan={6} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
                                         Sin reglas configuradas.
                                     </td>
                                 </tr>
@@ -113,157 +112,145 @@ export default function GamificacaoAdminPage() {
                                     <td>
                                         <code style={{ fontSize: 11 }}>{r.tipo}</code>
                                     </td>
-                                    <td style={{ textAlign: "right" }}>
-                                        {editingPontos === r.id ? (
-                                            <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
-                                                <input
-                                                    type="number"
-                                                    min="1"
-                                                    value={pontosValue}
-                                                    onChange={(e) => setPontosValue(e.target.value)}
-                                                    style={{
-                                                        width: 70,
-                                                        padding: "3px 6px",
-                                                        fontSize: 12,
-                                                        fontFamily: "Raleway, sans-serif",
-                                                        border: "1px solid var(--admin-border)",
-                                                        borderRadius: 4,
-                                                        background: "var(--admin-bg-elevated)",
-                                                        color: "var(--admin-text)",
-                                                    }}
-                                                />
-                                                <button
-                                                    className="admin-btn admin-btn-sm admin-btn-primary"
-                                                    style={{ fontSize: 11, padding: "2px 8px" }}
-                                                    onClick={async () => {
-                                                        try {
-                                                            const val = parseInt(pontosValue, 10);
-                                                            if (isNaN(val) || val < 1) return;
-                                                            await atualizarRegra(r.id, {
-                                                                nome: r.nome,
-                                                                descricao: r.descricao,
-                                                                pontos: val,
-                                                                ativo: r.ativo,
-                                                                icone: r.icone,
-                                                                ordem: r.ordem,
-                                                                limite_diario: r.limite_diario,
-                                                                meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
-                                                                pontos_por_guarani: r.pontos_por_guarani != null ? Number(r.pontos_por_guarani) : null,
-                                                            });
-                                                            setEditingPontos(null);
-                                                            reload();
-                                                        } catch (err) {
-                                                            alert(err instanceof Error ? err.message : "Error al guardar");
-                                                        }
-                                                    }}
-                                                >
-                                                    Guardar
-                                                </button>
-                                                <button
-                                                    className="admin-btn admin-btn-sm"
-                                                    style={{ fontSize: 11, padding: "2px 8px" }}
-                                                    onClick={() => setEditingPontos(null)}
-                                                >
-                                                    Cancelar
-                                                </button>
-                                            </div>
-                                        ) : (
-                                            <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                                                <span style={{ fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>{r.pontos}</span>
-                                                <button
-                                                    style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "var(--admin-text-muted)", display: "inline-flex", alignItems: "center" }}
-                                                    title="Editar puntos"
-                                                    onClick={() => { setEditingPontos(r.id); setPontosValue(String(r.pontos)); }}
-                                                >
-                                                    <Pencil size={12} />
-                                                </button>
-                                            </div>
-                                        )}
-                                    </td>
+                                    {/* Coluna única: pts fixos para regras normais, pts/G$ para venda_maleta */}
                                     <td style={{ textAlign: "right" }}>
                                         {r.acao === "venda_maleta" ? (
                                             editingPtsGs === r.id ? (
-                                            <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
-                                                <input
-                                                    type="number"
-                                                    step="0.000001"
-                                                    min="0"
-                                                    value={ptsGsValue}
-                                                    onChange={(e) => setPtsGsValue(e.target.value)}
-                                                    style={{
-                                                        width: 90,
-                                                        padding: "3px 6px",
-                                                        fontSize: 12,
-                                                        fontFamily: "Raleway, sans-serif",
-                                                        border: "1px solid var(--admin-border)",
-                                                        borderRadius: 4,
-                                                        background: "var(--admin-bg-elevated)",
-                                                        color: "var(--admin-text)",
-                                                    }}
-                                                />
-                                                <button
-                                                    className="admin-btn admin-btn-sm admin-btn-primary"
-                                                    style={{ fontSize: 11, padding: "2px 8px" }}
-                                                    onClick={async () => {
-                                                        try {
-                                                            const val = ptsGsValue.trim() !== "" ? parseFloat(ptsGsValue) : null;
-                                                            await atualizarRegra(r.id, {
-                                                                nome: r.nome,
-                                                                descricao: r.descricao,
-                                                                pontos: r.pontos,
-                                                                ativo: r.ativo,
-                                                                icone: r.icone,
-                                                                ordem: r.ordem,
-                                                                limite_diario: r.limite_diario,
-                                                                meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
-                                                                pontos_por_guarani: val,
-                                                            });
-                                                            setEditingPtsGs(null);
-                                                            reload();
-                                                        } catch (err) {
-                                                            alert(err instanceof Error ? err.message : "Error al guardar");
-                                                        }
-                                                    }}
-                                                >
-                                                    Guardar
-                                                </button>
-                                                <button
-                                                    className="admin-btn admin-btn-sm"
-                                                    style={{ fontSize: 11, padding: "2px 8px" }}
-                                                    onClick={() => setEditingPtsGs(null)}
-                                                >
-                                                    Cancelar
-                                                </button>
-                                            </div>
+                                                <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
+                                                    <input
+                                                        type="number"
+                                                        step="0.000001"
+                                                        min="0"
+                                                        value={ptsGsValue}
+                                                        onChange={(e) => setPtsGsValue(e.target.value)}
+                                                        style={{
+                                                            width: 90,
+                                                            padding: "3px 6px",
+                                                            fontSize: 12,
+                                                            fontFamily: "Raleway, sans-serif",
+                                                            border: "1px solid var(--admin-border)",
+                                                            borderRadius: 4,
+                                                            background: "var(--admin-bg-elevated)",
+                                                            color: "var(--admin-text)",
+                                                        }}
+                                                    />
+                                                    <button
+                                                        className="admin-btn admin-btn-sm admin-btn-primary"
+                                                        style={{ fontSize: 11, padding: "2px 8px" }}
+                                                        onClick={async () => {
+                                                            try {
+                                                                const val = ptsGsValue.trim() !== "" ? parseFloat(ptsGsValue) : null;
+                                                                await atualizarRegra(r.id, {
+                                                                    nome: r.nome,
+                                                                    descricao: r.descricao,
+                                                                    pontos: r.pontos,
+                                                                    ativo: r.ativo,
+                                                                    icone: r.icone,
+                                                                    ordem: r.ordem,
+                                                                    limite_diario: r.limite_diario,
+                                                                    meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+                                                                    pontos_por_guarani: val,
+                                                                });
+                                                                setEditingPtsGs(null);
+                                                                reload();
+                                                            } catch (err) {
+                                                                alert(err instanceof Error ? err.message : "Error al guardar");
+                                                            }
+                                                        }}
+                                                    >
+                                                        Guardar
+                                                    </button>
+                                                    <button
+                                                        className="admin-btn admin-btn-sm"
+                                                        style={{ fontSize: 11, padding: "2px 8px" }}
+                                                        onClick={() => setEditingPtsGs(null)}
+                                                    >
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                                    <span style={{ fontSize: 11, color: "var(--admin-text-muted)", marginRight: 1 }}>pts/G$</span>
+                                                    <span style={{ fontWeight: 700, fontFamily: "'Playfair Display', serif", color: "var(--admin-text)" }}>
+                                                        {r.pontos_por_guarani != null
+                                                            ? Number(r.pontos_por_guarani).toLocaleString("es-PY", { maximumFractionDigits: 6 })
+                                                            : "—"}
+                                                    </span>
+                                                    <button
+                                                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "var(--admin-text-muted)", display: "inline-flex", alignItems: "center" }}
+                                                        title="Editar pts/G$"
+                                                        onClick={() => { setEditingPtsGs(r.id); setPtsGsValue(r.pontos_por_guarani != null ? String(r.pontos_por_guarani) : ""); }}
+                                                    >
+                                                        <Pencil size={12} />
+                                                    </button>
+                                                </div>
+                                            )
                                         ) : (
-                                            <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
-                                                <span style={{ fontSize: 12, color: r.pontos_por_guarani != null ? "var(--admin-text)" : "var(--admin-text-dim)", fontFamily: "'Playfair Display', serif" }}>
-                                                    {r.pontos_por_guarani != null
-                                                        ? Number(r.pontos_por_guarani).toLocaleString("es-PY", { maximumFractionDigits: 6 })
-                                                        : "—"}
-                                                </span>
-                                                <button
-                                                    style={{
-                                                        background: "none",
-                                                        border: "none",
-                                                        cursor: "pointer",
-                                                        padding: 0,
-                                                        color: "var(--admin-text-muted)",
-                                                        display: "inline-flex",
-                                                        alignItems: "center",
-                                                    }}
-                                                    title="Editar Pts/Gs"
-                                                    onClick={() => {
-                                                        setEditingPtsGs(r.id);
-                                                        setPtsGsValue(r.pontos_por_guarani != null ? String(r.pontos_por_guarani) : "");
-                                                    }}
-                                                >
-                                                    <Pencil size={12} />
-                                                </button>
-                                            </div>
-                                        )
-                                        ) : (
-                                            <span style={{ fontSize: 12, color: "var(--admin-text-dim)" }}>—</span>
+                                            editingPontos === r.id ? (
+                                                <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
+                                                    <input
+                                                        type="number"
+                                                        min="1"
+                                                        value={pontosValue}
+                                                        onChange={(e) => setPontosValue(e.target.value)}
+                                                        style={{
+                                                            width: 70,
+                                                            padding: "3px 6px",
+                                                            fontSize: 12,
+                                                            fontFamily: "Raleway, sans-serif",
+                                                            border: "1px solid var(--admin-border)",
+                                                            borderRadius: 4,
+                                                            background: "var(--admin-bg-elevated)",
+                                                            color: "var(--admin-text)",
+                                                        }}
+                                                    />
+                                                    <button
+                                                        className="admin-btn admin-btn-sm admin-btn-primary"
+                                                        style={{ fontSize: 11, padding: "2px 8px" }}
+                                                        onClick={async () => {
+                                                            try {
+                                                                const val = parseInt(pontosValue, 10);
+                                                                if (isNaN(val) || val < 1) return;
+                                                                await atualizarRegra(r.id, {
+                                                                    nome: r.nome,
+                                                                    descricao: r.descricao,
+                                                                    pontos: val,
+                                                                    ativo: r.ativo,
+                                                                    icone: r.icone,
+                                                                    ordem: r.ordem,
+                                                                    limite_diario: r.limite_diario,
+                                                                    meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+                                                                    pontos_por_guarani: r.pontos_por_guarani != null ? Number(r.pontos_por_guarani) : null,
+                                                                });
+                                                                setEditingPontos(null);
+                                                                reload();
+                                                            } catch (err) {
+                                                                alert(err instanceof Error ? err.message : "Error al guardar");
+                                                            }
+                                                        }}
+                                                    >
+                                                        Guardar
+                                                    </button>
+                                                    <button
+                                                        className="admin-btn admin-btn-sm"
+                                                        style={{ fontSize: 11, padding: "2px 8px" }}
+                                                        onClick={() => setEditingPontos(null)}
+                                                    >
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            ) : (
+                                                <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                                    <span style={{ fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>{r.pontos}</span>
+                                                    <button
+                                                        style={{ background: "none", border: "none", cursor: "pointer", padding: 0, color: "var(--admin-text-muted)", display: "inline-flex", alignItems: "center" }}
+                                                        title="Editar puntos"
+                                                        onClick={() => { setEditingPontos(r.id); setPontosValue(String(r.pontos)); }}
+                                                    >
+                                                        <Pencil size={12} />
+                                                    </button>
+                                                </div>
+                                            )
                                         )}
                                     </td>
                                     <td style={{ textAlign: "center" }}>
