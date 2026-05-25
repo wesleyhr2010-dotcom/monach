@@ -12,7 +12,7 @@ import {
 } from "../actions-gamificacao";
 import { AdminTopHeader } from "@/components/admin/AdminTopHeader";
 import { AdminSectionCard } from "@/components/admin/AdminSectionCard";
-import { Award, Gift, ToggleLeft, ToggleRight, Check, X } from "lucide-react";
+import { Award, Gift, ToggleLeft, ToggleRight, Check, X, Pencil } from "lucide-react";
 
 type Regra = Awaited<ReturnType<typeof getRegras>>[number];
 type Resgate = Awaited<ReturnType<typeof getResgates>>[number];
@@ -21,6 +21,8 @@ export default function GamificacaoAdminPage() {
     const [regras, setRegras] = useState<Regra[]>([]);
     const [resgates, setResgates] = useState<Resgate[]>([]);
     const [loading, setLoading] = useState(true);
+    const [editingPtsGs, setEditingPtsGs] = useState<string | null>(null);
+    const [ptsGsValue, setPtsGsValue] = useState("");
 
     async function reload() {
         const [r, res] = await Promise.all([getRegras(), getResgates()]);
@@ -80,13 +82,14 @@ export default function GamificacaoAdminPage() {
                                 <th>Acción</th>
                                 <th>Tipo</th>
                                 <th style={{ textAlign: "right" }}>Puntos</th>
+                                <th style={{ textAlign: "right", whiteSpace: "nowrap" }}>Pts/Gs</th>
                                 <th style={{ textAlign: "center", width: 80 }}>Activo</th>
                             </tr>
                         </thead>
                         <tbody>
                             {regras.length === 0 ? (
                                 <tr>
-                                    <td colSpan={5} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
+                                    <td colSpan={6} style={{ textAlign: "center", padding: "40px 20px", color: "var(--admin-text-muted)" }}>
                                         Sin reglas configuradas.
                                     </td>
                                 </tr>
@@ -111,6 +114,88 @@ export default function GamificacaoAdminPage() {
                                     <td style={{ textAlign: "right", fontWeight: 700, fontFamily: "'Playfair Display', serif" }}>
                                         {r.pontos}
                                     </td>
+                                    <td style={{ textAlign: "right" }}>
+                                        {editingPtsGs === r.id ? (
+                                            <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
+                                                <input
+                                                    type="number"
+                                                    step="0.000001"
+                                                    min="0"
+                                                    value={ptsGsValue}
+                                                    onChange={(e) => setPtsGsValue(e.target.value)}
+                                                    style={{
+                                                        width: 90,
+                                                        padding: "3px 6px",
+                                                        fontSize: 12,
+                                                        fontFamily: "Raleway, sans-serif",
+                                                        border: "1px solid var(--admin-border)",
+                                                        borderRadius: 4,
+                                                        background: "var(--admin-bg-elevated)",
+                                                        color: "var(--admin-text)",
+                                                    }}
+                                                />
+                                                <button
+                                                    className="admin-btn admin-btn-sm admin-btn-primary"
+                                                    style={{ fontSize: 11, padding: "2px 8px" }}
+                                                    onClick={async () => {
+                                                        try {
+                                                            const val = ptsGsValue.trim() !== "" ? parseFloat(ptsGsValue) : null;
+                                                            await atualizarRegra(r.id, {
+                                                                nome: r.nome,
+                                                                descricao: r.descricao,
+                                                                pontos: r.pontos,
+                                                                ativo: r.ativo,
+                                                                icone: r.icone,
+                                                                ordem: r.ordem,
+                                                                limite_diario: r.limite_diario,
+                                                                meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+                                                                pontos_por_guarani: val,
+                                                            });
+                                                            setEditingPtsGs(null);
+                                                            reload();
+                                                        } catch (err) {
+                                                            alert(err instanceof Error ? err.message : "Error al guardar");
+                                                        }
+                                                    }}
+                                                >
+                                                    Guardar
+                                                </button>
+                                                <button
+                                                    className="admin-btn admin-btn-sm"
+                                                    style={{ fontSize: 11, padding: "2px 8px" }}
+                                                    onClick={() => setEditingPtsGs(null)}
+                                                >
+                                                    Cancelar
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <div style={{ display: "inline-flex", alignItems: "center", gap: 4 }}>
+                                                <span style={{ fontSize: 12, color: r.pontos_por_guarani != null ? "var(--admin-text)" : "var(--admin-text-dim)", fontFamily: "'Playfair Display', serif" }}>
+                                                    {r.pontos_por_guarani != null
+                                                        ? Number(r.pontos_por_guarani).toLocaleString("es-PY", { maximumFractionDigits: 6 })
+                                                        : "—"}
+                                                </span>
+                                                <button
+                                                    style={{
+                                                        background: "none",
+                                                        border: "none",
+                                                        cursor: "pointer",
+                                                        padding: 0,
+                                                        color: "var(--admin-text-muted)",
+                                                        display: "inline-flex",
+                                                        alignItems: "center",
+                                                    }}
+                                                    title="Editar Pts/Gs"
+                                                    onClick={() => {
+                                                        setEditingPtsGs(r.id);
+                                                        setPtsGsValue(r.pontos_por_guarani != null ? String(r.pontos_por_guarani) : "");
+                                                    }}
+                                                >
+                                                    <Pencil size={12} />
+                                                </button>
+                                            </div>
+                                        )}
+                                    </td>
                                     <td style={{ textAlign: "center" }}>
                                         <button
                                             onClick={async () => {
@@ -124,6 +209,7 @@ export default function GamificacaoAdminPage() {
                                                         ordem: r.ordem,
                                                         limite_diario: r.limite_diario,
                                                         meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+                                                        pontos_por_guarani: r.pontos_por_guarani != null ? Number(r.pontos_por_guarani) : null,
                                                     });
                                                     reload();
                                                 } catch (err) {
