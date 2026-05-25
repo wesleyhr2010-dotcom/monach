@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { registrarVenda } from "@/app/app/actions-revendedora";
+import { registrarVendaMultipla } from "@/app/app/actions-revendedora";
 import { ActionButton } from "@/components/app/ActionButton";
 import { BottomAction } from "@/components/app/AppPageShell";
 import { TransitionLink } from "@/components/app/transitions/TransitionLink";
@@ -29,7 +29,8 @@ interface RegistrarVentaClientProps {
 
 export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVentaClientProps) {
   const router = useRouter();
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  // cart: itemId → quantity selected
+  const [cart, setCart] = useState<Record<string, number>>({});
   const [clienteNome, setClienteNome] = useState("");
   const [clienteTelefone, setClienteTelefone] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -42,19 +43,48 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
       item.sku.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const selectedItem = itens.find((item) => item.id === selectedItemId);
-  const canSubmit = selectedItemId && clienteNome.length >= 2 && clienteTelefone.length >= 8;
+  const totalUnidades = Object.values(cart).reduce((sum, q) => sum + q, 0);
+  const totalPrice = itens.reduce((sum, item) => sum + (cart[item.id] ?? 0) * item.precoFixado, 0);
+  const canSubmit = totalUnidades > 0 && clienteNome.length >= 2 && clienteTelefone.length >= 8;
+
+  function toggleItem(itemId: string) {
+    setCart((prev) => {
+      if (prev[itemId]) {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      }
+      return { ...prev, [itemId]: 1 };
+    });
+  }
+
+  function setQuantity(itemId: string, qty: number, max: number) {
+    if (qty <= 0) {
+      setCart((prev) => {
+        const next = { ...prev };
+        delete next[itemId];
+        return next;
+      });
+    } else {
+      setCart((prev) => ({ ...prev, [itemId]: Math.min(qty, max) }));
+    }
+  }
 
   function handleSubmit() {
-    if (!selectedItemId || !canSubmit) return;
+    if (!canSubmit) return;
     setError("");
+
+    const itensCarrinho = Object.entries(cart).map(([maleta_item_id, quantidade]) => ({
+      maleta_item_id,
+      quantidade,
+    }));
 
     startTransition(async () => {
       try {
-        const result = await registrarVenda({
-          maleta_item_id: selectedItemId,
+        const result = await registrarVendaMultipla({
           cliente_nome: clienteNome,
           cliente_telefone: clienteTelefone,
+          itens: itensCarrinho,
         });
         if (!result.success) {
           setError(result.error);
@@ -140,14 +170,24 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
           </div>
         </div>
 
-        {/* Seleccionar Artículo */}
+        {/* Seleccionar Artículos */}
         <div className="flex flex-col gap-3">
-          <span
-            className="text-app-text text-lg leading-[22px]"
-            style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
-          >
-            Seleccionar Artículo
-          </span>
+          <div className="flex items-center justify-between">
+            <span
+              className="text-app-text text-lg leading-[22px]"
+              style={{ fontFamily: "var(--font-playfair)", fontWeight: 600 }}
+            >
+              Seleccionar Artículos
+            </span>
+            {totalUnidades > 0 && (
+              <span
+                className="text-xs text-app-primary font-semibold"
+                style={{ fontFamily: "var(--font-raleway)" }}
+              >
+                {totalUnidades} seleccionado{totalUnidades !== 1 ? "s" : ""}
+              </span>
+            )}
+          </div>
 
           {/* Search */}
           <div className="flex items-center rounded-[100px] py-3 px-4 gap-3 bg-app-surface">
@@ -176,19 +216,23 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
 
           {/* Item list */}
           {filteredItens.map((item) => {
-            const isSelected = item.id === selectedItemId;
+            const qty = cart[item.id] ?? 0;
+            const isSelected = qty > 0;
             return (
-              <button
+              <div
                 key={item.id}
-                type="button"
-                onClick={() => setSelectedItemId(isSelected ? null : item.id)}
-                className={`flex items-center rounded-2xl gap-4 p-3 text-left transition-all ${
+                className={`flex items-center rounded-2xl gap-4 p-3 transition-all ${
                   isSelected
                     ? "bg-app-accent-green-bg border-2 border-app-primary"
-                    : "bg-app-surface border-2 border-transparent hover:border-app-border-strong"
+                    : "bg-app-surface border-2 border-transparent"
                 }`}
               >
-                <div className="flex items-center justify-center shrink-0 rounded-xl bg-app-border-strong w-14 h-14 overflow-hidden">
+                {/* Thumbnail — tap deselects when selected */}
+                <button
+                  type="button"
+                  onClick={() => toggleItem(item.id)}
+                  className="flex items-center justify-center shrink-0 rounded-xl bg-app-border-strong w-14 h-14 overflow-hidden"
+                >
                   {item.imageUrl ? (
                     <img src={item.imageUrl} alt={item.productName} className="w-full h-full object-cover rounded-xl" />
                   ) : (
@@ -198,8 +242,14 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
                       <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
                     </svg>
                   )}
-                </div>
-                <div className="flex flex-col grow min-w-0">
+                </button>
+
+                {/* Name + price — tap toggles selection */}
+                <button
+                  type="button"
+                  onClick={() => toggleItem(item.id)}
+                  className="flex flex-col grow min-w-0 text-left"
+                >
                   <span
                     className="mb-0.5 text-app-text font-semibold text-sm leading-[18px] truncate"
                     style={{ fontFamily: "var(--font-raleway)" }}
@@ -207,22 +257,49 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
                     {item.productName}
                   </span>
                   <span
-                    className={`${isSelected ? "text-app-primary font-semibold" : "text-app-text-secondary"} text-xs leading-4`}
+                    className={`text-xs leading-4 ${isSelected ? "text-app-primary font-semibold" : "text-app-text-secondary"}`}
                     style={{ fontFamily: "var(--font-raleway)" }}
                   >
                     {formatCurrency(item.precoFixado)}
+                    {item.quantidadeDisponivel > 1 && !isSelected && (
+                      <span className="text-app-muted"> · {item.quantidadeDisponivel} disp.</span>
+                    )}
                   </span>
-                </div>
+                </button>
+
+                {/* Right side: stepper when selected, circle when not */}
                 {isSelected ? (
-                  <div className="flex items-center justify-center rounded-full bg-app-primary shrink-0 w-6 h-6">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M20 6 9 17l-5-5" />
-                    </svg>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(item.id, qty - 1, item.quantidadeDisponivel)}
+                      className="w-7 h-7 rounded-full border-2 border-app-primary flex items-center justify-center text-app-primary font-bold text-base leading-none transition-opacity"
+                    >
+                      −
+                    </button>
+                    <span
+                      className="w-5 text-center font-bold text-sm text-app-text"
+                      style={{ fontFamily: "var(--font-raleway)" }}
+                    >
+                      {qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setQuantity(item.id, qty + 1, item.quantidadeDisponivel)}
+                      disabled={qty >= item.quantidadeDisponivel}
+                      className="w-7 h-7 rounded-full bg-app-primary flex items-center justify-center text-white font-bold text-base leading-none transition-opacity disabled:opacity-30"
+                    >
+                      +
+                    </button>
                   </div>
                 ) : (
-                  <div className="rounded-full border-2 border-app-border-strong shrink-0 w-6 h-6" />
+                  <button
+                    type="button"
+                    onClick={() => toggleItem(item.id)}
+                    className="rounded-full border-2 border-app-border-strong shrink-0 w-6 h-6"
+                  />
                 )}
-              </button>
+              </div>
             );
           })}
 
@@ -237,21 +314,39 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
         </div>
       </div>
 
-      {/* Bottom: Submit */}
+      {/* Bottom: Summary + Submit */}
       <BottomAction>
-        <ActionButton
-          label="Confirmar Venta"
-          variant="primary"
-          disabled={!canSubmit}
-          loading={isPending}
-          onClick={handleSubmit}
-          className="w-full"
-          icon={
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <path d="M20 6 9 17l-5-5" />
-            </svg>
-          }
-        />
+        <div className="flex flex-col gap-3 w-full">
+          {totalUnidades > 0 && (
+            <div className="flex items-center justify-between px-1">
+              <span
+                className="text-app-text-secondary text-sm"
+                style={{ fontFamily: "var(--font-raleway)" }}
+              >
+                {totalUnidades} artículo{totalUnidades !== 1 ? "s" : ""}
+              </span>
+              <span
+                className="text-app-primary font-bold text-sm"
+                style={{ fontFamily: "var(--font-raleway)" }}
+              >
+                {formatCurrency(totalPrice)}
+              </span>
+            </div>
+          )}
+          <ActionButton
+            label="Confirmar Venta"
+            variant="primary"
+            disabled={!canSubmit}
+            loading={isPending}
+            onClick={handleSubmit}
+            className="w-full"
+            icon={
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 6 9 17l-5-5" />
+              </svg>
+            }
+          />
+        </div>
       </BottomAction>
     </div>
   );
