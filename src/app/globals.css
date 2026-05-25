@@ -166,6 +166,17 @@
   }
 }
 
+/* Clearance for pages with a fixed BottomAction panel (button ~52px + pt-4 16px + pb-5 20px = 88px).
+   Prevents the last list item from being hidden under the fixed action footer. */
+.bottom-action-clearance {
+  padding-bottom: calc(88px + env(safe-area-inset-bottom) + 16px);
+}
+@media (min-width: 768px) {
+  .bottom-action-clearance {
+    padding-bottom: 104px;
+  }
+}
+
 .app-shell, .app-shell *,
 .admin-layout, .admin-layout * {
   transition: background-color 250ms ease, color 250ms ease, border-color 250ms ease, fill 250ms ease;

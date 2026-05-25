@@ -119,7 +119,7 @@ export default function RegistrarVentaClient({ maletaId, itens }: RegistrarVenta
       </div>
 
       {/* Content */}
-      <div className="flex flex-col pb-2 app-nav-clearance gap-6 px-5">
+      <div className="flex flex-col pb-2 bottom-action-clearance gap-6 px-5">
         {/* Client info */}
         <div className="flex flex-col gap-4">
           {/* Nombre del Cliente */}

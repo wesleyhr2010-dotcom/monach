@@ -191,7 +191,7 @@ interface BottomActionProps {
 
 export function BottomAction({ children }: BottomActionProps) {
   return (
-    <div className="absolute bottom-0 left-0 right-0 flex rounded-t-[20px] pt-4 pb-5 bg-app-card-bg border-b border-app-surface shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-5 z-[110]">
+    <div className="fixed bottom-0 left-0 right-0 md:left-[260px] flex rounded-t-[20px] pt-4 pb-5 bg-app-card-bg border-b border-app-surface shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-5 z-[110]">
       {children}
     </div>
   );
