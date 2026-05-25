@@ -32,9 +32,8 @@ export default function RevendedoraObrigadoPage() {
                 tu inscripción!
               </h1>
               <p className="text-sm md:text-base leading-7 text-dark/70 mb-8">
-                Recibimos tu solicitud para unirte a Monarca Semijoyas. Revisaremos tu
-                candidatura en los próximos días hábiles y nos pondremos en contacto por
-                WhatsApp.
+                Recibimos tu solicitud para unirte a Monarca Semijoyas. Pronto nos
+                pondremos en contacto por WhatsApp.
               </p>
 
               <div className="border border-dark/10 p-6 mb-8">
