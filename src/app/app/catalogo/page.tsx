@@ -2,10 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getCatalogoRevendedora } from "../actions-revendedora";
+import { getCatalogoRevendedora, registrarPuntosCompartirLinkVitrina, getSlugRevendedora } from "../actions-revendedora";
 import { useTransitionRouter } from "@/components/app/transitions/useTransitionRouter";
 import { formatGs } from "@/lib/format";
-import { Search, Share2, ArrowLeft, ImageOff } from "lucide-react";
+import { Search, Share2, Link2, ArrowLeft, ImageOff } from "lucide-react";
 import {
     downloadImageAsFile,
     shareImages,
@@ -46,6 +46,8 @@ export default function CatalogoPage() {
     const [search, setSearch] = useState("");
     const [categoriaAtiva, setCategoriaAtiva] = useState("Todos");
     const [categorias, setCategorias] = useState<string[]>(["Todos"]);
+    const [vitrinaSlug, setVitrinaSlug] = useState<string | null>(null);
+    const [shareMsg, setShareMsg] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchCatalogo() {
@@ -59,6 +61,10 @@ export default function CatalogoPage() {
                 setItens(result.data.itens);
                 const cats = [...new Set(result.data.itens.map((i: { producto: { category: string } }) => i.producto.category).filter(Boolean))];
                 setCategorias(["Todos", ...cats]);
+                const slugResult = await getSlugRevendedora();
+                if (slugResult.success) {
+                    setVitrinaSlug(slugResult.data.slug);
+                }
             }
             setLoading(false);
         }
@@ -87,6 +93,34 @@ export default function CatalogoPage() {
         }
 
         fallbackWhatsAppIndividual(item, undefined, formatGs);
+    }
+
+    async function handleShareVitrina() {
+        if (!vitrinaSlug) return;
+        const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || window.location.origin;
+        const vitrinaUrl = `${siteUrl}/vitrina/${vitrinaSlug}`;
+        const shareText = "Visita mi vitrina de joyas Monarca 💎";
+
+        if (typeof navigator.share === "function" && navigator.canShare?.({ url: vitrinaUrl })) {
+            try {
+                await navigator.share({ title: "Mi Vitrina Monarca", text: shareText, url: vitrinaUrl });
+                await registrarPuntosCompartirLinkVitrina();
+                setShareMsg("¡Puntos ganados!");
+                setTimeout(() => setShareMsg(null), 3000);
+            } catch (err) {
+                if (err instanceof DOMException && err.name === "AbortError") return;
+                // share failed for other reason — fall back to clipboard
+                await navigator.clipboard.writeText(vitrinaUrl);
+                await registrarPuntosCompartirLinkVitrina();
+                setShareMsg("¡Link copiado!");
+                setTimeout(() => setShareMsg(null), 3000);
+            }
+        } else {
+            await navigator.clipboard.writeText(vitrinaUrl);
+            await registrarPuntosCompartirLinkVitrina();
+            setShareMsg("¡Link copiado!");
+            setTimeout(() => setShareMsg(null), 3000);
+        }
     }
 
     return (
@@ -222,17 +256,41 @@ export default function CatalogoPage() {
             {/* Sticky bottom action */}
             {itens.length > 0 && (
                 <div className="sticky bottom-[calc(59px+env(safe-area-inset-bottom)+8px)] left-0 right-0 px-4 z-40">
-                    <button
-                        onClick={() => transitionRouter.pushSheet("/app/catalogo/compartir")}
-                        className="w-full py-3.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2 shadow-lg"
-                        style={{
-                            background: "#1A1A1A",
-                            fontFamily: "var(--font-raleway)",
-                        }}
-                    >
-                        <Share2 className="w-4 h-4" />
-                        Seleccionar varias fotos
-                    </button>
+                    <div className="flex flex-col gap-2">
+                        {vitrinaSlug && (
+                            <button
+                                onClick={handleShareVitrina}
+                                className="w-full py-3.5 rounded-full text-sm font-semibold flex items-center justify-center gap-2 shadow-lg"
+                                style={{
+                                    background: "var(--app-accent, #35605A)",
+                                    color: "#fff",
+                                    fontFamily: "var(--font-raleway)",
+                                }}
+                            >
+                                <Link2 className="w-4 h-4" />
+                                Compartir mi vitrina
+                            </button>
+                        )}
+                        <button
+                            onClick={() => transitionRouter.pushSheet("/app/catalogo/compartir")}
+                            className="w-full py-3.5 rounded-full text-sm font-semibold text-white flex items-center justify-center gap-2 shadow-lg"
+                            style={{
+                                background: "#1A1A1A",
+                                fontFamily: "var(--font-raleway)",
+                            }}
+                        >
+                            <Share2 className="w-4 h-4" />
+                            Seleccionar varias fotos
+                        </button>
+                    </div>
+                    {shareMsg && (
+                        <p
+                            className="text-center text-xs font-medium text-app-accent mt-1"
+                            style={{ fontFamily: "var(--font-raleway)" }}
+                        >
+                            {shareMsg}
+                        </p>
+                    )}
                 </div>
             )}
         </div>
