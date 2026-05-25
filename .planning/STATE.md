@@ -115,9 +115,10 @@ None.
 | vamos-atualizar-todo-o-texto-do-painel-a | 2026-05-22 | Admin panel text translated to Spanish (all pages) | da5721a |
 | fix-onesignal-optin-freeze | 2026-05-23 | Corrigir trava ao ativar push na PWA iOS — remover await SW ready antes de optIn() | 34ac17d |
 | bot-o-de-compartilhar-link-da-vitrina-co | 2026-05-25 | Botão de compartilhar link da vitrina com pontos de gamificação | cf1edba |
+| pontos-proporcionais-ao-valor-da-venda-e | 2026-05-25 | Pontos proporcionais ao valor da venda em Guaranis — campo pontos_por_guarani, migration, lógica e UI admin | 6687ea5 |
 
 ## Session Continuity
 
 Last session: 2026-05-25
-Stopped at: Quick task 260525-qg0 completed — Botão compartilhar link da vitrina com pontos
+Stopped at: Quick task 260525-rg8 completed — Pontos proporcionais por Guarani
 Resume: Milestone v1.5 ready for verification
