@@ -628,7 +628,7 @@ export async function registrarPuntosCompartirLinkVitrina() {
         }
         const resellerId = user.profileId;
 
-        await awardPoints(resellerId, "compartilhou_link_vitrina");
+        await awardPoints(resellerId, "compartilhou_catalogo");
         return { success: true };
     });
 }
