@@ -114,9 +114,10 @@ None.
 | bottom-nav-mas-sheet | 2026-05-12 | Bottom nav mobile — botão Más com sheet de itens extras e logout | 2ad87c6 |
 | vamos-atualizar-todo-o-texto-do-painel-a | 2026-05-22 | Admin panel text translated to Spanish (all pages) | da5721a |
 | fix-onesignal-optin-freeze | 2026-05-23 | Corrigir trava ao ativar push na PWA iOS — remover await SW ready antes de optIn() | 34ac17d |
+| bot-o-de-compartilhar-link-da-vitrina-co | 2026-05-25 | Botão de compartilhar link da vitrina com pontos de gamificação | cf1edba |
 
 ## Session Continuity
 
-Last session: 2026-05-22T20:46:09.330Z
-Stopped at: Quick task 260522-oog completed — Admin panel text translated to Spanish
+Last session: 2026-05-25
+Stopped at: Quick task 260525-qg0 completed — Botão compartilhar link da vitrina com pontos
 Resume: Milestone v1.5 ready for verification
