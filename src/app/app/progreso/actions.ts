@@ -10,6 +10,7 @@ export type RegraProgresso = {
     descricao: string;
     acao: string;
     pontos: number;
+    pontos_por_guarani: number | null;
     icone: string;
     tipo: string;
     limite_diario: number | null;
@@ -77,6 +78,7 @@ export async function getRegrasProgresso(): Promise<{
                 descricao: regra.descricao,
                 acao: regra.acao,
                 pontos: regra.pontos,
+                pontos_por_guarani: regra.pontos_por_guarani != null ? Number(regra.pontos_por_guarani) : null,
                 icone: regra.icone,
                 tipo: regra.tipo,
                 limite_diario: regra.limite_diario,

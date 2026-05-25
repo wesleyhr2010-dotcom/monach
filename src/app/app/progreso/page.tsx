@@ -104,7 +104,9 @@ export default async function ProgressoPage() {
                                         }`}
                                         style={{ fontFamily: "var(--font-raleway)" }}
                                     >
-                                        +{regra.pontos} pts
+                                        {regra.pontos_por_guarani != null
+                                            ? `+${regra.pontos_por_guarani} pts/Gs`
+                                            : `+${regra.pontos} pts`}
                                     </span>
                                 </div>
 
