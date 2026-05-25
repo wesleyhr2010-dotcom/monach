@@ -115,7 +115,8 @@ export default function GamificacaoAdminPage() {
                                         {r.pontos}
                                     </td>
                                     <td style={{ textAlign: "right" }}>
-                                        {editingPtsGs === r.id ? (
+                                        {r.acao === "venda_maleta" ? (
+                                            editingPtsGs === r.id ? (
                                             <div style={{ display: "flex", alignItems: "center", gap: 4, justifyContent: "flex-end" }}>
                                                 <input
                                                     type="number"
@@ -194,6 +195,9 @@ export default function GamificacaoAdminPage() {
                                                     <Pencil size={12} />
                                                 </button>
                                             </div>
+                                        )
+                                        ) : (
+                                            <span style={{ fontSize: 12, color: "var(--admin-text-dim)" }}>—</span>
                                         )}
                                     </td>
                                     <td style={{ textAlign: "center" }}>
