@@ -19,6 +19,7 @@ const updateRegraSchema = z.object({
     ordem: z.number().int(),
     limite_diario: z.number().int().min(1).nullable(),
     meta_valor: z.number().positive().nullable(),
+    pontos_por_guarani: z.number().positive().nullable(),
 });
 
 const nivelSchema = z.object({
@@ -41,6 +42,7 @@ export async function getRegras() {
     return rows.map((r) => ({
         ...r,
         meta_valor: r.meta_valor != null ? Number(r.meta_valor) : null,
+        pontos_por_guarani: r.pontos_por_guarani != null ? Number(r.pontos_por_guarani) : null,
     }));
 }
 
@@ -55,7 +57,11 @@ export async function atualizarRegra(
         data,
     });
     invalidateCache.gamificacaoConfig();
-    return { ...result, meta_valor: result.meta_valor != null ? Number(result.meta_valor) : null };
+    return {
+        ...result,
+        meta_valor: result.meta_valor != null ? Number(result.meta_valor) : null,
+        pontos_por_guarani: result.pontos_por_guarani != null ? Number(result.pontos_por_guarani) : null,
+    };
 }
 
 // ============================================

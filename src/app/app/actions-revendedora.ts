@@ -337,7 +337,7 @@ export async function registrarVenda(rawInput: {
                 data: { quantidade_vendida: { increment: 1 } },
             });
 
-            const pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx);
+            const pontosVenda = await awardPoints(resellerId, 'venda_maleta', tx, Number(item.preco_fixado ?? 0));
 
             const allItems = await tx.maletaItem.findMany({
                 where: { maleta_id: item.maleta_id },
