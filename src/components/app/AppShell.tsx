@@ -104,6 +104,8 @@ export default function AppShell({ children, logoutAction }: AppShellProps) {
 
             {/* Bottom nav (mobile) — floating pill; view-transition-name garante estabilidade */}
             <AppBottomNav />
+            {/* Portal target para BottomAction — após o nav no DOM garante z-index correto */}
+            <div id="bottom-action-portal" />
         </div>
     </AppTransitionProvider>
     );
