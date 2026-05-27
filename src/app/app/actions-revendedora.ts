@@ -156,7 +156,9 @@ export async function registrarVendaMultipla(inputData: {
 
         const data = registrarVendaMultiplaSchema.parse(inputData);
 
-        const pontos = await prisma.$transaction(async (tx) => {
+        const pontosLista = await prisma.$transaction(async (tx) => {
+            const resultados: Array<{ pontos: number; descricao: string }> = [];
+
             for (const cartItem of data.itens) {
                 const maletaItem = await tx.maletaItem.findFirstOrThrow({
                     where: {
@@ -188,18 +190,33 @@ export async function registrarVendaMultipla(inputData: {
                     where: { id: maletaItem.id },
                     data: { quantidade_vendida: { increment: cartItem.quantidade } },
                 });
+
+                // Concede pontos por item (mesma regra da venda simples, com valorVenda correto)
+                const pontosItem = await awardPoints(
+                    resellerId,
+                    'venda_maleta',
+                    tx,
+                    Number(maletaItem.preco_fixado ?? 0) * cartItem.quantidade
+                ).catch((err: unknown) => {
+                    console.error('[registrarVendaMultipla] awardPoints error:', err instanceof Error ? err.message : String(err));
+                    return null;
+                });
+
+                if (pontosItem) resultados.push(pontosItem);
             }
 
-            return awardPoints(resellerId, 'venda_multipla_maleta', tx);
+            return resultados;
         });
 
-        if (pontos) {
+        // Notifica sobre os pontos ganhos (somando todos os itens)
+        const totalPontos = pontosLista.reduce((sum, p) => sum + p.pontos, 0);
+        if (totalPontos > 0 && pontosLista[0]) {
             await notificarRevendedora({
                 reseller_id: resellerId,
                 tipo: "pontos_ganhos",
                 titulo: "¡Puntos ganados!",
-                mensagem: `¡Ganaste ${pontos.pontos} puntos! ${pontos.descricao}`,
-                dados: { pontos: pontos.pontos, motivo: pontos.descricao },
+                mensagem: `¡Ganaste ${totalPontos} puntos! ${pontosLista[0].descricao}`,
+                dados: { pontos: totalPontos, motivo: pontosLista[0].descricao },
             });
         }
 
@@ -208,6 +225,7 @@ export async function registrarVendaMultipla(inputData: {
         return { success: true };
     });
 }
+
 
 // ============================================
 // Get all sales for a reseller

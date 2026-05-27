@@ -3068,6 +3068,7 @@ export const GamificacaoRegraScalarFieldEnum = {
   tipo: 'tipo',
   limite_diario: 'limite_diario',
   meta_valor: 'meta_valor',
+  pontos_por_guarani: 'pontos_por_guarani',
   ordem: 'ordem',
   created_at: 'created_at'
 } as const

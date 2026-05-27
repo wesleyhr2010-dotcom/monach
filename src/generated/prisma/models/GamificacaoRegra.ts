@@ -30,6 +30,7 @@ export type GamificacaoRegraAvgAggregateOutputType = {
   pontos: number | null
   limite_diario: number | null
   meta_valor: runtime.Decimal | null
+  pontos_por_guarani: runtime.Decimal | null
   ordem: number | null
 }
 
@@ -37,6 +38,7 @@ export type GamificacaoRegraSumAggregateOutputType = {
   pontos: number | null
   limite_diario: number | null
   meta_valor: runtime.Decimal | null
+  pontos_por_guarani: runtime.Decimal | null
   ordem: number | null
 }
 
@@ -51,6 +53,7 @@ export type GamificacaoRegraMinAggregateOutputType = {
   tipo: string | null
   limite_diario: number | null
   meta_valor: runtime.Decimal | null
+  pontos_por_guarani: runtime.Decimal | null
   ordem: number | null
   created_at: Date | null
 }
@@ -66,6 +69,7 @@ export type GamificacaoRegraMaxAggregateOutputType = {
   tipo: string | null
   limite_diario: number | null
   meta_valor: runtime.Decimal | null
+  pontos_por_guarani: runtime.Decimal | null
   ordem: number | null
   created_at: Date | null
 }
@@ -81,6 +85,7 @@ export type GamificacaoRegraCountAggregateOutputType = {
   tipo: number
   limite_diario: number
   meta_valor: number
+  pontos_por_guarani: number
   ordem: number
   created_at: number
   _all: number
@@ -91,6 +96,7 @@ export type GamificacaoRegraAvgAggregateInputType = {
   pontos?: true
   limite_diario?: true
   meta_valor?: true
+  pontos_por_guarani?: true
   ordem?: true
 }
 
@@ -98,6 +104,7 @@ export type GamificacaoRegraSumAggregateInputType = {
   pontos?: true
   limite_diario?: true
   meta_valor?: true
+  pontos_por_guarani?: true
   ordem?: true
 }
 
@@ -112,6 +119,7 @@ export type GamificacaoRegraMinAggregateInputType = {
   tipo?: true
   limite_diario?: true
   meta_valor?: true
+  pontos_por_guarani?: true
   ordem?: true
   created_at?: true
 }
@@ -127,6 +135,7 @@ export type GamificacaoRegraMaxAggregateInputType = {
   tipo?: true
   limite_diario?: true
   meta_valor?: true
+  pontos_por_guarani?: true
   ordem?: true
   created_at?: true
 }
@@ -142,6 +151,7 @@ export type GamificacaoRegraCountAggregateInputType = {
   tipo?: true
   limite_diario?: true
   meta_valor?: true
+  pontos_por_guarani?: true
   ordem?: true
   created_at?: true
   _all?: true
@@ -244,6 +254,7 @@ export type GamificacaoRegraGroupByOutputType = {
   tipo: string
   limite_diario: number | null
   meta_valor: runtime.Decimal | null
+  pontos_por_guarani: runtime.Decimal | null
   ordem: number
   created_at: Date
   _count: GamificacaoRegraCountAggregateOutputType | null
@@ -282,6 +293,7 @@ export type GamificacaoRegraWhereInput = {
   tipo?: Prisma.StringFilter<"GamificacaoRegra"> | string
   limite_diario?: Prisma.IntNullableFilter<"GamificacaoRegra"> | number | null
   meta_valor?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeFilter<"GamificacaoRegra"> | Date | string
   extrato?: Prisma.PontosExtratoListRelationFilter
@@ -298,6 +310,7 @@ export type GamificacaoRegraOrderByWithRelationInput = {
   tipo?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrderInput | Prisma.SortOrder
   meta_valor?: Prisma.SortOrderInput | Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrderInput | Prisma.SortOrder
   ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   extrato?: Prisma.PontosExtratoOrderByRelationAggregateInput
@@ -317,6 +330,7 @@ export type GamificacaoRegraWhereUniqueInput = Prisma.AtLeast<{
   tipo?: Prisma.StringFilter<"GamificacaoRegra"> | string
   limite_diario?: Prisma.IntNullableFilter<"GamificacaoRegra"> | number | null
   meta_valor?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.DecimalNullableFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeFilter<"GamificacaoRegra"> | Date | string
   extrato?: Prisma.PontosExtratoListRelationFilter
@@ -333,6 +347,7 @@ export type GamificacaoRegraOrderByWithAggregationInput = {
   tipo?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrderInput | Prisma.SortOrder
   meta_valor?: Prisma.SortOrderInput | Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrderInput | Prisma.SortOrder
   ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
   _count?: Prisma.GamificacaoRegraCountOrderByAggregateInput
@@ -356,6 +371,7 @@ export type GamificacaoRegraScalarWhereWithAggregatesInput = {
   tipo?: Prisma.StringWithAggregatesFilter<"GamificacaoRegra"> | string
   limite_diario?: Prisma.IntNullableWithAggregatesFilter<"GamificacaoRegra"> | number | null
   meta_valor?: Prisma.DecimalNullableWithAggregatesFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.DecimalNullableWithAggregatesFilter<"GamificacaoRegra"> | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntWithAggregatesFilter<"GamificacaoRegra"> | number
   created_at?: Prisma.DateTimeWithAggregatesFilter<"GamificacaoRegra"> | Date | string
 }
@@ -371,6 +387,7 @@ export type GamificacaoRegraCreateInput = {
   tipo?: string
   limite_diario?: number | null
   meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: number
   created_at?: Date | string
   extrato?: Prisma.PontosExtratoCreateNestedManyWithoutRegraInput
@@ -387,6 +404,7 @@ export type GamificacaoRegraUncheckedCreateInput = {
   tipo?: string
   limite_diario?: number | null
   meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: number
   created_at?: Date | string
   extrato?: Prisma.PontosExtratoUncheckedCreateNestedManyWithoutRegraInput
@@ -403,6 +421,7 @@ export type GamificacaoRegraUpdateInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   extrato?: Prisma.PontosExtratoUpdateManyWithoutRegraNestedInput
@@ -419,6 +438,7 @@ export type GamificacaoRegraUncheckedUpdateInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   extrato?: Prisma.PontosExtratoUncheckedUpdateManyWithoutRegraNestedInput
@@ -435,6 +455,7 @@ export type GamificacaoRegraCreateManyInput = {
   tipo?: string
   limite_diario?: number | null
   meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: number
   created_at?: Date | string
 }
@@ -450,6 +471,7 @@ export type GamificacaoRegraUpdateManyMutationInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -465,6 +487,7 @@ export type GamificacaoRegraUncheckedUpdateManyInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -480,6 +503,7 @@ export type GamificacaoRegraCountOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrder
   meta_valor?: Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrder
   ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -488,6 +512,7 @@ export type GamificacaoRegraAvgOrderByAggregateInput = {
   pontos?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrder
   meta_valor?: Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrder
   ordem?: Prisma.SortOrder
 }
 
@@ -502,6 +527,7 @@ export type GamificacaoRegraMaxOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrder
   meta_valor?: Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrder
   ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -517,6 +543,7 @@ export type GamificacaoRegraMinOrderByAggregateInput = {
   tipo?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrder
   meta_valor?: Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrder
   ordem?: Prisma.SortOrder
   created_at?: Prisma.SortOrder
 }
@@ -525,6 +552,7 @@ export type GamificacaoRegraSumOrderByAggregateInput = {
   pontos?: Prisma.SortOrder
   limite_diario?: Prisma.SortOrder
   meta_valor?: Prisma.SortOrder
+  pontos_por_guarani?: Prisma.SortOrder
   ordem?: Prisma.SortOrder
 }
 
@@ -560,6 +588,7 @@ export type GamificacaoRegraCreateWithoutExtratoInput = {
   tipo?: string
   limite_diario?: number | null
   meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: number
   created_at?: Date | string
 }
@@ -575,6 +604,7 @@ export type GamificacaoRegraUncheckedCreateWithoutExtratoInput = {
   tipo?: string
   limite_diario?: number | null
   meta_valor?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: number
   created_at?: Date | string
 }
@@ -606,6 +636,7 @@ export type GamificacaoRegraUpdateWithoutExtratoInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -621,6 +652,7 @@ export type GamificacaoRegraUncheckedUpdateWithoutExtratoInput = {
   tipo?: Prisma.StringFieldUpdateOperationsInput | string
   limite_diario?: Prisma.NullableIntFieldUpdateOperationsInput | number | null
   meta_valor?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
+  pontos_por_guarani?: Prisma.NullableDecimalFieldUpdateOperationsInput | runtime.Decimal | runtime.DecimalJsLike | number | string | null
   ordem?: Prisma.IntFieldUpdateOperationsInput | number
   created_at?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -667,6 +699,7 @@ export type GamificacaoRegraSelect<ExtArgs extends runtime.Types.Extensions.Inte
   tipo?: boolean
   limite_diario?: boolean
   meta_valor?: boolean
+  pontos_por_guarani?: boolean
   ordem?: boolean
   created_at?: boolean
   extrato?: boolean | Prisma.GamificacaoRegra$extratoArgs<ExtArgs>
@@ -684,6 +717,7 @@ export type GamificacaoRegraSelectCreateManyAndReturn<ExtArgs extends runtime.Ty
   tipo?: boolean
   limite_diario?: boolean
   meta_valor?: boolean
+  pontos_por_guarani?: boolean
   ordem?: boolean
   created_at?: boolean
 }, ExtArgs["result"]["gamificacaoRegra"]>
@@ -699,6 +733,7 @@ export type GamificacaoRegraSelectUpdateManyAndReturn<ExtArgs extends runtime.Ty
   tipo?: boolean
   limite_diario?: boolean
   meta_valor?: boolean
+  pontos_por_guarani?: boolean
   ordem?: boolean
   created_at?: boolean
 }, ExtArgs["result"]["gamificacaoRegra"]>
@@ -714,11 +749,12 @@ export type GamificacaoRegraSelectScalar = {
   tipo?: boolean
   limite_diario?: boolean
   meta_valor?: boolean
+  pontos_por_guarani?: boolean
   ordem?: boolean
   created_at?: boolean
 }
 
-export type GamificacaoRegraOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "descricao" | "acao" | "pontos" | "ativo" | "icone" | "tipo" | "limite_diario" | "meta_valor" | "ordem" | "created_at", ExtArgs["result"]["gamificacaoRegra"]>
+export type GamificacaoRegraOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "nome" | "descricao" | "acao" | "pontos" | "ativo" | "icone" | "tipo" | "limite_diario" | "meta_valor" | "pontos_por_guarani" | "ordem" | "created_at", ExtArgs["result"]["gamificacaoRegra"]>
 export type GamificacaoRegraInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   extrato?: boolean | Prisma.GamificacaoRegra$extratoArgs<ExtArgs>
   _count?: boolean | Prisma.GamificacaoRegraCountOutputTypeDefaultArgs<ExtArgs>
@@ -742,6 +778,7 @@ export type $GamificacaoRegraPayload<ExtArgs extends runtime.Types.Extensions.In
     tipo: string
     limite_diario: number | null
     meta_valor: runtime.Decimal | null
+    pontos_por_guarani: runtime.Decimal | null
     ordem: number
     created_at: Date
   }, ExtArgs["result"]["gamificacaoRegra"]>
@@ -1178,6 +1215,7 @@ export interface GamificacaoRegraFieldRefs {
   readonly tipo: Prisma.FieldRef<"GamificacaoRegra", 'String'>
   readonly limite_diario: Prisma.FieldRef<"GamificacaoRegra", 'Int'>
   readonly meta_valor: Prisma.FieldRef<"GamificacaoRegra", 'Decimal'>
+  readonly pontos_por_guarani: Prisma.FieldRef<"GamificacaoRegra", 'Decimal'>
   readonly ordem: Prisma.FieldRef<"GamificacaoRegra", 'Int'>
   readonly created_at: Prisma.FieldRef<"GamificacaoRegra", 'DateTime'>
 }
